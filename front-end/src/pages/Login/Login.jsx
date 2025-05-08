@@ -9,6 +9,7 @@ import ThemeToggle from '../../components/Toggle';
 import Swal from 'sweetalert2';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import labels from '../../components/labels';
 const roles = [
     { label: 'AGENT', icon: agenticon },
     { label: 'ADMIN', icon: adminicon },
@@ -108,7 +109,7 @@ export default function LoginPage() {
 
                         <FloatingInput
                             onChange={handleChange}
-                            label="Username"
+                            label={labels.username.label}
                             type="text"
                             name="username"
                             value={formData.username}
@@ -117,7 +118,7 @@ export default function LoginPage() {
                         <div >
                             <FloatingInput
                                 onChange={handleChange}
-                                label="Password"
+                                label={labels.password.label}
                                 type="password"
                                 name="password"
                                 value={formData.password}
@@ -137,7 +138,7 @@ export default function LoginPage() {
                             <div className="flex items-center gap-2">
                                 <FloatingInput
                                     onChange={handleChange}
-                                    label="Enter Captcha"
+                                    label={labels.captacha.label}
                                     type="text"
                                     name="captcha"
                                     value={formData.captcha || ''}

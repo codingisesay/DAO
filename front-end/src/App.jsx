@@ -2,12 +2,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from "react";
 // import useLocalStorage from "use-local-storage";
 // import ThemeToggle from "./components/Toggle";
-import "./assets/css/Theme.css";
+import "./assets/css/theme.css";
+import "./assets/css/form.css";
 import './App.css'
 import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext"
 import Dashboard from './pages/Dashboard';
-import Stepper from './pages/Enrollment/Stepper';
+import Enrollmentform from './pages/Enrollment/Enrollmentform';
 
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -22,7 +23,7 @@ export const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/enrollmentform" element={<Stepper />} />
+          <Route path="/enrollmentform" element={<Enrollmentform />} />
         </Routes>
       </Router>
     </div>

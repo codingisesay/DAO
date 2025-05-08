@@ -27,7 +27,7 @@ const FloatingInput = ({
                 onBlur={() => setIsFocused(false)}
                 required={required}
                 className={clsx(
-                    'peer block w-full appearance-none border border-gray-300 bg-transparent p-3 text-sm text-gray-900 placeholder-transparent  dark:text-white dark:border-gray-700',
+                    'peer block w-full appearance-none border border-gray-300 bg-transparent px-4 py-2 text-sm text-gray-900 placeholder-transparent  dark:text-white dark:border-gray-700',
                     'rounded-md transition-all'
                 )}
                 placeholder={label}
@@ -39,7 +39,7 @@ const FloatingInput = ({
                     'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none',
                     {
                         'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-                        ' text-gray-500 dark:text-gray-400  translate-y-1.5 ': !shouldFloat,
+                        'bg-white w-4/6 text-gray-500 dark:text-gray-400  translate-y-0.5 ': !shouldFloat,
                     }
                 )}
             >

@@ -23,7 +23,7 @@ body {
 
 .stepper-item {
     position: relative;
-    padding-bottom: 32px;
+    padding-bottom: 25px;
 }
 
 .stepper-item:not(:last-child):after {
@@ -95,8 +95,9 @@ body {
     -webkit-box-sizing: border-box;
 }
 
-.stepper-title {
-    font-size: 16px;
+.stepper-title,
+.step-title {
+    font-size: 13px;
     color: #6b7280;
     margin-bottom: 4px;
 }
@@ -116,4 +117,11 @@ body {
 .stepper-item.completed .stepper-number:after {
     content: '✓';
     font-size: 14px;
+}
+
+.footer-icon-collection i {
+    margin: 10px 0;
+    padding: 5px;
+    border: 1px solid lightgray;
+    border-radius: 6px;
 }
