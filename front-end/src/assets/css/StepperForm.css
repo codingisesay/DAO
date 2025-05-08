@@ -1,0 +1,101 @@
+/* Stepper Header */
+.stepper-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* Step container */
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    text-align: center;
+}
+
+/* Circle for step number */
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+
+
+/* Active step */
+.step.active .step-number {
+    background-color: var(--payvance-color);
+    border: 1px solid var(--payvance-color);
+    color: white;
+}
+
+/* Completed step */
+.step.completed .step-number {
+    border: 1px solid var(--payvance-color);
+    background-color: var(--payvance-color);
+    color: white;
+}
+
+.step.completed .step-number:before,
+.step .step-number:before {
+    position: absolute;
+    display: block;
+    content: '';
+    border: 2px solid white;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+/* Step label */
+.step-label {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.step.active .step-label {
+    color: var(--payvance-color);
+}
+
+/* Step subtitle */
+.step-subtitle {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+    text-transform: uppercase;
+}
+
+/* Line between steps */
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    right: -50%;
+    height: 1px;
+    background-color: #e0e0e0;
+    z-index: -1;
+}
+
+/* Line for completed steps */
+.step.completed:not(:last-child)::after {
+    background-color: var(--payvance-color);
+}

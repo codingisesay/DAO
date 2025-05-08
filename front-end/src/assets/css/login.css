@@ -31,7 +31,7 @@
  }
 
  .floating-input-height {
-     height: 45px;
+     height: 40px;
  }
 
  /* Style the checkbox when checked */
@@ -84,23 +84,3 @@
  .swal2-container button {
      background-color: var(--foreground-color) !important;
  }
-
- /* styles.css or your tailwind-enabled CSS file */
- /* .theme-toggle-icon {
-     padding: 0.25rem 0.5rem;
-     background-color: #e5e7eb;
-     color: black;
-     border-radius: 9999px;
-     position: absolute;
-     top: 0;
-     right: 0;
-     margin-left: auto;
-     z-index: 50;
- }
-
- @media (prefers-color-scheme: dark) {
-     .theme-toggle-icon {
-         background-color: #374151;
-         color: white;
-     }
- } */

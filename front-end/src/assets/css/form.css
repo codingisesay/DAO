@@ -1,0 +1,39 @@
+.application-type-container {
+    display: flex;
+
+}
+
+.application-type-container .application-type i {
+    background: var(--payvance-color);
+    color: #fff;
+    padding: 5px;
+    font-size: large;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+.application-type-container .application-type {
+    margin: 0 10px 10px 0;
+    padding: 10px;
+    width: 50%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.next-back-btns {
+    display: flex;
+    justify-content: end;
+
+}
+
+.btn-next,
+.btn-back {
+    border: 1px solid var(--payvance-color);
+    color: var(--payvance-color);
+    border-radius: 8px;
+    padding: 5px 20px;
+    margin: 10px;
+}
+
+/* /////////////////////////////////////////////////////// */

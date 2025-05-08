@@ -34,7 +34,7 @@ const Dashboard = () => {
                             <i className="mx-2 bi  bi-bell"></i>
                             <i className="mx-2 bi  bi-question-circle"></i>
                             <i className="mx-2 bi  bi-globe2"></i>
-                            <i className="mx-2 bi  bi-box-arromd:w-right" onClick={handleLogout}></i>
+                            <i className="mx-2 bi  bi-box-arrow-right md:w-right" onClick={handleLogout}></i>
                             <img height='40px' width='40px'
                                 src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
                                 alt="profile"

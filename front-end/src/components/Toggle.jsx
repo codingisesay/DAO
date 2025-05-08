@@ -20,11 +20,11 @@ export default function ThemeToggle() {
     };
 
     return (
-        <button
-            onClick={toggleTheme} className=" theme-toggle-icon"
+        // <button
+        //    className=" theme-toggle-icon"
 
-        >
-            <i className={theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars-fill'}></i>
-        </button>
+        // >
+        <i onClick={toggleTheme} className={theme === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars-fill'}></i>
+        // </button>
     );
 }
