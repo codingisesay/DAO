@@ -98,7 +98,6 @@ export default function LoginPage() {
                                     }`}
                             >
                                 <img src={role.icon} alt="roleicon" width='50px' />
-                                {/* <div className="text-2xl">{role.icon}</div> */}
                                 <span className="text-sm mt-2">{role.label}</span>
                             </button>
                         ))}

@@ -8,7 +8,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(2);
     const [complete, setComplete] = useState(false);
 
     const handleNext = () => {
@@ -48,6 +48,7 @@ function Enrollmentform() {
         <div className="enrollment-form-container">
             <div className='flex justify-around items-center p-2'>
                 <div className='md:w-1/5'>
+
                     <Stepper
                         currentStep={currentStep}
                         complete={complete}

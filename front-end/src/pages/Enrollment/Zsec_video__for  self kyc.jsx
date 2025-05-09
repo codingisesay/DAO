@@ -1,51 +1,21 @@
 
-
-import { useState, useRef, useCallback } from 'react';
-import Webcam from 'react-webcam';
-
 const PhotoCapture = () => {
-    const [imgSrc, setImgSrc] = useState(null);
-    const [devices, setDevices] = useState([]);
-    const [selectedDevice, setSelectedDevice] = useState('');
-    const [mirrored, setMirrored] = useState(false);
-
-    const webcamRef = useRef(null);
-
-    const handleDevices = useCallback((mediaDevices) => {
-        const videoDevices = mediaDevices.filter(({ kind }) => kind === 'videoinput');
-        setDevices(videoDevices);
-        if (videoDevices.length > 0) {
-            setSelectedDevice(videoDevices[0].deviceId);
-        }
-    }, []);
-
-    const capture = useCallback(() => {
-        const imageSrc = webcamRef.current.getScreenshot();
-        setImgSrc(imageSrc);
-    }, [webcamRef]);
-
-    const retake = () => {
-        setImgSrc(null);
-    };
-
-    const download = () => {
-        if (imgSrc) {
-            const a = document.createElement('a');
-            a.href = imgSrc;
-            a.download = 'captured-photo.png';
-            a.click();
-        }
-    };
 
     return (
         <div className="photo-capture">
-            <h1>Photo Capture</h1>
+
+            <h2 className="text-xl font-bold mb-2">Photo Capture</h2>
 
         </div>
     );
 };
 
 export default PhotoCapture;
+
+
+
+
+
 // import { useState, useRef, useCallback } from 'react';
 // import Webcam from 'react-webcam';
 // import RecordRTC from 'recordrtc';
