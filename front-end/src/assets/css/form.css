@@ -6,7 +6,7 @@
 .application-type-container .application-type i {
     background: var(--payvance-color);
     color: #fff;
-    padding: 5px;
+    padding: 5px 10px;
     font-size: large;
     border-radius: 6px;
     margin-right: 10px;
@@ -14,9 +14,7 @@
 
 .application-type-container .application-type {
     margin: 0 10px 10px 0;
-    padding: 10px;
     width: 50%;
-    border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -36,4 +34,39 @@
     margin: 10px;
 }
 
+input:-webkit-autofill {
+    transition: background-color 9999s ease-in-out 0s;
+}
+
 /* /////////////////////////////////////////////////////// */
+
+/* cam */
+.good {
+    background: #d4edda;
+    color: #155724;
+    padding: 5px 10px;
+    margin: 4px auto;
+    border-radius: 6px;
+    width: 75%;
+
+}
+
+.bad {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 5px 10px;
+    margin: 4px auto;
+    border-radius: 6px;
+    width: 75%;
+
+}
+
+.hints {
+    background: #fff3cd;
+    color: #856404;
+    padding: 5px 10px;
+    margin: 4px auto;
+    border-radius: 6px;
+    width: 75%;
+
+}

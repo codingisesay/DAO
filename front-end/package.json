@@ -10,13 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tensorflow-models/face-landmarks-detection": "^1.0.6",
+    "@tensorflow/tfjs": "^4.22.0",
     "axios": "^1.9.0",
     "bootstrap-icons": "^1.12.1",
     "clsx": "^2.1.1",
+    "face-api.js": "^0.22.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.3",
     "react-webcam": "^7.2.0",
+    "recordrtc": "^5.6.2",
     "sweetalert2": "^11.21.0",
     "tailwind": "^4.0.0",
     "use-local-storage": "^3.0.0"

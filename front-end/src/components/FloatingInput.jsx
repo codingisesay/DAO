@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
 const FloatingInput = ({
@@ -12,8 +12,25 @@ const FloatingInput = ({
     ...rest
 }) => {
     const [isFocused, setIsFocused] = useState(false);
+    const [hasContent, setHasContent] = useState(value?.toString().length > 0);
 
-    const shouldFloat = isFocused || value?.toString().length > 0;
+    useEffect(() => {
+        // Handle autofill after a small delay
+        const timeout = setTimeout(() => {
+            const input = document.getElementById(name);
+            if (input && input.value) {
+                setHasContent(true);
+            }
+        }, 100);
+
+        return () => clearTimeout(timeout);
+    }, []);
+
+    useEffect(() => {
+        setHasContent(value?.toString().length > 0);
+    }, [value]);
+
+    const shouldFloat = isFocused || hasContent;
 
     return (
         <div className={clsx('floating-input-height relative w-full', className)}>
