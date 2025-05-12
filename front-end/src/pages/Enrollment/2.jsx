@@ -5,7 +5,7 @@ import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 
 const p2 = ({ onNext, onBack }) => {
-    const [activeStep, setActiveStep] = useState(2);
+    const [activeStep, setActiveStep] = useState(0);
 
     const [formData, setFormData] = useState({
         // Personal Details

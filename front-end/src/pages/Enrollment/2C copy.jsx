@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import photoinstruction from '../../assets/imgs/photo_instructions.png';
-import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import '@tensorflow/tfjs';
-
 const PhotoValidator = () => {
     const webcamRef = useRef(null);
     const [imgSrc, setImgSrc] = useState(null);
@@ -17,54 +14,13 @@ const PhotoValidator = () => {
     const [hints, setHints] = useState('');
     const [location, setLocation] = useState(null);
     const [locationError, setLocationError] = useState(null);
-    const [personCount, setPersonCount] = useState(0);
+
 
     // Pre-capture checks
     const [preCaptureChecks, setPreCaptureChecks] = useState({
         hasFace: false,
-        lightingOk: false,
-        singlePerson: false
+        lightingOk: false
     });
-
-    // Load COCO-SSD model and start person detection
-    useEffect(() => {
-        let mounted = true;
-
-        const loadModel = async () => {
-            try {
-                const model = await cocoSsd.load();
-                const detect = async () => {
-                    if (mounted && webcamRef.current && webcamRef.current.video && webcamRef.current.video.readyState === 4) {
-                        try {
-                            const predictions = await model.detect(webcamRef.current.video);
-                            const people = predictions.filter((p) => p.class === "person");
-                            setPersonCount(people.length);
-
-                            // Update preCaptureChecks with single person status
-                            setPreCaptureChecks(prev => ({
-                                ...prev,
-                                singlePerson: people.length === 1
-                            }));
-                        } catch (error) {
-                            console.error("Detection error:", error);
-                        }
-                    }
-                    if (mounted) {
-                        requestAnimationFrame(detect);
-                    }
-                };
-                detect();
-            } catch (error) {
-                console.error("Model loading error:", error);
-            }
-        };
-
-        loadModel();
-
-        return () => {
-            mounted = false;
-        };
-    }, []);
 
     // Request geolocation permission when component mounts
     useEffect(() => {
@@ -88,18 +44,7 @@ const PhotoValidator = () => {
         }
     }, []);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (!imgSrc && webcamRef.current) {
-                const video = webcamRef.current.video;
-                if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
-                    analyzeVideoFrame(video);
-                }
-            }
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [imgSrc]);
+    // ... (keep your existing useEffect for video analysis)
 
     const capture = () => {
         const imageSrc = webcamRef.current.getScreenshot();
@@ -135,6 +80,19 @@ const PhotoValidator = () => {
         };
     };
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!imgSrc && webcamRef.current) {
+                const video = webcamRef.current.video;
+                if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+                    analyzeVideoFrame(video);
+                }
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [imgSrc]);
+
     const analyzeVideoFrame = (video) => {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
@@ -145,12 +103,8 @@ const PhotoValidator = () => {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const { hasFace, lightingOk } = analyzeFrame(imageData);
 
-        setPreCaptureChecks(prev => ({
-            ...prev,
-            hasFace,
-            lightingOk
-        }));
-        setHints(getHints(hasFace, lightingOk, personCount));
+        setPreCaptureChecks({ hasFace, lightingOk });
+        setHints(getHints(hasFace, lightingOk));
     };
 
     const analyzeFrame = (imageData) => {
@@ -210,13 +164,13 @@ const PhotoValidator = () => {
         return { hasFace, lightingOk };
     };
 
-    const getHints = (hasFace, lightingOk, count) => {
-        if (count === 0) return 'No person detected. Please stand in frame.';
-        if (count > 1) return 'Multiple people detected. Only one person should be in frame.';
+    const getHints = (hasFace, lightingOk) => {
         if (!hasFace) return 'Center your face in the frame.';
         if (!lightingOk) return 'Adjust lighting properly';
         return 'Ready to capture';
     };
+
+
 
     const isSkinTone = (r, g, b) => {
         // Enhanced skin tone detection in multiple color spaces
@@ -304,7 +258,7 @@ const PhotoValidator = () => {
                             {!imgSrc ? (
                                 <button className='w-full btn-login'
                                     onClick={capture}
-                                    disabled={isLoading || !preCaptureChecks.hasFace || !preCaptureChecks.lightingOk || personCount !== 1}
+                                    disabled={isLoading || !preCaptureChecks.hasFace || !preCaptureChecks.lightingOk}
                                 >
                                     Capture Photo
                                 </button>
@@ -327,10 +281,8 @@ const PhotoValidator = () => {
                                 <div className={`status-indicator ${preCaptureChecks.lightingOk ? 'good' : 'bad'}`}>
                                     {preCaptureChecks.lightingOk ? '✓' : '✗'} Good lighting
                                 </div>
-                                <div className={`status-indicator ${personCount === 1 ? 'good' : 'bad'}`}>
-                                    {personCount === 1 ? '✓' : '✗'} Single person detected ({personCount})
-                                </div>
                                 <div className="hints">{hints}</div>
+
                             </>
                         )}
                         {/* Display location status */}
@@ -345,6 +297,7 @@ const PhotoValidator = () => {
                                 (Accuracy: ~{Math.round(location.accuracy)} meters)
                             </div>
                         )}
+
                     </div>
 
                     {!isLoading && imgSrc && (
@@ -376,8 +329,24 @@ const PhotoValidator = () => {
                     )}
 
                     {isLoading && <div className="loading">Validating image...</div>}
+
                 </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
     );
 };
