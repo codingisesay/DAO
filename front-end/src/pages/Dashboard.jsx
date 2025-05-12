@@ -28,7 +28,7 @@ const Dashboard = () => {
                         <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
                         <h2>Welcome to FinAcctz</h2>
                     </div>
-                    <div>
+                    <div className="text-right">
                         <div className='flex items-center'>
                             <ThemeToggle />
                             <i className="mx-2 bi  bi-bell"></i>
@@ -42,7 +42,7 @@ const Dashboard = () => {
                             />
                             <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Agent</small></span>
                         </div>
-                        <button className='btn-login ' onClick={handleRedireact}>Start Enrollment</button>
+                        <button className='btn-login ' onClick={handleRedireact}>&nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;</button>
                     </div>
 
                 </div>

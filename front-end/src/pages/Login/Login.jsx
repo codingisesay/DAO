@@ -151,7 +151,7 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            className="btn-login"
+                            className="btn-login w-full "
                         >
                             Login
                         </button>
