@@ -317,7 +317,7 @@ const PhotoValidator = () => {
                 </div>
 
                 <div className="md:w-1/2 w-full  ">
-                    <img src={photoinstruction} alt="Photo Instructions" className='w-4/5 m-auto' />
+                    <img src={photoinstruction} alt="Photo Instructions" className='w-3/5 mb-3 m-auto' />
                     <div className="status">
                         {!imgSrc && (
                             <>
@@ -340,9 +340,9 @@ const PhotoValidator = () => {
                             </div>
                         )}
                         {location && (
-                            <div className="location-info">
+                            <div className="location-info text-center">
                                 Location enabled: {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
-                                (Accuracy: ~{Math.round(location.accuracy)} meters)
+                                {/* (Accuracy: ~{Math.round(location.accuracy)} meters) */}
                             </div>
                         )}
                     </div>
@@ -366,10 +366,7 @@ const PhotoValidator = () => {
                                 <div className="success-message">All validations passed!</div>
                             ) : (
                                 <div className="error-message">
-                                    {!validation.hasSubject && 'No face detected. '}
-                                    {!validation.singleSubject && 'Multiple faces detected. '}
-                                    {!validation.goodLighting && 'Lighting issues detected. '}
-                                    Please retake the photo.
+                                    One or more validations failed. Please retake the photo.
                                 </div>
                             )}
                         </div>

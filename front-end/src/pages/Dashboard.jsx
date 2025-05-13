@@ -47,20 +47,46 @@ const Dashboard = () => {
 
                 </div>
 
-
-
                 <div className="mx-auto flex flex-wrap">
                     <div className='md:w-3/5 sm:full p-1'>
                         overview
-                        <div className=" flex">
+                        <div className="dashboard-top-caard-collection flex">
                             <div className="md:w-1/4">
-                                <div className="bg-lime-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="approved-card">
+                                    <i className="bi bi-clipboard2-check"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-orange-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="pending-card">
+                                    <i className="bi bi-clipboard2-minus"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-red-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="rejected-card">
+                                    <i className="bi bi-clipboard2-x"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-teal-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="recent-applyed-card">
+                                    <i className="bi bi-clipboard2-plus"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className='md:w-2/5 sm:full p-1'>
