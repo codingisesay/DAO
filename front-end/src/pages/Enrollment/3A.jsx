@@ -335,7 +335,7 @@ const documentApload = () => {
 
                                         {documents.length > 1 && (
 
-                                            <i class="bi bi-trash-fill text-red-500 mx-auto "
+                                            <i className="bi bi-trash-fill text-red-500 mx-auto "
                                                 onClick={() => handleRemoveRow(doc.id)}></i>
                                         )}
                                     </div>

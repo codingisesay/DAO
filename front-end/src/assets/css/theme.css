@@ -95,11 +95,13 @@ body {
     -webkit-box-sizing: border-box;
 }
 
-.stepper-title,
+.stepper-title {
+    font-size: 14px;
+}
+
 .step-title {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 4px;
+    font-size: 10px;
+    color: gray;
 }
 
 
@@ -124,4 +126,231 @@ body {
     padding: 5px;
     border: 1px solid lightgray;
     border-radius: 6px;
+}
+
+.dashboard-card-count {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    height: 20px;
+    display: block;
+}
+
+.pending-card .bi,
+.rejected-card .bi,
+.recent-applyed-card .bi,
+.approved-card .bi {
+    background-color: rgba(255, 255, 255, 0.368);
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto 10px auto 0;
+}
+
+
+.pending-card,
+.rejected-card,
+.recent-applyed-card,
+.approved-card {
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    padding: 10px;
+    margin: 5px;
+    background: linear-gradient(90deg, #00BA00, #00ba0094);
+}
+
+.pending-card {
+    background: linear-gradient(90deg, #FFA726, #ffa82684);
+}
+
+.rejected-card {
+    background: linear-gradient(90deg, #D80B0B, #d80b0ba8);
+}
+
+.recent-applyed-card {
+    background: linear-gradient(90deg, #00838F, #00838fab);
+}
+
+/* pending KYC table below */
+.table-container {
+    width: 100%;
+    overflow: auto;
+    height: 430px;
+}
+
+table {
+    width: 100%;
+    min-width: max-content;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 5px !important;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+td img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.applicant-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.click-button {
+    padding: 6px 12px;
+    border: 1px solid #00a86b;
+    background-color: white;
+    color: #00a86b;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.click-button:hover {
+    background-color: #00a86b;
+    color: white;
+}
+
+/* pending KYC table above */
+/* chart css */
+
+.kyc-meter-container {
+    font-family: Arial, sans-serif;
+    max-width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.gauge-container {
+    position: relative;
+    width: 200px;
+    height: 100px;
+    margin: 0 auto 20px;
+}
+
+.gauge {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.gauge:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100px 100px 0 0;
+    background: #f0f0f0;
+    left: 0;
+}
+
+.gauge-approved,
+.gauge-pending {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 100px 100px 0 0;
+    transform-origin: center bottom;
+    transform: rotate(0deg);
+}
+
+.gauge-approved {
+    background: #4CAF50;
+    z-index: 2;
+}
+
+.gauge-pending {
+    background: #FFC107;
+    z-index: 1;
+}
+
+.gauge-center {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 50%;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.gauge-total {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.gauge-label {
+    font-size: 12px;
+    color: #666;
+}
+
+.meter-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.label-approved,
+.label-pending {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.label-value {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.label-text {
+    font-size: 12px;
+    color: #666;
+}
+
+.label-approved .label-value {
+    color: #4CAF50;
+}
+
+.label-pending .label-value {
+    color: #FFC107;
+}
+
+.rdrMonthName,
+.rdrDateDisplayWrapper {
+    display: none;
 }

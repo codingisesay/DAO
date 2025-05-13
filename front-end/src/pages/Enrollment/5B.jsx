@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import FloatingInput from '../../components/FloatingInput';
+import labels from '../../components/labels'; // adjust the path if needed
 
 function PersonalOccupationForm() {
     const [nominees, setNominees] = useState([{
@@ -98,49 +99,49 @@ function PersonalOccupationForm() {
 
                     <div className="grid md:grid-cols-4 gap-4">
                         <FloatingInput
-                            label="Salutation"
+                            label={labels.nomineeSalutation.label}
                             name="nomineeSalutation"
                             value={nominee.details.nomineeSalutation}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="Nominee First Name"
+                            label={labels.nomineeFirstName.label}
                             name="nomineeFirstName"
                             value={nominee.details.nomineeFirstName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="Nominee Middle Name"
+                            label={labels.nomineeMiddleName.label}
                             name="nomineeMiddleName"
                             value={nominee.details.nomineeMiddleName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="Nominee Last Name"
+                            label={labels.nomineeLastName.label}
                             name="nomineeLastName"
                             value={nominee.details.nomineeLastName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="Nominee Relation"
+                            label={labels.nomineeRelation.label}
                             name="nomineeRelation"
                             value={nominee.details.nomineeRelation}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="Percentage"
+                            label={labels.nomineePercentage.label}
                             name="nomineePercentage"
                             value={nominee.details.nomineePercentage}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
                         <FloatingInput
-                            label="DOB"
+                            label={labels.nomineeDOB.label}
                             name="nomineeDOB"
                             type="date"
                             value={nominee.details.nomineeDOB}
@@ -148,7 +149,7 @@ function PersonalOccupationForm() {
                             required
                         />
                         <FloatingInput
-                            label="Age"
+                            label={labels.nomineeAge.label}
                             name="nomineeAge"
                             value={nominee.details.nomineeAge}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
@@ -159,69 +160,73 @@ function PersonalOccupationForm() {
                     <h2 className="text-2xl font-bold mt-8 mb-4">Nominee {index + 1} Address</h2>
                     <div className="grid md:grid-cols-4 gap-4">
                         <FloatingInput
-                            label="Complex Name"
+                            label={labels.nomineeComplexName.label}
                             name="nomineeComplexName"
                             value={nominee.address.nomineeComplexName}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="Bldg Name/Flat No."
+                            label={labels.nomineeBuildingName.label}
                             name="nomineeBuildingName"
                             value={nominee.address.nomineeBuildingName}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="Area"
+                            label={labels.nomineeArea.label}
                             name="nomineeArea"
                             value={nominee.address.nomineeArea}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="Nearby Landmark"
+                            label={labels.nomineeLandmark.label}
                             name="nomineeLandmark"
                             value={nominee.address.nomineeLandmark}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="Country"
+                            label={labels.nomineeCountry.label}
                             name="nomineeCountry"
                             value={nominee.address.nomineeCountry}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="Pin Code"
+                            label={labels.nomineePinCode.label}
                             name="nomineePinCode"
                             value={nominee.address.nomineePinCode}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="City"
+                            label={labels.nomineeCity.label}
                             name="nomineeCity"
                             value={nominee.address.nomineeCity}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="District"
+                            label={labels.nomineeDistrict.label}
                             name="nomineeDistrict"
                             value={nominee.address.nomineeDistrict}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                         <FloatingInput
-                            label="State"
+                            label={labels.nomineeState.label}
                             name="nomineeState"
                             value={nominee.address.nomineeState}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
                     </div>
+
+
+
+
                 </div>
             ))}
 
