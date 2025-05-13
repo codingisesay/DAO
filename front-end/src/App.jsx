@@ -9,6 +9,7 @@ import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext"
 import Dashboard from './pages/Dashboard';
 import Enrollmentform from './pages/Enrollment/Enrollmentform';
+import AgentDashboard from './pages/AgentDashboard/AgentDashboard';
 
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -22,7 +23,8 @@ export const App = () => {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+          <Route path="/dashboard" element={<AgentDashboard />} />
           <Route path="/enrollmentform" element={<Enrollmentform />} />
         </Routes>
       </Router>

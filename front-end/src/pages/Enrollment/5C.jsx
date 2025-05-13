@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FloatingInput from '../../components/FloatingInput';
 import CheckboxInput from '../../components/CheckboxInput';
-
+import labels from '../../components/labels';
 function BankFacility() {
     const [eBankingServices, setEBankingServices] = useState({
         atmCard: false,
@@ -40,29 +40,29 @@ function BankFacility() {
     };
 
     return (
-        <div className="  mx-auto">
+        <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
             <div className="grid md:grid-cols-4 gap-4">
                 <CheckboxInput
-                    label="ATM Card"
+                    label={labels.atmCard.label}
                     name="atmCard"
                     checked={eBankingServices.atmCard}
                     onChange={handleEBankingChange}
                 />
                 <CheckboxInput
-                    label="UPI"
+                    label={labels.upi.label}
                     name="upi"
                     checked={eBankingServices.upi}
                     onChange={handleEBankingChange}
                 />
                 <CheckboxInput
-                    label="Internet Banking"
+                    label={labels.internetBanking.label}
                     name="internetBanking"
                     checked={eBankingServices.internetBanking}
                     onChange={handleEBankingChange}
                 />
                 <CheckboxInput
-                    label="IMPS"
+                    label={labels.imps.label}
                     name="imps"
                     checked={eBankingServices.imps}
                     onChange={handleEBankingChange}
@@ -72,49 +72,49 @@ function BankFacility() {
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
             <div className="grid md:grid-cols-4 gap-4">
                 <CheckboxInput
-                    label="Consumer Loan"
+                    label={labels.consumerLoan.label}
                     name="consumerLoan"
                     checked={creditFacilities.consumerLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Home Loan"
+                    label={labels.homeLoan.label}
                     name="homeLoan"
                     checked={creditFacilities.homeLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Business Loan"
+                    label={labels.businessLoan.label}
                     name="businessLoan"
                     checked={creditFacilities.businessLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Education Loan"
+                    label={labels.educationLoan.label}
                     name="educationLoan"
                     checked={creditFacilities.educationLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Car Loan"
+                    label={labels.carLoan.label}
                     name="carLoan"
                     checked={creditFacilities.carLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Staff"
+                    label={labels.staff.label}
                     name="staff"
                     checked={creditFacilities.staff}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Relative/Friend"
+                    label={labels.relativeFriend.label}
                     name="relativeFriend"
                     checked={creditFacilities.relativeFriend}
                     onChange={handleCreditFacilityChange}
                 />
                 <CheckboxInput
-                    label="Other"
+                    label={labels.other.label}
                     name="other"
                     checked={creditFacilities.other}
                     onChange={handleCreditFacilityChange}
@@ -122,7 +122,7 @@ function BankFacility() {
                 {creditFacilities.other && (
                     <div className="md:col-span-4">
                         <FloatingInput
-                            label="Please specify other facility"
+                            label={labels.otherFacilityText.label}
                             name="otherFacilityText"
                             value={otherFacilityText}
                             onChange={(e) => setOtherFacilityText(e.target.value)}
@@ -131,6 +131,7 @@ function BankFacility() {
                 )}
             </div>
         </div>
+
     );
 }
 
