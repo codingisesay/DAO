@@ -22,7 +22,10 @@
 .next-back-btns {
     display: flex;
     justify-content: end;
-
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    right: 20px;
 }
 
 .btn-next,

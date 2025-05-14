@@ -48,7 +48,7 @@ const Dashboard = () => {
                 </div>
 
                 <div className="mx-auto flex flex-wrap">
-                    <div className='md:w-3/5 sm:full p-1'>
+                    <div className='md:w-3/5 sm:w-full p-1'>
                         overview
                         <div className="dashboard-top-caard-collection flex">
                             <div className="md:w-1/4">
@@ -89,23 +89,23 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='md:w-2/5 sm:full p-1'>
+                    <div className='md:w-2/5 sm:w-full p-1'>
                         Missing Documents
                         <div className="bg-white w-full my-2 p-2 rounded-md">Pie Chart</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Performance Metrics
                         <div className="bg-white w-full my-2 p-2 rounded-md">Bar Graph</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         KYC Application Status
                         <div className="bg-white w-full my-2 p-2 rounded-md">Meter Graph</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Application Insights
                         <div className="bg-white w-full my-2 p-2 rounded-md">CAlender</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Demographics Report
                         <div className="bg-white w-full my-2 p-2 rounded-md">Pie Chart</div>
                     </div>

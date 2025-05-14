@@ -63,7 +63,7 @@ function Enrollmentform() {
                     />
                 </div>
                 <div className='md:w-3/4 '>
-                    <div className='w-full bg-white shadow-md rounded-lg p-6'>
+                    <div className='work-area '>
                         {renderCurrentPage()}
                     </div>
                 </div>
