@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../../assets/css/login.css'; import useLocalStorage from "use-local-storage";
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
-import FloatingInput from '../../components/FloatingInput';
+import CommanInput from '../../components/CommanInput';
 import agenticon from '../../assets/imgs/agent.png';
 import adminicon from '../../assets/imgs/admin.png';
 import empicon from '../../assets/imgs/employee.png';
@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import labels from '../../components/labels';
+import CommonButton from '../../components/CommonButton';
 const roles = [
     { label: 'AGENT', icon: agenticon },
     { label: 'ADMIN', icon: adminicon },
@@ -63,9 +64,36 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(formData.username, formData.password);
+        const success = await login(formData.username, formData.password, selectedRole);
         if (success) {
-            navigate('/dashboard');
+            if (selectedRole === 'AGENT') {
+                navigate('/agentdashboard');
+            }
+            else if (selectedRole === 'ADMIN') {
+                navigate('/admindashboard');
+            }
+            else if (selectedRole === 'EMPLOYEE') {
+                Swal.fire({
+                    title: 'Login Failed',
+                    text: 'You are not authorized to login as an employee',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    class: 'btn-login', customClass: {
+                        confirmButton: 'btn-error ',  // Custom class for the button
+                    }
+                });
+            }
+        }
+        else {
+            Swal.fire({
+                title: 'Login Failed',
+                text: 'Invalid credentials',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                class: 'btn-login', customClass: {
+                    confirmButton: 'btn-error ',  // Custom class for the button
+                }
+            });
         }
 
     };
@@ -89,7 +117,7 @@ export default function LoginPage() {
 
                     <div className="flex gap-4 mb-6 ">
                         {roles.map((role) => (
-                            <button
+                            <span
                                 key={role.label}
                                 onClick={() => setSelectedRole(role.label)}
                                 className={`flex flex-col items-center p-4 border rounded-md w-1/3 transition ${selectedRole === role.label
@@ -99,14 +127,14 @@ export default function LoginPage() {
                             >
                                 <img src={role.icon} alt="roleicon" width='50px' />
                                 <span className="text-sm mt-2">{role.label}</span>
-                            </button>
+                            </span>
                         ))}
                     </div>
 
                     {/* Inputs */}
                     <form onSubmit={handleSubmit} className="space-y-6">
 
-                        <FloatingInput
+                        <CommanInput
                             onChange={handleChange}
                             label={labels.username.label}
                             type="text"
@@ -115,7 +143,7 @@ export default function LoginPage() {
                         />
 
                         <div >
-                            <FloatingInput
+                            <CommanInput
                                 onChange={handleChange}
                                 label={labels.password.label}
                                 type="password"
@@ -135,7 +163,7 @@ export default function LoginPage() {
                                 Identify the smallest value  ({numbers.join(", ")}) = ?
                             </p>
                             <div className="flex items-center gap-2">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.captacha.label}
                                     type="text"
@@ -143,18 +171,23 @@ export default function LoginPage() {
                                     value={formData.captcha || ''}
                                     onBlur={validateCaptcha}
                                 />
-                                <button type="button" className=" captach-refresh " onClick={generateCaptcha}>
+
+                                <CommonButton
+                                    type="button"
+                                    className="captach-refresh"
+                                    onClick={generateCaptcha}
+                                >
                                     <i className="bi bi-arrow-clockwise text-xl font-bold"></i>
-                                </button>
+                                </CommonButton>
                             </div>
                         </div>
 
-                        <button
+                        <CommonButton
                             type="submit"
-                            className="btn-login w-full "
+                            className="btn-login w-full"
                         >
                             Login
-                        </button>
+                        </CommonButton>
                     </form>
 
                     <p className="text-sm text-center mt-4 text-gray-400">Forgot Password?</p>

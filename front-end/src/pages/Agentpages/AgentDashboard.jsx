@@ -9,7 +9,7 @@ import KYCgue from './KYCmeter';
 import DemographicsBarChart from './DemographicsBarChart';
 import KYCpendingTbl from './KYCpendingTbl';
 import DateRangePicker from '../../components/DaterangePicker'
-
+import CommonButton from '../../components/CommonButton';
 
 const Dashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -54,12 +54,19 @@ const Dashboard = () => {
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
-                    <button className='btn-login' onClick={handleRedireact}>&nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;</button>
+
+                    <CommonButton
+                        type="button"
+                        className="btn-login"
+                        onClick={handleRedireact}
+                    >
+                        &nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;
+                    </CommonButton>
                 </div>
 
                 <div className="mx-auto flex flex-wrap">
                     <div className="md:w-4/6 flex  flex-wrap justify-between">
-                        <div className='w-full sm:full p-1'>
+                        <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1">
                                 <div className="md:w-1/4">
                                     <div className="approved-card">
@@ -101,12 +108,12 @@ const Dashboard = () => {
                         </div>
 
 
-                        <div className='md:w-2/3 sm:full p-1'>
+                        <div className='md:w-2/3 sm:w-full p-1'>
                             <div className="bg-white w-full my-2 p-4 rounded-md">
                                 <AccountBarChart />
                             </div>
                         </div>
-                        <div className='md:w-1/3 sm:full p-1'>
+                        <div className='md:w-1/3 sm:w-full p-1'>
                             <div className="bg-white w-full my-2 px-4 pt-4 rounded-md relative">
                                 <h2 className="text-xl font-bold mb-2">KYC Application Status</h2>
                                 <div className='pb-11'>
@@ -117,7 +124,7 @@ const Dashboard = () => {
 
                     </div>
 
-                    <div className='md:w-2/6 sm:full p-1'>
+                    <div className='md:w-2/6 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4 rounded-md">
                             <h2 className="text-xl font-bold mb-0">Application Insights</h2>
                             <div className="text-center">
@@ -169,20 +176,20 @@ const Dashboard = () => {
 
 
                     {/* 
-                    <div className='md:w-2/5 sm:full p-1'>
+                    <div className='md:w-2/5 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-2 rounded-md">   Missing Documents <br /> Pie Chart</div>
                         <p>.</p>
                         <p>.</p>
 
                     </div> */}
 
-                    <div className='md:w-1/2 sm:full p-1'>
+                    <div className='md:w-1/2 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4 rounded-md">
                             <h2 className="text-xl font-bold mb-2"> Demographics Report</h2>
                             <DemographicsBarChart />
                         </div>
                     </div>
-                    <div className='md:w-1/2 sm:full p-1'>
+                    <div className='md:w-1/2 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4 rounded-md">
                             <h2 className="text-xl font-bold mb-2">    V-KYC Pending Status</h2>
                             <KYCpendingTbl />

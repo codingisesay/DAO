@@ -11,6 +11,27 @@ body {
     border: 5px solid white;
     background: linear-gradient(0deg, rgba(255, 255, 255, 1) 21%, rgba(183, 239, 219, 1) 100%);
     border-radius: 15px;
+    height: 97vh;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-stepper-container {
+    height: calc(100% - 270px);
+    overflow: auto;
+    max-width: max-content;
+    margin: auto
+}
+
+.form-container {
+    height: calc(100% - 70px);
+    overflow: auto;
+}
+
+.nestedstepper-form-container {
+    /* height: calc(100% - 270px); */
+    height: 65vh;
+    overflow: auto;
 }
 
 /* stepper css above */
@@ -104,6 +125,18 @@ body {
     color: gray;
 }
 
+.work-area {
+    width: 100%;
+    height: 97vh;
+    background-color: white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Tailwind's shadow-md */
+    border-radius: 0.5rem;
+    /* rounded-lg = 8px */
+    padding: 20px;
+    position: relative;
+}
 
 .stepper-subtitle {
     font-size: 10px;
@@ -121,10 +154,21 @@ body {
     font-size: 14px;
 }
 
+.stepper-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 10px 0 10px;
+    background-color: white;
+    border-top: 1px solid #e5e7eb;
+
+}
+
 .footer-icon-collection i {
     margin: 10px 0;
     padding: 5px;
-    border: 1px solid lightgray;
+    /* border: 1px solid lightgray; */
     border-radius: 6px;
 }
 

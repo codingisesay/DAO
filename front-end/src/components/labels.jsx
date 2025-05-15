@@ -29,8 +29,8 @@ const labels = {
     complexname: {
         label: "Complex Name",
     },
-    flatnobuildingname: {
-        label: "Flat No/Building Name",
+    flatnoroomno: {
+        label: "Flat No/Room No",
     },
     area: {
         label: "Area",
@@ -183,6 +183,20 @@ const labels = {
     educationQualification: { label: "Education Qualification" },
     annualIncome: { label: "Annual Income" },
     remark: { label: "Remark" },
+
+    // --- Agent form  ---
+    userId: { label: "User ID" },
+    userName: { label: "User Name" },
+    email: { label: "Email ID" },
+    // mobile: { label: "Mobile No." },
+    region: { label: "Region" },
+    branch: { label: "Branch" },
+    // password: { label: "Password" },
+    confirmPassword: { label: "Confirm Password" },
+    accountHolder: { label: "Account Holder Name" },
+    accountNumber: { label: "Account Number" },
+    bankName: { label: "Bank Name" },
+    ifsc: { label: "IFSC Code" },
 };
 
 

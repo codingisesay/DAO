@@ -25,7 +25,7 @@ const KYCpendingTbl = () => {
                             </td>
                             <td>12-01-2025</td>
                             <td>12150</td>
-                            <td><button className="click-button">View</button></td>
+                            <td><span className="click-span">View</span></td>
                         </tr>
                         <tr>
                             {/* <td>02</td>/ */}
@@ -35,7 +35,7 @@ const KYCpendingTbl = () => {
                             </td>
                             <td>16-02-2025</td>
                             <td>25321</td>
-                            <td><button className="click-button">View</button></td>
+                            <td><span className="click-span">View</span></td>
                         </tr>
                         <tr>
                             {/* <td>03</td> */}
@@ -45,7 +45,7 @@ const KYCpendingTbl = () => {
                             </td>
                             <td>18-03-2025</td>
                             <td>30254</td>
-                            <td><button className="click-button">View</button></td>
+                            <td><span className="click-span">View</span></td>
                         </tr>
                         <tr>
                             {/* <td>04</td> */}
@@ -55,7 +55,7 @@ const KYCpendingTbl = () => {
                             </td>
                             <td>18-03-2025</td>
                             <td>75542</td>
-                            <td><button className="click-button">View</button></td>
+                            <td><span className="click-span">View</span></td>
                         </tr>
                         <tr>
                             {/* <td>05</td> */}
@@ -65,7 +65,7 @@ const KYCpendingTbl = () => {
                             </td>
                             <td>18-03-2025</td>
                             <td>96545</td>
-                            <td><button className="click-button">View</button></td>
+                            <td><span className="click-span">View</span></td>
                         </tr>
                     </tbody>
                 </table>
