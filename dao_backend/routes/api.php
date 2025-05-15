@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Services\EurekaService;
+use App\Http\Controllers\Api\AuthProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +33,6 @@ Route::get('/eureka/heartbeat', function (EurekaService $eureka) {
 Route::get('/eureka/deregister', function (EurekaService $eureka) {
     return $eureka->deregister()->status();
 });
+
+// Route::post('/auth/api/login', [AuthProxyController::class, 'login']);
+
