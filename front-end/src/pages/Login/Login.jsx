@@ -64,9 +64,36 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(formData.username, formData.password);
+        const success = await login(formData.username, formData.password, selectedRole);
         if (success) {
-            navigate('/dashboard');
+            if (selectedRole === 'AGENT') {
+                navigate('/agentdashboard');
+            }
+            else if (selectedRole === 'ADMIN') {
+                navigate('/admindashboard');
+            }
+            else if (selectedRole === 'EMPLOYEE') {
+                Swal.fire({
+                    title: 'Login Failed',
+                    text: 'You are not authorized to login as an employee',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    class: 'btn-login', customClass: {
+                        confirmButton: 'btn-error ',  // Custom class for the button
+                    }
+                });
+            }
+        }
+        else {
+            Swal.fire({
+                title: 'Login Failed',
+                text: 'Invalid credentials',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                class: 'btn-login', customClass: {
+                    confirmButton: 'btn-error ',  // Custom class for the button
+                }
+            });
         }
 
     };

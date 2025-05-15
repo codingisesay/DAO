@@ -13,6 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+// use App\Services\EurekaService;
+
+// Route::get('/eureka/register', function (EurekaService $eureka) {
+//     return $eureka->register()->body();
+// });
+
+// Route::get('/eureka/heartbeat', function (EurekaService $eureka) {
+//     return $eureka->sendHeartbeat()->status();
+// });
+
+// Route::get('/eureka/deregister', function (EurekaService $eureka) {
+//     return $eureka->deregister()->status();
+// });

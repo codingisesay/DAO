@@ -3,29 +3,29 @@ import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-function p1({ onNext, onBack }) {
+function p1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [showData, setShowData] = useState(false);
-    const [formData, setFormData] = React.useState({
-        aadharno: '',
-        verifynumber: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        dob: '',
-        gender: '',
-        mobile: '',
-        complexname: '',
-        flatnoroomno: '',
-        area: '',
-        landmark: '',
-        country: '',
-        pincode: '',
-        city: '',
-        district: '',
-        state: '',
-    });
+    // const [formData, setFormData] = React.useState({
+    //     aadharno: '',
+    //     verifynumber: '',
+    //     firstname: '',
+    //     middlename: '',
+    //     lastname: '',
+    //     dob: '',
+    //     gender: '',
+    //     mobile: '',
+    //     complexname: '',
+    //     flatnoroomno: '',
+    //     area: '',
+    //     landmark: '',
+    //     country: '',
+    //     pincode: '',
+    //     city: '',
+    //     district: '',
+    //     state: '',
+    // });
 
     const handleChange = (e) => {
         const { name, value } = e.target;

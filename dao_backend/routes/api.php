@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Services\EurekaService;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+
+Route::get('/eureka/register', function (EurekaService $eureka) {
+    return $eureka->register()->body();
+});
+
+Route::get('/eureka/heartbeat', function (EurekaService $eureka) {
+    return $eureka->sendHeartbeat()->status();
+});
+
+Route::get('/eureka/deregister', function (EurekaService $eureka) {
+    return $eureka->deregister()->status();
 });
