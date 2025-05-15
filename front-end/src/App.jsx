@@ -8,11 +8,12 @@ import './App.css'
 import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext"
 import Dashboard from './pages/Dashboard';
+import Varificationform from './pages/Varification/Enrollmentform';
 import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
-
+import AccountTbl from './pages/Adminpages/AccountTbl'
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -30,6 +31,11 @@ export const App = () => {
           <Route path="/enrollmentform" element={<Enrollmentform />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/approved" element={<AccountTbl />} />
+          <Route path="/pending" element={<AccountTbl />} />
+          <Route path="/rejected" element={<AccountTbl />} />
+          <Route path="/varify-account/01" element={<Varificationform />} />
         </Routes>
       </Router>
     </div>

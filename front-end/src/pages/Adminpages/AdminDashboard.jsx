@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
@@ -28,6 +28,7 @@ const AdminDashboard = () => {
     return (
         <>
             <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
+
                 <div className='flex justify-between'>
                     <div >
                         <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
@@ -51,16 +52,14 @@ const AdminDashboard = () => {
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
-
-
                     <CommonButton className="btn-login" onClick={handleRedireact} >
                         <i className="bi bi-plus"></i>&nbsp;Add Agent
                     </CommonButton>
-
                 </div>
 
+
                 <div className="mx-auto flex flex-wrap">
-                    <div className="md:w-4/6 flex  flex-wrap justify-between">
+                    <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1">
                                 <div className="md:w-1/2">
@@ -95,8 +94,8 @@ const AdminDashboard = () => {
                         </div>
                         <h2 className="text-xl font-bold mb-2">Re-KYC</h2>
                         <div className='w-full sm:w-full p-1'>
-                            <div className="dashboard-top-caard-collection flex my-1">
-                                <div className="md:w-1/2">
+                            <div className="dashboard-top-caard-collection flex my-1 flex-wrap ">
+                                <Link to="/approved" className="md:w-1/3  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
                                         <div className="card-text">
@@ -104,8 +103,9 @@ const AdminDashboard = () => {
                                             <small>Approved</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="md:w-1/2">
+                                </Link>
+
+                                <Link to="/pending" className="md:w-1/3  ">
                                     <div className="pending-card">
                                         <i className="bi bi-clipboard2-minus"></i>
                                         <div className="card-text">
@@ -113,8 +113,9 @@ const AdminDashboard = () => {
                                             <small>Pending</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="md:w-1/2">
+                                </Link>
+
+                                <Link to="/rejected" className="md:w-1/3  ">
                                     <div className="rejected-card">
                                         <i className="bi bi-clipboard2-x"></i>
                                         <div className="card-text">
@@ -122,28 +123,12 @@ const AdminDashboard = () => {
                                             <small>Rejected</small>
                                         </div>
                                     </div>
-                                </div>
-
+                                </Link>
                             </div>
                         </div>
-
-
-                        <div className='md:w-1/2 sm:w-full p-1'>
-                            <div className="bg-white w-full my-2 p-4 rounded-md">
-                                <AccountBarChart />
-                            </div>
-                        </div>
-
-                        <div className='md:w-1/2 sm:w-full p-1'>
-                            <div className="bg-white w-full my-2 p-4 rounded-md">
-                                <h2 className="text-xl font-bold mb-2"> KYC Verification Status</h2>
-                                <DemographicsBarChart />
-                            </div>
-                        </div>
-
                     </div>
 
-                    <div className='md:w-2/6 sm:w-full p-1'>
+                    <div className='md:w-1/2 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4 rounded-md">
                             <h2 className="text-xl font-bold mb-0">Agent Performance</h2>
                             <div className="table-container  overflow-y-auto " style={{ maxHeight: '150px' }}>
@@ -171,12 +156,25 @@ const AdminDashboard = () => {
                                 </table>
                             </div>
                         </div>
+
+                    </div>
+
+                    <div className="md:w-1/3 sm:w-full p-1">
                         <div className="bg-white w-full my-2 p-4 rounded-md">
                             <MonthlyAccountTrends />
                         </div>
                     </div>
-
-
+                    <div className='md:w-1/3 sm:w-full p-1'>
+                        <div className="bg-white w-full my-2 p-4 rounded-md">
+                            <AccountBarChart />
+                        </div>
+                    </div>
+                    <div className='md:w-1/3 sm:w-full p-1'>
+                        <div className="bg-white w-full my-2 p-4 rounded-md">
+                            <h2 className="text-xl font-bold mb-2"> KYC Verification Status</h2>
+                            <DemographicsBarChart />
+                        </div>
+                    </div>
 
 
                 </div >

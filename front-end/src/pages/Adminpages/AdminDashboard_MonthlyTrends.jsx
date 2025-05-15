@@ -13,23 +13,12 @@ const MonthlyAccountTrends = () => {
 
     return (
         <div style={{ width: '100%', height: 340, fontFamily: 'Arial, sans-serif' }}>
-            <h2 style={{
-                textAlign: 'center',
-                marginBottom: '10px',
-                color: '#333',
-                fontSize: '20px',
-                fontWeight: '600'
-            }}>
+            <h2 className="text-xl font-bold mb-2">
                 Monthly Account Opening Trends
             </h2>
-            <p style={{
-                textAlign: 'center',
-                marginBottom: '30px',
-                color: '#666',
-                fontSize: '16px'
-            }}>
+            {/* <h2 className="text-xl font-bold mb-2">
                 Total Account Opening
-            </p>
+            </h2> */}
 
             <ResponsiveContainer width="100%" height="80%">
                 <AreaChart

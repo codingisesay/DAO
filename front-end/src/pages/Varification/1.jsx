@@ -316,16 +316,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             </div>
 
             <div className="next-back-btns">
-                <CommonButton className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                <CommonButton className="text-red-500 btn-back text-red-500" onClick={onBack}>
+                    Reject & Continue
                 </CommonButton>
 
                 <CommonButton
-                    className="btn-next"
+                    className="btn-next "
                     onClick={handleNextStep}
-                    disabled={!showData || !localFormData.firstname || !localFormData.lastname}
                 >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Accept & Continue
                 </CommonButton>
             </div>
         </>
