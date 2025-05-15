@@ -5,7 +5,7 @@ import '../assets/css/login.css';
 import payvanceLogo from '../assets/imgs/payvance_light_logo.png';
 import ThemeToggle from '../components/Toggle';
 import useLocalStorage from "use-local-storage";
-
+import CommonButton from '../components/CommonButton';
 const Dashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -42,7 +42,7 @@ const Dashboard = () => {
                             />
                             <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Agent</small></span>
                         </div>
-                        <button className='btn-login ' onClick={handleRedireact}>&nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;</button>
+
                     </div>
 
                 </div>

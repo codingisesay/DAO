@@ -46,9 +46,8 @@ function Enrollmentform() {
 
     return (
         <div className="enrollment-form-container">
-            <div className='flex justify-around items-center p-2'>
-                <div className='md:w-1/5'>
-
+            <div className='flex justify-around items-center flex-wrap '>
+                <div className='xl:w-1/5 lg:w-1/4 md:w-2/6 sm:w-1/3 p-2'>
                     <Stepper
                         currentStep={currentStep}
                         complete={complete}
@@ -62,7 +61,7 @@ function Enrollmentform() {
                         ]}
                     />
                 </div>
-                <div className='md:w-3/4 '>
+                <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-2'>
                     <div className='work-area '>
                         {renderCurrentPage()}
                     </div>

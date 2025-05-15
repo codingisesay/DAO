@@ -1,4 +1,6 @@
 import { useState, useRef } from "react";
+import Webcam from "react-webcam";
+import CommonButton from "../../components/CommonButton";
 
 const documentApload = () => {
     const documentTypes = [
@@ -232,126 +234,129 @@ const documentApload = () => {
         <div className="dashboard-container">
 
             <div className="">
-                <div className="table-header">
-                    <div className="  flex flex justify-between w-full "  >
-                        <span className="payvcane-color">
-                            <i className="bi bi-info-circle"></i> &nbsp;
-                            <span>All documents must be scanned copy in jpg/ png format - size must not exceed 5mb</span>
-                        </span>
-                        <button
-                            className=" btn-login "
+                <div className=" ">
+
+                    <small className="payvcane-color">
+                        <i className="bi bi-info-circle"></i> &nbsp;
+                        <span>All documents must be scanned copy in jpg/ png format - size must not exceed 5mb</span>
+                    </small>
+                    <div className=" text-end my-3"  >
+                        <CommonButton
+                            className="btn-login self"
                             onClick={handleAddRow}
                             disabled={documents.length >= documentTypes.length}
                         >
                             + Add Document
-                        </button>
+                        </CommonButton>
                     </div>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Document Type</th>
-                            <th>File</th>
-                            <th>Preview</th>
-                            <th>Signature</th>
-                            <th>Face</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {documents.map((doc) => (
-                            <tr key={doc.id}>
-
-                                <td>
-                                    <select
-                                        value={doc.documentType}
-                                        onChange={(e) => handleDocumentTypeChange(doc.id, e.target.value)}
-                                        className="document-select"
-                                    >
-                                        <option value="">Select Document</option>
-                                        {getAvailableDocumentTypes(doc.id, doc.documentType).map((type) => (
-                                            <option key={type.id} value={type.name}>
-                                                {type.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </td>
-
-                                <td>
-                                    {doc.documentType ? (
-                                        <label className="file-upload-btn">
-                                            {doc.file || "Choose File"}
-                                            <input
-                                                type="file"
-                                                accept="image/*,.pdf"
-                                                onChange={(e) =>
-                                                    handleFileUpload(doc.id, e.target.files[0])
-                                                }
-                                                hidden
-                                            />
-                                        </label>
-                                    ) : (
-                                        "Select document type first"
-                                    )}
-                                </td>
-                                <td>
-                                    {doc.image ? (
-                                        <img
-                                            src={doc.image}
-                                            alt="Document"
-                                            className="thumbnail clickable"
-                                            onClick={() => openImageModal(doc.image)}
-                                        />
-                                    ) : (
-                                        "No preview"
-                                    )}
-                                </td>
-                                <td>
-                                    {doc.signature ? (
-                                        <img
-                                            src={doc.signature}
-                                            alt="Signature"
-                                            className="thumbnail clickable"
-                                            onClick={() => openImageModal(doc.signature)}
-                                        />
-                                    ) : (
-                                        "Not extracted"
-                                    )}
-                                </td>
-                                <td>
-                                    {doc.face ? (
-                                        <img
-                                            src={doc.face}
-                                            alt="Face"
-                                            className="thumbnail clickable"
-                                            onClick={() => openImageModal(doc.face)}
-                                        />
-                                    ) : (
-                                        "Not extracted"
-                                    )}
-                                </td>
-                                <td>
-                                    <div className="action-buttons">
-
-                                        {documents.length > 1 && (
-
-                                            <i className="bi bi-trash-fill text-red-500 mx-auto "
-                                                onClick={() => handleRemoveRow(doc.id)}></i>
-                                        )}
-                                    </div>
-                                </td>
+                <div className="documents-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Document Type</th>
+                                <th>File</th>
+                                <th>Preview</th>
+                                <th>Signature</th>
+                                <th>Face</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {documents.map((doc) => (
+                                <tr key={doc.id}>
+
+                                    <td>
+                                        <select
+                                            value={doc.documentType}
+                                            onChange={(e) => handleDocumentTypeChange(doc.id, e.target.value)}
+                                            className="document-select"
+                                        >
+                                            <option value="">Select Document</option>
+                                            {getAvailableDocumentTypes(doc.id, doc.documentType).map((type) => (
+                                                <option key={type.id} value={type.name}>
+                                                    {type.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        {doc.documentType ? (
+                                            <label className="file-upload-btn">
+                                                {doc.file || "Choose File"}
+                                                <input
+                                                    type="file"
+                                                    accept="image/*,.pdf"
+                                                    onChange={(e) =>
+                                                        handleFileUpload(doc.id, e.target.files[0])
+                                                    }
+                                                    hidden
+                                                />
+                                            </label>
+                                        ) : (
+                                            "Select document type first"
+                                        )}
+                                    </td>
+                                    <td>
+                                        {doc.image ? (
+                                            <img
+                                                src={doc.image}
+                                                alt="Document"
+                                                className="thumbnail clickable"
+                                                onClick={() => openImageModal(doc.image)}
+                                            />
+                                        ) : (
+                                            "No preview"
+                                        )}
+                                    </td>
+                                    <td>
+                                        {doc.signature ? (
+                                            <img
+                                                src={doc.signature}
+                                                alt="Signature"
+                                                className="thumbnail clickable"
+                                                onClick={() => openImageModal(doc.signature)}
+                                            />
+                                        ) : (
+                                            "Not extracted"
+                                        )}
+                                    </td>
+                                    <td>
+                                        {doc.face ? (
+                                            <img
+                                                src={doc.face}
+                                                alt="Face"
+                                                className="thumbnail clickable"
+                                                onClick={() => openImageModal(doc.face)}
+                                            />
+                                        ) : (
+                                            "Not extracted"
+                                        )}
+                                    </td>
+                                    <td>
+                                        <div className="action-buttons">
+
+                                            {documents.length > 1 && (
+
+                                                <i className="bi bi-trash-fill text-red-500 mx-auto "
+                                                    onClick={() => handleRemoveRow(doc.id)}></i>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {showModal && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <button className="modal-close" onClick={closeModal}>
+                        <span className="modal-close" onClick={closeModal}>
                             ×
-                        </button>
+                        </span>
                         <img
                             src={modalImage}
                             alt="Enlarged preview"

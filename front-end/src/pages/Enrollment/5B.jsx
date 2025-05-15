@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import FloatingInput from '../../components/FloatingInput';
+import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels'; // adjust the path if needed
+import CommonButton from '../../components/CommonButton';
 
 function PersonalOccupationForm() {
     const [nominees, setNominees] = useState([{
@@ -85,62 +86,64 @@ function PersonalOccupationForm() {
         <div className=" max-w-screen-xl mx-auto">
             {nominees.map((nominee, index) => (
                 <div key={nominee.id} className="mb-8 border-b pb-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-2xl font-bold">Nominee {index + 1} Details</h2>
+                    <div className="flex justify-between items-center ">
+                        <h2 className="text-xl font-bold">Nominee {index + 1} Details</h2>
                         {nominees.length > 1 && (
-                            <button
+
+                            <CommonButton
                                 onClick={() => removeNominee(nominee.id)}
                                 className="px-3 py-1 bg-red-500 text-white rounded text-sm"
                             >
                                 Remove
-                            </button>
+                            </CommonButton>
+
                         )}
                     </div>
 
-                    <div className="grid md:grid-cols-4 gap-4">
-                        <FloatingInput
+                    <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                        <CommanInput
                             label={labels.nomineeSalutation.label}
                             name="nomineeSalutation"
                             value={nominee.details.nomineeSalutation}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeFirstName.label}
                             name="nomineeFirstName"
                             value={nominee.details.nomineeFirstName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeMiddleName.label}
                             name="nomineeMiddleName"
                             value={nominee.details.nomineeMiddleName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeLastName.label}
                             name="nomineeLastName"
                             value={nominee.details.nomineeLastName}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeRelation.label}
                             name="nomineeRelation"
                             value={nominee.details.nomineeRelation}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineePercentage.label}
                             name="nomineePercentage"
                             value={nominee.details.nomineePercentage}
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeDOB.label}
                             name="nomineeDOB"
                             type="date"
@@ -148,7 +151,7 @@ function PersonalOccupationForm() {
                             onChange={(e) => handleChange(nominee.id, 'details', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeAge.label}
                             name="nomineeAge"
                             value={nominee.details.nomineeAge}
@@ -157,65 +160,65 @@ function PersonalOccupationForm() {
                         />
                     </div>
 
-                    <h2 className="text-2xl font-bold mt-8 mb-4">Nominee {index + 1} Address</h2>
-                    <div className="grid md:grid-cols-4 gap-4">
-                        <FloatingInput
+                    <h2 className="text-xl font-bold mt-8 mb-4">Nominee {index + 1} Address</h2>
+                    <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                        <CommanInput
                             label={labels.nomineeComplexName.label}
                             name="nomineeComplexName"
                             value={nominee.address.nomineeComplexName}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeBuildingName.label}
                             name="nomineeBuildingName"
                             value={nominee.address.nomineeBuildingName}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeArea.label}
                             name="nomineeArea"
                             value={nominee.address.nomineeArea}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeLandmark.label}
                             name="nomineeLandmark"
                             value={nominee.address.nomineeLandmark}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeCountry.label}
                             name="nomineeCountry"
                             value={nominee.address.nomineeCountry}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineePinCode.label}
                             name="nomineePinCode"
                             value={nominee.address.nomineePinCode}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeCity.label}
                             name="nomineeCity"
                             value={nominee.address.nomineeCity}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeDistrict.label}
                             name="nomineeDistrict"
                             value={nominee.address.nomineeDistrict}
                             onChange={(e) => handleChange(nominee.id, 'address', e)}
                             required
                         />
-                        <FloatingInput
+                        <CommanInput
                             label={labels.nomineeState.label}
                             name="nomineeState"
                             value={nominee.address.nomineeState}
@@ -231,12 +234,13 @@ function PersonalOccupationForm() {
             ))}
 
             <div className="flex justify-end mt-6">
-                <button
+
+                <CommonButton
                     onClick={addNominee}
                     className="px-4 py-2 bg-green-500 text-white rounded"
                 >
                     Add Nominee
-                </button>
+                </CommonButton>
             </div>
         </div>
     );

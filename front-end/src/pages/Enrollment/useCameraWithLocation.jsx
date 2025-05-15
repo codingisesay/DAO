@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-
+import CommonButton from '../../components/CommonButton';
 const useCameraWithLocation = () => {
     const [imageData, setImageData] = useState(null);
     const [location, setLocation] = useState({ latitude: '', longitude: '' });
@@ -79,9 +79,14 @@ const CaptureWithLocation = () => {
                 />
             )}
 
-            <button onClick={captureImage} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+
+            <CommonButton onClick={captureImage}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            >
                 {imageData ? 'Retake Photo' : 'Capture Image with Location'}
-            </button>
+            </CommonButton>
+
+
 
             {imageData && (
                 <div className="mt-4">

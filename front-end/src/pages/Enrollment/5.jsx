@@ -3,7 +3,7 @@ import NominationForm from './5B';
 import PersonalDetailsForm from './5A';
 import BankFacility from './5C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
-
+import CommonButton from '../../components/CommonButton';
 const p2 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
 
@@ -117,7 +117,7 @@ const p2 = ({ onNext, onBack }) => {
             </div>
 
 
-            <div className="">
+            <div className="nestedstepper-form-container" >
                 <CurrentStepComponent
                     formData={formData}
                     onChange={handleFormChange}
@@ -126,66 +126,35 @@ const p2 = ({ onNext, onBack }) => {
 
 
             <div className="next-back-btns">
-                {activeStep === 0 ?
-
-                    <button className="btn-back" onClick={onBack}>
-                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                    </button>
-
-                    :
-
-                    <button className="btn-back" onClick={handleBack} >
-                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                    </button>
-                }
-                {activeStep === 2 ?
-                    <button className="btn-next" onClick={onNext}>
-                        Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                    </button>
-
-                    :
-                    <button className="btn-next" onClick={handleNext} >
-                        Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                    </button>
-                }
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            {/* <div className="next-back-btns">
-                <button className="btn-back" onClick={handleBack} disabled={activeStep === 0} >
+                <CommonButton
+                    className="btn-back"
+                    onClick={activeStep === 0 ? onBack : handleBack}
+                    iconLeft={<i className="bi bi-chevron-double-left"></i>}
+                >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </button>
-                <button className="btn-next" onClick={handleNext} >
-                    {activeStep === steps.length - 1 ? 'Submit' : 'Next'}&nbsp;
-                    <i className="bi bi-chevron-double-right"></i>
-                </button>
-            </div>
-            <hr />
+                </CommonButton>
 
-
-            <div className="next-back-btns">
-                <button className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </button>
-                <button className="btn-next" onClick={onNext}>
+                <CommonButton
+                    className="btn-next"
+                    onClick={activeStep === 2 ? onNext : handleNext}
+                    iconRight={<i className="bi bi-chevron-double-right"></i>}
+                >
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </button>
-            </div> */}
+                </CommonButton>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

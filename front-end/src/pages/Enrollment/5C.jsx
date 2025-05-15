@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import FloatingInput from '../../components/FloatingInput';
-import CheckboxInput from '../../components/CheckboxInput';
+import CommanInput from '../../components/CommanInput';
+import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 function BankFacility() {
     const [eBankingServices, setEBankingServices] = useState({
@@ -42,78 +42,78 @@ function BankFacility() {
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-            <div className="grid md:grid-cols-4 gap-4">
-                <CheckboxInput
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                <CommanCheckbox
                     label={labels.atmCard.label}
                     name="atmCard"
                     checked={eBankingServices.atmCard}
                     onChange={handleEBankingChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.upi.label}
                     name="upi"
                     checked={eBankingServices.upi}
                     onChange={handleEBankingChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.internetBanking.label}
                     name="internetBanking"
                     checked={eBankingServices.internetBanking}
                     onChange={handleEBankingChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.imps.label}
                     name="imps"
                     checked={eBankingServices.imps}
                     onChange={handleEBankingChange}
                 />
             </div>
-
+            <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-            <div className="grid md:grid-cols-4 gap-4">
-                <CheckboxInput
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                <CommanCheckbox
                     label={labels.consumerLoan.label}
                     name="consumerLoan"
                     checked={creditFacilities.consumerLoan}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.homeLoan.label}
                     name="homeLoan"
                     checked={creditFacilities.homeLoan}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.businessLoan.label}
                     name="businessLoan"
                     checked={creditFacilities.businessLoan}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.educationLoan.label}
                     name="educationLoan"
                     checked={creditFacilities.educationLoan}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.carLoan.label}
                     name="carLoan"
                     checked={creditFacilities.carLoan}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.staff.label}
                     name="staff"
                     checked={creditFacilities.staff}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.relativeFriend.label}
                     name="relativeFriend"
                     checked={creditFacilities.relativeFriend}
                     onChange={handleCreditFacilityChange}
                 />
-                <CheckboxInput
+                <CommanCheckbox
                     label={labels.other.label}
                     name="other"
                     checked={creditFacilities.other}
@@ -121,7 +121,7 @@ function BankFacility() {
                 />
                 {creditFacilities.other && (
                     <div className="md:col-span-4">
-                        <FloatingInput
+                        <CommanInput
                             label={labels.otherFacilityText.label}
                             name="otherFacilityText"
                             value={otherFacilityText}

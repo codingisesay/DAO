@@ -1,55 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
-const FloatingInput = ({
+const CommanSelectInput = ({
     label,
     name,
     value = '',
     onChange,
-    type = 'text',
+    options = [],
     required = false,
     className = '',
+    placeholder = 'Select',
     ...rest
 }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [hasContent, setHasContent] = useState(value?.toString().length > 0);
+    const [hasContent, setHasContent] = useState(!!value);
 
     useEffect(() => {
-        // Handle autofill after a small delay
-        const timeout = setTimeout(() => {
-            const input = document.getElementById(name);
-            if (input && input.value) {
-                setHasContent(true);
-            }
-        }, 100);
-
-        return () => clearTimeout(timeout);
-    }, []);
-
-    useEffect(() => {
-        setHasContent(value?.toString().length > 0);
+        setHasContent(!!value);
     }, [value]);
 
     const shouldFloat = isFocused || hasContent;
 
     return (
         <div className={clsx('floating-input-height relative w-full', className)}>
-            <input
+            <select
                 id={name}
                 name={name}
-                type={type}
                 value={value}
                 onChange={onChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 required={required}
                 className={clsx(
-                    'peer block w-full appearance-none border border-gray-300 bg-transparent px-4 py-2 text-sm text-gray-900 placeholder-transparent  dark:text-white dark:border-gray-700',
-                    'rounded-md transition-all'
+                    'peer block w-full  border border-gray-300 bg-transparent px-4 py-2 text-sm text-gray-900 dark:text-white dark:border-gray-700 rounded-md transition-all',
+                    'bg-transparent placeholder-transparent'
                 )}
-                placeholder={label}
                 {...rest}
-            />
+            >
+                <option value="" disabled hidden>{placeholder}</option>
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
             <label
                 htmlFor={name}
                 className={clsx(
@@ -66,4 +60,4 @@ const FloatingInput = ({
     );
 };
 
-export default FloatingInput;
+export default CommanSelectInput;

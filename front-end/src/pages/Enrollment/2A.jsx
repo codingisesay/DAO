@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FloatingInput from '../../components/FloatingInput';
+import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 
 function PersonalDetailsForm({ onNext, onBack }) {
@@ -11,7 +11,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
         gender: '',
         mobile: '',
         complexname: '',
-        flatnobuildingname: '',
+        flatnoroomno: '',
         area: '',
         landmark: '',
         country: '',
@@ -30,9 +30,9 @@ function PersonalDetailsForm({ onNext, onBack }) {
         <div>
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
 
-            <div className="md:grid md:grid-cols-4 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.firstname.label}
                         type="text"
@@ -43,7 +43,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.middlename.label}
                         type="text"
@@ -54,7 +54,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.lastname.label}
                         type="text"
@@ -65,7 +65,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.dob.label}
                         type="date"
@@ -76,7 +76,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.gender.label}
                         type="text"
@@ -87,7 +87,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.mobile.label}
                         type="text"
@@ -98,7 +98,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.complexname.label}
                         type="text"
@@ -109,18 +109,18 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
-                        label={labels.flatnobuildingname.label}
+                        label={labels.flatnoroomno.label}
                         type="text"
-                        name="flatnobuildingname"
-                        value={formData.flatnobuildingname}
+                        name="flatnoroomno"
+                        value={formData.flatnoroomno}
                         required
                     />
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.area.label}
                         type="text"
@@ -131,7 +131,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.landmark.label}
                         type="text"
@@ -142,7 +142,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.country.label}
                         type="text"
@@ -153,7 +153,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.pincode.label}
                         type="text"
@@ -164,7 +164,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.city.label}
                         type="text"
@@ -175,7 +175,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.district.label}
                         type="text"
@@ -186,7 +186,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
 
                 <div>
-                    <FloatingInput
+                    <CommanInput
                         onChange={handleChange}
                         label={labels.state.label}
                         type="text"
@@ -197,14 +197,7 @@ function PersonalDetailsForm({ onNext, onBack }) {
                 </div>
             </div>
 
-            {/* <div className="next-back-btns">
-                <button className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </button>
-                <button className="btn-next" onClick={onNext}>
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </button>
-            </div> */}
+
         </div>
     );
 }

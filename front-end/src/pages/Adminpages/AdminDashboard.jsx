@@ -7,7 +7,7 @@ import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AdminDashboard_validationBarGraph';
 import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
-
+import CommonButton from '../../components/CommonButton';
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -51,7 +51,12 @@ const AdminDashboard = () => {
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
-                    <button className='btn-login' onClick={handleRedireact}>&nbsp;<i className="bi bi-plus"></i>&nbsp;Add Agent&nbsp;</button>
+
+
+                    <CommonButton className="btn-login" onClick={handleRedireact} >
+                        <i className="bi bi-plus"></i>&nbsp;Add Agent
+                    </CommonButton>
+
                 </div>
 
                 <div className="mx-auto flex flex-wrap">

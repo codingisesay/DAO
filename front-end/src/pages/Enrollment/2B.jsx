@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import FloatingInput from '../../components/FloatingInput';
+import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
-
+import CommonButton from '../../components/CommonButton';
 function AddressSection({ formData, handleChange }) {
     return (
         <>
-            <div className="md:grid md:grid-cols-4 gap-3">
-                <FloatingInput label={labels.complexname.label} name="complexname" value={formData.complexname} onChange={handleChange} required />
-                <FloatingInput label={labels.flatnobuildingname.label} name="flatnobuildingname" value={formData.flatnobuildingname} onChange={handleChange} required />
-                <FloatingInput label={labels.area.label} name="area" value={formData.area} onChange={handleChange} required />
-                <FloatingInput label={labels.landmark.label} name="landmark" value={formData.landmark} onChange={handleChange} required />
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                <CommanInput label={labels.complexname.label} name="complexname" value={formData.complexname} onChange={handleChange} required />
+                <CommanInput label={labels.flatnoroomno.label} name="flatnoroomno" value={formData.flatnoroomno} onChange={handleChange} required />
+                <CommanInput label={labels.area.label} name="area" value={formData.area} onChange={handleChange} required />
+                <CommanInput label={labels.landmark.label} name="landmark" value={formData.landmark} onChange={handleChange} required />
 
-                <FloatingInput label={labels.country.label} name="country" value={formData.country} onChange={handleChange} required />
-                <FloatingInput label={labels.pincode.label} name="pincode" value={formData.pincode} onChange={handleChange} required />
-                <FloatingInput label={labels.city.label} name="city" value={formData.city} onChange={handleChange} required />
-                <FloatingInput label={labels.district.label} name="district" value={formData.district} onChange={handleChange} required />
+                <CommanInput label={labels.country.label} name="country" value={formData.country} onChange={handleChange} required />
+                <CommanInput label={labels.pincode.label} name="pincode" value={formData.pincode} onChange={handleChange} required />
+                <CommanInput label={labels.city.label} name="city" value={formData.city} onChange={handleChange} required />
+                <CommanInput label={labels.district.label} name="district" value={formData.district} onChange={handleChange} required />
 
-                <FloatingInput label={labels.state.label} name="state" value={formData.state} onChange={handleChange} required />
+                <CommanInput label={labels.state.label} name="state" value={formData.state} onChange={handleChange} required />
                 {/* Add Resident Y/N, Residence Status, Residence Document as dropdowns if needed */}
             </div>
         </>
@@ -26,7 +26,7 @@ function AddressSection({ formData, handleChange }) {
 function AddressForm() {
     const [permanentAddress, setPermanentAddress] = useState({
         complexname: '',
-        flatnobuildingname: '',
+        flatnoroomno: '',
         area: '',
         landmark: '',
         country: '',
@@ -38,7 +38,7 @@ function AddressForm() {
 
     const [correspondenceAddress, setCorrespondenceAddress] = useState({
         complexname: '',
-        flatnobuildingname: '',
+        flatnoroomno: '',
         area: '',
         landmark: '',
         country: '',
@@ -76,7 +76,7 @@ function AddressForm() {
     const handleClearCorrespondence = () => {
         setCorrespondenceAddress({
             complexname: '',
-            flatnobuildingname: '',
+            flatnoroomno: '',
             area: '',
             landmark: '',
             country: '',
@@ -95,9 +95,15 @@ function AddressForm() {
             <div className="flex items-center mt-6 mb-2">
                 <input type="checkbox" checked={sameAsAbove} onChange={handleSameAsAboveToggle} className="mr-2" />
                 <label className="font-semibold">Same As Above</label>
-                <button onClick={handleClearCorrespondence} className="ml-auto text-green-600 font-medium flex items-center">
+
+
+                <CommonButton
+                    onClick={handleClearCorrespondence}
+                    className="ml-auto text-green-600 font-medium flex items-center"
+                >
                     <i className="bi bi-arrow-clockwise mr-1"></i> Clear
-                </button>
+                </CommonButton>
+
             </div>
 
             <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>

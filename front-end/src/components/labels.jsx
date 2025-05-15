@@ -29,8 +29,8 @@ const labels = {
     complexname: {
         label: "Complex Name",
     },
-    flatnobuildingname: {
-        label: "Flat No/Building Name",
+    flatnoroomno: {
+        label: "Flat No/Room No",
     },
     area: {
         label: "Area",
@@ -188,16 +188,15 @@ const labels = {
     userId: { label: "User ID" },
     userName: { label: "User Name" },
     email: { label: "Email ID" },
-    mobile: { label: "Mobile No." },
+    // mobile: { label: "Mobile No." },
     region: { label: "Region" },
     branch: { label: "Branch" },
-    password: { label: "Password" },
+    // password: { label: "Password" },
     confirmPassword: { label: "Confirm Password" },
     accountHolder: { label: "Account Holder Name" },
     accountNumber: { label: "Account Number" },
     bankName: { label: "Bank Name" },
     ifsc: { label: "IFSC Code" },
-    maritalStatus: { label: "Marital Status" }
 };
 
 

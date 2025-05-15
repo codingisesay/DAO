@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-const CheckboxInput = ({
+const CommanCommanCheckbox = ({
     label,
     name,
     checked = false,
@@ -39,4 +39,4 @@ const CheckboxInput = ({
     );
 };
 
-export default CheckboxInput;
+export default CommanCommanCheckbox;

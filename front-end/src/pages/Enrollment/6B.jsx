@@ -1,6 +1,7 @@
 import React from 'react';
 import PersonalOccupationForm from './5A';
 import AddressForm from './2B';
+import CommonButton from '../../components/CommonButton';
 function p6({ onNext, onBack }) {
     return (<>
 
@@ -14,13 +15,15 @@ function p6({ onNext, onBack }) {
         </>
 
 
+
         <div className="next-back-btns">
-            <button className="btn-back" onClick={onBack}>
+            <CommonButton className="btn-back" onClick={onBack}>
                 <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-            </button>
-            <button className="btn-next" onClick={onNext}>
+            </CommonButton>
+
+            <CommonButton className="btn-next" onClick={onNext}>
                 Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-            </button>
+            </CommonButton>
         </div>
 
     </>);

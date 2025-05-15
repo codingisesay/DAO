@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import FloatingInput from '../../components/FloatingInput';
+import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
+import CommonButton from '../../components/CommonButton';
 function p1({ onNext, onBack }) {
     const [selectedOption, setSelectedOption] = useState('');
     const [selectedType, setSelectedType] = useState('');
@@ -16,7 +17,7 @@ function p1({ onNext, onBack }) {
         gender: '',
         mobile: '',
         complexname: '',
-        flatnobuildingname: '',
+        flatnoroomno: '',
         area: '',
         landmark: '',
         country: '',
@@ -40,9 +41,9 @@ function p1({ onNext, onBack }) {
     }
     return (
         <>
-            <div className=''>
-                <div className="flex flex-wrap items-top justify-center ">
-                    <div className="md:w-1/2">
+            <div className='form-container'>
+                <div className="flex flex-wrap items-top  ">
+                    <div className="lg:w-1/2 md:full sm:w-full">
                         {/* application type selection below */}
                         <>
                             <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
@@ -123,30 +124,34 @@ function p1({ onNext, onBack }) {
                                             {/* <p>Enter {selectedOption}:</p> */}
                                             <div className="flex items-center ">
                                                 <div className="md:w-1/2 me-4">
-                                                    <FloatingInput
+                                                    <CommanInput
                                                         type="text" label={`Enter ${selectedOption}`}
                                                         value={formData.verifynumber}
                                                         onChange={handleChange} name="verifynumber"
                                                         placeholder={`Enter ${selectedOption}`} required
                                                     />
                                                 </div>
-                                                <div className="md:w-1/2"> <button className="btn-login" onClick={fetchShowData}>Submit</button></div>
+                                                <div className="md:w-1/2">
+                                                    <CommonButton className="btn-login" onClick={fetchShowData}>  Submit</CommonButton>
+
+                                                    {/* <span className="btn-login" onClick={fetchShowData}>Submit</span> */}
+                                                </div>
                                             </div>
 
                                         </div>
-                                    )}
+                                    )} <br />
                                 </>
                             }
                         </>
                     </div>
-                    <div className="md:w-1/2"><img src={workingman} alt="workingman" width='400px' className="m-auto" /></div>
+                    <div className="hidden lg:block lg:w-1/2 md:w-1/2"><img src={workingman} alt="workingman" className=" w-4/5 m-auto" /></div>
                 </div>
                 {showData &&
                     <>
                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="md:grid md:grid-cols-4 gap-3">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.firstname.label}
                                     type="text"
@@ -157,7 +162,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.middlename.label}
                                     type="text"
@@ -168,7 +173,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.lastname.label}
                                     type="text"
@@ -179,7 +184,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.dob.label}
                                     type="date"
@@ -190,7 +195,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.gender.label}
                                     type="text"
@@ -201,7 +206,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.mobile.label}
                                     type="text"
@@ -212,7 +217,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.complexname.label}
                                     type="text"
@@ -223,18 +228,18 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
-                                    label={labels.flatnobuildingname.label}
+                                    label={labels.flatnoroomno.label}
                                     type="text"
-                                    name="flatnobuildingname"
-                                    value={formData.flatnobuildingname}
+                                    name="flatnoroomno"
+                                    value={formData.flatnoroomno}
                                     required
                                 />
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.area.label}
                                     type="text"
@@ -245,7 +250,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.landmark.label}
                                     type="text"
@@ -256,7 +261,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.country.label}
                                     type="text"
@@ -267,7 +272,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.pincode.label}
                                     type="text"
@@ -278,7 +283,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.city.label}
                                     type="text"
@@ -289,7 +294,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.district.label}
                                     type="text"
@@ -300,7 +305,7 @@ function p1({ onNext, onBack }) {
                             </div>
 
                             <div className="">
-                                <FloatingInput
+                                <CommanInput
                                     onChange={handleChange}
                                     label={labels.state.label}
                                     type="text"
@@ -316,15 +321,14 @@ function p1({ onNext, onBack }) {
 
 
             <div className="next-back-btns">
-                <button className="btn-back" onClick={onBack}>
+                <CommonButton className="btn-back" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </button>
-                <button className="btn-next" onClick={onNext}>
+                </CommonButton>
+
+                <CommonButton className="btn-next" onClick={onNext}>
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </button>
+                </CommonButton>
             </div>
-
-
 
         </>
     );

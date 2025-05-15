@@ -1,10 +1,11 @@
 import React from 'react';
-import FloatingInput from '../../components/FloatingInput';
-import SelectInput from '../../components/SelectInput';
+import CommanInput from '../../components/CommanInput';
+import CommanSelectInput from '../../components/CommanSelectInput';
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
 import labels from '../../components/labels';
 import { userDetails, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions } from '../../data/data';
 import { useNavigate } from 'react-router-dom';
+import CommonButton from '../../components/CommonButton';
 const AgentRegisterForm = () => {
     const [formData, setFormData] = React.useState({
         userId: '',
@@ -63,28 +64,28 @@ const AgentRegisterForm = () => {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Agent Details</h2>
                         <div className="grid md:grid-cols-4 gap-3">
-                            <FloatingInput
+                            <CommanInput
                                 label={labels.userId?.label || "User ID"}
                                 name="userId"
                                 value={formData.userId}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label={labels.userName?.label || "User Name"}
                                 name="userName"
                                 value={formData.userName}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="Email ID"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="Mobile No."
                                 name="mobile"
                                 value={formData.mobile}
@@ -92,7 +93,7 @@ const AgentRegisterForm = () => {
                                 required
                             />
 
-                            <SelectInput
+                            <CommanSelectInput
                                 value={formData.region}
                                 label={labels.region?.label || "Region"}
                                 name="region"
@@ -101,7 +102,7 @@ const AgentRegisterForm = () => {
                                 options={regionOptions}
                             />
 
-                            <SelectInput
+                            <CommanSelectInput
                                 value={formData.branch}
                                 label={labels.branch?.label || "Branch"}
                                 name="branch"
@@ -116,7 +117,7 @@ const AgentRegisterForm = () => {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Password Details</h2>
                         <div className="grid md:grid-cols-4 gap-3">
-                            <FloatingInput
+                            <CommanInput
                                 label={labels.password?.label || "Password"}
                                 name="password"
                                 type="password"
@@ -124,7 +125,7 @@ const AgentRegisterForm = () => {
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="Confirm Password"
                                 name="confirmPassword"
                                 type="password"
@@ -139,28 +140,28 @@ const AgentRegisterForm = () => {
                     <div>
                         <h2 className="text-lg font-semibold mb-2">Bank Details</h2>
                         <div className="grid md:grid-cols-4 gap-3">
-                            <FloatingInput
+                            <CommanInput
                                 label="Account Holder Name"
                                 name="accountHolder"
                                 value={formData.accountHolder}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="Account Number"
                                 name="accountNumber"
                                 value={formData.accountNumber}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="Bank Name"
                                 name="bankName"
                                 value={formData.bankName}
                                 onChange={handleChange}
                                 required
                             />
-                            <FloatingInput
+                            <CommanInput
                                 label="IFSC Code"
                                 name="ifsc"
                                 value={formData.ifsc}
@@ -171,13 +172,19 @@ const AgentRegisterForm = () => {
                     </div>
                 </div>
                 <div className="text-end mt-4">
-                    <button className="btn-login w-[150px] py-2 " type="submit">
+                    <CommonButton
+                        className="btn-login w-[150px] py-2"
+                        type="submit"
+                    >
                         Register Agent
-                    </button>&emsp;
-                    <button onClick={handleBack} className="px-4 py-2 border border-gray-300 text-white rounded-lg hover:bg-gray-500 bg-gray-400">
-                        Go Back To Dashboard
-                    </button>
+                    </CommonButton>&emsp;
 
+                    <CommonButton
+                        onClick={handleBack}
+                        className="px-4 py-2 border border-gray-300 text-white rounded-lg hover:bg-gray-500 bg-gray-400"
+                    >
+                        Go Back To Dashboard
+                    </CommonButton>
                 </div>
             </div>
         </div>

@@ -1,20 +1,27 @@
 import React from 'react';
-import LivePhoto from './2C';
+// import LivePhoto from './2C';
+import VideoKYCInstructions from './4A';
+import CommonButton from '../../components/CommonButton';
 function p4({ onNext, onBack }) {
     return (
         <>
 
             <h2 className="text-xl font-bold mb-2">Video KYC</h2>
-            <LivePhoto />
+            <VideoKYCInstructions />
+            {/* <LivePhoto /> */}
+            import CommonButton from './CommonButton';
 
             <div className="next-back-btns">
-                <button className="btn-back" onClick={onBack}>
+                <CommonButton className="btn-back" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </button>
-                <button className="btn-next" onClick={onNext}>
+                </CommonButton>
+
+                <CommonButton className="btn-next" onClick={onNext}>
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </button>
+                </CommonButton>
             </div>
+
+
         </>);
 }
 

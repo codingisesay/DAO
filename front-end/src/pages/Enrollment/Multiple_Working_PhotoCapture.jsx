@@ -177,12 +177,12 @@ const PhotoCapture = ({
                                 />
                                 <div className="absolute inset-0 border-4 border-transparent pointer-events-none"></div>
                             </div>
-                            <button
+                            <span
                                 onClick={capturePhoto}
                                 className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full flex items-center"
                             >
                                 <Camera className="mr-2" /> Capture
-                            </button>
+                            </span>
                         </>
                     ) : (
                         <>
@@ -203,12 +203,12 @@ const PhotoCapture = ({
                                 onChange={handleFileUpload}
                                 className="hidden"
                             />
-                            <button
+                            <span
                                 onClick={() => fileInputRef.current.click()}
                                 className="px-6 py-2 bg-gray-200 text-gray-700 rounded-full flex items-center"
                             >
                                 <Upload className="mr-2" /> Upload from device
-                            </button>
+                            </span>
                         </>
                     )}
                 </div>
@@ -221,12 +221,12 @@ const PhotoCapture = ({
                             className="w-full border rounded-lg"
                             style={{ aspectRatio: aspectRatio || 'auto' }}
                         />
-                        <button
+                        <span
                             onClick={retakePhoto}
                             className="absolute top-2 right-2 bg-white bg-opacity-75 p-2 rounded-full shadow"
                         >
                             <XCircle className="text-red-500" />
-                        </button>
+                        </span>
                     </div>
 
                     {validationResults && (
@@ -299,21 +299,3 @@ const SignatureUpload = () => (
 export default PhotoCapture;
 export { PanCardUpload, SignatureUpload };
 
-
-
-
-// import React from 'react';
-
-// import { PanCardUpload, SignatureUpload } from './Multiple_Working_PhotoCapture';
-// function p6({ onNext, onBack }) {
-//     return (
-//         <>
-//             <PanCardUpload />
-
-//             <SignatureUpload />
-//             <button onClick={onNext}>Next</button>
-//             <button onClick={onBack}>Back</button>
-//         </>);
-// }
-
-// export default p6;

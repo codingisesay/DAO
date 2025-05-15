@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import photoinstruction from '../../assets/imgs/photo_instructions.png';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 import '@tensorflow/tfjs';
+import CommonButton from '../../components/CommonButton';
 
 const PhotoValidator = () => {
     const webcamRef = useRef(null);
@@ -278,8 +279,7 @@ const PhotoValidator = () => {
             <h2 className="text-xl font-bold mb-2">Upload Live Photo</h2>
 
             <div className='flex flex-wrap justify-center mb-4'>
-                <div className="md:w-1/2 w-full flex justify-center">
-
+                <div className="md:w-1/2 sm:w-full  ">
                     <div className="camera-container">
                         {!imgSrc ? (
                             <>
@@ -301,16 +301,24 @@ const PhotoValidator = () => {
                         )}
 
                         <div className="controls mt-3">
+
                             {!imgSrc ? (
-                                <button className='w-full btn-login'
+                                <CommonButton
+                                    className="w-full btn-login"
                                     onClick={capture}
                                     disabled={isLoading || !preCaptureChecks.hasFace || !preCaptureChecks.lightingOk || personCount !== 1}
                                 >
                                     Capture Photo
-                                </button>
+                                </CommonButton>
                             ) : (
-                                <button className='w-full btn-login' onClick={retake}>Retake Photo</button>
+                                <CommonButton
+                                    className="w-full btn-login"
+                                    onClick={retake}
+                                >
+                                    Retake Photo
+                                </CommonButton>
                             )}
+
                         </div>
 
                     </div>

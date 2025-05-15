@@ -124,18 +124,18 @@ export default PhotoCapture;
 //                 />
 //             </div>
 
-//             <div className="buttons">
+//             <div className="bttnss">
 //                 {!isRecording ? (
-//                     <button onClick={startRecording} disabled={!selectedDevice}>
+//                     <bttns onClick={startRecording} disabled={!selectedDevice}>
 //                         Start Recording ({duration}s)
-//                     </button>
+//                     </bttns>
 //                 ) : (
-//                     <button onClick={stopRecording}>Stop Recording</button>
+//                     <bttns onClick={stopRecording}>Stop Recording</bttns>
 //                 )}
 
 //                 {recordedVideo && (
 //                     <>
-//                         <button onClick={downloadVideo}>Download Live Photo</button>
+//                         <bttns onClick={downloadVideo}>Download Live Photo</bttns>
 //                         <div className="preview" style={{ width: '200px' }}>
 //                             <h3>Preview:</h3>
 //                             <video
