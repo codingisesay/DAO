@@ -18,7 +18,7 @@ class EurekaService
         //   $this->eurekaUrl = config('EUREKA_SERVER'); 
         
         $this->eurekaUrl = 'http://172.16.1.224:8061/eureka';
-        $this->appName = strtoupper(config('app.name'));
+        $this->appName = config('app.name');
         $this->instanceId = gethostbyname(gethostname()) . ':' . $this->appName . ':' . config('app.port');
         $this->hostName = gethostname();
         $this->port = config('app.port');
