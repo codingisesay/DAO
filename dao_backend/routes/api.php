@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\EurekaService;
 use App\Http\Controllers\Api\AuthProxyController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,5 +35,25 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     return $eureka->deregister()->status();
 });
 
-// Route::post('/auth/api/login', [AuthProxyController::class, 'login']);
+
+
+Route::middleware(['jwt.auth'])->group(function () {
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/dashboard', fn() => response()->json(['message' => 'Welcome Admin']));
+    });
+
+    Route::middleware('role:agent')->group(function () {
+        Route::post('/agent/accounts', [App\Http\Controllers\AgentController::class, 'handleAccounts']);
+    });
+
+    Route::middleware('role:employee,admin')->group(function () {
+        Route::get('/employee/tasks', [App\Http\Controllers\EmployeeController::class, 'getTasks']);
+    });
+
+    // Route for all authenticated users
+    Route::get('/user/profile', function (Request $request) {
+        return response()->json($request->get('auth_user'));
+    });
+});
 
