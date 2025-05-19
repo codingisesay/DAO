@@ -7,40 +7,6 @@ import CommonButton from '../../components/CommonButton';
 const p2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
 
-    const [formData, setFormData] = useState({
-        // Personal Details
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-
-        // Address Details
-        permanentAddress: {
-            complexName: '',
-            country: 'India',
-            state: '',
-            flatNo: '',
-            pinCode: '',
-            residentVN: ''
-        },
-        correspondenceAddressSame: false,
-        correspondenceAddress: {
-            complexName: '',
-            country: '',
-            state: '',
-            flatNo: '',
-            pinCode: ''
-        },
-        area: '',
-        city: '',
-        residenceStatus: '',
-        nearbyLandmark: '',
-        district: '',
-        residenceDocument: null,
-
-        // Photo
-        customerPhoto: null
-    });
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -59,26 +25,10 @@ const p2 = ({ onNext, onBack, formData, updateFormData }) => {
             setActiveStep(activeStep - 1);
         }
     };
-
-    const handleFormChange = (name, value) => {
-        setFormData(prev => {
-            // Handle nested objects (like addresses)
-            if (name.includes('.')) {
-                const [parent, child] = name.split('.');
-                return {
-                    ...prev,
-                    [parent]: {
-                        ...prev[parent],
-                        [child]: value
-                    }
-                };
-            }
-            return {
-                ...prev,
-                [name]: value
-            };
-        });
+    const handleStepSubmit = (stepData) => {
+        updateFormData(5, stepData); // Step 2 data
     };
+
 
     const CurrentStepComponent = steps[activeStep].component;
 

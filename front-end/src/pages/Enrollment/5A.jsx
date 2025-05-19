@@ -4,9 +4,9 @@ import CommanSelect from '../../components/CommanSelectInput';
 import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels'; // Adjust the path as needed
 
-function PersonalOccupationForm() {
-    const [formData, setFormData] = useState({});
-
+function PersonalOccupationForm({ formData, updateFormData }) {
+    // const [formData, setFormData] = useState({});
+    const [localFormData, setLocalFormData] = useState()
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
