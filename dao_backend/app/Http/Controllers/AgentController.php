@@ -10,8 +10,11 @@ class AgentController extends Controller
     {
         $user = $request->get('auth_user');
 
+        // dd($user);
+
         return response()->json([
-            'message' => "Agent {$user['name']} is handling customer accounts.",
+            // 'message' => "Agent {$user['name']} is handling customer accounts.",
+            'message' => $user,
         ]);
     }
 }
