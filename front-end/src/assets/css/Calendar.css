@@ -1,0 +1,20 @@
+.rdrDayNumber span {
+    font-weight: 500;
+}
+
+.rdrSelected {
+    background-color: #27ae60 !important;
+    color: white !important;
+    border-radius: 50% !important;
+}
+
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+    background-color: #a5d6a7 !important;
+}
+
+.rdrStartEdge,
+.rdrEndEdge {
+    border-radius: 50% !important;
+}

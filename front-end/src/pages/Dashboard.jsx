@@ -5,7 +5,7 @@ import '../assets/css/login.css';
 import payvanceLogo from '../assets/imgs/payvance_light_logo.png';
 import ThemeToggle from '../components/Toggle';
 import useLocalStorage from "use-local-storage";
-
+import CommonButton from '../components/CommonButton';
 const Dashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -42,44 +42,70 @@ const Dashboard = () => {
                             />
                             <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Agent</small></span>
                         </div>
-                        <button className='btn-login ' onClick={handleRedireact}>&nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;</button>
+
                     </div>
 
                 </div>
 
-
-
                 <div className="mx-auto flex flex-wrap">
-                    <div className='md:w-3/5 sm:full p-1'>
+                    <div className='md:w-3/5 sm:w-full p-1'>
                         overview
-                        <div className=" flex">
+                        <div className="dashboard-top-caard-collection flex">
                             <div className="md:w-1/4">
-                                <div className="bg-lime-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="approved-card">
+                                    <i className="bi bi-clipboard2-check"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-orange-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="pending-card">
+                                    <i className="bi bi-clipboard2-minus"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-red-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="rejected-card">
+                                    <i className="bi bi-clipboard2-x"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                             <div className="md:w-1/4">
-                                <div className="bg-teal-500 m-2 p-2 rounded-md">1</div></div>
+                                <div className="recent-applyed-card">
+                                    <i className="bi bi-clipboard2-plus"></i>
+                                    <div className="card-text">
+                                        <span className="dashboard-card-count">100</span>
+                                        <small>Approved</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className='md:w-2/5 sm:full p-1'>
+                    <div className='md:w-2/5 sm:w-full p-1'>
                         Missing Documents
                         <div className="bg-white w-full my-2 p-2 rounded-md">Pie Chart</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Performance Metrics
                         <div className="bg-white w-full my-2 p-2 rounded-md">Bar Graph</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         KYC Application Status
                         <div className="bg-white w-full my-2 p-2 rounded-md">Meter Graph</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Application Insights
                         <div className="bg-white w-full my-2 p-2 rounded-md">CAlender</div>
                     </div>
-                    <div className='md:w-1/3 sm:full p-1'>
+                    <div className='md:w-1/3 sm:w-full p-1'>
                         Demographics Report
                         <div className="bg-white w-full my-2 p-2 rounded-md">Pie Chart</div>
                     </div>
