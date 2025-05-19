@@ -8,4 +8,40 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerApplicationDetail extends Model
 {
     use HasFactory;
+
+    protected $table = 'customer_application_details';
+
+    protected $fillable = [
+        'application_no',
+        'auth_type',
+        'auth_code',
+        'auth_status',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'DOB',
+        'gender',
+        'mobile',
+        'complex_name',
+        'flat_no',
+        'area',
+        'lankmark',
+        'country',
+        'pincode',
+        'city',
+        'district',
+        'state',
+        'agent_id',
+    ];
+    protected $casts = [
+        'DOB' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
+
 }
