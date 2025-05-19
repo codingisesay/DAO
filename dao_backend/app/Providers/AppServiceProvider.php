@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\EurekaService;
+use Illuminate\Support\Facades\Schema; 
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        app(EurekaService::class)->register();
+        Schema::defaultStringLength(191);
+        // app(EurekaService::class)->register();
     
         // Optionally schedule heartbeats using Laravel scheduler
     }
