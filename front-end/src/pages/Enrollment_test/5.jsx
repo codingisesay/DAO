@@ -1,9 +1,10 @@
 import React, { act, useState } from 'react';
-import PersonalDetailsForm from './6A';
-import CameraCapture from './2C';
+import NominationForm from './5B';
+import PersonalDetailsForm from './5A';
+import BankFacility from './5C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
-const p6 = ({ onNext, onBack }) => {
+const p2 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
 
     const [formData, setFormData] = useState({
@@ -42,8 +43,9 @@ const p6 = ({ onNext, onBack }) => {
     });
 
     const steps = [
-        { label: 'Customer Application', icon: 'bi bi-person', component: PersonalDetailsForm },
-        { label: 'Agent Photo', icon: 'bi bi-image', component: CameraCapture }
+        { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
+        { label: 'Nomination Details', icon: 'bi bi-people', component: NominationForm },
+        { label: 'Banking Facilities', icon: 'bi bi-bank', component: BankFacility }
     ];
 
     const handleNext = () => {
@@ -115,12 +117,13 @@ const p6 = ({ onNext, onBack }) => {
             </div>
 
 
-            <div className="nestedstepper-form-container">
+            <div className="nestedstepper-form-container" >
                 <CurrentStepComponent
                     formData={formData}
                     onChange={handleFormChange}
                 />
             </div>
+
 
             <div className="next-back-btns">
                 <CommonButton
@@ -154,8 +157,10 @@ const p6 = ({ onNext, onBack }) => {
 
 
 
+
+
         </div>
     );
 };
 
-export default p6;
+export default p2;
