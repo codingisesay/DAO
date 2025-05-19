@@ -1,6 +1,16 @@
 import { apiService } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
+export const agentService =
+{
+  agentEnroll: () =>
+    apiService.post(API_ENDPOINTS.AGENT.AGENTENROLL)
+
+}
+
+
+
+
 export const forgotpass = {
   forgotPass: (identifier) =>
     apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),

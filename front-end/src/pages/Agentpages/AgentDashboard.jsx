@@ -100,7 +100,7 @@ const Dashboard = () => {
                                         <i className="bi bi-clipboard2-plus"></i>
                                         <div className="card-text">
                                             <span className="dashboard-card-count">350+</span>
-                                            <small>Recent Applications</small>
+                                            <small>Recent </small>
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@ const Dashboard = () => {
                                         <i className="bi bi-clipboard2-plus"></i>
                                         <div className="card-text">
                                             <span className="dashboard-card-count">350+</span>
-                                            <small>Recent Applications</small>
+                                            <small>Recent </small>
                                         </div>
                                     </div>
                                 </div>

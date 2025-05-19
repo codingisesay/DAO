@@ -7,7 +7,6 @@ import "./assets/css/form.css";
 import './App.css'
 import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext"
-import Dashboard from './pages/Dashboard';
 import Varificationform from './pages/Varification/Enrollmentform';
 import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
@@ -31,7 +30,6 @@ export const App = () => {
           <Route path="/enrollmentform" element={<Enrollmentform />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
-          <Route path="/" element={<Dashboard />} />
           <Route path="/approved" element={<AccountTbl />} />
           <Route path="/pending" element={<AccountTbl />} />
           <Route path="/rejected" element={<AccountTbl />} />

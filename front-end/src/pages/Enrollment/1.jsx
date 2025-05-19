@@ -4,6 +4,7 @@ import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { agentService } from '../../services/apiServices';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
@@ -11,15 +12,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [showData, setShowData] = useState(!!formData.verificationNumber);
 
     const [localFormData, setLocalFormData] = useState({
-        firstname: formData.personalDetails?.firstName || '',
-        middlename: formData.personalDetails?.middleName || '',
-        lastname: formData.personalDetails?.lastName || '',
-        dob: formData.personalDetails?.dob || '',
+        first_name: formData.personalDetails?.first_name || '',
+        middle_name: formData.personalDetails?.middle_name || '',
+        last_name: formData.personalDetails?.last_name || '',
+        DOB: formData.personalDetails?.DOB || '',
         gender: formData.personalDetails?.gender || '',
         mobile: formData.personalDetails?.mobile || '',
         verifynumber: formData.verificationNumber || '',
-        complexname: formData.personalDetails?.complexName || '',
-        flatnoroomno: formData.personalDetails?.flatNoRoomNo || '',
+        complex_name: formData.personalDetails?.complex_name || '',
+        flat_no: formData.personalDetails?.flat_no || '',
         area: formData.personalDetails?.area || '',
         landmark: formData.personalDetails?.landmark || '',
         country: formData.personalDetails?.country || '',
@@ -45,23 +46,23 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         }
     };
 
-    const handleNextStep = () => {
-        // Log the form data before updating
-
+    const handleNextStep = async () => {
 
         // Update the central form data before proceeding
         updateFormData(1, {
-            applicationType: selectedType,
-            verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
+            // applicationType: selectedType,
+            // verificationOption: selectedOption,
+            // verificationNumber: localFormData.verifynumber,
             personalDetails: {
-                firstName: localFormData.firstname,
-                middleName: localFormData.middlename,
-                lastName: localFormData.lastname,
-                dob: localFormData.dob,
+                first_name: localFormData.first_name,
+                auth_type: selectedOption,
+                auth_code: localFormData.verifynumber,
+                middle_name: localFormData.middle_name,
+                last_name: localFormData.last_name,
+                DOB: localFormData.DOB,
                 gender: localFormData.gender,
                 mobile: localFormData.mobile,
-                complexName: localFormData.complexname,
+                complex_name: localFormData.complex_name,
                 flatNoRoomNo: localFormData.flatnoroomno,
                 area: localFormData.area,
                 landmark: localFormData.landmark,
@@ -73,7 +74,13 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             }
         });
 
-        // Proceed to the next step
+        try {
+            // Prepare and send the form data to create a new branch using the createBranch function
+            const reaspo = await agentService.agentEnroll({ formData });
+            console.log(reaspo);
+
+        }
+        catch { }
         onNext();
     };
 
@@ -123,7 +130,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
+                                            name="auth_code"
                                             value="Aadhar Number"
                                             checked={selectedOption === 'Aadhar Number'}
                                             onChange={handleRadioChange}
@@ -199,32 +206,32 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 onChange={handleChange}
                                 label={labels.firstname.label}
                                 type="text"
-                                name="firstname"
-                                value={localFormData.firstname}
+                                name="first_name"
+                                value={localFormData.first_name}
                                 required
                             />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.middlename.label}
                                 type="text"
-                                name="middlename"
-                                value={localFormData.middlename}
+                                name="middle_name"
+                                value={localFormData.middle_name}
                                 required
                             />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.lastname.label}
                                 type="text"
-                                name="lastname"
-                                value={localFormData.lastname}
+                                name="last_name"
+                                value={localFormData.last_name}
                                 required
                             />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}
                                 type="date"
-                                name="dob"
-                                value={localFormData.dob}
+                                name="DOB"
+                                value={localFormData.DOB}
                                 required
                             />
                             <CommanInput
@@ -247,16 +254,16 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 onChange={handleChange}
                                 label={labels.complexname.label}
                                 type="text"
-                                name="complexname"
-                                value={localFormData.complexname}
+                                name="complex_name"
+                                value={localFormData.complex_name}
                                 required
                             />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.flatnoroomno.label}
                                 type="text"
-                                name="flatnoroomno"
-                                value={localFormData.flatnoroomno}
+                                name="flat_no"
+                                value={localFormData.flat_no}
                                 required
                             />
                             <CommanInput
