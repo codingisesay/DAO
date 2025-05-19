@@ -1,28 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
-import CommanSelect from '../../components/CommanSelectInput';
-import { maritalStatusOptions } from '../../data/data';
+import CommonButton from '../../components/CommonButton';
 
-function PersonalDetailsForm({ formData, updateFormData }) {
+function PersonalDetailsForm({ formData, updateFormData, }) {
     const [localFormData, setLocalFormData] = useState({
-        salutation: formData.personalDetails?.salutation || '',
         firstName: formData.personalDetails?.firstName || '',
         middleName: formData.personalDetails?.middleName || '',
         lastName: formData.personalDetails?.lastName || '',
         dob: formData.personalDetails?.dob || '',
         gender: formData.personalDetails?.gender || '',
-        religion: formData.personalDetails?.religion || '',
-        caste: formData.personalDetails?.caste || '',
-        maritalStatus: formData.personalDetails?.maritalStatus || '',
         mobile: formData.personalDetails?.mobile || '',
-        alternatemobile: formData.personalDetails?.alternatemobile || '',
-        email: formData.personalDetails?.email || '',
-        aadharnumber: formData.personalDetails?.aadharnumber || '',
-        pannumber: formData.personalDetails?.pannumber || '',
-        drivinglicence: formData.personalDetails?.drivinglicence || '',
-        voterid: formData.personalDetails?.voterid || '',
-        passportno: formData.personalDetails?.passportno || '',
         complexName: formData.personalDetails?.complexName || '',
         flatNoRoomNo: formData.personalDetails?.flatNoRoomNo || '',
         area: formData.personalDetails?.area || '',
@@ -34,17 +22,18 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         state: formData.personalDetails?.state || ''
     });
 
-    useEffect(() => {
-        // Update parent form data whenever localFormData changes
-        updateFormData({
-            ...formData,
-            personalDetails: localFormData
-        });
-    }, [localFormData]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLocalFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = () => {
+        updateFormData({
+            personalDetails: {
+                ...localFormData
+            }
+        });
+        onNext();
     };
 
     return (
@@ -52,14 +41,6 @@ function PersonalDetailsForm({ formData, updateFormData }) {
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
 
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.salutation.label}
-                    type="text"
-                    name="salutation"
-                    value={localFormData.salutation}
-                    required
-                />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.firstname.label}
@@ -102,88 +83,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                 />
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.religion.label}
-                    name="religion"
-                    value={localFormData.religion}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.caste.label}
-                    name="caste"
-                    value={localFormData.caste}
-                    required
-                />
-                <CommanSelect
-                    onChange={handleChange}
-                    label={labels.maritalStatus.label}
-                    name="maritalStatus"
-                    value={localFormData.maritalStatus}
-                    options={maritalStatusOptions}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
                     label={labels.mobile.label}
                     type="text"
                     name="mobile"
                     value={localFormData.mobile}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.alternatemobile.label}
-                    type="text"
-                    name="alternatemobile"
-                    value={localFormData.alternatemobile}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.email.label}
-                    type="email"
-                    name="email"
-                    value={localFormData.email}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.aadharnumber.label}
-                    type="text"
-                    name="aadharnumber"
-                    value={localFormData.aadharnumber}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.pannumber.label}
-                    type="text"
-                    name="pannumber"
-                    value={localFormData.pannumber}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.drivinglicence.label}
-                    type="text"
-                    name="drivinglicence"
-                    value={localFormData.drivinglicence}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.voterid.label}
-                    type="text"
-                    name="voterid"
-                    value={localFormData.voterid}
-                    required
-                />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.passportno.label}
-                    type="text"
-                    name="passportno"
-                    value={localFormData.passportno}
                     required
                 />
                 <CommanInput
@@ -259,6 +162,8 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     required
                 />
             </div>
+
+
         </div>
     );
 }

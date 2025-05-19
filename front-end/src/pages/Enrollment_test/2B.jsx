@@ -178,7 +178,6 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 state: localFormData.correspondenceAddress.state
             }
         });
-        console.log(formData)
         onNext();
     };
 

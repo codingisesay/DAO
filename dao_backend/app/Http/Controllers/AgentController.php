@@ -50,11 +50,17 @@ class AgentController extends Controller
 
         // Add the generated application number to the validated data
         $validatedData['application_no'] = $applicationNo;
+
         // Add the agent ID to the validated data from  the authenticated user
         $validatedData['agent_id'] = $user['sub'];
 
         // Insert data into the database
         $customerApplication = CustomerApplicationDetail::create($validatedData);
+
+            // Store the inserted ID in the session
+        session(['inserted_id' => $customerApplication->id]);
+
+        // $insertedId = session('inserted_id');
 
         // Return a response
         return response()->json([
@@ -63,4 +69,22 @@ class AgentController extends Controller
             'data' => $customerApplication,
         ], 201);
     }
+
+   
+public function getApplicationDetails(Request $request, $id)
+{
+    $applicationDetails = CustomerApplicationDetail::find($id);
+
+    if ($applicationDetails) {
+        return response()->json([
+            'message' => 'Application details retrieved successfully.',
+            'data' => $applicationDetails,
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Application details not found.',
+        ], 404);
+    }
+}
+    
 }

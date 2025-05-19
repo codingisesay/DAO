@@ -8,6 +8,9 @@ const labels = {
     captacha: {
         label: "Enter Captcha",
     },
+    salutation: {
+        label: "Salutation",
+    },
     firstname: {
         label: "First Name",
     },
@@ -25,6 +28,24 @@ const labels = {
     },
     mobile: {
         label: "Mobile Number",
+    },
+    alternatemobile: {
+        label: "Alternate Mobile Number",
+    },
+    aadharnumber: {
+        label: "Aadhar Card No.",
+    },
+    pannumber: {
+        label: "Pan Card No.",
+    },
+    drivinglicence: {
+        label: "Driving Licence No.",
+    },
+    voterid: {
+        label: "Voter Id",
+    },
+    passportno: {
+        label: "Passport No.",
     },
     complexname: {
         label: "Complex Name",
