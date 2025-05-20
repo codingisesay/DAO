@@ -50,28 +50,28 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         // Update the central form data before proceeding
         updateFormData(1, {
-            applicationType: selectedType,
-            verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
-            personalDetails: {
-                first_name: localFormData.first_name,
-                auth_type: selectedOption,
-                auth_code: localFormData.verifynumber,
-                middle_name: localFormData.middle_name,
-                last_name: localFormData.last_name,
-                DOB: localFormData.DOB,
-                gender: localFormData.gender,
-                mobile: localFormData.mobile,
-                complex_name: localFormData.complex_name,
-                flatNoRoomNo: localFormData.flatnoroomno,
-                area: localFormData.area,
-                landmark: localFormData.landmark,
-                country: localFormData.country,
-                pincode: localFormData.pincode,
-                city: localFormData.city,
-                district: localFormData.district,
-                state: localFormData.state
-            }
+            // applicationType: selectedType,
+            // verificationOption: selectedOption,
+            // verificationNumber: localFormData.verifynumber,
+            // personalDetails: {
+            first_name: localFormData.first_name,
+            auth_type: selectedOption,
+            auth_code: localFormData.verifynumber,
+            middle_name: localFormData.middle_name,
+            last_name: localFormData.last_name,
+            DOB: localFormData.DOB,
+            gender: localFormData.gender,
+            mobile: localFormData.mobile,
+            complex_name: localFormData.complex_name,
+            flatNoRoomNo: localFormData.flatnoroomno,
+            area: localFormData.area,
+            landmark: localFormData.landmark,
+            country: localFormData.country,
+            pincode: localFormData.pincode,
+            city: localFormData.city,
+            district: localFormData.district,
+            state: localFormData.state
+            // }
         });
 
         try {
