@@ -19,8 +19,7 @@ api.interceptors.request.use((config) => {
   const lastLogin = localStorage.getItem(AUTH_KEYS.LAST_LOGIN_DATE);
   if (token) {
     // config.headers['Authorization'] = `Bearer ${token}`;
-    config.headers['Authorization'] = `Bearer 
-eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0NzY2ODU4OH0.0IchmGQ5LLBVBu4LxtWxgspX5NmJxdryo_2-L--QxsY`;
+    config.headers['Authorization'] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0MzU2Mn0.2Y2CXb3iVVL_unfvSJWm079VXRR2f8J7WSf6s5jLDE0`;
     config.headers['X-Username'] = userCode;
     config.headers['X-BranchCode'] = branchCode;
     config.headers['Refresh-Token'] = refreshToken;

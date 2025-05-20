@@ -74,11 +74,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             }
         });
 
-        // try {
-        //     // Prepare and send the form data to create a new branch using the createBranch function
-        //     const reaspo = await agentService.agentEnroll({ formData });
-        //     console.log(reaspo);        }
-        // catch { }
+        try {
+            // Prepare and send the form data to create a new branch using the createBranch function
+            const reaspo = await agentService.agentEnroll({ formData });
+            console.log(reaspo);
+        }
+        catch { }
         onNext();
     };
 

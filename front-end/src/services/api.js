@@ -1,6 +1,9 @@
 export const API_ENDPOINTS = {
-  BASE_URL: "http://127.0.0.1:8000",
+  BASE_URL: "http://127.0.0.1:8000/api",
 
+  AGENT: {
+    AGENTENROLL: '/agent/enrollment'
+  },
   AUTH: {
     LOGIN: "/api/auth/api/login",
     FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
@@ -10,12 +13,6 @@ export const API_ENDPOINTS = {
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",
   },
-
-  AGENT: {
-    AGENTENROLL: '/agent/enrollment'
-  }
-  ,
-  ADMIN: {},
 
 
   DASHBOARD: {

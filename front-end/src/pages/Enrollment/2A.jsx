@@ -168,7 +168,6 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     type="text"
                     name="drivinglicence"
                     value={localFormData.drivinglicence}
-                    required
                 />
                 <CommanInput
                     onChange={handleChange}
@@ -176,7 +175,6 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     type="text"
                     name="voterid"
                     value={localFormData.voterid}
-                    required
                 />
                 <CommanInput
                     onChange={handleChange}
@@ -184,7 +182,6 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     type="text"
                     name="passportno"
                     value={localFormData.passportno}
-                    required
                 />
                 <CommanInput
                     onChange={handleChange}
