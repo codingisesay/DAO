@@ -1,11 +1,9 @@
 import { apiService } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
-export const agentService =
-{
-  agentEnroll: () =>
-    apiService.post(API_ENDPOINTS.AGENT.AGENTENROLL)
-
+export const agentService = {
+  agentEnroll: (data) =>
+    apiService.post(API_ENDPOINTS.AGENT.AGENTENROLL, data)
 }
 
 
