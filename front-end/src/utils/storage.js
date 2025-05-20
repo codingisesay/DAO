@@ -10,23 +10,34 @@ const api = axios.create({
     }
 });
 
-api.interceptors.request.use((config) => {
-    const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
-    const userCode = localStorage.getItem(AUTH_KEYS.USER_CODE);
-    const branchCode = localStorage.getItem(AUTH_KEYS.BRANCH_CODE);
-    const refreshToken = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
-    const operationDate = localStorage.getItem(AUTH_KEYS.OPERATION_DATE);
-    const lastLogin = localStorage.getItem(AUTH_KEYS.LAST_LOGIN_DATE);
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-        config.headers['X-Username'] = userCode;
-        config.headers['X-BranchCode'] = branchCode;
-        config.headers['Refresh-Token'] = refreshToken;
-        config.headers['Operation-Date'] = operationDate;
-        //config.headers['Last-Login'] = lastLogin;
+// api.interceptors.request.use((config) => {
+//     const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
+//     const userCode = localStorage.getItem(AUTH_KEYS.USER_CODE);
+//     const branchCode = localStorage.getItem(AUTH_KEYS.BRANCH_CODE);
+//     const refreshToken = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
+//     const operationDate = localStorage.getItem(AUTH_KEYS.OPERATION_DATE);
+//     const lastLogin = localStorage.getItem(AUTH_KEYS.LAST_LOGIN_DATE);
+//     if (token) {
+//         // config.headers['Authorization'] = `Bearer ${token}`;
+//         config.headers['Authorization'] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0Mzg1NH0.8Ep8R_dWyOu39OkJritRmrLSd0mGXvUrQleNywNaFhQ`;
+//         config.headers['X-Username'] = userCode;
+//         config.headers['X-BranchCode'] = branchCode;
+//         config.headers['Refresh-Token'] = refreshToken;
+//         config.headers['Operation-Date'] = operationDate;
+//         //config.headers['Last-Login'] = lastLogin;
         
-    }
-    return config;
+//     }
+//     return config;
+// });
+
+api.interceptors.request.use((config) => {
+  // Hardcoded token for testing
+  const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0Mzg1NH0.8Ep8R_dWyOu39OkJritRmrLSd0mGXvUrQleNywNaFhQ";
+
+  if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const apiService = {
