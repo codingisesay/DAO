@@ -1,145 +1,167 @@
-import React from 'react';
-import CommonButton from '../../components/CommonButton';
-import { useDocuments } from './DocumentContext';
-
-const documentTypes = [
-    { id: 1, name: 'Pan Card', proofType: 'identity' },
-    { id: 2, name: 'Aadhaar Card', proofType: 'address' },
-    { id: 3, name: 'Passport', proofType: 'identity' },
-    { id: 4, name: 'Driving License', proofType: 'address' },
-    { id: 5, name: 'Voter ID', proofType: 'identity' }
-];
+import { useState, useRef } from 'react';
 
 const DocumentUpload = () => {
-    const { documents, setDocuments } = useDocuments();
+    const [selectedDocument, setSelectedDocument] = useState('');
+    const [previewImage, setPreviewImage] = useState(null);
+    const [documents, setDocuments] = useState([]);
+    const fileInputRef = useRef(null);
 
-    const handleAddRow = () => {
-        if (documents.length >= documentTypes.length) return;
-        setDocuments([...documents, { id: Date.now(), documentType: "", file: null, preview: null }]);
+    const documentTypes = [
+        { id: 'pan', label: 'PAN Card' },
+        { id: 'aadhar', label: 'Aadhar Card' },
+        { id: 'signature', label: 'Signature' }
+    ];
+
+    const handleDocumentSelect = (docType) => {
+        setSelectedDocument(docType);
+        setPreviewImage(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
-    const handleDocumentTypeChange = (id, value) => {
-        setDocuments(docs =>
-            docs.map(doc =>
-                doc.id === id ? { ...doc, documentType: value, file: null, preview: null } : doc
-            )
-        );
-    };
-
-    const handleFileUpload = (id, file) => {
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
         if (!file) return;
 
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must not exceed 5MB');
+            return;
+        }
+
+        // Check file type (jpg/png)
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            alert('Only JPG/PNG files are allowed');
+            return;
+        }
+
+        // Create preview
         const reader = new FileReader();
-        reader.onload = (e) => {
-            setDocuments(docs =>
-                docs.map(doc =>
-                    doc.id === id
-                        ? { ...doc, file: file.name, preview: e.target.result }
-                        : doc
-                )
-            );
+        reader.onload = () => {
+            setPreviewImage(reader.result);
+
+            // Add to documents table
+            const newDocument = {
+                id: Date.now(),
+                type: `${selectedDocument.toUpperCase()}_JPG`,
+                name: `${selectedDocument} document`,
+                image: reader.result,
+                uploadedAt: new Date().toLocaleString()
+            };
+
+            setDocuments([...documents, newDocument]);
         };
         reader.readAsDataURL(file);
     };
 
-    const handleRemoveRow = (id) => {
-        if (documents.length <= 1) return;
-        setDocuments(docs => docs.filter(doc => doc.id !== id));
-    };
-
-    const getAvailableDocumentTypes = (currentDocId, currentDocType) => {
-        const selectedTypes = documents
-            .filter(doc => doc.id !== currentDocId)
-            .map(doc => doc.documentType);
-
-        return documentTypes.filter(type =>
-            !selectedTypes.includes(type.name) || type.name === currentDocType
-        );
+    const removeDocument = (id) => {
+        setDocuments(documents.filter(doc => doc.id !== id));
+        if (documents.length === 1) {
+            setPreviewImage(null);
+        }
     };
 
     return (
-        <div className="dashboard-container">
-            <div className="mb-4">
-                <small className="text-gray-600">
-                    <i className="bi bi-info-circle"></i> &nbsp;
-                    <span>All documents must be scanned copy in jpg/png format (max 5MB)</span>
-                </small>
-                <div className="text-end my-3">
-                    <CommonButton
-                        className="btn-login"
-                        onClick={handleAddRow}
-                        disabled={documents.length >= documentTypes.length}
-                    >
-                        + Add Document
-                    </CommonButton>
+        <div className="document-upload-container">
+            <h1>Upload Documents</h1>
+
+            <div className="instructions">
+                <p>1. All documents must be scanned copy in jpg/png format - size must not exceed 5mb</p>
+            </div>
+
+            <div className="upload-section">
+                <div className="document-selection">
+                    <h2>1. Identity Proof</h2>
+                    <div className="document-options">
+                        {documentTypes.map((doc) => (
+                            <button
+                                key={doc.id}
+                                className={`document-btn ${selectedDocument === doc.id ? 'active' : ''}`}
+                                onClick={() => handleDocumentSelect(doc.id)}
+                            >
+                                {doc.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {selectedDocument && (
+                        <div className="file-upload">
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                accept="image/jpeg, image/png"
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                                id="file-upload"
+                            />
+                            <label htmlFor="file-upload" className="upload-btn">
+                                Choose File
+                            </label>
+                            <span className="file-requirements">(JPG/PNG, max 5MB)</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="preview-section">
+                    {previewImage ? (
+                        <div className="image-preview">
+                            <img src={previewImage} alt="Document preview" />
+                            <p>{selectedDocument.toUpperCase()} Document</p>
+                        </div>
+                    ) : (
+                        <div className="preview-placeholder">
+                            <p>Preview will appear here</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
             <div className="documents-table">
-                <table className="w-full">
+                <h2>Document File</h2>
+                <table>
                     <thead>
-                        <tr className="bg-gray-100">
-                            <th className="p-2 text-left">Document Type</th>
-                            <th className="p-2 text-left">File</th>
-                            <th className="p-2 text-left">Preview</th>
-                            <th className="p-2 text-left">Actions</th>
+                        <tr>
+                            <th>Document Type</th>
+                            <th>Image</th>
+                            <th>Signature</th>
+                            <th>Face</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {documents.map((doc) => (
-                            <tr key={doc.id} className="border-b">
-                                <td className="p-2">
-                                    <select
-                                        value={doc.documentType}
-                                        onChange={(e) => handleDocumentTypeChange(doc.id, e.target.value)}
-                                        className="w-full p-2 border rounded"
-                                    >
-                                        <option value="">Select Document</option>
-                                        {getAvailableDocumentTypes(doc.id, doc.documentType).map((type) => (
-                                            <option key={type.id} value={type.name}>
-                                                {type.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </td>
-                                <td className="p-2">
-                                    {doc.documentType ? (
-                                        <label className="cursor-pointer">
-                                            {doc.file || "Choose File"}
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(doc.id, e.target.files[0])}
-                                                className="hidden"
+                        {documents.length > 0 ? (
+                            documents.map((doc) => (
+                                <tr key={doc.id}>
+                                    <td>{doc.type}</td>
+                                    <td>
+                                        {doc.image && (
+                                            <img
+                                                src={doc.image}
+                                                alt={doc.name}
+                                                className="thumbnail"
                                             />
-                                        </label>
-                                    ) : (
-                                        "Select document type first"
-                                    )}
-                                </td>
-                                <td className="p-2">
-                                    {doc.preview ? (
-                                        <img
-                                            src={doc.preview}
-                                            alt="Document preview"
-                                            className="h-16 object-contain"
-                                        />
-                                    ) : (
-                                        "No preview"
-                                    )}
-                                </td>
-                                <td className="p-2">
-                                    {documents.length > 1 && (
+                                        )}
+                                    </td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>
                                         <button
-                                            onClick={() => handleRemoveRow(doc.id)}
-                                            className="text-red-500"
+                                            onClick={() => removeDocument(doc.id)}
+                                            className="remove-btn"
                                         >
-                                            <i className="bi bi-trash-fill"></i>
+                                            Remove
                                         </button>
-                                    )}
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="5" className="no-documents">
+                                    No documents uploaded yet
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>
