@@ -34,10 +34,25 @@
 // ];
 
 return [
-    'paths' => ['api/*'], // Allow API routes
-    'allowed_methods' => ['*'], // Allow all HTTP methods
-    'allowed_origins' => ['*'], // Allow all origins (or specify your frontend URL)
-    'allowed_headers' => ['*'], // Allow all headers
-    'supports_credentials' => true,
+
+    'paths' => ['*', 'sanctum/csrf-cookie'],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => ['*'],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => false, // If using cookies/session
+
 ];
- 
+
+
+
+

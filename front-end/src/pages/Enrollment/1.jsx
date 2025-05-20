@@ -121,8 +121,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                         </div>
 
                         {selectedType && (
-                            <>
-                                <h2 className="text-xl font-bold mb-2">Choose the Option to Verify</h2>
+                            <div class="my-5">
+                                <h2 className="text-xl font-bold my-2">Choose the Option to Verify</h2>
                                 <form className="flex flex-wrap items-center justify-start">
                                     <label className="flex me-4">
                                         <input
@@ -162,9 +162,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 </form>
 
                                 {selectedOption && (
-                                    <div className="mt-2">
-                                        <div className="flex items-center">
+                                    <div className="my-2">
+                                        <div className="flex items-center mt-5">
                                             <div className="md:w-1/2 me-4">
+
                                                 <CommanInput
                                                     type="text"
                                                     label={`Enter ${selectedOption}`}
@@ -188,7 +189,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     </div>
                                 )}
                                 <br />
-                            </>
+                            </div>
                         )}
                     </div>
                     <div className="hidden lg:block lg:w-1/2 md:w-1/2">
