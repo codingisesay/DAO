@@ -1,17 +1,17 @@
 # Laravel
-/backend/vendor
-/backend/.env
-/backend/node_modules
-/backend/public/storage
-/backend/storage/*.key
-/backend/storage/framework/cache/data
-/backend/storage/logs
-/backend/storage/framework/views
-/backend/storage/app/public
+/dao_backend/vendor
+/dao_backend/.env
+/dao_backend/node_modules
+/dao_backend/public/storage
+/dao_backend/storage/*.key
+/dao_backend/storage/framework/cache/data
+/dao_backend/storage/logs
+/dao_backend/storage/framework/views
+/dao_backend/storage/app/public
 
 # React
-/frontend/node_modules
-/frontend/build
+/front-end/node_modules
+/front-end/build
 
 # General
 *.log
