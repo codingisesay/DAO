@@ -1,10 +1,5 @@
 export const API_ENDPOINTS = {
-  // BASE_URL: "http://182.70.118.121:8099",
-  // BASE_URL: "http://182.70.118.121:9099",
-  BASE_URL: "http://192.168.1.125:8060",
-  // BASE_URL: "http://172.16.1.224:8090",
-  // BASE_URL: "http://localhost:8060",
-  // BASE_URL: "http://172.16.1.223:8099",
+  BASE_URL: "http://127.0.0.1:8000/api",
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -15,6 +10,14 @@ export const API_ENDPOINTS = {
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",
   },
+
+  AGENT: {
+    AGENTENROLL: '/agent/enrollment'
+  },
+
+
+  ADMIN: {},
+
 
   DASHBOARD: {
     ACCOPENED: "/loan/accounts/counts",

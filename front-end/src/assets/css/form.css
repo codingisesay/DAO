@@ -311,3 +311,136 @@ tr:hover {
         /* Adjust zoom level (1.2 = 20% zoom) */
     }
 }
+
+/* can delete  */
+.photo-validator {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.initial-state {
+    margin: 40px 0;
+}
+
+.camera-view {
+    margin: 20px 0;
+}
+
+.webcam-feed {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.camera-controls {
+    margin: 15px 0;
+}
+
+.photo-review {
+    margin: 20px 0;
+}
+
+.captured-photo-container {
+    margin-bottom: 25px;
+}
+
+.captured-image {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    margin: 15px 0;
+}
+
+.validation-results {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.validation-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.validation-results li {
+    padding: 5px 0;
+}
+
+.validation-results .valid {
+    color: #4CAF50;
+}
+
+.validation-results .invalid {
+    color: #f44336;
+}
+
+.validation-loading {
+    color: #2196F3;
+    font-style: italic;
+    margin: 15px 0;
+}
+
+.navigation-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    min-width: 120px;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.btn-capture {
+    background-color: #2196F3;
+    color: white;
+    font-size: 18px;
+    padding: 12px 25px;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.image-upload-container {
+    max-width: 100%;
+}
+
+/* Aspect ratio container */
+.image-upload-container .relative {
+    position: relative;
+    width: 100%;
+}
+
+.image-upload-container .absolute {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

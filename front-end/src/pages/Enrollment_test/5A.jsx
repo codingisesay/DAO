@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
-import CommanSelect from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect ';
 import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels'; // Adjust the path as needed
 

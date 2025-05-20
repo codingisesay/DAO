@@ -47,6 +47,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::middleware('role:agent')->group(function () {
         Route::post('/agent/accounts', [AgentController::class, 'handleAccounts']);
         Route::post('/agent/enrollment', [AgentController::class, 'EnrollmentDetails'])->name('enrollment.details');
+        Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
     });
 
     Route::middleware('role:employee,admin')->group(function () {

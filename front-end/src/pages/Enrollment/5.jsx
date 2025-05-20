@@ -4,43 +4,9 @@ import PersonalDetailsForm from './5A';
 import BankFacility from './5C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
-const p2 = ({ onNext, onBack }) => {
+const p2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
-
-    const [formData, setFormData] = useState({
-        // Personal Details
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-
-        // Address Details
-        permanentAddress: {
-            complexName: '',
-            country: 'India',
-            state: '',
-            flatNo: '',
-            pinCode: '',
-            residentVN: ''
-        },
-        correspondenceAddressSame: false,
-        correspondenceAddress: {
-            complexName: '',
-            country: '',
-            state: '',
-            flatNo: '',
-            pinCode: ''
-        },
-        area: '',
-        city: '',
-        residenceStatus: '',
-        nearbyLandmark: '',
-        district: '',
-        residenceDocument: null,
-
-        // Photo
-        customerPhoto: null
-    });
+ 
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -120,7 +86,9 @@ const p2 = ({ onNext, onBack }) => {
             <div className="nestedstepper-form-container" >
                 <CurrentStepComponent
                     formData={formData}
-                    onChange={handleFormChange}
+                    updateFormData={handleStepSubmit}
+                    onNext={activeStep === 2 ? onNext : handleNext}
+                    onBack={activeStep === 0 ? onBack : handleBack}
                 />
             </div>
 

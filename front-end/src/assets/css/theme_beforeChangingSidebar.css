@@ -23,7 +23,7 @@ body {
 
 .stepper-item {
     position: relative;
-    padding-bottom: 25px;
+    padding-bottom: 15%s;
 }
 
 .stepper-item:not(:last-child):after {
