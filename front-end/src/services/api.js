@@ -13,8 +13,9 @@ export const API_ENDPOINTS = {
 
   AGENT: {
     AGENTENROLL: '/agent/enrollment'
-  }
-  ,
+  },
+
+
   ADMIN: {},
 
 

@@ -23,6 +23,12 @@ class AgentController extends Controller
     public function EnrollmentDetails(Request $request)
     {
         $user = $request->get('auth_user');
+
+        // Normalize gender input to match validation
+            $request->merge([
+                'gender' => ucfirst(strtolower($request->input('gender')))
+            ]);
+
         // Validate incoming request data (excluding application_no since it will be generated)
         $validatedData = $request->validate([
             'auth_type' => 'nullable|in:Pan Card,Aadhar Card,Digilocker',
@@ -37,7 +43,7 @@ class AgentController extends Controller
             'complex_name' => 'nullable|string',
             'flat_no' => 'nullable|string',
             'area' => 'nullable|string',
-            'lankmark' => 'nullable|string',
+            'landmark' => 'nullable|string',
             'country' => 'nullable|string',
             'pincode' => 'nullable|string',
             'city' => 'nullable|string',
