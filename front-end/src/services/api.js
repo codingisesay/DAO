@@ -1,15 +1,15 @@
 export const API_ENDPOINTS = {
   BASE_URL: "http://127.0.0.1:8000/api",
 
-  AUTH: {
-    LOGIN: "/api/auth/api/login",
-    FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
-    OTPVERIFY: (id, id1) =>
-      `/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
-    SETPASS: (id, id1) =>
-      `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
-    LOGOUT: "/auth/api/logout",
-  },
+  // AUTH: {
+  //   LOGIN: "/api/auth/api/login",
+  //   FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
+  //   OTPVERIFY: (id, id1) =>
+  //     `/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
+  //   SETPASS: (id, id1) =>
+  //     `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
+  //   LOGOUT: "/auth/api/logout",
+  // },
 
   AGENT: {
     AGENTENROLL: '/agent/enrollment'
