@@ -40,7 +40,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
 
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
                 <CommanInput
                     onChange={handleChange}
                     label={labels.firstname.label}

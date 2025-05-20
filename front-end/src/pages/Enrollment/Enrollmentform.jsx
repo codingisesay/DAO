@@ -16,7 +16,7 @@ function Enrollmentform() {
     // Centralized form data state
     const [formData, setFormData] = useState({
         correspondenceAddressSame: false,
-        documents: [],
+        documents: [], personalDetailsf5: [],
     });
 
     // Update form data handler
@@ -38,6 +38,16 @@ function Enrollmentform() {
                         : { ...prev.correspondenceAddress, ...data.correspondenceAddress }
                 };
             }
+            else if (step === 5) {
+                return {
+                    ...prev,
+                    ...data
+                };
+            }
+
+
+
+
             // Add cases for other steps as needed
             return { ...prev, ...data };
         });

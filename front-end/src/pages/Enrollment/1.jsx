@@ -50,9 +50,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         // Update the central form data before proceeding
         updateFormData(1, {
-            // applicationType: selectedType,
-            // verificationOption: selectedOption,
-            // verificationNumber: localFormData.verifynumber,
+            applicationType: selectedType,
+            verificationOption: selectedOption,
+            verificationNumber: localFormData.verifynumber,
             personalDetails: {
                 first_name: localFormData.first_name,
                 auth_type: selectedOption,
@@ -74,13 +74,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             }
         });
 
-        try {
-            // Prepare and send the form data to create a new branch using the createBranch function
-            const reaspo = await agentService.agentEnroll({ formData });
-            console.log(reaspo);
-
-        }
-        catch { }
+        // try {
+        //     // Prepare and send the form data to create a new branch using the createBranch function
+        //     const reaspo = await agentService.agentEnroll({ formData });
+        //     console.log(reaspo);        }
+        // catch { }
         onNext();
     };
 
@@ -201,7 +199,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 {showData && (
                     <>
                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.firstname.label}

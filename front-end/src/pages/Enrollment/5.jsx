@@ -99,18 +99,6 @@ const p2 = ({ onNext, onBack, formData, updateFormData }) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     );
 };

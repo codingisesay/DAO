@@ -5,7 +5,7 @@ import CommonButton from '../../components/CommonButton';
 
 function AddressSection({ formData, handleChange }) {
     return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
             <CommanInput
                 label={labels.complexname.label}
                 name="complexname"
