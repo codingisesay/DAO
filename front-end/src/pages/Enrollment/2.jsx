@@ -4,6 +4,8 @@ import PersonalDetailsForm from './2A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
+import { apiService } from '../../utils/storage';
+import { API_ENDPOINTS } from '../../services/api';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -18,7 +20,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
-
     };
 
     const handleBack = () => {
@@ -31,10 +32,45 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         updateFormData(2, stepData); // Step 2 data
     };
 
+    // Updated handleSubmit to use API_ENDPOINTS and check for application_id
+    const handleSubmit = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        try {
+            const pd = formData.personalDetails || {};
+            const payload = {
+                salutation: pd.salutation,
+                religion: pd.religion,
+                caste: pd.caste,
+                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined, // <-- fix here
+                alt_mob_no: pd.alternatemobile,
+                email: pd.email,
+                adhar_card: pd.aadharnumber,
+                pan_card: pd.pannumber,
+                passport: pd.passportno,
+                driving_license: pd.drivinglicence,
+                voter_id: pd.voterid,
+                status: formData.status,
+            };
+
+            let response;
+            if (formData.id) {
+                response = await apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(formData.id), payload);
+            } else {
+                response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
+            }
+
+            alert(response.data.message || 'Personal details saved successfully.');
+            onNext();
+        } catch (err) {
+            // ...error handling...
+        }
+    };
+
     const CurrentStepComponent = steps[activeStep].component;
 
     return (
         <div className="multi-step-form">
+
             <div className="stepper-header">
                 {steps.map((step, index) => {
                     const status = index < activeStep ? 'Completed' :
@@ -78,10 +114,16 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
                 <CommonButton
                     className="btn-next"
-                    onClick={activeStep === 2 ? onNext : handleNext}
+                    onClick={
+                        activeStep === 0
+                            ? handleSubmit // Call handleSubmit for Personal Details step
+                            : activeStep === 2
+                                ? onNext
+                                : handleNext
+                    }
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    {activeStep === 2 ? 'Next' : 'Next'}&nbsp;
+                    Next&nbsp;
                     <i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>

@@ -15,6 +15,10 @@ export const API_ENDPOINTS = {
     AGENTENROLL: '/agent/enrollment'
   },
 
+  PERSONAL_DETAILS: {
+    CREATE: "/personal-details",
+    UPDATE: (id) => `/personal-details/${id}`,
+  },
 
   ADMIN: {},
 

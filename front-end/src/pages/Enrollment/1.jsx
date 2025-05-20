@@ -60,7 +60,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             complex_name: localFormData.complex_name,
             flat_no: localFormData.flat_no,
             area: localFormData.area,
-            landmark: localFormData.landmark,
+            lankmark: localFormData.lankmark,
             country: localFormData.country,
             pincode: localFormData.pincode,
             city: localFormData.city,
@@ -70,11 +70,16 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         try {
             const response = await agentService.agentEnroll(payload);
-            console.log(response);
+            // Save application_id to formData for next steps
+            updateFormData(1, {
+                ...formData,
+                personalDetails: localFormData,
+                application_id: response.data.application_id // <-- Save this!
+            });
+            onNext();
         } catch (error) {
             console.error(error);
         }
-        onNext();
     };
 
     return (

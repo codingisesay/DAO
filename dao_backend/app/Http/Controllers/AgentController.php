@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CustomerApplicationDetail;
+use App\Models\ApplicationPersonalDetails; 
 
 class AgentController extends Controller
 {
@@ -43,7 +44,7 @@ class AgentController extends Controller
             'complex_name' => 'nullable|string',
             'flat_no' => 'nullable|string',
             'area' => 'nullable|string',
-            'landmark' => 'nullable|string',
+            'lankmark' => 'nullable|string',
             'country' => 'nullable|string',
             'pincode' => 'nullable|string',
             'city' => 'nullable|string',
@@ -72,6 +73,7 @@ class AgentController extends Controller
         return response()->json([
             'message' => 'Customer application details saved successfully.',
             'application_no' => $applicationNo,
+            'application_id' => $customerApplication->id,
             'data' => $customerApplication,
         ], 201);
     }
@@ -91,6 +93,82 @@ public function getApplicationDetails(Request $request, $id)
             'message' => 'Application details not found.',
         ], 404);
     }
+}
+
+
+// Store personal details
+public function storePersonalDetails(Request $request)
+{
+   $agentId = $request->get('auth_user')['sub'];
+
+// Get the latest application submitted by this agent
+$latestApplication = CustomerApplicationDetail::where('agent_id', $agentId)
+    ->latest()
+    ->first();
+
+if (!$latestApplication) {
+    return response()->json([
+        'message' => 'No application found for this agent. Please complete the first step.'
+    ], 400);
+}
+
+$application_id = $latestApplication->id;
+
+$validated = $request->validate([
+    'salutation' => 'required|in:MR,MRS',
+    'religion' => 'required|in:HINDU,MUSLIM',
+    'caste' => 'nullable|string',
+    'marital_status' => 'required|in:MARRIED,SINGLE',
+    'alt_mob_no' => 'nullable|string',
+    'email' => 'nullable|email',
+    'adhar_card' => 'nullable|string',
+    'pan_card' => 'nullable|string',
+    'passport' => 'nullable|string',
+    'driving_license' => 'nullable|string',
+    'voter_id' => 'nullable|string',
+    'status' => 'nullable|in:APPROVED,REJECT',
+]);
+
+$validated['application_id'] = $application_id;
+
+$personalDetail = ApplicationPersonalDetails::create($validated);
+
+return response()->json([
+    'message' => 'Personal details saved successfully.',
+    'data' => $personalDetail,
+], 201);
+}
+
+// Update personal details
+public function updatePersonalDetails(Request $request, $id)
+{
+    $personalDetail = ApplicationPersonalDetail::find($id);
+
+    if (!$personalDetail) {
+        return response()->json(['message' => 'Not found.'], 404);
+    }
+
+    $validated = $request->validate([
+        'salutation' => 'sometimes|in:MR,MRS',
+        'religion' => 'sometimes|in:HINDU,MUSLIM',
+        'caste' => 'nullable|string',
+        'marital_status' => 'sometimes|in:MARRIED,SINGLE',
+        'alt_mob_no' => 'nullable|string',
+        'email' => 'nullable|email',
+        'adhar_card' => 'nullable|string',
+        'pan_card' => 'nullable|string',
+        'passport' => 'nullable|string',
+        'driving_license' => 'nullable|string',
+        'voter_id' => 'nullable|string',
+        'status' => 'nullable|in:APPROVED,REJECT',
+    ]);
+
+    $personalDetail->update($validated);
+
+    return response()->json([
+        'message' => 'Personal details updated successfully.',
+        'data' => $personalDetail,
+    ]);
 }
     
 }
