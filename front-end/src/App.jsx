@@ -8,7 +8,7 @@ import './App.css'
 import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext"
 import Varificationform from './pages/Varification/Enrollmentform';
-import Enrollmentform from './pages/Enrollment/Enrollmentform';
+import Enrollmentform from './pages/Enrollment_test/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';

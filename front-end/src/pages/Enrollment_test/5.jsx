@@ -144,21 +144,6 @@ const p2 = ({ onNext, onBack }) => {
             </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     );
 };

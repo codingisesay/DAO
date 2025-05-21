@@ -16,7 +16,7 @@ function p6({ onNext, onBack }) {
 
 
 
-        <div className="next-back-btns">
+        {/* <div className="next-back-btns">
             <CommonButton className="btn-back" onClick={onBack}>
                 <i className="bi bi-chevron-double-left"></i>&nbsp;Back
             </CommonButton>
@@ -24,7 +24,7 @@ function p6({ onNext, onBack }) {
             <CommonButton className="btn-next" onClick={onNext}>
                 Next&nbsp;<i className="bi bi-chevron-double-right"></i>
             </CommonButton>
-        </div>
+        </div> */}
 
     </>);
 }
