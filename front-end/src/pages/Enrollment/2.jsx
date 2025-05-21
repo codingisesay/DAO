@@ -38,32 +38,62 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
         try {
-            const pd = formData.personalDetails || {};
-            const payload = {
-                application_id: formData.application_id, // Make sure this is set from previous step
-                salutation: pd.salutation,
-                religion: pd.religion,
-                caste: pd.caste,
-                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                alt_mob_no: pd.alternatemobile,
-                email: pd.email,
-                adhar_card: pd.aadharnumber,
-                pan_card: pd.pannumber,
-                passport: pd.passportno,
-                driving_license: pd.drivinglicence,
-                voter_id: pd.voterid,
-                status: formData.status, // Should be 'APPROVED' or 'REJECT'
-            };
+            if (activeStep === 0) {
+                // Personal Details API
+                const pd = formData.personalDetails || {};
+                const payload = {
+                    application_id: formData.application_id,
+                    salutation: pd.salutation,
+                    religion: pd.religion,
+                    caste: pd.caste,
+                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                    alt_mob_no: pd.alternatemobile,
+                    email: pd.email,
+                    adhar_card: pd.aadharnumber,
+                    pan_card: pd.pannumber,
+                    passport: pd.passportno,
+                    driving_license: pd.drivinglicence,
+                    voter_id: pd.voterid,
+                    status: formData.status,
+                };
 
-            let response;
-            if (formData.id) {
-                response = await apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(formData.id), payload);
-            } else {
-                response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
+                let response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
+                alert(response.data.message || 'Personal details saved successfully.');
+                handleNext();
+            } else if (activeStep === 1) {
+                alert('here')
+                // Address Details API
+                const ad = formData.addressDetails || {};
+                const payload = {
+                    application_id: formData.application_id,
+                    per_complex_name: ad.perComplexName,
+                    per_flat_no: ad.perFlatNo,
+                    per_area: ad.perArea,
+                    per_landmark: ad.perLandmark,
+                    per_country: ad.perCountry,
+                    per_pincode: ad.perPincode,
+                    per_city: ad.perCity,
+                    per_district: ad.perDistrict,
+                    per_state: ad.perState,
+                    per_resident: ad.perResident,
+                    per_residence_status: ad.perResidenceStatus,
+                    resi_doc: ad.resiDoc,
+                    cor_complex: ad.corComplex,
+                    cor_flat_no: ad.corFlatNo,
+                    cor_area: ad.corArea,
+                    cor_landmark: ad.corLandmark,
+                    cor_country: ad.corCountry,
+                    cor_pincode: ad.corPincode,
+                    cor_city: ad.corCity,
+                    cor_district: ad.corDistrict,
+                    cor_state: ad.corState,
+                    status: formData.status,
+                };
+
+                let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+                alert(response.data.message || 'Address details saved successfully.');
+                handleNext();
             }
-
-            alert(response.data.message || 'Personal details saved successfully.');
-            onNext();
         } catch (err) {
             // ...error handling...
         }
@@ -98,6 +128,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             </div>
 
             <div className="nestedstepper-form-container">
+
+                {activeStep}
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
@@ -118,7 +150,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 <CommonButton
                     className="btn-next"
                     onClick={
-                        activeStep === 0
+                        activeStep === 0 || activeStep === 1
                             ? handleSubmit // Call handleSubmit for Personal Details step
                             : activeStep === 2
                                 ? onNext

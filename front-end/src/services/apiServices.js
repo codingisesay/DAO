@@ -12,7 +12,10 @@ export const personalDetailsService = {
   // update: (id, data) => apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
 };
 
-
+export const addressDetailsService = {
+  create: (data) => apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),
+  // update: (id, data) => apiService.put(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
+};
 
 export const forgotpass = {
   forgotPass: (identifier) =>

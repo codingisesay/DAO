@@ -21,6 +21,11 @@ export const API_ENDPOINTS = {
     // UPDATE: (id) => `/agent/personal-details/${id}` // if you want update
   },
 
+  ADDRESS_DETAILS: {
+    CREATE: '/agent/address-details',
+    // ...
+  },
+
   ADMIN: {},
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CustomerApplicationDetail;
 use App\Models\ApplicationPersonalDetails; 
+use App\Models\ApplicationAddressDetails;
 
 class AgentController extends Controller
 {
@@ -126,4 +127,44 @@ public function savePersonalDetails(Request $request)
     ], 201);
 }
 
+
+// Store address details
+public function saveAddressDetails(Request $request)
+{
+    // Hardcode application_id for testing
+    $request->merge(['application_id' => 4]); // Replace 4 with a valid ID
+
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'per_complex_name' => 'nullable|string|max:191',
+        'per_flat_no' => 'nullable|string|max:191',
+        'per_area' => 'nullable|string|max:191',
+        'per_landmark' => 'nullable|string|max:191',
+        'per_country' => 'nullable|string|max:191',
+        'per_pincode' => 'nullable|string|max:191',
+        'per_city' => 'nullable|string|max:191',
+        'per_district' => 'nullable|string|max:191',
+        'per_state' => 'nullable|string|max:191',
+        'per_resident' => 'nullable|string|max:191',
+        'per_residence_status' => 'nullable|string|max:191',
+        'resi_doc' => 'nullable|string|max:191',
+        'cor_complex' => 'nullable|string|max:191',
+        'cor_flat_no' => 'nullable|string|max:191',
+        'cor_area' => 'nullable|string|max:191',
+        'cor_landmark' => 'nullable|string|max:191',
+        'cor_country' => 'nullable|string|max:191',
+        'cor_pincode' => 'nullable|string|max:191',
+        'cor_city' => 'nullable|string|max:191',
+        'cor_district' => 'nullable|string|max:191',
+        'cor_state' => 'nullable|string|max:191',
+        'status' => 'nullable|in:APPROVED,REJECT',
+    ]);
+
+    $addressDetails = ApplicationAddressDetails::create($validated);
+
+    return response()->json([
+        'message' => 'Address details saved successfully.',
+        'data' => $addressDetails,
+    ], 201);
+}
 }
