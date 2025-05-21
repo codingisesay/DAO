@@ -6,6 +6,7 @@ import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { apiService } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
+import { addressDetailsService } from '../../services/apiServices';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -16,7 +17,40 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         { label: 'Customer Photo', icon: 'bi bi-image', component: CameraCapture }
     ];
 
-    const handleNext = () => {
+    const handleNext = async () => {
+        // If on Address Details step (step 1), call the API
+        if (activeStep === 1) {
+            // Prepare payload from formData
+            const address = formData.addressDetails || {};
+            const payload = {
+                application_id: formData.application_id, // Make sure this is set
+                per_complex_name: address.permanentAddress?.complexname || '',
+                per_flat_no: address.permanentAddress?.flatnoroomno || '',
+                per_area: address.permanentAddress?.area || '',
+                per_landmark: address.permanentAddress?.landmark || '',
+                per_country: address.permanentAddress?.country || '',
+                per_pincode: address.permanentAddress?.pincode || '',
+                per_city: address.permanentAddress?.city || '',
+                per_district: address.permanentAddress?.district || '',
+                per_state: address.permanentAddress?.state || '',
+                cor_complex: address.correspondenceAddress?.complexname || '',
+                cor_flat_no: address.correspondenceAddress?.flatnoroomno || '',
+                cor_area: address.correspondenceAddress?.area || '',
+                cor_landmark: address.correspondenceAddress?.landmark || '',
+                cor_country: address.correspondenceAddress?.country || '',
+                cor_pincode: address.correspondenceAddress?.pincode || '',
+                cor_city: address.correspondenceAddress?.city || '',
+                cor_district: address.correspondenceAddress?.district || '',
+                cor_state: address.correspondenceAddress?.state || '',
+            };
+            try {
+                const response = await addressDetailsService.create(payload);
+                alert(response.data.message || 'Address details saved successfully.');
+            } catch (err) {
+                alert('Failed to save address details');
+                return; // Prevent moving to next step if API fails
+            }
+        }
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
@@ -38,62 +72,32 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
         try {
-            if (activeStep === 0) {
-                // Personal Details API
-                const pd = formData.personalDetails || {};
-                const payload = {
-                    application_id: formData.application_id,
-                    salutation: pd.salutation,
-                    religion: pd.religion,
-                    caste: pd.caste,
-                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                    alt_mob_no: pd.alternatemobile,
-                    email: pd.email,
-                    adhar_card: pd.aadharnumber,
-                    pan_card: pd.pannumber,
-                    passport: pd.passportno,
-                    driving_license: pd.drivinglicence,
-                    voter_id: pd.voterid,
-                    status: formData.status,
-                };
+            const pd = formData.personalDetails || {};
+            const payload = {
+                application_id: formData.application_id, // Make sure this is set from previous step
+                salutation: pd.salutation,
+                religion: pd.religion,
+                caste: pd.caste,
+                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                alt_mob_no: pd.alternatemobile,
+                email: pd.email,
+                adhar_card: pd.aadharnumber,
+                pan_card: pd.pannumber,
+                passport: pd.passportno,
+                driving_license: pd.drivinglicence,
+                voter_id: pd.voterid,
+                status: formData.status, // Should be 'APPROVED' or 'REJECT'
+            };
 
-                let response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
-                alert(response.data.message || 'Personal details saved successfully.');
-                handleNext();
-            } else if (activeStep === 1) {
-                alert('here')
-                // Address Details API
-                const ad = formData.addressDetails || {};
-                const payload = {
-                    application_id: formData.application_id,
-                    per_complex_name: ad.perComplexName,
-                    per_flat_no: ad.perFlatNo,
-                    per_area: ad.perArea,
-                    per_landmark: ad.perLandmark,
-                    per_country: ad.perCountry,
-                    per_pincode: ad.perPincode,
-                    per_city: ad.perCity,
-                    per_district: ad.perDistrict,
-                    per_state: ad.perState,
-                    per_resident: ad.perResident,
-                    per_residence_status: ad.perResidenceStatus,
-                    resi_doc: ad.resiDoc,
-                    cor_complex: ad.corComplex,
-                    cor_flat_no: ad.corFlatNo,
-                    cor_area: ad.corArea,
-                    cor_landmark: ad.corLandmark,
-                    cor_country: ad.corCountry,
-                    cor_pincode: ad.corPincode,
-                    cor_city: ad.corCity,
-                    cor_district: ad.corDistrict,
-                    cor_state: ad.corState,
-                    status: formData.status,
-                };
-
-                let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-                alert(response.data.message || 'Address details saved successfully.');
-                handleNext();
+            let response;
+            if (formData.id) {
+                response = await apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(formData.id), payload);
+            } else {
+                response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
             }
+
+            alert(response.data.message || 'Personal details saved successfully.');
+            handleNext();
         } catch (err) {
             // ...error handling...
         }
@@ -128,8 +132,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             </div>
 
             <div className="nestedstepper-form-container">
-
-                {activeStep}
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
@@ -150,7 +152,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 <CommonButton
                     className="btn-next"
                     onClick={
-                        activeStep === 0 || activeStep === 1
+                        activeStep === 0
                             ? handleSubmit // Call handleSubmit for Personal Details step
                             : activeStep === 2
                                 ? onNext

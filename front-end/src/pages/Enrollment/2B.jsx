@@ -152,35 +152,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setSameAsAbove(false);
     };
 
-    const handleSubmit = () => {
-        updateFormData({
-            permanentAddress: {
-                complexName: localFormData.permanentAddress.complexname,
-                flatNo: localFormData.permanentAddress.flatnoroomno,
-                area: localFormData.permanentAddress.area,
-                landmark: localFormData.permanentAddress.landmark,
-                country: localFormData.permanentAddress.country,
-                pincode: localFormData.permanentAddress.pincode,
-                city: localFormData.permanentAddress.city,
-                district: localFormData.permanentAddress.district,
-                state: localFormData.permanentAddress.state
-            },
-            correspondenceAddressSame: sameAsAbove,
-            correspondenceAddress: {
-                complexName: localFormData.correspondenceAddress.complexname,
-                flatNo: localFormData.correspondenceAddress.flatnoroomno,
-                area: localFormData.correspondenceAddress.area,
-                landmark: localFormData.correspondenceAddress.landmark,
-                country: localFormData.correspondenceAddress.country,
-                pincode: localFormData.correspondenceAddress.pincode,
-                city: localFormData.correspondenceAddress.city,
-                district: localFormData.correspondenceAddress.district,
-                state: localFormData.correspondenceAddress.state
-            }
-        });
-        console.log(formData)
-        onNext();
-    };
+
 
     return (
         <div className="address-form">
@@ -213,17 +185,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 handleChange={handleCorrespondenceChange}
             />
 
-            <div className="next-back-btns z-10">
-                <CommonButton className="btn-back border-0" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-                <CommonButton
-                    className="btn-next border-0"
-                    onClick={handleSubmit}
-                >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </CommonButton>
-            </div>
+
         </div>
     );
 }
