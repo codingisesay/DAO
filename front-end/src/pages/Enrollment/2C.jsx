@@ -11,16 +11,10 @@ const PhotoCaptureApp = () => {
                 onCapture={(data) => console.log(data)}
             />
 
-            <PhotoCapture
-                photoType="agent"
-                showLocation={false}
-            />
-
-            <div className="text-center">
+            {/* <div className="text-center">
                 <button
                     onClick={() => {
                         const customerPhoto = localStorage.getItem('customerPhoto');
-                        const agentPhoto = localStorage.getItem('agentPhoto');
                         console.log('Submitting:', { customerPhoto, agentPhoto });
                         // Submit to your backend
                     }}
@@ -28,7 +22,7 @@ const PhotoCaptureApp = () => {
                 >
                     Submit All Photos
                 </button>
-            </div>
+            </div> */}
         </div>
     );
 };
