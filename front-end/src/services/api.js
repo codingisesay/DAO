@@ -1,5 +1,5 @@
 export const API_ENDPOINTS = {
-  BASE_URL: "http://172.16.1.224:8090",
+  // BASE_URL: "http://172.16.1.224:8090",
   BASE_URL: "http://127.0.0.1:8000/api",
 
   AUTH: {
@@ -16,6 +16,15 @@ export const API_ENDPOINTS = {
     AGENTENROLL: '/agent/enrollment'
   },
 
+  PERSONAL_DETAILS: {
+    CREATE: '/agent/personal-details',
+    // UPDATE: (id) => `/agent/personal-details/${id}` // if you want update
+  },
+
+  ADDRESS_DETAILS: {
+    CREATE: '/agent/address-details',
+    // ...
+  },
 
   ADMIN: {},
 

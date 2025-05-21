@@ -47,25 +47,6 @@ function PersonalDetailsForm({ formData, updateFormData }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // Validate Aadhaar number
-        if (name === 'aadharnumber' && value && value.length !== 12) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Aadhaar',
-                text: 'Aadhaar number must be exactly 12 digits.',
-            });
-            return;
-        }
-
-        // Validate PAN number
-        if (name === 'pannumber' && value && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid PAN Format',
-                text: 'PAN should be in format: ABCDE1234F',
-            });
-            return;
-        }
 
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -206,7 +187,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     value={localFormData.pannumber}
                     required
                     max={10}
-                    validationType="ALPHANUMERIC"
+                    validationType="PAN"
                 />
                 <CommanInput
                     onChange={handleChange}

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 import photo_instruction from '../../assets/imgs/photo_instructions.png'
+import user_scan from '../../assets/imgs/face_scan.gif'
 import '@tensorflow/tfjs';
 
 const PhotoCapture = ({
@@ -222,17 +223,17 @@ const PhotoCapture = ({
 
     return (
         <div className="max-w-4xl mx-auto  bg-white rounded-lg ">
-            <h2 className="text-xl font-bold mb-4 text-center text-gray-800">{title}</h2>
+            <h2 className="text-xl font-bold mb-3 text-center text-gray-800">{title}</h2>
 
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row gap-6 items-center ">
                 {/* Camera/Preview Section */}
-                <div className="flex-1">
+                <div className="flex-1 my-6">
                     <div className={`border-2 rounded-lg overflow-hidden transition-all ${photoData ? 'border-gray-300' :
                         isPhotoValid ? 'border-green-500' : 'border-red-500'
                         }`}>
                         {!photoData ? (
                             isCameraActive ? (
-                                <div className="relative" style={{ aspectRatio: '4/3' }}>
+                                <div className="relative " style={{ aspectRatio: '4/3' }}>
                                     <Webcam
                                         audio={false}
                                         ref={webcamRef}
@@ -242,7 +243,7 @@ const PhotoCapture = ({
                                             width: 1280,
                                             height: 720
                                         }}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover "
                                     />
                                     {isCustomerPhoto && (
                                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -314,12 +315,14 @@ const PhotoCapture = ({
                         <img
                             src={instructionImage}
                             alt="Photo instructions"
-                            className="w-full max-w-xs mb-4 mx-auto rounded-lg"
+                            className="w-full max-w-xs my-3 mx-auto rounded-lg"
                         />
                     )}
 
-                    <div className="bg-gray-50 p-4 rounded-lg flex-grow">
-                        <img src={photo_instruction} about='instuctions for photo' />
+                    <div className=" text-center rounded-lg flex-grow">
+
+                        <img class="w-3/5 mx-auto" src={user_scan} alt='instuctions for photo' />
+                        <img class="w-4/5 mx-auto" src={photo_instruction} alt='instuctions for photo' />
                         {/* <h3 className="font-medium mb-3 text-gray-700">Photo Requirements:</h3> */}
                         {/* <ul className="space-y-3">
                             {requirements.map((req, index) => (

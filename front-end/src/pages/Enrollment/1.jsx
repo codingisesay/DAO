@@ -115,24 +115,23 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             complex_name: localFormData.complex_name,
             flat_no: localFormData.flat_no,
             area: localFormData.area,
-            landmark: localFormData.landmark,
+            lankmark: localFormData.lankmark,
             country: localFormData.country,
             pincode: localFormData.pincode,
             city: localFormData.city,
             district: localFormData.district,
             state: localFormData.state,
         };
-        onNext();
+
         try {
             const response = await agentService.agentEnroll(payload);
-            if (response && response.application_no) {
-                updateFormData({
-                    ...formData,
-                    application_no: response.application_no
-                });
-                localStorage.setItem('application_no', response.application_no)
-                onNext();
-            }
+            // Save application_id to formData for next steps
+            updateFormData(1, {
+                ...formData,
+                personalDetails: localFormData,
+                application_id: response.data.application_id // <-- Save this!
+            });
+            onNext();
         } catch (error) {
             Swal.fire({
                 icon: 'error',
