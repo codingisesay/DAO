@@ -154,32 +154,32 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
     const handleSubmit = () => {
         updateFormData({
-            addressDetails: {
-                perComplexName: localFormData.permanentAddress.complexname,
-                perFlatNo: localFormData.permanentAddress.flatnoroomno,
-                perArea: localFormData.permanentAddress.area,
-                perLandmark: localFormData.permanentAddress.landmark,
-                perCountry: localFormData.permanentAddress.country,
-                perPincode: localFormData.permanentAddress.pincode,
-                perCity: localFormData.permanentAddress.city,
-                perDistrict: localFormData.permanentAddress.district,
-                perState: localFormData.permanentAddress.state,
-                perResident: localFormData.permanentAddress.perResident || '',
-                perResidenceStatus: localFormData.permanentAddress.perResidenceStatus || '',
-                resiDoc: localFormData.permanentAddress.resiDoc || '',
-                corComplex: localFormData.correspondenceAddress.complexname,
-                corFlatNo: localFormData.correspondenceAddress.flatnoroomno,
-                corArea: localFormData.correspondenceAddress.area,
-                corLandmark: localFormData.correspondenceAddress.landmark,
-                corCountry: localFormData.correspondenceAddress.country,
-                corPincode: localFormData.correspondenceAddress.pincode,
-                corCity: localFormData.correspondenceAddress.city,
-                corDistrict: localFormData.correspondenceAddress.district,
-                corState: localFormData.correspondenceAddress.state,
-            }
+            per_complex_name: localFormData.permanentAddress.complexname,
+            per_flat_no: localFormData.permanentAddress.flatnoroomno,
+            per_area: localFormData.permanentAddress.area,
+            per_landmark: localFormData.permanentAddress.landmark,
+            per_country: localFormData.permanentAddress.country,
+            per_pincode: localFormData.permanentAddress.pincode,
+            per_city: localFormData.permanentAddress.city,
+            per_district: localFormData.permanentAddress.district,
+            per_state: localFormData.permanentAddress.state,
+
+            cor_complex: localFormData.correspondenceAddress.complexname,
+            cor_flat_no: localFormData.correspondenceAddress.flatnoroomno,
+            cor_area: localFormData.correspondenceAddress.area,
+            cor_landmark: localFormData.correspondenceAddress.landmark,
+            cor_country: localFormData.correspondenceAddress.country,
+            cor_pincode: localFormData.correspondenceAddress.pincode,
+            cor_city: localFormData.correspondenceAddress.city,
+            cor_district: localFormData.correspondenceAddress.district,
+            cor_state: localFormData.correspondenceAddress.state,
+
+            correspondenceAddressSame: sameAsAbove,
         });
+
         onNext();
     };
+
 
     return (
         <div className="address-form">
@@ -212,7 +212,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 handleChange={handleCorrespondenceChange}
             />
 
-            <div className="next-back-btns z-10">
+            {/* <div className="next-back-btns z-10">
                 <CommonButton className="btn-back border-0" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
@@ -222,9 +222,9 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 >
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
-            </div>
+            </div> */}
         </div>
     );
 }
 
-export default AddressForm;
+export default AddressForm; 
