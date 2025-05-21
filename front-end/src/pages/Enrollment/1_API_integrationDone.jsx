@@ -15,24 +15,22 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [showData, setShowData] = useState(!!formData.verificationNumber);
 
     const [localFormData, setLocalFormData] = useState({
-        auth_type: formData.personalDetails.auth_type || '',
-        verificationOption: formData.personalDetails.verificationOption || '',
-        verifynumber: formData.personalDetails.verifynumber || '',
-        first_name: formData.personalDetails.first_name || '',
-        middle_name: formData.personalDetails.middle_name || '',
-        last_name: formData.personalDetails.last_name || '',
-        DOB: formData.personalDetails.DOB || '',
-        gender: formData.personalDetails.gender || '',
-        mobile: formData.personalDetails.mobile || '',
-        complex_name: formData.personalDetails.complex_name || '',
-        flat_no: formData.personalDetails.flat_no || '',
-        area: formData.personalDetails.area || '',
-        landmark: formData.personalDetails.landmark || '',
-        country: formData.personalDetails.country || '',
-        pincode: formData.personalDetails.pincode || '',
-        city: formData.personalDetails.city || '',
-        district: formData.personalDetails.district || '',
-        state: formData.personalDetails.state || '',
+        verifynumber: formData.verifynumber || '',
+        first_name: formData.first_name || '',
+        middle_name: formData.middle_name || '',
+        last_name: formData.last_name || '',
+        DOB: formData.DOB || '',
+        gender: formData.gender || '',
+        mobile: formData.mobile || '',
+        complex_name: formData.complex_name || '',
+        flat_no: formData.flat_no || '',
+        area: formData.area || '',
+        landmark: formData.landmark || '',
+        country: formData.country || '',
+        pincode: formData.pincode || '',
+        city: formData.city || '',
+        district: formData.district || '',
+        state: formData.state || ''
     });
 
     const handleChange = (e) => {
@@ -77,31 +75,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleNextStep = async () => {
         // Update formData before API call
-        updateFormData(1, {
-            applicationType: selectedType,
-            verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
-            personalDetails: {
-                auth_type: selectedOption,
-                verificationOption: selectedOption,
-                verifynumber: localFormData.verifynumber,
-                first_name: localFormData.first_name,
-                middle_name: localFormData.middle_name,
-                last_name: localFormData.last_name,
-                DOB: localFormData.DOB,
-                gender: localFormData.gender,
-                mobile: localFormData.mobile,
-                complex_name: localFormData.complex_name,
-                flat_no: localFormData.flat_no,
-                area: localFormData.area,
-                landmark: localFormData.landmark,
-                country: localFormData.country,
-                pincode: localFormData.pincode,
-                city: localFormData.city,
-                district: localFormData.district,
-                state: localFormData.state,
-            }
-        })
+        updateFormData(1, payload);
 
         const payload = {
             auth_type: selectedOption,
@@ -122,7 +96,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             district: localFormData.district,
             state: localFormData.state,
         };
-        onNext();
+
         try {
             const response = await agentService.agentEnroll(payload);
             if (response && response.application_no) {
@@ -136,7 +110,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: JSON.stringify(error),
+                text: error,
             });
         }
     };

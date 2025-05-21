@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
-import CommanSelectInput from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels'; // Adjust the path as needed
 
@@ -33,7 +33,7 @@ function PersonalOccupationForm() {
 
                 <CommanInput label={labels.birthPlaceCity.label} name="birthPlaceCity" value={formData.birthPlaceCity || ''} onChange={handleChange} required />
                 <CommanInput label={labels.birthPlaceCountry.label} name="birthPlaceCountry" value={formData.birthPlaceCountry || ''} onChange={handleChange} required />
-                <CommanSelectInput label={labels.maritalStatus.label} name="maritalStatus" value={formData.maritalStatus || ''} onChange={handleChange} required options={maritalStatusOptions} />
+                <CommanSelect label={labels.maritalStatus.label} name="maritalStatus" value={formData.maritalStatus || ''} onChange={handleChange} required options={maritalStatusOptions} />
                 <CommanInput label={labels.nationality.label} name="nationality" value={formData.nationality || ''} onChange={handleChange} required />
                 <CommanInput label={labels.religion.label} name="religion" value={formData.religion || ''} onChange={handleChange} required />
                 <CommanInput label={labels.caste.label} name="caste" value={formData.caste || ''} onChange={handleChange} required />

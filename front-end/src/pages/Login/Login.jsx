@@ -11,6 +11,8 @@ import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { loginUser } from '../../utils/endpoints';
+
 const roles = [
     { label: 'AGENT', icon: agenticon },
     { label: 'ADMIN', icon: adminicon },
@@ -20,7 +22,6 @@ const roles = [
 export default function LoginPage() {
     const [selectedRole, setSelectedRole] = useState(null);
     const [formData, setFormData] = useState({ username: '', password: '', captcha: '', role: '' });
-    const { login, error, user } = useAuth();
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const navigate = useNavigate();
@@ -64,25 +65,27 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(formData.username, formData.password, selectedRole);
+        const success = await loginUser(formData.username, formData.password, '01');
+        // alert(success)
         if (success) {
-            if (selectedRole === 'AGENT') {
-                navigate('/agentdashboard');
-            }
-            else if (selectedRole === 'ADMIN') {
-                navigate('/admindashboard');
-            }
-            else if (selectedRole === 'EMPLOYEE') {
-                Swal.fire({
-                    title: 'Login Failed',
-                    text: 'You are not authorized to login as an employee',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    class: 'btn-login', customClass: {
-                        confirmButton: 'btn-error ',  // Custom class for the button
-                    }
-                });
-            }
+            navigate('/agentdashboard');
+            // if (selectedRole === 'AGENT') {
+            //     navigate('/agentdashboard');
+            // }
+            // else if (selectedRole === 'ADMIN') {
+            //     navigate('/admindashboard');
+            // }
+            // else if (selectedRole === 'EMPLOYEE') {
+            //     Swal.fire({
+            //         title: 'Login Failed',
+            //         text: 'You are not authorized to login as an employee',
+            //         icon: 'error',
+            //         confirmButtonText: 'OK',
+            //         class: 'btn-login', customClass: {
+            //             confirmButton: 'btn-error ',  // Custom class for the button
+            //         }
+            //     });
+            // }
         }
         else {
             Swal.fire({

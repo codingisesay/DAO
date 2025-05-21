@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
-import CommanSelect from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
+import { salutation, gender, religion, caste } from '../../data/data';
 
 function PersonalDetailsForm({ formData, updateFormData }) {
     const [localFormData, setLocalFormData] = useState({
@@ -52,14 +53,16 @@ function PersonalDetailsForm({ formData, updateFormData }) {
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
 
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
-                <CommanInput
+
+                <CommanSelect
                     onChange={handleChange}
                     label={labels.salutation.label}
-                    type="text"
                     name="salutation"
                     value={localFormData.salutation}
+                    options={salutation}
                     required
                 />
+
                 <CommanInput
                     onChange={handleChange}
                     label={labels.firstname.label}
@@ -92,28 +95,35 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     value={localFormData.dob}
                     required
                 />
-                <CommanInput
+
+                <CommanSelect
                     onChange={handleChange}
                     label={labels.gender.label}
-                    type="text"
                     name="gender"
                     value={localFormData.gender}
+                    options={gender}
                     required
                 />
-                <CommanInput
+
+                <CommanSelect
                     onChange={handleChange}
                     label={labels.religion.label}
                     name="religion"
                     value={localFormData.religion}
+                    options={religion}
                     required
                 />
-                <CommanInput
+
+                <CommanSelect
                     onChange={handleChange}
                     label={labels.caste.label}
                     name="caste"
                     value={localFormData.caste}
+                    options={caste}
                     required
                 />
+
+
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.maritalStatus.label}

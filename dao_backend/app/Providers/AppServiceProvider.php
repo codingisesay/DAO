@@ -23,7 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        // app(EurekaService::class)->register();
+        app(EurekaService::class)->register();
     
         // Optionally schedule heartbeats using Laravel scheduler
     }

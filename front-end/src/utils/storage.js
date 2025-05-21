@@ -10,33 +10,9 @@ const api = axios.create({
   }
 });
 
-// api.interceptors.request.use((config) => {
-//     const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
-//     const userCode = localStorage.getItem(AUTH_KEYS.USER_CODE);
-//     const branchCode = localStorage.getItem(AUTH_KEYS.BRANCH_CODE);
-//     const refreshToken = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
-//     const operationDate = localStorage.getItem(AUTH_KEYS.OPERATION_DATE);
-//     const lastLogin = localStorage.getItem(AUTH_KEYS.LAST_LOGIN_DATE);
-//     if (token) {
-//         // config.headers['Authorization'] = `Bearer ${token}`;
-//         config.headers['Authorization'] = `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0Mzg1NH0.8Ep8R_dWyOu39OkJritRmrLSd0mGXvUrQleNywNaFhQ`;
-//         config.headers['X-Username'] = userCode;
-//         config.headers['X-BranchCode'] = branchCode;
-//         config.headers['Refresh-Token'] = refreshToken;
-//         config.headers['Operation-Date'] = operationDate;
-//         //config.headers['Last-Login'] = lastLogin;
-
-//     }
-//     return config;
-// });
-
 api.interceptors.request.use((config) => {
-  // Hardcoded token for testing
-  const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0NjY5Mn0.SwZarXNbK0dM-fZKlUHiqkNUfEJUkWJkmvh7ka9WTO8";
-
-  if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
-  }
+  const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjIsImVtYWlsIjoiYWdlbnRAZXhhbXBsZS5jb20iLCJuYW1lIjoiQWdlbnQgVXNlciIsInJvbGUiOiJhZ2VudCIsImV4cCI6MTc0Nzc0MzkwMH0.bzDIcIxFA1EdkmDr3sawHj4nsLtKv445mkF-CccQo-E';
+  config.headers['Authorization'] = `Bearer ${token}`;
   return config;
 });
 
