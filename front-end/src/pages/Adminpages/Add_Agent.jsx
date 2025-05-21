@@ -1,6 +1,6 @@
 import React from 'react';
 import CommanInput from '../../components/CommanInput';
-import CommanSelectInput from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect';
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
 import labels from '../../components/labels';
 import { userDetails, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions } from '../../data/data';
@@ -93,7 +93,7 @@ const AgentRegisterForm = () => {
                                 required
                             />
 
-                            <CommanSelectInput
+                            <CommanSelect
                                 value={formData.region}
                                 label={labels.region?.label || "Region"}
                                 name="region"
@@ -102,7 +102,7 @@ const AgentRegisterForm = () => {
                                 options={regionOptions}
                             />
 
-                            <CommanSelectInput
+                            <CommanSelect
                                 value={formData.branch}
                                 label={labels.branch?.label || "Branch"}
                                 name="branch"

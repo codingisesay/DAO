@@ -38,7 +38,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 
 
 
-Route::middleware(['jwt.auth'])->group(function () {
+// Route::middleware(['jwt.auth'])->group(function () {
 
     Route::middleware('role:admin')->group(function () {
         Route::get('/admin/dashboard', fn() => response()->json(['message' => 'Welcome Admin']));
@@ -60,5 +60,5 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('/user/profile', function (Request $request) {
         return response()->json($request->get('auth_user'));
     });
-});
+// });
 

@@ -20,6 +20,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
+        console.log('formdata till step : ', formData)
+
     };
 
     const handleBack = () => {

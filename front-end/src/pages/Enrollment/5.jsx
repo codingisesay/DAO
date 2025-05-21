@@ -6,7 +6,7 @@ import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
 const p2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
- 
+
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -25,26 +25,10 @@ const p2 = ({ onNext, onBack, formData, updateFormData }) => {
             setActiveStep(activeStep - 1);
         }
     };
-
-    const handleFormChange = (name, value) => {
-        setFormData(prev => {
-            // Handle nested objects (like addresses)
-            if (name.includes('.')) {
-                const [parent, child] = name.split('.');
-                return {
-                    ...prev,
-                    [parent]: {
-                        ...prev[parent],
-                        [child]: value
-                    }
-                };
-            }
-            return {
-                ...prev,
-                [name]: value
-            };
-        });
+    const handleStepSubmit = (stepData) => {
+        updateFormData(5, stepData); // Step 2 data
     };
+
 
     const CurrentStepComponent = steps[activeStep].component;
 
@@ -110,18 +94,6 @@ const p2 = ({ onNext, onBack, formData, updateFormData }) => {
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

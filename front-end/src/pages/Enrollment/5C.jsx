@@ -1,43 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
-function BankFacility() {
-    const [eBankingServices, setEBankingServices] = useState({
-        atmCard: false,
-        upi: false,
-        internetBanking: false,
-        imps: false
-    });
 
-    const [creditFacilities, setCreditFacilities] = useState({
-        consumerLoan: false,
-        homeLoan: false,
-        businessLoan: false,
-        educationLoan: false,
-        carLoan: false,
-        staff: false,
-        relativeFriend: false,
-        other: false
+function BankFacility({ formData, updateFormData }) {
+    const [localFormData, setLocalFormData] = useState({
+        eBankingServices: formData.bankFacility?.eBankingServices || {
+            atmCard: false,
+            upi: false,
+            internetBanking: false,
+            imps: false
+        },
+        creditFacilities: formData.bankFacility?.creditFacilities || {
+            consumerLoan: false,
+            homeLoan: false,
+            businessLoan: false,
+            educationLoan: false,
+            carLoan: false,
+            staff: false,
+            relativeFriend: false,
+            other: false
+        },
+        otherFacilityText: formData.bankFacility?.otherFacilityText || ''
     });
-
-    const [otherFacilityText, setOtherFacilityText] = useState('');
 
     const handleEBankingChange = (e) => {
         const { name, checked } = e.target;
-        setEBankingServices(prev => ({
+        setLocalFormData(prev => ({
             ...prev,
-            [name]: checked
+            eBankingServices: {
+                ...prev.eBankingServices,
+                [name]: checked
+            }
         }));
     };
 
     const handleCreditFacilityChange = (e) => {
         const { name, checked } = e.target;
-        setCreditFacilities(prev => ({
+        setLocalFormData(prev => ({
             ...prev,
-            [name]: checked
+            creditFacilities: {
+                ...prev.creditFacilities,
+                [name]: checked
+            }
         }));
     };
+
+    const handleOtherFacilityTextChange = (e) => {
+        setLocalFormData(prev => ({
+            ...prev,
+            otherFacilityText: e.target.value
+        }));
+    };
+
+    useEffect(() => {
+        updateFormData({
+            ...formData,
+            bankFacility: localFormData
+        });
+    }, [localFormData]);
 
     return (
         <div className="mx-auto">
@@ -46,25 +67,25 @@ function BankFacility() {
                 <CommanCheckbox
                     label={labels.atmCard.label}
                     name="atmCard"
-                    checked={eBankingServices.atmCard}
+                    checked={localFormData.eBankingServices.atmCard}
                     onChange={handleEBankingChange}
                 />
                 <CommanCheckbox
                     label={labels.upi.label}
                     name="upi"
-                    checked={eBankingServices.upi}
+                    checked={localFormData.eBankingServices.upi}
                     onChange={handleEBankingChange}
                 />
                 <CommanCheckbox
                     label={labels.internetBanking.label}
                     name="internetBanking"
-                    checked={eBankingServices.internetBanking}
+                    checked={localFormData.eBankingServices.internetBanking}
                     onChange={handleEBankingChange}
                 />
                 <CommanCheckbox
                     label={labels.imps.label}
                     name="imps"
-                    checked={eBankingServices.imps}
+                    checked={localFormData.eBankingServices.imps}
                     onChange={handleEBankingChange}
                 />
             </div>
@@ -74,64 +95,63 @@ function BankFacility() {
                 <CommanCheckbox
                     label={labels.consumerLoan.label}
                     name="consumerLoan"
-                    checked={creditFacilities.consumerLoan}
+                    checked={localFormData.creditFacilities.consumerLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.homeLoan.label}
                     name="homeLoan"
-                    checked={creditFacilities.homeLoan}
+                    checked={localFormData.creditFacilities.homeLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.businessLoan.label}
                     name="businessLoan"
-                    checked={creditFacilities.businessLoan}
+                    checked={localFormData.creditFacilities.businessLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.educationLoan.label}
                     name="educationLoan"
-                    checked={creditFacilities.educationLoan}
+                    checked={localFormData.creditFacilities.educationLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.carLoan.label}
                     name="carLoan"
-                    checked={creditFacilities.carLoan}
+                    checked={localFormData.creditFacilities.carLoan}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.staff.label}
                     name="staff"
-                    checked={creditFacilities.staff}
+                    checked={localFormData.creditFacilities.staff}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.relativeFriend.label}
                     name="relativeFriend"
-                    checked={creditFacilities.relativeFriend}
+                    checked={localFormData.creditFacilities.relativeFriend}
                     onChange={handleCreditFacilityChange}
                 />
                 <CommanCheckbox
                     label={labels.other.label}
                     name="other"
-                    checked={creditFacilities.other}
+                    checked={localFormData.creditFacilities.other}
                     onChange={handleCreditFacilityChange}
                 />
-                {creditFacilities.other && (
+                {localFormData.creditFacilities.other && (
                     <div className="md:col-span-4">
                         <CommanInput
                             label={labels.otherFacilityText.label}
                             name="otherFacilityText"
-                            value={otherFacilityText}
-                            onChange={(e) => setOtherFacilityText(e.target.value)}
+                            value={localFormData.otherFacilityText}
+                            onChange={handleOtherFacilityTextChange}
                         />
                     </div>
                 )}
             </div>
         </div>
-
     );
 }
 

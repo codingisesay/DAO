@@ -12,14 +12,38 @@ import Stepper from './Stepper';
 function Enrollmentform() {
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
-
+    // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
     const [formData, setFormData] = useState({
+        application_no: '',
+        applicationType: '',
+        verificationOption: '',
+        verificationNumber: '',
         correspondenceAddressSame: false,
+        personalDetails: {
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            dob: '',
+            gender: '',
+            mobile: '',
+            complexName: '',
+            flatNoRoomNo: '',
+            area: '',
+            landmark: '',
+            country: '',
+            pincode: '',
+            city: '',
+            district: '',
+            state: ''
+        },
+        permanentAddress: {},
+        correspondenceAddress: {},
         documents: [],
+        personalDetailsf5: [],
     });
-
     // Update form data handler
+
     const updateFormData = (step, data) => {
         setFormData(prev => {
             if (step === 1) {
@@ -38,6 +62,13 @@ function Enrollmentform() {
                         : { ...prev.correspondenceAddress, ...data.correspondenceAddress }
                 };
             }
+            else if (step === 5) {
+                return {
+                    ...prev,
+                    ...data
+                };
+            }
+
             // Add cases for other steps as needed
             return { ...prev, ...data };
         });

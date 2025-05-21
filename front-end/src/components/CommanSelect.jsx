@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 
-const CommanSelectInput = ({
+const CommanSelect = ({
     label,
     name,
     value = '',
@@ -60,4 +60,4 @@ const CommanSelectInput = ({
     );
 };
 
-export default CommanSelectInput;
+export default CommanSelect;
