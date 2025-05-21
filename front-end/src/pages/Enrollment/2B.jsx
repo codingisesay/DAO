@@ -3,69 +3,69 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 
-function AddressSection({ formData, handleChange }) {
+function AddressSection({ formData, handleChange, prefix }) {
     return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
             <CommanInput
                 label={labels.complexname.label}
-                name="complexname"
-                value={formData.complexname}
+                name={`${prefix}_complex`}
+                value={formData[`${prefix}_complex`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.flatnoroomno.label}
-                name="flatnoroomno"
-                value={formData.flatnoroomno}
+                name={`${prefix}_flat_no`}
+                value={formData[`${prefix}_flat_no`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.area.label}
-                name="area"
-                value={formData.area}
+                name={`${prefix}_area`}
+                value={formData[`${prefix}_area`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.landmark.label}
-                name="landmark"
-                value={formData.landmark}
+                name={`${prefix}_landmark`}
+                value={formData[`${prefix}_landmark`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.country.label}
-                name="country"
-                value={formData.country}
+                name={`${prefix}_country`}
+                value={formData[`${prefix}_country`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.pincode.label}
-                name="pincode"
-                value={formData.pincode}
+                name={`${prefix}_pincode`}
+                value={formData[`${prefix}_pincode`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.city.label}
-                name="city"
-                value={formData.city}
+                name={`${prefix}_city`}
+                value={formData[`${prefix}_city`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.district.label}
-                name="district"
-                value={formData.district}
+                name={`${prefix}_district`}
+                value={formData[`${prefix}_district`] || ''}
                 onChange={handleChange}
                 required
             />
             <CommanInput
                 label={labels.state.label}
-                name="state"
-                value={formData.state}
+                name={`${prefix}_state`}
+                value={formData[`${prefix}_state`] || ''}
                 onChange={handleChange}
                 required
             />
@@ -80,18 +80,36 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
     const [localFormData, setLocalFormData] = useState({
         permanentAddress: {
-            ...formData.permanentAddress,
-            complexname: formData.permanentAddress?.complexName || '',
-            flatnoroomno: formData.permanentAddress?.flatNo || '',
-            // Map other fields as needed
+            per_complex: formData.permanentAddress?.per_complex || '',
+            per_flat_no: formData.permanentAddress?.per_flat_no || '',
+            per_area: formData.permanentAddress?.per_area || '',
+            per_landmark: formData.permanentAddress?.per_landmark || '',
+            per_country: formData.permanentAddress?.per_country || '',
+            per_pincode: formData.permanentAddress?.per_pincode || '',
+            per_city: formData.permanentAddress?.per_city || '',
+            per_district: formData.permanentAddress?.per_district || '',
+            per_state: formData.permanentAddress?.per_state || '',
         },
         correspondenceAddress: {
-            ...formData.correspondenceAddress,
-            complexname: formData.correspondenceAddress?.complexName || '',
-            flatnoroomno: formData.correspondenceAddress?.flatNo || '',
-            // Map other fields as needed
+            cor_complex: formData.correspondenceAddress?.cor_complex || '',
+            cor_flat_no: formData.correspondenceAddress?.cor_flat_no || '',
+            cor_area: formData.correspondenceAddress?.cor_area || '',
+            cor_landmark: formData.correspondenceAddress?.cor_landmark || '',
+            cor_country: formData.correspondenceAddress?.cor_country || '',
+            cor_pincode: formData.correspondenceAddress?.cor_pincode || '',
+            cor_city: formData.correspondenceAddress?.cor_city || '',
+            cor_district: formData.correspondenceAddress?.cor_district || '',
+            cor_state: formData.correspondenceAddress?.cor_state || '',
         }
     });
+
+    // Update parent formData when localFormData changes
+    React.useEffect(() => {
+        updateFormData({
+            permanentAddress: localFormData.permanentAddress,
+            correspondenceAddress: localFormData.correspondenceAddress,
+        });
+    }, [localFormData, updateFormData]);
 
     const handlePermanentChange = (e) => {
         const { name, value } = e.target;
@@ -103,9 +121,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                     [name]: value
                 }
             };
-
             if (sameAsAbove) {
-                updated.correspondenceAddress = { ...updated.permanentAddress };
+                updated.correspondenceAddress = Object.fromEntries(
+                    Object.entries(updated.permanentAddress).map(([k, v]) => [
+                        k.replace('per_', 'cor_'), v
+                    ])
+                );
             }
             return updated;
         });
@@ -129,7 +150,11 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setLocalFormData(prev => ({
             ...prev,
             correspondenceAddress: newValue
-                ? { ...prev.permanentAddress }
+                ? Object.fromEntries(
+                    Object.entries(prev.permanentAddress).map(([k, v]) => [
+                        k.replace('per_', 'cor_'), v
+                    ])
+                )
                 : prev.correspondenceAddress
         }));
     };
@@ -138,21 +163,19 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setLocalFormData(prev => ({
             ...prev,
             correspondenceAddress: {
-                complexname: '',
-                flatnoroomno: '',
-                area: '',
-                landmark: '',
-                country: '',
-                pincode: '',
-                city: '',
-                district: '',
-                state: '',
+                cor_complex: '',
+                cor_flat_no: '',
+                cor_area: '',
+                cor_landmark: '',
+                cor_country: '',
+                cor_pincode: '',
+                cor_city: '',
+                cor_district: '',
+                cor_state: '',
             }
         }));
         setSameAsAbove(false);
     };
-
-
 
     return (
         <div className="address-form">
@@ -160,6 +183,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             <AddressSection
                 formData={localFormData.permanentAddress}
                 handleChange={handlePermanentChange}
+                prefix="per"
             />
 
             <div className="flex items-center mt-6 mb-2">
@@ -183,11 +207,10 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             <AddressSection
                 formData={localFormData.correspondenceAddress}
                 handleChange={handleCorrespondenceChange}
+                prefix="cor"
             />
-
-
         </div>
     );
 }
 
-export default AddressForm; 
+export default AddressForm;

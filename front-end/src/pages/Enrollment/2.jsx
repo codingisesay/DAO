@@ -20,28 +20,29 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const handleNext = async () => {
         // If on Address Details step (step 1), call the API
         if (activeStep === 1) {
-            // Prepare payload from formData
             const address = formData.addressDetails || {};
             const payload = {
-                application_id: formData.application_id, // Make sure this is set
-                per_complex_name: address.permanentAddress?.complexname || '',
-                per_flat_no: address.permanentAddress?.flatnoroomno || '',
-                per_area: address.permanentAddress?.area || '',
-                per_landmark: address.permanentAddress?.landmark || '',
-                per_country: address.permanentAddress?.country || '',
-                per_pincode: address.permanentAddress?.pincode || '',
-                per_city: address.permanentAddress?.city || '',
-                per_district: address.permanentAddress?.district || '',
-                per_state: address.permanentAddress?.state || '',
-                cor_complex: address.correspondenceAddress?.complexname || '',
-                cor_flat_no: address.correspondenceAddress?.flatnoroomno || '',
-                cor_area: address.correspondenceAddress?.area || '',
-                cor_landmark: address.correspondenceAddress?.landmark || '',
-                cor_country: address.correspondenceAddress?.country || '',
-                cor_pincode: address.correspondenceAddress?.pincode || '',
-                cor_city: address.correspondenceAddress?.city || '',
-                cor_district: address.correspondenceAddress?.district || '',
-                cor_state: address.correspondenceAddress?.state || '',
+                application_id: formData.application_id,
+                // Permanent Address
+                per_complex_name: address.permanentAddress?.per_complex_name || '',
+                per_flat_no: address.permanentAddress?.per_flat_no || '',
+                per_area: address.permanentAddress?.per_area || '',
+                per_landmark: address.permanentAddress?.per_landmark || '',
+                per_country: address.permanentAddress?.per_country || '',
+                per_pincode: address.permanentAddress?.per_pincode || '',
+                per_city: address.permanentAddress?.per_city || '',
+                per_district: address.permanentAddress?.per_district || '',
+                per_state: address.permanentAddress?.per_state || '',
+                // Correspondence Address
+                cor_complex: address.correspondenceAddress?.cor_complex || '',
+                cor_flat_no: address.correspondenceAddress?.cor_flat_no || '',
+                cor_area: address.correspondenceAddress?.cor_area || '',
+                cor_landmark: address.correspondenceAddress?.cor_landmark || '',
+                cor_country: address.correspondenceAddress?.cor_country || '',
+                cor_pincode: address.correspondenceAddress?.cor_pincode || '',
+                cor_city: address.correspondenceAddress?.cor_city || '',
+                cor_district: address.correspondenceAddress?.cor_district || '',
+                cor_state: address.correspondenceAddress?.cor_state || '',
             };
             try {
                 const response = await addressDetailsService.create(payload);
@@ -65,7 +66,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleStepSubmit = (stepData) => {
-        updateFormData(2, stepData); // Step 2 data
+        updateFormData(2, { addressDetails: stepData }); // Step 2 data
     };
 
     // Updated handleSubmit to use API_ENDPOINTS and check for application_id
