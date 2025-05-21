@@ -1,5 +1,6 @@
 export const API_ENDPOINTS = {
   BASE_URL: "http://172.16.1.224:8090",
+  BASE_URL: "http://127.0.0.1:8000/api",
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -12,7 +13,7 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    AGENTENROLL: '/dao/agent/enrollment'
+    AGENTENROLL: '/agent/enrollment'
   },
 
 

@@ -22,7 +22,7 @@ class AgentController extends Controller
 
     public function EnrollmentDetails(Request $request)
     {
-        $user = $request->get('auth_user');
+        // $user = $request->get('auth_user');
 
         // Normalize gender input to match validation
             $request->merge([
@@ -58,7 +58,7 @@ class AgentController extends Controller
         $validatedData['application_no'] = $applicationNo;
 
         // Add the agent ID to the validated data from  the authenticated user
-        $validatedData['agent_id'] = $user['sub'];
+        $validatedData['agent_id'] = 1;
 
         // Insert data into the database
         $customerApplication = CustomerApplicationDetail::create($validatedData);
