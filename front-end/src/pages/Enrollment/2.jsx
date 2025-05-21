@@ -6,7 +6,6 @@ import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { apiService } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
-import { addressDetailsService } from '../../services/apiServices';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -17,41 +16,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         { label: 'Customer Photo', icon: 'bi bi-image', component: CameraCapture }
     ];
 
-    const handleNext = async () => {
-        // If on Address Details step (step 1), call the API
-        if (activeStep === 1) {
-            const address = formData.addressDetails || {};
-            const payload = {
-                application_id: formData.application_id,
-                // Permanent Address
-                per_complex_name: address.permanentAddress?.per_complex_name || '',
-                per_flat_no: address.permanentAddress?.per_flat_no || '',
-                per_area: address.permanentAddress?.per_area || '',
-                per_landmark: address.permanentAddress?.per_landmark || '',
-                per_country: address.permanentAddress?.per_country || '',
-                per_pincode: address.permanentAddress?.per_pincode || '',
-                per_city: address.permanentAddress?.per_city || '',
-                per_district: address.permanentAddress?.per_district || '',
-                per_state: address.permanentAddress?.per_state || '',
-                // Correspondence Address
-                cor_complex: address.correspondenceAddress?.cor_complex || '',
-                cor_flat_no: address.correspondenceAddress?.cor_flat_no || '',
-                cor_area: address.correspondenceAddress?.cor_area || '',
-                cor_landmark: address.correspondenceAddress?.cor_landmark || '',
-                cor_country: address.correspondenceAddress?.cor_country || '',
-                cor_pincode: address.correspondenceAddress?.cor_pincode || '',
-                cor_city: address.correspondenceAddress?.cor_city || '',
-                cor_district: address.correspondenceAddress?.cor_district || '',
-                cor_state: address.correspondenceAddress?.cor_state || '',
-            };
-            try {
-                const response = await addressDetailsService.create(payload);
-                alert(response.data.message || 'Address details saved successfully.');
-            } catch (err) {
-                alert('Failed to save address details');
-                return; // Prevent moving to next step if API fails
-            }
-        }
+    const handleNext = () => {
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
@@ -66,7 +31,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleStepSubmit = (stepData) => {
-        updateFormData(2, { addressDetails: stepData }); // Step 2 data
+        updateFormData(2, stepData); // Step 2 data
     };
 
     // Updated handleSubmit to use API_ENDPOINTS and check for application_id
@@ -101,6 +66,40 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             handleNext();
         } catch (err) {
             // ...error handling...
+        }
+    };
+
+    const handleAddressSubmit = async () => {
+        try {
+            const ad = formData.addressDetails || formData; // adjust as per your state shape
+            const payload = {
+                application_id: formData.application_id,
+                per_complex_name: ad.per_complex_name,
+                per_flat_no: ad.per_flat_no,
+                per_area: ad.per_area,
+                per_landmark: ad.per_landmark,
+                per_country: ad.per_country,
+                per_pincode: ad.per_pincode,
+                per_city: ad.per_city,
+                per_district: ad.per_district,
+                per_state: ad.per_state,
+                cor_complex: ad.cor_complex,
+                cor_flat_no: ad.cor_flat_no,
+                cor_area: ad.cor_area,
+                cor_landmark: ad.cor_landmark,
+                cor_country: ad.cor_country,
+                cor_pincode: ad.cor_pincode,
+                cor_city: ad.cor_city,
+                cor_district: ad.cor_district,
+                cor_state: ad.cor_state,
+                status: null, // or as needed
+            };
+
+            const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            alert(response.data.message || 'Address details saved successfully.');
+            handleNext();
+        } catch (err) {
+            alert('Failed to save address details');
         }
     };
 
@@ -154,10 +153,10 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     className="btn-next"
                     onClick={
                         activeStep === 0
-                            ? handleSubmit // Call handleSubmit for Personal Details step
-                            : activeStep === 2
-                                ? onNext
-                                : handleNext
+                            ? handleSubmit // Personal Details
+                            : activeStep === 1
+                                ? handleAddressSubmit // Address Details
+                                : onNext // Photo step
                     }
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
