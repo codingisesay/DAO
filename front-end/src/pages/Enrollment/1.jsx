@@ -135,7 +135,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: JSON.stringify(error),
+                text: "Mendatory Fields Are Empty!",
             });
         }
     };
@@ -383,7 +383,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 name="pincode"
                                 value={localFormData.pincode}
                                 required
-                                max={10}
+                                max={6}
                                 validationType="NUMBER_ONLY"
                             />
 

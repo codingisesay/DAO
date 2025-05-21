@@ -147,7 +147,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="mobile"
                     value={localFormData.mobile}
                     required
-                    max={15}
+                    max={10}
                     validationType="PHONE"
                 />
                 <CommanInput
@@ -157,7 +157,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="alternatemobile"
                     value={localFormData.alternatemobile}
                     required
-                    max={15}
+                    max={10}
                     validationType="PHONE"
                 />
                 <CommanInput

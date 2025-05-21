@@ -6,6 +6,8 @@ import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { apiService } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
+import { addressDetailsService } from '../../services/apiServices';
+import Swal from 'sweetalert2';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(1);
@@ -16,7 +18,47 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         { label: 'Customer Photo', icon: 'bi bi-image', component: CameraCapture }
     ];
 
-    const handleNext = () => {
+    const handleNext = async () => {
+        // If on Address Details step (step 1), call the API
+        if (activeStep === 1) {
+            const address = formData.addressDetails || {};
+            const payload = {
+                application_id: formData.application_id,
+                // Permanent Address
+                per_complex_name: address.permanentAddress?.per_complex_name || '',
+                per_flat_no: address.permanentAddress?.per_flat_no || '',
+                per_area: address.permanentAddress?.per_area || '',
+                per_landmark: address.permanentAddress?.per_landmark || '',
+                per_country: address.permanentAddress?.per_country || '',
+                per_pincode: address.permanentAddress?.per_pincode || '',
+                per_city: address.permanentAddress?.per_city || '',
+                per_district: address.permanentAddress?.per_district || '',
+                per_state: address.permanentAddress?.per_state || '',
+                // Correspondence Address
+                cor_complex: address.correspondenceAddress?.cor_complex || '',
+                cor_flat_no: address.correspondenceAddress?.cor_flat_no || '',
+                cor_area: address.correspondenceAddress?.cor_area || '',
+                cor_landmark: address.correspondenceAddress?.cor_landmark || '',
+                cor_country: address.correspondenceAddress?.cor_country || '',
+                cor_pincode: address.correspondenceAddress?.cor_pincode || '',
+                cor_city: address.correspondenceAddress?.cor_city || '',
+                cor_district: address.correspondenceAddress?.cor_district || '',
+                cor_state: address.correspondenceAddress?.cor_state || '',
+            };
+            try {
+                const response = await addressDetailsService.create(payload);
+                alert(response.data.message || 'Address details saved successfully.');
+
+                Swal.fire({
+                    icon: 'error',
+                    text: response,
+                });
+
+            } catch (err) {
+                alert('Failed to save address details');
+                return; // Prevent moving to next step if API fails
+            }
+        }
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
@@ -31,69 +73,39 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleStepSubmit = (stepData) => {
-        updateFormData(2, stepData); // Step 2 data
+        updateFormData(2, { addressDetails: stepData }); // Step 2 data
     };
 
     // Updated handleSubmit to use API_ENDPOINTS and check for application_id
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
         try {
-            if (activeStep === 0) {
-                // Personal Details API
-                const pd = formData.personalDetails || {};
-                const payload = {
-                    application_id: formData.application_id,
-                    salutation: pd.salutation,
-                    religion: pd.religion,
-                    caste: pd.caste,
-                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                    alt_mob_no: pd.alternatemobile,
-                    email: pd.email,
-                    adhar_card: pd.aadharnumber,
-                    pan_card: pd.pannumber,
-                    passport: pd.passportno,
-                    driving_license: pd.drivinglicence,
-                    voter_id: pd.voterid,
-                    // status: formData.status,
-                };
+            const pd = formData.personalDetails || {};
+            const payload = {
+                application_id: formData.application_id, // Make sure this is set from previous step
+                salutation: pd.salutation,
+                religion: pd.religion,
+                caste: pd.caste,
+                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                alt_mob_no: pd.alternatemobile,
+                email: pd.email,
+                adhar_card: pd.aadharnumber,
+                pan_card: pd.pannumber,
+                passport: pd.passportno,
+                driving_license: pd.drivinglicence,
+                voter_id: pd.voterid,
+                status: formData.status, // Should be 'APPROVED' or 'REJECT'
+            };
 
-                let response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
-                alert(response.data.message || 'Personal details saved successfully.');
-                handleNext();
-            } else if (activeStep === 1) {
-                alert('here')
-                // Address Details API
-                const ad = formData.addressDetails || {};
-                const payload = {
-                    application_id: formData.application_id,
-                    per_complex_name: ad.perComplexName,
-                    per_flat_no: ad.perFlatNo,
-                    per_area: ad.perArea,
-                    per_landmark: ad.perLandmark,
-                    per_country: ad.perCountry,
-                    per_pincode: ad.perPincode,
-                    per_city: ad.perCity,
-                    per_district: ad.perDistrict,
-                    per_state: ad.perState,
-                    per_resident: ad.perResident,
-                    per_residence_status: ad.perResidenceStatus,
-                    resi_doc: ad.resiDoc,
-                    cor_complex: ad.corComplex,
-                    cor_flat_no: ad.corFlatNo,
-                    cor_area: ad.corArea,
-                    cor_landmark: ad.corLandmark,
-                    cor_country: ad.corCountry,
-                    cor_pincode: ad.corPincode,
-                    cor_city: ad.corCity,
-                    cor_district: ad.corDistrict,
-                    cor_state: ad.corState,
-                    status: formData.status,
-                };
-
-                let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-                alert(response.data.message || 'Address details saved successfully.');
-                handleNext();
+            let response;
+            if (formData.id) {
+                response = await apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(formData.id), payload);
+            } else {
+                response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
             }
+
+            alert(response.data.message || 'Personal details saved successfully.');
+            handleNext();
         } catch (err) {
             // ...error handling...
         }
@@ -128,8 +140,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             </div>
 
             <div className="nestedstepper-form-container">
-
-                {/* {activeStep} */}
+                {activeStep}
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
@@ -150,7 +161,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 <CommonButton
                     className="btn-next"
                     onClick={
-                        activeStep === 0 || activeStep === 1
+                        activeStep === 0
                             ? handleSubmit // Call handleSubmit for Personal Details step
                             : activeStep === 2
                                 ? onNext

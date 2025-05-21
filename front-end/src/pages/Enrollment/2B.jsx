@@ -4,87 +4,87 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 
-function AddressSection({ formData, handleChange, isRequired = true }) {
+function AddressSection({ formData, handleChange, prefix }) {
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
             <CommanInput
                 label={labels.complexname.label}
-                name="complexname"
-                value={formData.complexname}
+                name={`${prefix}_complex`}
+                value={formData[`${prefix}_complex`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={50}
                 validationType="ALPHANUMERIC"
             />
             <CommanInput
                 label={labels.flatnoroomno.label}
-                name="flatnoroomno"
-                value={formData.flatnoroomno}
+                name={`${prefix}_flat_no`}
+                value={formData[`${prefix}_flat_no`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={20}
                 validationType="ALPHANUMERIC"
             />
             <CommanInput
                 label={labels.area.label}
-                name="area"
-                value={formData.area}
+                name={`${prefix}_area`}
+                value={formData[`${prefix}_area`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={50}
                 validationType="ALPHABETS_AND_SPACE"
             />
             <CommanInput
                 label={labels.landmark.label}
-                name="landmark"
-                value={formData.landmark}
+                name={`${prefix}_landmark`}
+                value={formData[`${prefix}_landmark`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={50}
                 validationType="EVERYTHING"
             />
             <CommanInput
                 label={labels.country.label}
-                name="country"
-                value={formData.country}
+                name={`${prefix}_country`}
+                value={formData[`${prefix}_country`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
             />
             <CommanInput
                 label={labels.pincode.label}
-                name="pincode"
-                value={formData.pincode}
+                name={`${prefix}_pincode`}
+                value={formData[`${prefix}_pincode`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={10}
                 validationType="NUMBER_ONLY"
             />
             <CommanInput
                 label={labels.city.label}
-                name="city"
-                value={formData.city}
+                name={`${prefix}_city`}
+                value={formData[`${prefix}_city`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
             />
             <CommanInput
                 label={labels.district.label}
-                name="district"
-                value={formData.district}
+                name={`${prefix}_district`}
+                value={formData[`${prefix}_district`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
             />
             <CommanInput
                 label={labels.state.label}
-                name="state"
-                value={formData.state}
+                name={`${prefix}_state`}
+                value={formData[`${prefix}_state`] || ''}
                 onChange={handleChange}
-                required={isRequired}
+                required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
             />
@@ -99,50 +99,36 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
     const [localFormData, setLocalFormData] = useState({
         permanentAddress: {
-            ...formData.permanentAddress,
-            complexname: formData.permanentAddress?.complexName || '',
-            flatnoroomno: formData.permanentAddress?.flatNo || '',
-            area: formData.permanentAddress?.area || '',
-            landmark: formData.permanentAddress?.landmark || '',
-            country: formData.permanentAddress?.country || '',
-            pincode: formData.permanentAddress?.pincode || '',
-            city: formData.permanentAddress?.city || '',
-            district: formData.permanentAddress?.district || '',
-            state: formData.permanentAddress?.state || ''
+            per_complex: formData.permanentAddress?.per_complex || '',
+            per_flat_no: formData.permanentAddress?.per_flat_no || '',
+            per_area: formData.permanentAddress?.per_area || '',
+            per_landmark: formData.permanentAddress?.per_landmark || '',
+            per_country: formData.permanentAddress?.per_country || '',
+            per_pincode: formData.permanentAddress?.per_pincode || '',
+            per_city: formData.permanentAddress?.per_city || '',
+            per_district: formData.permanentAddress?.per_district || '',
+            per_state: formData.permanentAddress?.per_state || '',
         },
         correspondenceAddress: {
-            ...formData.correspondenceAddress,
-            complexname: formData.correspondenceAddress?.complexName || '',
-            flatnoroomno: formData.correspondenceAddress?.flatNo || '',
-            area: formData.correspondenceAddress?.area || '',
-            landmark: formData.correspondenceAddress?.landmark || '',
-            country: formData.correspondenceAddress?.country || '',
-            pincode: formData.correspondenceAddress?.pincode || '',
-            city: formData.correspondenceAddress?.city || '',
-            district: formData.correspondenceAddress?.district || '',
-            state: formData.correspondenceAddress?.state || ''
+            cor_complex: formData.correspondenceAddress?.cor_complex || '',
+            cor_flat_no: formData.correspondenceAddress?.cor_flat_no || '',
+            cor_area: formData.correspondenceAddress?.cor_area || '',
+            cor_landmark: formData.correspondenceAddress?.cor_landmark || '',
+            cor_country: formData.correspondenceAddress?.cor_country || '',
+            cor_pincode: formData.correspondenceAddress?.cor_pincode || '',
+            cor_city: formData.correspondenceAddress?.cor_city || '',
+            cor_district: formData.correspondenceAddress?.cor_district || '',
+            cor_state: formData.correspondenceAddress?.cor_state || '',
         }
     });
 
-    const validateAddress = (address, isRequired) => {
-        if (!isRequired && Object.values(address).every(val => !val)) {
-            return true;
-        }
-
-        if (isRequired && (!address.complexname || address.complexname.length > 50)) {
-            Swal.fire('Error', 'Complex name is required and must be less than 50 characters', 'error');
-            return false;
-        }
-        if (isRequired && (!address.flatnoroomno || address.flatnoroomno.length > 20)) {
-            Swal.fire('Error', 'Flat/Room number must be less than 20 characters', 'error');
-            return false;
-        }
-        if (isRequired && (!address.pincode || !/^\d{6}$/.test(address.pincode))) {
-            Swal.fire('Error', 'Pincode must be exactly 6 digits', 'error');
-            return false;
-        }
-        return true;
-    };
+    // Update parent formData when localFormData changes
+    React.useEffect(() => {
+        updateFormData({
+            permanentAddress: localFormData.permanentAddress,
+            correspondenceAddress: localFormData.correspondenceAddress,
+        });
+    }, [localFormData, updateFormData]);
 
     const handlePermanentChange = (e) => {
         const { name, value } = e.target;
@@ -154,9 +140,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                     [name]: value
                 }
             };
-
             if (sameAsAbove) {
-                updated.correspondenceAddress = { ...updated.permanentAddress };
+                updated.correspondenceAddress = Object.fromEntries(
+                    Object.entries(updated.permanentAddress).map(([k, v]) => [
+                        k.replace('per_', 'cor_'), v
+                    ])
+                );
             }
             return updated;
         });
@@ -180,18 +169,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setLocalFormData(prev => ({
             ...prev,
             correspondenceAddress: newValue
-                ? { ...prev.permanentAddress }
-                : {
-                    complexname: '',
-                    flatnoroomno: '',
-                    area: '',
-                    landmark: '',
-                    country: '',
-                    pincode: '',
-                    city: '',
-                    district: '',
-                    state: '',
-                }
+                ? Object.fromEntries(
+                    Object.entries(prev.permanentAddress).map(([k, v]) => [
+                        k.replace('per_', 'cor_'), v
+                    ])
+                )
+                : prev.correspondenceAddress
         }));
     };
 
@@ -199,57 +182,18 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setLocalFormData(prev => ({
             ...prev,
             correspondenceAddress: {
-                complexname: '',
-                flatnoroomno: '',
-                area: '',
-                landmark: '',
-                country: '',
-                pincode: '',
-                city: '',
-                district: '',
-                state: '',
+                cor_complex: '',
+                cor_flat_no: '',
+                cor_area: '',
+                cor_landmark: '',
+                cor_country: '',
+                cor_pincode: '',
+                cor_city: '',
+                cor_district: '',
+                cor_state: '',
             }
         }));
         setSameAsAbove(false);
-    };
-
-    const handleSubmit = () => {
-        if (!validateAddress(localFormData.permanentAddress, true)) return;
-
-        // Only validate correspondence address if not same as above AND fields are filled
-        const hasCorrespondenceData = Object.values(localFormData.correspondenceAddress).some(val => val);
-        if (!sameAsAbove && hasCorrespondenceData && !validateAddress(localFormData.correspondenceAddress, false)) {
-            return;
-        }
-
-        updateFormData({
-            permanentAddress: {
-                complexName: localFormData.permanentAddress.complexname,
-                flatNo: localFormData.permanentAddress.flatnoroomno,
-                area: localFormData.permanentAddress.area,
-                landmark: localFormData.permanentAddress.landmark,
-                country: localFormData.permanentAddress.country,
-                pincode: localFormData.permanentAddress.pincode,
-                city: localFormData.permanentAddress.city,
-                district: localFormData.permanentAddress.district,
-                state: localFormData.permanentAddress.state
-            },
-            correspondenceAddressSame: sameAsAbove,
-            correspondenceAddress: sameAsAbove
-                ? null
-                : {
-                    complexName: localFormData.correspondenceAddress.complexname,
-                    flatNo: localFormData.correspondenceAddress.flatnoroomno,
-                    area: localFormData.correspondenceAddress.area,
-                    landmark: localFormData.correspondenceAddress.landmark,
-                    country: localFormData.correspondenceAddress.country,
-                    pincode: localFormData.correspondenceAddress.pincode,
-                    city: localFormData.correspondenceAddress.city,
-                    district: localFormData.correspondenceAddress.district,
-                    state: localFormData.correspondenceAddress.state
-                }
-        });
-        onNext();
     };
 
     return (
@@ -258,7 +202,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             <AddressSection
                 formData={localFormData.permanentAddress}
                 handleChange={handlePermanentChange}
-                isRequired={true}
+                prefix="per"
             />
 
             <div className="flex items-center mt-6 mb-2">
@@ -284,21 +228,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             <AddressSection
                 formData={localFormData.correspondenceAddress}
                 handleChange={handleCorrespondenceChange}
-                isRequired={!sameAsAbove}
-                disabled={sameAsAbove}
+                prefix="cor"
             />
-
-            {/* <div className="next-back-btns z-10">
-                <CommonButton className="btn-back border-0" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-                <CommonButton
-                    className="btn-next border-0"
-                    onClick={handleSubmit}
-                >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </CommonButton>
-            </div> */}
         </div>
     );
 }
