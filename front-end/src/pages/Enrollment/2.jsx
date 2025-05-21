@@ -40,10 +40,11 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         try {
             const pd = formData.personalDetails || {};
             const payload = {
+                application_id: formData.application_id, // Make sure this is set from previous step
                 salutation: pd.salutation,
                 religion: pd.religion,
                 caste: pd.caste,
-                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined, // <-- fix here
+                marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
                 alt_mob_no: pd.alternatemobile,
                 email: pd.email,
                 adhar_card: pd.aadharnumber,
@@ -51,7 +52,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 passport: pd.passportno,
                 driving_license: pd.drivinglicence,
                 voter_id: pd.voterid,
-                status: formData.status,
+                status: formData.status, // Should be 'APPROVED' or 'REJECT'
             };
 
             let response;

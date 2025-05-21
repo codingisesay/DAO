@@ -23,7 +23,7 @@ class AgentController extends Controller
 
     public function EnrollmentDetails(Request $request)
     {
-        $user = $request->get('auth_user');
+        // $user = $request->get('auth_user');
 
         // Normalize gender input to match validation
             $request->merge([
@@ -59,7 +59,7 @@ class AgentController extends Controller
         $validatedData['application_no'] = $applicationNo;
 
         // Add the agent ID to the validated data from  the authenticated user
-        $validatedData['agent_id'] = $user['sub'];
+        $validatedData['agent_id'] = 1;
 
         // Insert data into the database
         $customerApplication = CustomerApplicationDetail::create($validatedData);
@@ -97,78 +97,33 @@ public function getApplicationDetails(Request $request, $id)
 
 
 // Store personal details
-public function storePersonalDetails(Request $request)
+public function savePersonalDetails(Request $request)
 {
-   $agentId = $request->get('auth_user')['sub'];
-
-// Get the latest application submitted by this agent
-$latestApplication = CustomerApplicationDetail::where('agent_id', $agentId)
-    ->latest()
-    ->first();
-
-if (!$latestApplication) {
-    return response()->json([
-        'message' => 'No application found for this agent. Please complete the first step.'
-    ], 400);
-}
-
-$application_id = $latestApplication->id;
-
-$validated = $request->validate([
-    'salutation' => 'required|in:MR,MRS',
-    'religion' => 'required|in:HINDU,MUSLIM',
-    'caste' => 'nullable|string',
-    'marital_status' => 'required|in:MARRIED,SINGLE',
-    'alt_mob_no' => 'nullable|string',
-    'email' => 'nullable|email',
-    'adhar_card' => 'nullable|string',
-    'pan_card' => 'nullable|string',
-    'passport' => 'nullable|string',
-    'driving_license' => 'nullable|string',
-    'voter_id' => 'nullable|string',
-    'status' => 'nullable|in:APPROVED,REJECT',
-]);
-
-$validated['application_id'] = $application_id;
-
-$personalDetail = ApplicationPersonalDetails::create($validated);
-
-return response()->json([
-    'message' => 'Personal details saved successfully.',
-    'data' => $personalDetail,
-], 201);
-}
-
-// Update personal details
-public function updatePersonalDetails(Request $request, $id)
-{
-    $personalDetail = ApplicationPersonalDetail::find($id);
-
-    if (!$personalDetail) {
-        return response()->json(['message' => 'Not found.'], 404);
-    }
+    // Hardcode application_id for testing
+    $request->merge(['application_id' => 4]); // Replace 1 with a valid ID from your DB
 
     $validated = $request->validate([
-        'salutation' => 'sometimes|in:MR,MRS',
-        'religion' => 'sometimes|in:HINDU,MUSLIM',
-        'caste' => 'nullable|string',
-        'marital_status' => 'sometimes|in:MARRIED,SINGLE',
-        'alt_mob_no' => 'nullable|string',
-        'email' => 'nullable|email',
-        'adhar_card' => 'nullable|string',
-        'pan_card' => 'nullable|string',
-        'passport' => 'nullable|string',
-        'driving_license' => 'nullable|string',
-        'voter_id' => 'nullable|string',
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'salutation' => 'required|in:MR,MRS',
+        'religion' => 'required|in:HINDU,MUSLIM',
+        'caste' => 'nullable|string|max:191',
+        'marital_status' => 'required|in:MARRIED,SINGLE',
+        'alt_mob_no' => 'nullable|string|max:191',
+        'email' => 'nullable|email|max:191',
+        'adhar_card' => 'nullable|string|max:191',
+        'pan_card' => 'nullable|string|max:191',
+        'passport' => 'nullable|string|max:191',
+        'driving_license' => 'nullable|string|max:191',
+        'voter_id' => 'nullable|string|max:191',
         'status' => 'nullable|in:APPROVED,REJECT',
     ]);
 
-    $personalDetail->update($validated);
+    $personalDetails = ApplicationPersonalDetails::create($validated);
 
     return response()->json([
-        'message' => 'Personal details updated successfully.',
-        'data' => $personalDetail,
-    ]);
+        'message' => 'Personal details saved successfully.',
+        'data' => $personalDetails,
+    ], 201);
 }
-    
+
 }

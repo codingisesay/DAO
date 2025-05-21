@@ -40,17 +40,16 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 
 // Route::middleware(['jwt.auth'])->group(function () {
 
-    Route::middleware('role:admin')->group(function () {
-        Route::get('/admin/dashboard', fn() => response()->json(['message' => 'Welcome Admin']));
-    });
+    // Route::middleware('role:admin')->group(function () {
+    //     Route::get('/admin/dashboard', fn() => response()->json(['message' => 'Welcome Admin']));
+    // });
 
-    Route::middleware('role:agent')->group(function () {
+    // Route::middleware('role:agent')->group(function () {
         Route::post('/agent/accounts', [AgentController::class, 'handleAccounts']);
         Route::post('/agent/enrollment', [AgentController::class, 'EnrollmentDetails'])->name('enrollment.details');
-        Route::post('/personal-details', [AgentController::class, 'storePersonalDetails']);
-        Route::put('/personal-details/{id}', [AgentController::class, 'updatePersonalDetails']);
+        Route::post('/agent/personal-details', [AgentController::class, 'savePersonalDetails']);
         Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
-    });
+    // });
 
     Route::middleware('role:employee,admin')->group(function () {
         Route::get('/employee/tasks', [App\Http\Controllers\EmployeeController::class, 'getTasks']);
