@@ -27,14 +27,11 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = () => {
-        updateFormData({
-            personalDetails: {
-                ...localFormData
-            }
-        });
-        onNext();
-    };
+    updateFormData({
+        personalDetails: {
+            ...localFormData
+        }
+    });
 
     return (
         <div className="personal-details-form">
