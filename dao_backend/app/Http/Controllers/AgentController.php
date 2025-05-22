@@ -57,7 +57,7 @@ class AgentController extends Controller
         $applicationNo = 'APP' . strtoupper(uniqid());
 
         // Add the generated application number to the validated data
-        $validatedData['application_no'] = $applicationNo;
+        $validatedData['application_no'] = 32;
 
         // Add the agent ID to the validated data from  the authenticated user
         $validatedData['agent_id'] = 1;

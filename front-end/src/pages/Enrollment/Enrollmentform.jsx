@@ -61,6 +61,11 @@ function Enrollmentform() {
                         ? { ...prev.permanentAddress }
                         : { ...prev.correspondenceAddress, ...data.correspondenceAddress }
                 };
+            } else if (step === 3) {
+                return {
+                    ...prev,
+                    documents: data.documents
+                };
             }
             else if (step === 5) {
                 return {
@@ -74,15 +79,13 @@ function Enrollmentform() {
         });
     };
 
-    //     const updateFormData = (newData) => {
-    //     setFormData(prev => ({ ...prev, ...newData }));
-    // };
+
 
     const handleNext = () => {
+        console.log('Final form data:', formData);
         if (currentStep === 6) {
             setComplete(true);
             // On final submission
-            console.log('Final form data:', formData);
             // Here you would typically send the data to your API
         } else {
             setCurrentStep((prev) => prev + 1);

@@ -122,22 +122,23 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             district: localFormData.district,
             state: localFormData.state,
         };
+        onNext();
+        // try {
+        //     const response = await agentService.agentEnroll(payload);
+        //     // Save application_id to formData for next steps
+        //     updateFormData(1, {
+        //         ...formData,
+        //         personalDetails: localFormData,
+        //         application_id: response.data.application_id // <-- Save this!
+        //     });
 
-        try {
-            const response = await agentService.agentEnroll(payload);
-            // Save application_id to formData for next steps
-            updateFormData(1, {
-                ...formData,
-                personalDetails: localFormData,
-                application_id: response.data.application_id // <-- Save this!
-            });
-            onNext();
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                text: "Mendatory Fields Are Empty!",
-            });
-        }
+
+        // } catch (error) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         text: "Mendatory Fields Are Empty!",
+        //     });
+        // }
     };
 
     return (

@@ -8,10 +8,10 @@ import { salutation, gender, religion, caste } from '../../data/data';
 function PersonalDetailsForm({ formData, updateFormData }) {
     const [localFormData, setLocalFormData] = useState({
         salutation: formData.personalDetails?.salutation || '',
-        firstName: formData.personalDetails?.firstName || '',
-        middleName: formData.personalDetails?.middleName || '',
-        lastName: formData.personalDetails?.lastName || '',
-        dob: formData.personalDetails?.dob || '',
+        first_name: formData.personalDetails?.first_name || '',
+        middle_name: formData.personalDetails?.middle_name || '',
+        last_name: formData.personalDetails?.last_name || '',
+        DOB: formData.personalDetails?.DOB || '',
         gender: formData.personalDetails?.gender || '',
         religion: formData.personalDetails?.religion || '',
         caste: formData.personalDetails?.caste || '',
@@ -24,8 +24,8 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         drivinglicence: formData.personalDetails?.drivinglicence || '',
         voterid: formData.personalDetails?.voterid || '',
         passportno: formData.personalDetails?.passportno || '',
-        complexName: formData.personalDetails?.complexName || '',
-        flatNoRoomNo: formData.personalDetails?.flatNoRoomNo || '',
+        complex_name: formData.personalDetails?.complex_name || '',
+        flat_no: formData.personalDetails?.flat_no || '',
         area: formData.personalDetails?.area || '',
         landmark: formData.personalDetails?.landmark || '',
         country: formData.personalDetails?.country || '',
@@ -67,32 +67,32 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     onChange={handleChange}
                     label={labels.firstname.label}
                     type="text"
-                    name="firstName"
-                    value={localFormData.firstName}
+                    name="first_name"
+                    value={localFormData.first_name}
                     required
                 />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.middlename.label}
                     type="text"
-                    name="middleName"
-                    value={localFormData.middleName}
+                    name="middle_name"
+                    value={localFormData.middle_name}
                     required
                 />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.lastname.label}
                     type="text"
-                    name="lastName"
-                    value={localFormData.lastName}
+                    name="last_name"
+                    value={localFormData.last_name}
                     required
                 />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.dob.label}
                     type="date"
-                    name="dob"
-                    value={localFormData.dob}
+                    name="DOB"
+                    value={localFormData.DOB}
                     required
                 />
 
@@ -197,16 +197,16 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     onChange={handleChange}
                     label={labels.complexname.label}
                     type="text"
-                    name="complexName"
-                    value={localFormData.complexName}
+                    name="complex_name"
+                    value={localFormData.complex_name}
                     required
                 />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.flatnoroomno.label}
                     type="text"
-                    name="flatNoRoomNo"
-                    value={localFormData.flatNoRoomNo}
+                    name="flat_no"
+                    value={localFormData.flat_no}
                     required
                 />
                 <CommanInput
