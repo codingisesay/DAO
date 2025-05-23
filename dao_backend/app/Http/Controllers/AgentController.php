@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\CustomerApplicationDetail;
 use App\Models\ApplicationPersonalDetails; 
 use App\Models\ApplicationAddressDetails;
+use App\Models\ApplicantLivePhoto;
+use Illuminate\Support\Facades\Storage;
 
 class AgentController extends Controller
 {
@@ -162,6 +164,39 @@ public function saveAddressDetails(Request $request)
     return response()->json([
         'message' => 'Address details saved successfully.',
         'data' => $addressDetails,
+    ], 201);
+}
+
+// Store live photo
+public function saveLivePhoto(Request $request)
+{
+    // Hardcode application_id as 4
+    $request->merge(['application_id' => 4]);
+
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'longitude' => 'nullable|string|max:191',
+        'latitude' => 'nullable|string|max:191',
+        'status' => 'nullable|in:APPROVED,REJECT',
+        'photo' => 'required|image|max:5120', // max 5MB
+    ]);
+
+    $file = $request->file('photo');
+    $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
+    $path = $file->storeAs('live_photos', $filename, 'public');
+
+    $photo = ApplicantLivePhoto::create([
+        'application_id' => $validated['application_id'],
+        'longitude' => $validated['longitude'] ?? null,
+        'latitude' => $validated['latitude'] ?? null,
+        'name' => $filename,
+        'path' => $path,
+        'status' => $validated['status'] ?? null,
+    ]);
+
+    return response()->json([
+        'message' => 'Live photo uploaded successfully.',
+        'data' => $photo,
     ], 201);
 }
 }
