@@ -42,7 +42,9 @@ export const API_ENDPOINTS = {
     CREATE: '/agent/account-nominee',
   },
 
-
+  SERVICE_TO_CUSTOMER: {
+    CREATE: '/agent/service-to-customer',
+  },
 
   ADMIN: {},
 

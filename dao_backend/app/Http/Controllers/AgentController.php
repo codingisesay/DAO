@@ -10,7 +10,9 @@ use App\Models\ApplicantLivePhoto;
 use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
+use App\Models\ServiceToCustomer;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class AgentController extends Controller
 {
@@ -306,5 +308,65 @@ public function saveAccountNominee(Request $request)
         'message' => 'Account nominee saved successfully.',
         'data' => $nominee,
     ], 201);
+}
+
+// Store service to customer
+public function saveServiceToCustomer(Request $request)
+{
+    // Hardcode application_id for testing if needed
+    $request->merge(['application_id' => 4]);
+
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'banking_services_id' => 'required|integer|exists:banking_services,id',
+    ]);
+
+    $service = ServiceToCustomer::create($validated);
+
+    return response()->json([
+        'message' => 'Service to customer saved successfully.',
+        'data' => $service,
+    ], 201);
+}
+
+// Fetch full application details
+public function getFullApplicationDetails($applicationId)
+{
+    // Hardcode application_id for testing
+    $applicationId = 4; // <-- Hardcoded for testing
+
+    // Fetch from customer_application_details
+    $application = DB::table('customer_application_details')
+        ->where('id', $applicationId)
+        ->first();
+
+    // Fetch from application_personal_details
+    $personalDetails = DB::table('application_personal_details')
+        ->where('application_id', $applicationId)
+        ->first();
+
+    // Fetch from account_personal_details
+    $accountPersonalDetails = DB::table('account_personal_details')
+        ->where('application_id', $applicationId)
+        ->first();
+
+    // Fetch from account_nominees (can be multiple)
+    $accountNominees = DB::table('account_nominees')
+        ->where('application_id', $applicationId)
+        ->get();
+
+    if (!$application) {
+        return response()->json(['message' => 'Application not found'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Application details fetched successfully.',
+        'data' => [
+            'application' => $application,
+            'personal_details' => $personalDetails,
+            'account_personal_details' => $accountPersonalDetails,
+            'account_nominees' => $accountNominees,
+        ]
+    ]);
 }
 }
