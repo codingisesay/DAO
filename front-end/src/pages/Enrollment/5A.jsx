@@ -5,38 +5,7 @@ import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels';
 
 function PersonalOccupationForm({ formData, updateFormData }) {
-    const [localFormData, setLocalFormData] = useState({
-        maidenPrefixName: '',
-        maidenFirstName: '',
-        maidenMiddleName: '',
-        maidenLastName: '',
-
-        fatherSpousePrefixName: '',
-        fatherSpouseFirstName: '',
-        fatherSpouseMiddleName: '',
-        fatherSpouseLastName: '',
-
-        motherPrefixName: '',
-        motherFirstName: '',
-        motherMiddleName: '',
-        motherLastName: '',
-
-        birthPlaceCity: '',
-        birthPlaceCountry: '',
-        maritalStatus: '',
-        nationality: '',
-        religion: '',
-        caste: '',
-
-        occupationType: '',
-        businessName: '',
-        salariedWith: '',
-        designation: '',
-        organisationNature: '',
-        educationQualification: '',
-        annualIncome: '',
-        remark: ''
-    });
+    const [localFormData, setLocalFormData] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -46,7 +15,7 @@ function PersonalOccupationForm({ formData, updateFormData }) {
     // useEffect(() => {
     //     updateFormData({
     //         ...formData,
-    //         personalDetails: localFormData
+    //         personalDetailsf5: localFormData
     //     });
     // }, [localFormData]);
 

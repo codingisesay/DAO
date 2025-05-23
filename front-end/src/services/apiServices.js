@@ -40,6 +40,10 @@ export const accountNomineeService = {
   create: (data) => apiService.post(API_ENDPOINTS.ACCOUNT_NOMINEE.CREATE, data),
 };
 
+export const serviceToCustomerService = {
+  create: (data) => apiService.post(API_ENDPOINTS.SERVICE_TO_CUSTOMER.CREATE, data),
+};
+
 export const forgotpass = {
   forgotPass: (identifier) =>
     apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),
