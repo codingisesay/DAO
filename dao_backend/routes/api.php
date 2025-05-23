@@ -49,6 +49,10 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         Route::post('/agent/enrollment', [AgentController::class, 'EnrollmentDetails'])->name('enrollment.details');
         Route::post('/agent/personal-details', [AgentController::class, 'savePersonalDetails']);
         Route::post('/agent/address-details', [AgentController::class, 'saveAddressDetails']);
+        Route::post('/agent/live-photo', [AgentController::class, 'saveLivePhoto']);
+        Route::post('/agent/application-document', [AgentController::class, 'saveApplicationDocument']);
+        Route::post('/agent/account-personal-details', [AgentController::class, 'saveAccountPersonalDetails']);
+        Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
         Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
     // });
 

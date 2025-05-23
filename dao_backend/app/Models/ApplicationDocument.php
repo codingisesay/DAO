@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ApplicantLivePhoto extends Model
+class ApplicationDocument extends Model
 {
     use HasFactory;
 
-    protected $table = 'applicant_live_photos';
+    protected $table = 'application_documents';
 
     protected $fillable = [
         'application_id',
-        'longitude',
-        'latitude',
-        'name',
-        'path',
+        'document_type',
+        'file_name',
+        'file_path',
         'status',
     ];
 }

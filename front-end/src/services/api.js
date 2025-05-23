@@ -26,6 +26,24 @@ export const API_ENDPOINTS = {
     // ...
   },
 
+  LIVE_PHOTO: {
+    CREATE: '/agent/live-photo',
+  },
+
+  APPLICATION_DOCUMENT: {
+    CREATE: '/agent/application-document',
+  },
+
+  ACCOUNT_PERSONAL_DETAILS: {
+    CREATE: '/agent/account-personal-details',
+  },
+
+  ACCOUNT_NOMINEE: {
+    CREATE: '/agent/account-nominee',
+  },
+
+
+
   ADMIN: {},
 
 

@@ -17,6 +17,29 @@ export const addressDetailsService = {
   // update: (id, data) => apiService.put(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
 };
 
+export const livePhotoService = {
+  upload: (formData) =>
+    apiService.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
+
+export const applicationDocumentService = {
+  upload: (formData) =>
+    apiService.post(API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
+export const accountPersonalDetailsService = {
+  create: (data) => apiService.post(API_ENDPOINTS.ACCOUNT_PERSONAL_DETAILS.CREATE, data),
+};
+
+export const accountNomineeService = {
+  create: (data) => apiService.post(API_ENDPOINTS.ACCOUNT_NOMINEE.CREATE, data),
+};
+
 export const forgotpass = {
   forgotPass: (identifier) =>
     apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),
