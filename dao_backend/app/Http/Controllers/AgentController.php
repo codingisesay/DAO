@@ -59,7 +59,7 @@ class AgentController extends Controller
         $applicationNo = 'APP' . strtoupper(uniqid());
 
         // Add the generated application number to the validated data
-        $validatedData['application_no'] = 32;
+        $validatedData['application_no'] = $applicationNo;
 
         // Add the agent ID to the validated data from  the authenticated user
         $validatedData['agent_id'] = 1;
@@ -103,7 +103,7 @@ public function getApplicationDetails(Request $request, $id)
 public function savePersonalDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 31]); // Replace 1 with a valid ID from your DB
+    $request->merge(['application_id' => 34]); // Replace 1 with a valid ID from your DB
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -134,7 +134,7 @@ public function savePersonalDetails(Request $request)
 public function saveAddressDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 4]); // Replace 4 with a valid ID
+    $request->merge(['application_id' => 35]); // Replace 4 with a valid ID
 
     $validated = $request->validate([
         'application_id' => 'integer|exists:customer_application_details,id',

@@ -3,6 +3,8 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
+import { apiService } from '../../utils/storage';
+import { API_ENDPOINTS } from '../../services/api';
 
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const [sameAsAbove, setSameAsAbove] = useState(
@@ -10,91 +12,72 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     );
 
     const [localFormData, setLocalFormData] = useState({
-        permanentAddress: {
-            per_complex: formData.permanentAddress?.per_complex || '',
-            per_flat_no: formData.permanentAddress?.per_flat_no || '',
-            per_area: formData.permanentAddress?.per_area || '',
-            per_landmark: formData.permanentAddress?.per_landmark || '',
-            per_country: formData.permanentAddress?.per_country || '',
-            per_pincode: formData.permanentAddress?.per_pincode || '',
-            per_city: formData.permanentAddress?.per_city || '',
-            per_district: formData.permanentAddress?.per_district || '',
-            per_state: formData.permanentAddress?.per_state || '',
-        },
-        correspondenceAddress: {
-            cor_complex: formData.correspondenceAddress?.cor_complex || '',
-            cor_flat_no: formData.correspondenceAddress?.cor_flat_no || '',
-            cor_area: formData.correspondenceAddress?.cor_area || '',
-            cor_landmark: formData.correspondenceAddress?.cor_landmark || '',
-            cor_country: formData.correspondenceAddress?.cor_country || '',
-            cor_pincode: formData.correspondenceAddress?.cor_pincode || '',
-            cor_city: formData.correspondenceAddress?.cor_city || '',
-            cor_district: formData.correspondenceAddress?.cor_district || '',
-            cor_state: formData.correspondenceAddress?.cor_state || '',
-        }
+        per_complex_name: formData.per_complex_name || '',
+        per_flat_no: formData.per_flat_no || '',
+        per_area: formData.per_area || '',
+        per_landmark: formData.per_landmark || '',
+        per_country: formData.per_country || '',
+        per_pincode: formData.per_pincode || '',
+        per_city: formData.per_city || '',
+        per_district: formData.per_district || '',
+        per_state: formData.per_state || '',
+        cor_complex: formData.cor_complex || '',
+        cor_flat_no: formData.cor_flat_no || '',
+        cor_area: formData.cor_area || '',
+        cor_landmark: formData.cor_landmark || '',
+        cor_country: formData.cor_country || '',
+        cor_pincode: formData.cor_pincode || '',
+        cor_city: formData.cor_city || '',
+        cor_district: formData.cor_district || '',
+        cor_state: formData.cor_state || '',
     });
 
-    // Update parent formData when localFormData changes
     const submitaddress = async () => {
-        // alert('called')
         const payload = {
             application_id: formData.application_id,
-            per_complex_name: ad.perComplexName,
-            per_flat_no: ad.perFlatNo,
-            per_area: ad.perArea,
-            per_landmark: ad.perLandmark,
-            per_country: ad.perCountry,
-            per_pincode: ad.perPincode,
-            per_city: ad.perCity,
-            per_district: ad.perDistrict,
-            per_state: ad.perState,
-            per_resident: ad.perResident,
-            per_residence_status: ad.perResidenceStatus,
-            resi_doc: ad.resiDoc,
-            cor_complex: ad.corComplex,
-            cor_flat_no: ad.corFlatNo,
-            cor_area: ad.corArea,
-            cor_landmark: ad.corLandmark,
-            cor_country: ad.corCountry,
-            cor_pincode: ad.corPincode,
-            cor_city: ad.corCity,
-            cor_district: ad.corDistrict,
-            cor_state: ad.corState,
+            ...localFormData,
             status: formData.status,
         };
 
-        let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-        alert(response.data.message || 'Address details saved successfully.');
+        try {
+            const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Address details saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
 
-        updateFormData({
-            permanentAddress: localFormData.permanentAddress,
-            correspondenceAddress: localFormData.correspondenceAddress,
-        });
+            updateFormData({
+                ...localFormData,
+                correspondenceAddressSame: sameAsAbove
+            });
+
+            if (onNext) {
+                onNext();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.response?.data?.message || 'Failed to save address details'
+            });
+        }
     }
-    // React.useEffect(() => {
-    //     updateFormData({
-    //         permanentAddress: localFormData.permanentAddress,
-    //         correspondenceAddress: localFormData.correspondenceAddress,
-    //     });
-    // }, [localFormData, updateFormData]);
 
     const handlePermanentChange = (e) => {
         const { name, value } = e.target;
         setLocalFormData(prev => {
             const updated = {
                 ...prev,
-                permanentAddress: {
-                    ...prev.permanentAddress,
-                    [name]: value
-                }
+                [name]: value
             };
+
             if (sameAsAbove) {
-                updated.correspondenceAddress = Object.fromEntries(
-                    Object.entries(updated.permanentAddress).map(([k, v]) => [
-                        k.replace('per_', 'cor_'), v
-                    ])
-                );
+                const corName = name.replace('per_', 'cor_');
+                updated[corName] = value;
             }
+
             return updated;
         });
     };
@@ -103,10 +86,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         const { name, value } = e.target;
         setLocalFormData(prev => ({
             ...prev,
-            correspondenceAddress: {
-                ...prev.correspondenceAddress,
-                [name]: value
-            }
+            [name]: value
         }));
     };
 
@@ -114,32 +94,32 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         const newValue = !sameAsAbove;
         setSameAsAbove(newValue);
 
-        setLocalFormData(prev => ({
-            ...prev,
-            correspondenceAddress: newValue
-                ? Object.fromEntries(
-                    Object.entries(prev.permanentAddress).map(([k, v]) => [
-                        k.replace('per_', 'cor_'), v
-                    ])
-                )
-                : prev.correspondenceAddress
-        }));
+        if (newValue) {
+            setLocalFormData(prev => {
+                const updated = { ...prev };
+                Object.keys(prev).forEach(key => {
+                    if (key.startsWith('per_')) {
+                        const corKey = key.replace('per_', 'cor_');
+                        updated[corKey] = prev[key];
+                    }
+                });
+                return updated;
+            });
+        }
     };
 
     const handleClearCorrespondence = () => {
         setLocalFormData(prev => ({
             ...prev,
-            correspondenceAddress: {
-                cor_complex: '',
-                cor_flat_no: '',
-                cor_area: '',
-                cor_landmark: '',
-                cor_country: '',
-                cor_pincode: '',
-                cor_city: '',
-                cor_district: '',
-                cor_state: '',
-            }
+            cor_complex: '',
+            cor_flat_no: '',
+            cor_area: '',
+            cor_landmark: '',
+            cor_country: '',
+            cor_pincode: '',
+            cor_city: '',
+            cor_district: '',
+            cor_state: '',
         }));
         setSameAsAbove(false);
     };
@@ -148,7 +128,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
             <AddressSection
-                formData={localFormData.permanentAddress}
+                formData={localFormData}
                 handleChange={handlePermanentChange}
                 prefix="per"
             />
@@ -174,25 +154,36 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
             <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>
             <AddressSection
-                formData={localFormData.correspondenceAddress}
+                formData={localFormData}
                 handleChange={handleCorrespondenceChange}
                 prefix="cor"
+                disabled={sameAsAbove}
             />
-            <button onClick={submitaddress}  >SUBMIT</button>
+
+            <div className="flex justify-between mt-6">
+                <CommonButton onClick={onBack} variant="outlined">
+                    Back
+                </CommonButton>
+                <CommonButton onClick={submitaddress} variant="contained">
+                    Save & Continue
+                </CommonButton>
+            </div>
         </div>
     );
 }
-function AddressSection({ formData, handleChange, prefix }) {
+
+function AddressSection({ formData, handleChange, prefix, disabled = false }) {
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
             <CommanInput
                 label={labels.complexname.label}
-                name={`${prefix}_complex`}
-                value={formData[`${prefix}_complex`] || ''}
+                name={`${prefix}_complex_name`}
+                value={formData[`${prefix}_complex_name`] || ''}
                 onChange={handleChange}
                 required
                 max={50}
                 validationType="ALPHANUMERIC"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.flatnoroomno.label}
@@ -202,6 +193,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={20}
                 validationType="ALPHANUMERIC"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.area.label}
@@ -211,6 +203,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={50}
                 validationType="ALPHABETS_AND_SPACE"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.landmark.label}
@@ -220,6 +213,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={50}
                 validationType="EVERYTHING"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.country.label}
@@ -229,6 +223,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.pincode.label}
@@ -238,6 +233,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={10}
                 validationType="NUMBER_ONLY"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.city.label}
@@ -247,6 +243,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.district.label}
@@ -256,6 +253,7 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
+                disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
                 label={labels.state.label}
@@ -265,10 +263,10 @@ function AddressSection({ formData, handleChange, prefix }) {
                 required
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
+                disabled={disabled && prefix === 'cor'}
             />
         </div>
     );
 }
-
 
 export default AddressForm;
