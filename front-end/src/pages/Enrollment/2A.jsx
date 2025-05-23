@@ -35,17 +35,16 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         state: formData.personalDetails?.state || ''
     });
 
-    useEffect(() => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setLocalFormData(prev => ({ ...prev, [name]: value }));
+
         // Update parent form data whenever localFormData changes
         updateFormData({
             ...formData,
             personalDetails: localFormData
         });
-    }, [localFormData]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
     return (

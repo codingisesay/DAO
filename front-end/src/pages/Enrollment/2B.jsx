@@ -4,94 +4,6 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 
-function AddressSection({ formData, handleChange, prefix }) {
-    return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
-            <CommanInput
-                label={labels.complexname.label}
-                name={`${prefix}_complex`}
-                value={formData[`${prefix}_complex`] || ''}
-                onChange={handleChange}
-                required
-                max={50}
-                validationType="ALPHANUMERIC"
-            />
-            <CommanInput
-                label={labels.flatnoroomno.label}
-                name={`${prefix}_flat_no`}
-                value={formData[`${prefix}_flat_no`] || ''}
-                onChange={handleChange}
-                required
-                max={20}
-                validationType="ALPHANUMERIC"
-            />
-            <CommanInput
-                label={labels.area.label}
-                name={`${prefix}_area`}
-                value={formData[`${prefix}_area`] || ''}
-                onChange={handleChange}
-                required
-                max={50}
-                validationType="ALPHABETS_AND_SPACE"
-            />
-            <CommanInput
-                label={labels.landmark.label}
-                name={`${prefix}_landmark`}
-                value={formData[`${prefix}_landmark`] || ''}
-                onChange={handleChange}
-                required
-                max={50}
-                validationType="EVERYTHING"
-            />
-            <CommanInput
-                label={labels.country.label}
-                name={`${prefix}_country`}
-                value={formData[`${prefix}_country`] || ''}
-                onChange={handleChange}
-                required
-                max={30}
-                validationType="ALPHABETS_AND_SPACE"
-            />
-            <CommanInput
-                label={labels.pincode.label}
-                name={`${prefix}_pincode`}
-                value={formData[`${prefix}_pincode`] || ''}
-                onChange={handleChange}
-                required
-                max={10}
-                validationType="NUMBER_ONLY"
-            />
-            <CommanInput
-                label={labels.city.label}
-                name={`${prefix}_city`}
-                value={formData[`${prefix}_city`] || ''}
-                onChange={handleChange}
-                required
-                max={30}
-                validationType="ALPHABETS_AND_SPACE"
-            />
-            <CommanInput
-                label={labels.district.label}
-                name={`${prefix}_district`}
-                value={formData[`${prefix}_district`] || ''}
-                onChange={handleChange}
-                required
-                max={30}
-                validationType="ALPHABETS_AND_SPACE"
-            />
-            <CommanInput
-                label={labels.state.label}
-                name={`${prefix}_state`}
-                value={formData[`${prefix}_state`] || ''}
-                onChange={handleChange}
-                required
-                max={30}
-                validationType="ALPHABETS_AND_SPACE"
-            />
-        </div>
-    );
-}
-
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const [sameAsAbove, setSameAsAbove] = useState(
         formData.correspondenceAddressSame || false
@@ -123,12 +35,48 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     });
 
     // Update parent formData when localFormData changes
-    React.useEffect(() => {
+    const submitaddress = async () => {
+        // alert('called')
+        const payload = {
+            application_id: formData.application_id,
+            per_complex_name: ad.perComplexName,
+            per_flat_no: ad.perFlatNo,
+            per_area: ad.perArea,
+            per_landmark: ad.perLandmark,
+            per_country: ad.perCountry,
+            per_pincode: ad.perPincode,
+            per_city: ad.perCity,
+            per_district: ad.perDistrict,
+            per_state: ad.perState,
+            per_resident: ad.perResident,
+            per_residence_status: ad.perResidenceStatus,
+            resi_doc: ad.resiDoc,
+            cor_complex: ad.corComplex,
+            cor_flat_no: ad.corFlatNo,
+            cor_area: ad.corArea,
+            cor_landmark: ad.corLandmark,
+            cor_country: ad.corCountry,
+            cor_pincode: ad.corPincode,
+            cor_city: ad.corCity,
+            cor_district: ad.corDistrict,
+            cor_state: ad.corState,
+            status: formData.status,
+        };
+
+        let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+        alert(response.data.message || 'Address details saved successfully.');
+
         updateFormData({
             permanentAddress: localFormData.permanentAddress,
             correspondenceAddress: localFormData.correspondenceAddress,
         });
-    }, [localFormData, updateFormData]);
+    }
+    // React.useEffect(() => {
+    //     updateFormData({
+    //         permanentAddress: localFormData.permanentAddress,
+    //         correspondenceAddress: localFormData.correspondenceAddress,
+    //     });
+    // }, [localFormData, updateFormData]);
 
     const handlePermanentChange = (e) => {
         const { name, value } = e.target;
@@ -230,8 +178,97 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 handleChange={handleCorrespondenceChange}
                 prefix="cor"
             />
+            <button onClick={submitaddress}  >SUBMIT</button>
         </div>
     );
 }
+function AddressSection({ formData, handleChange, prefix }) {
+    return (
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            <CommanInput
+                label={labels.complexname.label}
+                name={`${prefix}_complex`}
+                value={formData[`${prefix}_complex`] || ''}
+                onChange={handleChange}
+                required
+                max={50}
+                validationType="ALPHANUMERIC"
+            />
+            <CommanInput
+                label={labels.flatnoroomno.label}
+                name={`${prefix}_flat_no`}
+                value={formData[`${prefix}_flat_no`] || ''}
+                onChange={handleChange}
+                required
+                max={20}
+                validationType="ALPHANUMERIC"
+            />
+            <CommanInput
+                label={labels.area.label}
+                name={`${prefix}_area`}
+                value={formData[`${prefix}_area`] || ''}
+                onChange={handleChange}
+                required
+                max={50}
+                validationType="ALPHABETS_AND_SPACE"
+            />
+            <CommanInput
+                label={labels.landmark.label}
+                name={`${prefix}_landmark`}
+                value={formData[`${prefix}_landmark`] || ''}
+                onChange={handleChange}
+                required
+                max={50}
+                validationType="EVERYTHING"
+            />
+            <CommanInput
+                label={labels.country.label}
+                name={`${prefix}_country`}
+                value={formData[`${prefix}_country`] || ''}
+                onChange={handleChange}
+                required
+                max={30}
+                validationType="ALPHABETS_AND_SPACE"
+            />
+            <CommanInput
+                label={labels.pincode.label}
+                name={`${prefix}_pincode`}
+                value={formData[`${prefix}_pincode`] || ''}
+                onChange={handleChange}
+                required
+                max={10}
+                validationType="NUMBER_ONLY"
+            />
+            <CommanInput
+                label={labels.city.label}
+                name={`${prefix}_city`}
+                value={formData[`${prefix}_city`] || ''}
+                onChange={handleChange}
+                required
+                max={30}
+                validationType="ALPHABETS_AND_SPACE"
+            />
+            <CommanInput
+                label={labels.district.label}
+                name={`${prefix}_district`}
+                value={formData[`${prefix}_district`] || ''}
+                onChange={handleChange}
+                required
+                max={30}
+                validationType="ALPHABETS_AND_SPACE"
+            />
+            <CommanInput
+                label={labels.state.label}
+                name={`${prefix}_state`}
+                value={formData[`${prefix}_state`] || ''}
+                onChange={handleChange}
+                required
+                max={30}
+                validationType="ALPHABETS_AND_SPACE"
+            />
+        </div>
+    );
+}
+
 
 export default AddressForm;

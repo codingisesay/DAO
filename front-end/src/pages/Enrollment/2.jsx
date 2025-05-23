@@ -128,8 +128,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 status: null, // or as needed
             };
 
-            const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-            alert(response.data.message || 'Address details saved successfully.');
+            // const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            // alert(response.data.message || 'Address details saved successfully.');
             handleNext();
         } catch (err) {
             alert('Failed to save address details');

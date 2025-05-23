@@ -43,12 +43,12 @@ function PersonalOccupationForm({ formData, updateFormData }) {
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    useEffect(() => {
-        updateFormData({
-            ...formData,
-            personalDetailsf5: localFormData
-        });
-    }, [localFormData]);
+    // useEffect(() => {
+    //     updateFormData({
+    //         ...formData,
+    //         personalDetailsf5: localFormData
+    //     });
+    // }, [localFormData]);
 
     return (
         <div className="max-w-screen-xl mx-auto">

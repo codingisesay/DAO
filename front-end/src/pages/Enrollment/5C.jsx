@@ -53,12 +53,12 @@ function BankFacility({ formData, updateFormData }) {
         }));
     };
 
-    useEffect(() => {
-        updateFormData({
-            ...formData,
-            bankFacility: localFormData
-        });
-    }, [localFormData]);
+    // useEffect(() => {
+    //     updateFormData({
+    //         ...formData,
+    //         bankFacility: localFormData
+    //     });
+    // }, [localFormData]);
 
     return (
         <div className="mx-auto">

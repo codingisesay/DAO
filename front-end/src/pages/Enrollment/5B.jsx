@@ -85,14 +85,14 @@ function NominationForm({ formData, updateFormData }) {
         }
     };
 
-    useEffect(() => {
-        updateFormData({
-            ...formData,
-            nominationDetails: {
-                nominees: nominees
-            }
-        });
-    }, [nominees]);
+    // useEffect(() => {
+    //     updateFormData({
+    //         ...formData,
+    //         nominationDetails: {
+    //             nominees: nominees
+    //         }
+    //     });
+    // }, [nominees]);
 
     return (
         <div className="max-w-screen-xl mx-auto">
