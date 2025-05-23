@@ -6,36 +6,36 @@ import labels from '../../components/labels';
 
 function PersonalOccupationForm({ formData, updateFormData }) {
     const [localFormData, setLocalFormData] = useState({
-        maidenPrefixName: formData.personalDetailsf5?.maidenPrefixName || '',
-        maidenFirstName: formData.personalDetailsf5?.maidenFirstName || '',
-        maidenMiddleName: formData.personalDetailsf5?.maidenMiddleName || '',
-        maidenLastName: formData.personalDetailsf5?.maidenLastName || '',
+        maidenPrefixName: '',
+        maidenFirstName: '',
+        maidenMiddleName: '',
+        maidenLastName: '',
 
-        fatherSpousePrefixName: formData.personalDetailsf5?.fatherSpousePrefixName || '',
-        fatherSpouseFirstName: formData.personalDetailsf5?.fatherSpouseFirstName || '',
-        fatherSpouseMiddleName: formData.personalDetailsf5?.fatherSpouseMiddleName || '',
-        fatherSpouseLastName: formData.personalDetailsf5?.fatherSpouseLastName || '',
+        fatherSpousePrefixName: '',
+        fatherSpouseFirstName: '',
+        fatherSpouseMiddleName: '',
+        fatherSpouseLastName: '',
 
-        motherPrefixName: formData.personalDetailsf5?.motherPrefixName || '',
-        motherFirstName: formData.personalDetailsf5?.motherFirstName || '',
-        motherMiddleName: formData.personalDetailsf5?.motherMiddleName || '',
-        motherLastName: formData.personalDetailsf5?.motherLastName || '',
+        motherPrefixName: '',
+        motherFirstName: '',
+        motherMiddleName: '',
+        motherLastName: '',
 
-        birthPlaceCity: formData.personalDetailsf5?.birthPlaceCity || '',
-        birthPlaceCountry: formData.personalDetailsf5?.birthPlaceCountry || '',
-        maritalStatus: formData.personalDetailsf5?.maritalStatus || '',
-        nationality: formData.personalDetailsf5?.nationality || '',
-        religion: formData.personalDetailsf5?.religion || '',
-        caste: formData.personalDetailsf5?.caste || '',
+        birthPlaceCity: '',
+        birthPlaceCountry: '',
+        maritalStatus: '',
+        nationality: '',
+        religion: '',
+        caste: '',
 
-        occupationType: formData.personalDetailsf5?.occupationType || '',
-        businessName: formData.personalDetailsf5?.businessName || '',
-        salariedWith: formData.personalDetailsf5?.salariedWith || '',
-        designation: formData.personalDetailsf5?.designation || '',
-        organisationNature: formData.personalDetailsf5?.organisationNature || '',
-        educationQualification: formData.personalDetailsf5?.educationQualification || '',
-        annualIncome: formData.personalDetailsf5?.annualIncome || '',
-        remark: formData.personalDetailsf5?.remark || ''
+        occupationType: '',
+        businessName: '',
+        salariedWith: '',
+        designation: '',
+        organisationNature: '',
+        educationQualification: '',
+        annualIncome: '',
+        remark: ''
     });
 
     const handleChange = (e) => {
@@ -46,7 +46,7 @@ function PersonalOccupationForm({ formData, updateFormData }) {
     // useEffect(() => {
     //     updateFormData({
     //         ...formData,
-    //         personalDetailsf5: localFormData
+    //         personalDetails: localFormData
     //     });
     // }, [localFormData]);
 

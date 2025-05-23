@@ -2,17 +2,52 @@ import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
 import { DocumentProvider } from './DocumentContext';
-
+import { apiService } from '../../utils/storage';
+import { API_ENDPOINTS } from '../../services/api';
+import Swal from 'sweetalert2';
 function P3({ onNext, onBack, formData, updateFormData }) {
-    const [documents, setDocuments] = React.useState([]);
+    const [localform, setlocalform] = React.useState([]);
 
-    // Function to handle document updates
-    const handleDocumentsUpdate = (newDocuments) => {
-        setDocuments(newDocuments);
+
+    const handleDocumentsUpdate = async (newDocuments) => {
+        alert('called')
+        setlocalform(newDocuments);
         // Update formData in parent component
         console.log('data to send to enrole form : ,', newDocuments)
         updateFormData(3, { documents: newDocuments });
-    };
+
+        const payload = {
+            application_id: 50,
+            document_type: localform[0].name,
+            file: localform[0].image, // max 10MB
+        };
+        console.log('ready photodata to send : ', payload)
+
+        try {
+            const response = await apiService.post(API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE, payload);
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Address details saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            updateFormData({
+                ...formData,
+                correspondenceAddressSame: sameAsAbove
+            });
+
+            if (onNext) {
+                onNext();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: JSON.stringify(error)
+            });
+        }
+    }
 
     return (
         <DocumentProvider>

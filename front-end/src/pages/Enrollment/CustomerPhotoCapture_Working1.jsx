@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import photo_instruction from '../../assets/imgs/photo_instructions.png';
-import user_scan from '../../assets/imgs/face_scan.gif';
+import photo_instruction from '../../assets/imgs/photo_instructions.png'
+import user_scan from '../../assets/imgs/face_scan.gif'
 import '@tensorflow/tfjs';
 
 const PhotoCapture = ({
@@ -161,29 +161,12 @@ const PhotoCapture = ({
     const startCamera = () => setIsCameraActive(true);
     const stopCamera = () => setIsCameraActive(false);
 
-    // Convert base64 to Blob
-    const dataURLtoBlob = (dataURL) => {
-        const arr = dataURL.split(',');
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new Blob([u8arr], { type: mime });
-    };
-
     // Capture photo with metadata
     const capturePhoto = () => {
         const imageSrc = webcamRef.current.getScreenshot();
-        const blob = dataURLtoBlob(imageSrc);
-        const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        const previewUrl = URL.createObjectURL(file);
 
         const capturedData = {
-            file: file,
-            previewUrl: previewUrl,
+            image: imageSrc,
             timestamp: new Date().toISOString(),
             metadata: {
                 location: location || null,
@@ -193,45 +176,16 @@ const PhotoCapture = ({
         };
 
         setPhotoData(capturedData);
-
-        // For localStorage, store the minimal data needed to recreate the preview
-        const storageData = {
-            previewUrl: previewUrl,
-            timestamp: capturedData.timestamp,
-            metadata: capturedData.metadata
-        };
-        localStorage.setItem(storageKey, JSON.stringify(storageData));
+        localStorage.setItem(storageKey, JSON.stringify(capturedData));
 
         if (onCapture) onCapture(capturedData);
         stopCamera();
     };
 
     const retakePhoto = () => {
-        if (photoData?.previewUrl) {
-            URL.revokeObjectURL(photoData.previewUrl);
-        }
         setPhotoData(null);
         localStorage.removeItem(storageKey);
         startCamera();
-    };
-
-    // Clean up object URLs on unmount
-    useEffect(() => {
-        return () => {
-            if (photoData?.previewUrl) {
-                URL.revokeObjectURL(photoData.previewUrl);
-            }
-        };
-    }, [photoData]);
-
-    // Get the current image URL for display
-    const getImageUrl = () => {
-        if (!photoData) return null;
-        // If we have a previewUrl (from localStorage or fresh capture), use that
-        if (photoData.previewUrl) return photoData.previewUrl;
-        // If we have a file object (fresh capture), create URL for it
-        if (photoData.file) return URL.createObjectURL(photoData.file);
-        return null;
     };
 
     // Validation check
@@ -266,8 +220,6 @@ const PhotoCapture = ({
             )
         }] : [])
     ];
-
-    const imageUrl = getImageUrl();
 
     return (
         <div className="max-w-4xl mx-auto  bg-white rounded-lg ">
@@ -316,13 +268,11 @@ const PhotoCapture = ({
                             )
                         ) : (
                             <div className="relative" style={{ aspectRatio: '4/3' }}>
-                                {imageUrl && (
-                                    <img
-                                        src={imageUrl}
-                                        alt={`Captured ${photoType}`}
-                                        className="w-full h-full object-cover"
-                                    />
-                                )}
+                                <img
+                                    src={photoData.image}
+                                    alt={`Captured ${photoType}`}
+                                    className="w-full h-full object-cover"
+                                />
                                 {showLocation && photoData.metadata.location && (
                                     <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2 text-xs">
                                         <div>Lat: {photoData.metadata.location.latitude.toFixed(5)}</div>
@@ -370,8 +320,26 @@ const PhotoCapture = ({
                     )}
 
                     <div className=" text-center rounded-lg flex-grow">
+
                         <img className="w-3/5 mx-auto" src={user_scan} alt='instuctions for photo' />
                         <img className="w-4/5 mx-auto" src={photo_instruction} alt='instuctions for photo' />
+                        {/* <h3 className="font-medium mb-3 text-gray-700">Photo Requirements:</h3> */}
+                        {/* <ul className="space-y-3">
+                            {requirements.map((req, index) => (
+                                <li
+                                    key={index}
+                                    className={`flex items-start ${req.valid ? 'text-green-600' : 'text-red-600'}`}
+                                >
+                                    <span className="mr-2 mt-0.5">
+                                        {req.valid ? '✓' : '✗'}
+                                    </span>
+                                    <div>
+                                        <div>{req.text}</div>
+                                        {req.extra && <div className="ml-4">{req.extra}</div>}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul> */}
                     </div>
                 </div>
             </div>
