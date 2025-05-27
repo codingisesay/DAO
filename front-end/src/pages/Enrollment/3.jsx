@@ -37,7 +37,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
             updateFormData({
                 ...formData,
-                correspondenceAddressSame: sameAsAbove
+
             });
 
             if (onNext) {
