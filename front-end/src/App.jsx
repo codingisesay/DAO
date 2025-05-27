@@ -12,7 +12,9 @@ import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
-import AccountTbl from './pages/Adminpages/AccountTbl'
+import AccountTbl from './pages/Adminpages/AccountTbl';
+import Customercreation from './pages/CustomerCreation/AccountOpeningForm';
+import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -24,6 +26,8 @@ export const App = () => {
 
       <Router>
         <Routes>
+          <Route path="/" element={<Customercreation />} />
+          <Route path="/rekyc" element={<Rekyc />} />
           <Route path="/login" element={<Login />} />
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route path="/agentdashboard" element={<AgentDashboard />} />

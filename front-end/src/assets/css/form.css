@@ -282,7 +282,7 @@ tr:hover {
 .img-container {
     width: 400px;
     /* Fixed width */
-    height: 300px;
+    height: 250px;
     /* Fixed height */
     overflow: hidden;
     border-radius: 10px;

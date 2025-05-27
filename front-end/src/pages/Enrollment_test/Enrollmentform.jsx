@@ -17,6 +17,7 @@ function Enrollmentform() {
     const [formData, setFormData] = useState({
         correspondenceAddressSame: false,
         documents: [],
+        customerPhoto: null,
     });
 
     // Update form data handler
@@ -35,7 +36,8 @@ function Enrollmentform() {
                     correspondenceAddressSame: data.correspondenceAddressSame,
                     correspondenceAddress: data.correspondenceAddressSame
                         ? { ...prev.permanentAddress }
-                        : { ...prev.correspondenceAddress, ...data.correspondenceAddress }
+                        : { ...prev.correspondenceAddress, ...data.correspondenceAddress },
+                    customerPhoto: data.customerPhoto || prev.customerPhoto
                 };
             }
             // Add cases for other steps as needed
@@ -48,6 +50,7 @@ function Enrollmentform() {
     // };
 
     const handleNext = () => {
+        console.log('formdata till : ', currentStep, formData)
         if (currentStep === 6) {
             setComplete(true);
             // On final submission

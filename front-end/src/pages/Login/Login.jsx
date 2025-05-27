@@ -11,6 +11,8 @@ import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { loginUser } from '../../utils/endpoints';
+
 const roles = [
     { label: 'AGENT', icon: agenticon },
     { label: 'ADMIN', icon: adminicon },
@@ -20,7 +22,6 @@ const roles = [
 export default function LoginPage() {
     const [selectedRole, setSelectedRole] = useState(null);
     const [formData, setFormData] = useState({ username: '', password: '', captcha: '', role: '' });
-    const { login, error, user } = useAuth();
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const navigate = useNavigate();
@@ -64,25 +65,27 @@ export default function LoginPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await login(formData.username, formData.password, selectedRole);
+        const success = await loginUser(formData.username, formData.password, '01');
+        // alert(success)
         if (success) {
-            if (selectedRole === 'AGENT') {
-                navigate('/agentdashboard');
-            }
-            else if (selectedRole === 'ADMIN') {
-                navigate('/admindashboard');
-            }
-            else if (selectedRole === 'EMPLOYEE') {
-                Swal.fire({
-                    title: 'Login Failed',
-                    text: 'You are not authorized to login as an employee',
-                    icon: 'error',
-                    confirmButtonText: 'OK',
-                    class: 'btn-login', customClass: {
-                        confirmButton: 'btn-error ',  // Custom class for the button
-                    }
-                });
-            }
+            navigate('/agentdashboard');
+            // if (selectedRole === 'AGENT') {
+            //     navigate('/agentdashboard');
+            // }
+            // else if (selectedRole === 'ADMIN') {
+            //     navigate('/admindashboard');
+            // }
+            // else if (selectedRole === 'EMPLOYEE') {
+            //     Swal.fire({
+            //         title: 'Login Failed',
+            //         text: 'You are not authorized to login as an employee',
+            //         icon: 'error',
+            //         confirmButtonText: 'OK',
+            //         class: 'btn-login', customClass: {
+            //             confirmButton: 'btn-error ',  // Custom class for the button
+            //         }
+            //     });
+            // }
         }
         else {
             Swal.fire({
@@ -110,7 +113,7 @@ export default function LoginPage() {
             <div className=" md:w-1/2 p-8 flex flex-col justify-center">
                 <div className="w-4/5 m-auto">
                     <div className='flex justify-between'>
-                        <h2 className="green-underline text-3xl font-bold mb-2 w-full">Sign In</h2>
+                        <p className="green-underline text-3xl font-bold mb-2 w-full font-xl text-gray-900 dark:text-gray-200">Sign In</p>
                         <ThemeToggle />
                     </div>
                     <p className="text-sm my-4 text-gray-500 dark:text-gray-400">Please select your role</p>

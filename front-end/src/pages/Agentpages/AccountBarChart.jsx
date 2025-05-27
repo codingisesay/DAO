@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CommanSelectInput from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect';
 import {
     Box, FormControl, InputLabel, MenuItem, Select, Typography
 } from '@mui/material';
@@ -57,9 +57,9 @@ function AccountBarChart() {
 
                 <Box sx={{ display: 'flex', gap: 2, }}>
 
-                    <CommanSelectInput value={timePeriod} label="Time Period" name="maritalStatus" onChange={handleTimeChange} required options={timeduration} />
+                    <CommanSelect value={timePeriod} label="Time Period" name="maritalStatus" onChange={handleTimeChange} required options={timeduration} />
 
-                    <CommanSelectInput value={accountType} label="Account Type" name="maritalStatus" onChange={handleAccountChange} required options={accountTypes} />
+                    <CommanSelect value={accountType} label="Account Type" name="maritalStatus" onChange={handleAccountChange} required options={accountTypes} />
 
                 </Box>
             </Box>

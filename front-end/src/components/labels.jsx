@@ -29,10 +29,10 @@ const labels = {
     mobile: {
         label: "Mobile Number",
     },
-    alternatemobile: {
+    alt_mob_no: {
         label: "Alternate Mobile Number",
     },
-    aadharnumber: {
+    adhar_card: {
         label: "Aadhar Card No.",
     },
     pannumber: {
@@ -50,7 +50,7 @@ const labels = {
     complexname: {
         label: "Complex Name",
     },
-    flatnoroomno: {
+    roomno: {
         label: "Flat No/Room No",
     },
     area: {

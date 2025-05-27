@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CommanSelectInput from '../../components/CommanSelectInput';
+import CommanSelect from '../../components/CommanSelect';
 import {
     Box, FormControl, InputLabel, MenuItem, Select, Typography
 } from '@mui/material';
@@ -62,7 +62,7 @@ function ValidationBarChart() {
                 <h2 className="text-xl font-bold mb-2">Validation</h2>
 
                 <Box sx={{ display: 'flex', gap: 2, }}>
-                    <CommanSelectInput
+                    <CommanSelect
                         value={timePeriod}
                         label="Time Period"
                         name="timePeriod"
@@ -71,7 +71,7 @@ function ValidationBarChart() {
                         options={timeOptions}
                     />
 
-                    <CommanSelectInput
+                    <CommanSelect
                         value={selectedValidation}
                         label="Validation Type"
                         name="validationType"

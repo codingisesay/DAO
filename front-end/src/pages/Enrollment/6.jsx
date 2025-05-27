@@ -80,6 +80,7 @@ const p6 = ({ onNext, onBack }) => {
 
     const CurrentStepComponent = steps[activeStep].component;
 
+    const CreateAccount = () => { console.log(formData) }
     return (
         <div className="">
             <div className="stepper-header">
@@ -133,27 +134,13 @@ const p6 = ({ onNext, onBack }) => {
 
                 <CommonButton
                     className="btn-next"
-                    onClick={activeStep === 2 ? onNext : handleNext}
+                    onClick={CreateAccount}
+                    // onClick={activeStep === 2 ? onNext : handleNext}
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
     );
 };

@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'port' => env('APP_PORT', 8000),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

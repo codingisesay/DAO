@@ -12,7 +12,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         gender: formData.personalDetails?.gender || '',
         mobile: formData.personalDetails?.mobile || '',
         complexName: formData.personalDetails?.complexName || '',
-        flatNoRoomNo: formData.personalDetails?.flatNoRoomNo || '',
+        roomno: formData.personalDetails?.roomno || '',
         area: formData.personalDetails?.area || '',
         landmark: formData.personalDetails?.landmark || '',
         country: formData.personalDetails?.country || '',
@@ -27,20 +27,17 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = () => {
-        updateFormData({
-            personalDetails: {
-                ...localFormData
-            }
-        });
-        onNext();
-    };
+    updateFormData({
+        personalDetails: {
+            ...localFormData
+        }
+    });
 
     return (
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
 
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
                 <CommanInput
                     onChange={handleChange}
                     label={labels.firstname.label}
@@ -99,10 +96,10 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                 />
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.flatnoroomno.label}
+                    label={labels.roomno.label}
                     type="text"
-                    name="flatNoRoomNo"
-                    value={localFormData.flatNoRoomNo}
+                    name="oomno"
+                    value={localFormData.roomno}
                     required
                 />
                 <CommanInput

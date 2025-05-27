@@ -90,7 +90,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-add"></i>
-                                    <span className="text-black font-medium">New Customer</span>
+                                    <span className="font-medium">New Customer</span>
                                 </div>
                             </label>
 
@@ -105,7 +105,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-check"></i>
-                                    <span className="text-black font-medium">Re-KYC</span>
+                                    <span className="font-medium">Re-KYC</span>
                                 </div>
                             </label>
                         </div>
@@ -189,7 +189,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 {showData && (
                     <>
                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.firstname.label}
@@ -410,7 +410,7 @@ export default P1;
 //                                     />
 //                                     <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
 //                                         <i className="bi bi-person-fill-add"></i>
-//                                         <span className="text-black font-medium">New Customer</span>
+//                                         <span className="font-medium">New Customer</span>
 //                                     </div>
 //                                 </label>
 
@@ -425,7 +425,7 @@ export default P1;
 //                                     />
 //                                     <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
 //                                         <i className="bi bi-person-fill-check"></i>
-//                                         <span className="text-black font-medium">Re-KYC</span>
+//                                         <span className="font-medium">Re-KYC</span>
 //                                     </div>
 //                                 </label>
 //                             </div>
@@ -499,7 +499,7 @@ export default P1;
 //                 {showData &&
 //                     <>
 //                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-//                         <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+//                         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
 //                             <div className="">
 //                                 <CommanInput
 //                                     onChange={handleChange}
