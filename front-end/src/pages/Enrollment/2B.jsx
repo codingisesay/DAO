@@ -186,7 +186,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 disabled={disabled && prefix === 'cor'}
             />
             <CommanInput
-                label={labels.flatnoroomno.label}
+                label={labels.roomno.label}
                 name={`${prefix}_flat_no`}
                 value={formData[`${prefix}_flat_no`] || ''}
                 onChange={handleChange}

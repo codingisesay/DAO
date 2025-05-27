@@ -79,7 +79,7 @@ const VideoKYCInstructions = () => {
             <div className="text-center mt-4">
                 <CommonButton
                     className="btn-login my-3 w-[200px]"
-                    disabled={!allTermsAccepted}
+                    // disabled={!allTermsAccepted}
                     onClick={handleConfirm}
                 >
                     &nbsp;Confirm&nbsp;

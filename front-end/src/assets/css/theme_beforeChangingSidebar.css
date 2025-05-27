@@ -8,7 +8,7 @@ body {
 
 /* stepper css below */
 .stepper-container {
-    border: 5px solid white;
+    border: 5px solid var(--payvance-bodybg);
     background: linear-gradient(0deg, rgba(255, 255, 255, 1) 21%, rgba(183, 239, 219, 1) 100%);
     border-radius: 15px;
 }

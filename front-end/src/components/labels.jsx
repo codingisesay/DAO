@@ -50,7 +50,7 @@ const labels = {
     complexname: {
         label: "Complex Name",
     },
-    flatnoroomno: {
+    roomno: {
         label: "Flat No/Room No",
     },
     area: {

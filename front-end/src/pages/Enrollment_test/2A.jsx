@@ -12,7 +12,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         gender: formData.personalDetails?.gender || '',
         mobile: formData.personalDetails?.mobile || '',
         complexName: formData.personalDetails?.complexName || '',
-        flatNoRoomNo: formData.personalDetails?.flatNoRoomNo || '',
+        roomno: formData.personalDetails?.roomno || '',
         area: formData.personalDetails?.area || '',
         landmark: formData.personalDetails?.landmark || '',
         country: formData.personalDetails?.country || '',
@@ -96,10 +96,10 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                 />
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.flatnoroomno.label}
+                    label={labels.roomno.label}
                     type="text"
-                    name="flatNoRoomNo"
-                    value={localFormData.flatNoRoomNo}
+                    name="oomno"
+                    value={localFormData.roomno}
                     required
                 />
                 <CommanInput

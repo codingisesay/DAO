@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(6);
+    const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
@@ -39,7 +39,12 @@ function Enrollmentform() {
         },
         permanentAddress: {},
         correspondenceAddress: {},
-        documents: [],
+        documents: {
+            identityProof: null,
+            addressProof: null,
+            signatureProof: null,
+            customerPhoto: null
+        },
         personalDetailsf5: [],
     });
     // Update form data handler
@@ -170,7 +175,7 @@ function Enrollmentform() {
                     />
                 </div>
                 <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
-                    <div className='work-area'>
+                    <div className='work-area dark:bg-gray-900'>
                         {renderCurrentPage()}
                     </div>
                 </div>

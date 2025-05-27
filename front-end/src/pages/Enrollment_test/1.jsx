@@ -19,7 +19,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         mobile: formData.personalDetails?.mobile || '',
         verifynumber: formData.verificationNumber || '',
         complexname: formData.personalDetails?.complexName || '',
-        flatnoroomno: formData.personalDetails?.flatNoRoomNo || '',
+        roomno: formData.personalDetails?.roomno || '',
         area: formData.personalDetails?.area || '',
         landmark: formData.personalDetails?.landmark || '',
         country: formData.personalDetails?.country || '',
@@ -59,7 +59,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 gender: localFormData.gender,
                 mobile: localFormData.mobile,
                 complexName: localFormData.complexname,
-                flatNoRoomNo: localFormData.flatnoroomno,
+                roomno: localFormData.roomno,
                 area: localFormData.area,
                 landmark: localFormData.landmark,
                 country: localFormData.country,
@@ -248,10 +248,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.flatnoroomno.label}
+                                label={labels.roomno.label}
                                 type="text"
-                                name="flatnoroomno"
-                                value={localFormData.flatnoroomno}
+                                name="roomno"
+                                value={localFormData.roomno}
                                 required
                             />
                             <CommanInput

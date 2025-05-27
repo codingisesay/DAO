@@ -6,7 +6,25 @@
   justify-content: center;
   align-items: center; */
   background: var(--payvance-bodybg);
+  color: var(--text-color);
   transition: background-color 0.25s ease-in-out;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-color) !important;
+}
+
+.dark input {
+  color: white !important;
+}
+
+.dark {
+  color: white !important;
 }
 
 .title {
@@ -18,5 +36,4 @@
   padding: 20px;
   border-radius: 10px;
   background-color: var(--foreground-color);
-  color: var(--secondary-text-color);
 }

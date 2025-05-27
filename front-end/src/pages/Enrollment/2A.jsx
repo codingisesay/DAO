@@ -34,25 +34,27 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         district: formData.personalDetails?.district || '',
         state: formData.personalDetails?.state || ''
     });
-
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setLocalFormData(prev => ({ ...prev, [name]: value }));
 
-        // Update parent form data whenever localFormData changes
+        // First, compute the updated local form data
+        const updatedLocalFormData = { ...localFormData, [name]: value };
+
+        // Update local state
+        setLocalFormData(updatedLocalFormData);
+
+        // Immediately sync it with the parent
         updateFormData({
             ...formData,
-            personalDetails: localFormData
+            personalDetails: updatedLocalFormData
         });
-
     };
 
     return (
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
-
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
-
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+                {/* Salutation - Select field */}
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.salutation.label}
@@ -62,6 +64,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     required
                 />
 
+                {/* First Name - Text only, 50 char limit */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.firstname.label}
@@ -69,7 +72,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="first_name"
                     value={localFormData.first_name}
                     required
+                    max={50}
+                    validationType="TEXT_ONLY"
                 />
+
+                {/* Middle Name - Text only, 50 char limit */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.middlename.label}
@@ -77,7 +84,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="middle_name"
                     value={localFormData.middle_name}
                     required
+                    max={50}
+                    validationType="TEXT_ONLY"
                 />
+
+                {/* Last Name - Text only, 50 char limit */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.lastname.label}
@@ -85,7 +96,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="last_name"
                     value={localFormData.last_name}
                     required
+                    max={50}
+                    validationType="TEXT_ONLY"
                 />
+
+                {/* Date of Birth - Date validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.dob.label}
@@ -93,8 +108,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="DOB"
                     value={localFormData.DOB}
                     required
+                    validationType="DATE"
                 />
 
+                {/* Gender - Select field */}
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.gender.label}
@@ -104,6 +121,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     required
                 />
 
+                {/* Religion - Select field */}
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.religion.label}
@@ -113,6 +131,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     required
                 />
 
+                {/* Caste - Select field */}
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.caste.label}
@@ -122,7 +141,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     required
                 />
 
-
+                {/* Marital Status - Select field */}
                 <CommanSelect
                     onChange={handleChange}
                     label={labels.maritalStatus.label}
@@ -131,6 +150,8 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     options={maritalStatusOptions}
                     required
                 />
+
+                {/* Mobile - Phone number validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.mobile.label}
@@ -138,7 +159,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="mobile"
                     value={localFormData.mobile}
                     required
+                    max={10}
+                    validationType="PHONE"
                 />
+
+                {/* Alternate Mobile - Phone number validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.alternatemobile.label}
@@ -146,7 +171,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="alternatemobile"
                     value={localFormData.alternatemobile}
                     required
+                    max={10}
+                    validationType="PHONE"
                 />
+
+                {/* Email - Email validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.email.label}
@@ -154,7 +183,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="email"
                     value={localFormData.email}
                     required
+                    validationType="EMAIL"
                 />
+
+                {/* Aadhar Number - 12 digit number */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.aadharnumber.label}
@@ -162,7 +194,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="aadharnumber"
                     value={localFormData.aadharnumber}
                     required
+                    max={12}
+                    validationType="NUMBER_ONLY"
                 />
+
+                {/* PAN Number - PAN validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.pannumber.label}
@@ -170,28 +206,44 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="pannumber"
                     value={localFormData.pannumber}
                     required
+                    max={10}
+                    validationType="PAN"
                 />
+
+                {/* Driving License - Alphanumeric with special chars */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.drivinglicence.label}
                     type="text"
                     name="drivinglicence"
                     value={localFormData.drivinglicence}
+                    max={20}
+                    validationType="REGISTRATION_NO"
                 />
+
+                {/* Voter ID - Alphanumeric with special chars */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.voterid.label}
                     type="text"
                     name="voterid"
                     value={localFormData.voterid}
+                    max={20}
+                    validationType="REGISTRATION_NO"
                 />
+
+                {/* Passport Number - Alphanumeric */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.passportno.label}
                     type="text"
                     name="passportno"
                     value={localFormData.passportno}
+                    max={20}
+                    validationType="ALPHANUMERIC"
                 />
+
+                {/* Complex Name - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.complexname.label}
@@ -199,15 +251,23 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="complex_name"
                     value={localFormData.complex_name}
                     required
+                    max={50}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
+
+                {/* Room/Flat No - Alphanumeric */}
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.flatnoroomno.label}
+                    label={labels.roomno.label}
                     type="text"
                     name="flat_no"
                     value={localFormData.flat_no}
                     required
+                    max={20}
+                    validationType="ALPHANUMERIC"
                 />
+
+                {/* Area - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.area.label}
@@ -215,7 +275,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="area"
                     value={localFormData.area}
                     required
+                    max={50}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
+
+                {/* Landmark - More flexible validation */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.landmark.label}
@@ -223,7 +287,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="landmark"
                     value={localFormData.landmark}
                     required
+                    max={50}
+                    validationType="EVERYTHING"
                 />
+
+                {/* Country - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.country.label}
@@ -231,15 +299,23 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="country"
                     value={localFormData.country}
                     required
+                    max={30}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
+
+                {/* Pincode - 6 digit number */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.pincode.label}
                     type="text"
                     name="pincode"
                     value={localFormData.pincode}
+                    max={6}
                     required
+                    validationType="NUMBER_ONLY"
                 />
+
+                {/* City - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.city.label}
@@ -247,7 +323,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="city"
                     value={localFormData.city}
                     required
+                    max={30}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
+
+                {/* District - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.district.label}
@@ -255,7 +335,11 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="district"
                     value={localFormData.district}
                     required
+                    max={30}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
+
+                {/* State - Text with spaces */}
                 <CommanInput
                     onChange={handleChange}
                     label={labels.state.label}
@@ -263,6 +347,8 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                     name="state"
                     value={localFormData.state}
                     required
+                    max={30}
+                    validationType="ALPHABETS_AND_SPACE"
                 />
             </div>
         </div>

@@ -113,7 +113,7 @@ export default function LoginPage() {
             <div className=" md:w-1/2 p-8 flex flex-col justify-center">
                 <div className="w-4/5 m-auto">
                     <div className='flex justify-between'>
-                        <h2 className="green-underline text-3xl font-bold mb-2 w-full">Sign In</h2>
+                        <p className="green-underline text-3xl font-bold mb-2 w-full font-xl text-gray-900 dark:text-gray-200">Sign In</p>
                         <ThemeToggle />
                     </div>
                     <p className="text-sm my-4 text-gray-500 dark:text-gray-400">Please select your role</p>
