@@ -54,7 +54,7 @@ class AgentController extends Controller
             'area' => 'nullable|string',
             'lankmark' => 'nullable|string',
             'country' => 'nullable|string',
-            'pincode' => 'nullable|string',
+            'pincode' => 'nullable|string', 
             'city' => 'nullable|string',
             'district' => 'nullable|string',
             'state' => 'nullable|string',
@@ -108,7 +108,7 @@ public function getApplicationDetails(Request $request, $id)
 public function savePersonalDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 4]); // Replace 4 with a valid ID from your DB
+    $request->merge(['application_id' => 60]); // Replace 4 with a valid ID from your DB
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -143,7 +143,7 @@ public function savePersonalDetails(Request $request)
 public function saveAddressDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 50]); // Replace 4 with a valid ID
+    $request->merge(['application_id' => 60]); // Replace 4 with a valid ID
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -184,7 +184,7 @@ public function saveAddressDetails(Request $request)
 public function saveLivePhoto(Request $request)
 {
     // Hardcode application_id as 6 for testing
-    $request->merge(['application_id' => 6]);
+    $request->merge(['application_id' => 60]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -223,7 +223,7 @@ public function saveLivePhoto(Request $request)
 public function saveApplicationDocument(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 4]);
+    $request->merge(['application_id' => 60]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -264,7 +264,7 @@ public function saveApplicationDocument(Request $request)
 public function saveAccountPersonalDetails(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 4]);
+    $request->merge(['application_id' => 60]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -305,7 +305,7 @@ public function saveAccountPersonalDetails(Request $request)
 public function saveAccountNominee(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 4]);
+    $request->merge(['application_id' => 60]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -350,7 +350,7 @@ public function saveAccountNominee(Request $request)
 public function saveServiceToCustomer(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 4]);
+    $request->merge(['application_id' => 60]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
