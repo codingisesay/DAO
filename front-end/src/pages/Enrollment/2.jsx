@@ -96,6 +96,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             }
         } catch (err) {
             // ...error handling...
+            alert('Failed to save personal details or address details');
         }
     };
 
