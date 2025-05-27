@@ -14,9 +14,9 @@ function AddressSection({ formData, handleChange }) {
                 required
             />
             <CommanInput
-                label={labels.flatnoroomno.label}
-                name="flatnoroomno"
-                value={formData.flatnoroomno}
+                label={labels.roomno.label}
+                name="roomno"
+                value={formData.roomno}
                 onChange={handleChange}
                 required
             />
@@ -82,13 +82,13 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         permanentAddress: {
             ...formData.permanentAddress,
             complexname: formData.permanentAddress?.complexName || '',
-            flatnoroomno: formData.permanentAddress?.flatNo || '',
+            roomno: formData.permanentAddress?.flatNo || '',
             // Map other fields as needed
         },
         correspondenceAddress: {
             ...formData.correspondenceAddress,
             complexname: formData.correspondenceAddress?.complexName || '',
-            flatnoroomno: formData.correspondenceAddress?.flatNo || '',
+            roomno: formData.correspondenceAddress?.flatNo || '',
             // Map other fields as needed
         }
     });
@@ -139,7 +139,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             ...prev,
             correspondenceAddress: {
                 complexname: '',
-                flatnoroomno: '',
+                roomno: '',
                 area: '',
                 landmark: '',
                 country: '',
@@ -156,7 +156,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         updateFormData({
             permanentAddress: {
                 complexName: localFormData.permanentAddress.complexname,
-                flatNo: localFormData.permanentAddress.flatnoroomno,
+                flatNo: localFormData.permanentAddress.roomno,
                 area: localFormData.permanentAddress.area,
                 landmark: localFormData.permanentAddress.landmark,
                 country: localFormData.permanentAddress.country,
@@ -168,7 +168,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             correspondenceAddressSame: sameAsAbove,
             correspondenceAddress: {
                 complexName: localFormData.correspondenceAddress.complexname,
-                flatNo: localFormData.correspondenceAddress.flatnoroomno,
+                flatNo: localFormData.correspondenceAddress.roomno,
                 area: localFormData.correspondenceAddress.area,
                 landmark: localFormData.correspondenceAddress.landmark,
                 country: localFormData.correspondenceAddress.country,

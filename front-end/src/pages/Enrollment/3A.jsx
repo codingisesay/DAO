@@ -216,7 +216,8 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 id: Date.now(),
                 type: docType,
                 name: side ? `${documentValue.toLowerCase()} ${side}` : `${documentValue.toLowerCase()} document`,
-                image: imageData,
+                image: imageData, // for preview
+                file: file,       // <-- store the real File object here!
                 uploadedAt: new Date().toLocaleString(),
                 documentCategory: documentType,
                 isValid: isValid,

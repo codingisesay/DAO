@@ -53,13 +53,6 @@ function BankFacility({ formData, updateFormData }) {
         }));
     };
 
-    // useEffect(() => {
-    //     updateFormData({
-    //         ...formData,
-    //         bankFacility: localFormData
-    //     });
-    // }, [localFormData]);
-
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
