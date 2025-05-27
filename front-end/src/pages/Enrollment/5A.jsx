@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { accountPersonalDetailsService } from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels';
-
-function PersonalOccupationForm({ formData, updateFormData }) {
+import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
+function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
     const [localFormData, setLocalFormData] = useState({});
 
     const handleChange = (e) => {
@@ -12,13 +14,52 @@ function PersonalOccupationForm({ formData, updateFormData }) {
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    // useEffect(() => {
-    //     updateFormData({
-    //         ...formData,
-    //         personalDetailsf5: localFormData
-    //     });
-    // }, [localFormData]);
+    const submitpd = async () => {
+        try {
+            // Prepare the payload from localFormData
+            const payload = {
+                // If application_id is hardcoded in backend, you can omit it here
+                father_prefix_name: localFormData.fatherSpousePrefixName,
+                father_first_name: localFormData.fatherSpouseFirstName,
+                father_middle_name: localFormData.fatherSpouseMiddleName,
+                father_last_name: localFormData.fatherSpouseLastName,
+                mother_prefix_name: localFormData.motherPrefixName,
+                mother_first_name: localFormData.motherFirstName,
+                mother_middle_name: localFormData.motherMiddleName,
+                mother_last_name: localFormData.motherLastName,
+                birth_place: localFormData.birthPlaceCity,
+                birth_country: localFormData.birthPlaceCountry,
+                occoupation_type: localFormData.occupationType,
+                occupation_name: localFormData.businessName,
+                if_salaryed: localFormData.salariedWith,
+                designation: localFormData.designation,
+                nature_of_occoupation: localFormData.organisationNature,
+                qualification: localFormData.educationQualification,
+                anual_income: localFormData.annualIncome,
+                remark: localFormData.remark,
+                status: "APPROVED", // or get from form if needed
+            };
 
+            const response = await accountPersonalDetailsService.create(payload);
+
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Account personal details saved!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // Optionally, call onNext() to go to the next step
+            if (onNext) onNext();
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to save details'
+            });
+        }
+    }
     return (
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
@@ -57,7 +98,17 @@ function PersonalOccupationForm({ formData, updateFormData }) {
                 <CommanInput label={labels.annualIncome.label} name="annualIncome" value={localFormData.annualIncome} onChange={handleChange} />
                 <CommanInput label={labels.remark.label} name="remark" value={localFormData.remark} onChange={handleChange} />
             </div>
-        </div>
+
+
+            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
+                <CommonButton onClick={onBack} variant="outlined">
+                    Back
+                </CommonButton>
+                <CommonButton onClick={submitpd} variant="contained">
+                    Save & Continue
+                </CommonButton>
+            </div>
+        </div >
     );
 }
 
