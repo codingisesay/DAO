@@ -18,7 +18,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         try {
             // Prepare the payload from localFormData
             const payload = {
-                // If application_id is hardcoded in backend, you can omit it here
+                application_id: formData.application_id, // <-- Always include this!
                 father_prefix_name: localFormData.fatherSpousePrefixName,
                 father_first_name: localFormData.fatherSpouseFirstName,
                 father_middle_name: localFormData.fatherSpouseMiddleName,

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
@@ -6,7 +5,8 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import { gender } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
-
+import Swal from 'sweetalert2';
+import { agentService } from '../../services/apiServices';
 
 
 function P1({ onNext, onBack, formData, updateFormData }) {
@@ -76,43 +76,46 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             }
         });
 
-        //integration to send data below
-        // const payload = {
-        //     auth_type: selectedOption,
-        //     auth_code: localFormData.verifynumber,
-        //     first_name: localFormData.first_name,
-        //     middle_name: localFormData.middle_name,
-        //     last_name: localFormData.last_name,
-        //     DOB: localFormData.DOB,
-        //     gender: localFormData.gender,
-        //     mobile: localFormData.mobile,
-        //     complex_name: localFormData.complex_name,
-        //     flat_no: localFormData.flat_no,
-        //     area: localFormData.area,
-        //     landmark: localFormData.landmark,
-        //     country: localFormData.country,
-        //     pincode: localFormData.pincode,
-        //     city: localFormData.city,
-        //     district: localFormData.district,
-        //     state: localFormData.state,
-        // };
+        // integration to send data below
+        const payload = {
+            auth_type: selectedOption,
+            auth_code: localFormData.verifynumber,
+            first_name: localFormData.first_name,
+            auth_status: "Pending", // or get from form if needed
+            middle_name: localFormData.middle_name,
+            last_name: localFormData.last_name,
+            DOB: localFormData.DOB,
+            gender: localFormData.gender,
+            mobile: localFormData.mobile,
+            complex_name: localFormData.complex_name,
+            flat_no: localFormData.flat_no,
+            area: localFormData.area,
+            landmark: localFormData.landmark,
+            country: localFormData.country,
+            pincode: localFormData.pincode,
+            city: localFormData.city,
+            district: localFormData.district,
+            state: localFormData.state,
+        };
 
-        // try {
-        //     const response = await agentService.agentEnroll(payload);
-        //     if (response && response.application_no) {
-        //         updateFormData({
-        //             ...formData,
-        //             application_no: response.application_no
-        //         });
-        //         localStorage.setItem('application_no', response.application_no)
-        //         onNext();
-        //     }
-        // } catch (error) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         text: error,
-        //     });
-        // }
+        try {
+            const response = await agentService.agentEnroll(payload);
+            if (response && response.application_no && response.application_id) {
+                updateFormData(1, {
+                    ...formData,
+                    application_no: response.application_no,
+                    application_id: response.application_id,
+                });
+                localStorage.setItem('application_no', response.application_no);
+                localStorage.setItem('application_id', response.application_id);
+                onNext();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                text: error,
+            });
+        }
         onNext();
     };
 
@@ -163,8 +166,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Aadhar Number"
-                                            checked={selectedOption === 'Aadhar Number'}
+                                            value="Aadhar Card"
+                                            checked={selectedOption === 'Aadhar Card'}
                                             onChange={handleRadioChange}
                                         />
                                         Aadhar Number
@@ -175,8 +178,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Pan Number"
-                                            checked={selectedOption === 'Pan Number'}
+                                            value="Pan Card"
+                                            checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
                                         />
                                         Pan Number
