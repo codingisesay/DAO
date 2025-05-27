@@ -2,6 +2,9 @@
 import VideoKYCInstructions from '../Enrollment/4A';
 import CommonButton from '../../components/CommonButton';
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
+import { nav } from 'framer-motion/client';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 const Step4VideoCall = ({
   formData,
   handleChange,
@@ -9,6 +12,23 @@ const Step4VideoCall = ({
   prevStep,
   skipStep,
 }) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    Swal.fire({
+      title: 'Application Submitted!',
+      text: 'Your application has been received successfully.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate('/admindashboard');
+      }
+    });
+  };
+
   return (
     <div className="form-step">
       <h2>Step 4: Video Call (Optional)</h2>
@@ -55,9 +75,9 @@ const Step4VideoCall = ({
         </CommonButton>
         <CommonButton
           className="btn-next border-0"
-          onClick={nextStep}
+          onClick={handleSubmit}
         >
-          Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+          Submit Application
         </CommonButton>
       </div>
     </div>

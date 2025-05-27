@@ -27,7 +27,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
 
       <div className="sidebar-stepper-container">
         <div className="vertical-stepper">
-          {[1, 2, 3, 4, 5, 6].map((step) => (
+          {[1, 2, 3, 4,].map((step) => (
             <div
               key={step}
               className={`stepper-item ${currentStep === step ? "active" : ""
@@ -48,8 +48,6 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
                   {step === 2 && "Customer Application"}
                   {step === 3 && "Document Details"}
                   {step === 4 && "Video KYC"}
-                  {step === 5 && "Account Details"}
-                  {step === 6 && "Summary Sheet"}
                 </div>
                 <div className={`stepper-status text-xs ${progress[step] === "completed" ? "completed" :
                   progress[step] === "inprogress" ? "inprogress" :
@@ -62,27 +60,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
               </div>
 
               {/* Sub-steps for step 2 */}
-              {/* {step === 2 && progress[2] !== "pending" && (
-            <div className="sub-steps">
-              {["2A", "2B", "2C"].map((s) => (
-                <div key={s} className="sub-step-container">
-                  <div
-                    className={`sub-step-circle ${subProgress[s] === "completed" ? "completed" :
-                      subProgress[s] === "inprogress" ? "inprogress" : "pending"
-                      }`}
-                  >
-                    {subProgress[s] === "completed" ? "" : s.replace("2", "")}
-                  </div>
-                  {s !== "2C" && (
-                    <div
-                      className={`sub-step-line ${subProgress[s] === "completed" ? "completed" : "pending"
-                        }`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )} */}
+
             </div>
           ))}
         </div>

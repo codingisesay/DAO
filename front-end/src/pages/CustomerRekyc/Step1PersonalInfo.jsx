@@ -9,7 +9,7 @@ import CommanSelect from '../../components/CommanSelect';
 const Step1PersonalInfo = ({ formData, handleChange, nextStep, onTypeChange, onOptionChange }) => {
   // Initialize from formData.begin_process and formData.auth_type
   const [selectedOption, setSelectedOption] = useState(formData.auth_type || '');
-  const [selectedType, setSelectedType] = useState(formData.begin_process || '');
+  const [selectedType, setSelectedType] = useState(formData.begin_process || 'rekyc');
   const [showData, setShowData] = useState(!!formData.auth_code);
 
   const handleTypeSelect = (type) => {
@@ -39,9 +39,9 @@ const Step1PersonalInfo = ({ formData, handleChange, nextStep, onTypeChange, onO
       <div className='form-container'>
         <div className="flex flex-wrap items-top ">
           <div className="lg:w-1/2 md:full sm:w-full my-4">
-            <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
+            <h2 className="text-xl font-bold mb-2">Re-KYC pplication </h2>
             <div className="application-type-container">
-              <label className="application-type">
+              {/* <label className="application-type">
                 <input
                   type="radio"
                   name="begin_process"
@@ -54,7 +54,7 @@ const Step1PersonalInfo = ({ formData, handleChange, nextStep, onTypeChange, onO
                   <i className="bi bi-person-fill-add"></i>
                   <span className="font-medium">New Customer</span>
                 </div>
-              </label>
+              </label> */}
 
               <label className="application-type ">
                 <input
@@ -62,7 +62,7 @@ const Step1PersonalInfo = ({ formData, handleChange, nextStep, onTypeChange, onO
                   name="begin_process"
                   value="rekyc"
                   className="hidden peer"
-                  checked={selectedType === 'rekyc'}
+                  checked
                   onChange={() => handleTypeSelect('rekyc')}
                 />
                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
