@@ -21,7 +21,8 @@ Route::get('/', function () {
 // use App\Services\EurekaService;
 
 Route::get('/eureka/register', function (EurekaService $eureka) {
-    return $eureka->register()->body();
+    // return $eureka->register()->status();
+      return $eureka->register()->body();
 });
 
 Route::get('/eureka/heartbeat', function (EurekaService $eureka) {

@@ -1,90 +1,63 @@
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
-import CommanSelect from '../../components/CommanSelect';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { agentService } from '../../services/apiServices';
 import { gender } from '../../data/data';
+import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
+import { agentService } from '../../services/apiServices'
 
 
 function P1({ onNext, onBack, formData, updateFormData }) {
-    const [selectedOption, setSelectedOption] = useState('');
-    const [selectedType, setSelectedType] = useState('');
+    const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
+    const [selectedType, setSelectedType] = useState(formData.applicationType || '');
     const [showData, setShowData] = useState(!!formData.verificationNumber);
 
     const [localFormData, setLocalFormData] = useState({
-        auth_type: formData.personalDetails.auth_type || '',
-        verificationOption: formData.personalDetails.verificationOption || '',
-        verifynumber: formData.personalDetails.verifynumber || '',
-        first_name: formData.personalDetails.first_name || '',
-        middle_name: formData.personalDetails.middle_name || '',
-        last_name: formData.personalDetails.last_name || '',
-        DOB: formData.personalDetails.DOB || '',
-        gender: formData.personalDetails.gender || '',
-        mobile: formData.personalDetails.mobile || '',
-        complex_name: formData.personalDetails.complex_name || '',
-        flat_no: formData.personalDetails.flat_no || '',
-        area: formData.personalDetails.area || '',
-        landmark: formData.personalDetails.landmark || '',
-        country: formData.personalDetails.country || '',
-        pincode: formData.personalDetails.pincode || '',
-        city: formData.personalDetails.city || '',
-        district: formData.personalDetails.district || '',
-        state: formData.personalDetails.state || '',
+        first_name: formData.personalDetails?.first_name || '',
+        middle_name: formData.personalDetails?.middle_name || '',
+        last_name: formData.personalDetails?.last_name || '',
+        DOB: formData.personalDetails?.DOB || '',
+        gender: formData.personalDetails?.gender || '',
+        mobile: formData.personalDetails?.mobile || '',
+        verifynumber: formData.verificationNumber || '',
+        complex_name: formData.personalDetails?.complex_name || '',
+        flat_no: formData.personalDetails?.flat_no || '',
+        area: formData.personalDetails?.area || '',
+        landmark: formData.personalDetails?.landmark || '',
+        country: formData.personalDetails?.country || '',
+        pincode: formData.personalDetails?.pincode || '',
+        city: formData.personalDetails?.city || '',
+        district: formData.personalDetails?.district || '',
+        state: formData.personalDetails?.state || ''
     });
 
     const handleChange = (e) => {
-        let { name, value } = e.target;
-        setLocalFormData((prev) => ({
-            ...prev,
-            [name]: value
-        }));
+        const { name, value } = e.target;
+        setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleRadioChange = (e) => {
         setSelectedOption(e.target.value);
-        setLocalFormData(prev => ({ ...prev, verifynumber: '' }));
     };
 
-    const fetchShowData = () => {
-        const val = localFormData.verifynumber;
-
-        if (selectedOption === 'AadharNumber' && val.length !== 12) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Aadhaar',
-                text: 'Aadhaar number must be exactly 12 digits.',
-            });
-            return;
+    const fetchShowData = (e) => {
+        e.preventDefault();
+        if (localFormData.verifynumber) {
+            setShowData(true);
         }
-
-        if (
-            selectedOption === 'PanNumber' &&
-            !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val)
-        ) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid PAN Format',
-                text: 'PAN should be in format: ABCDE1234F',
-            });
-            return;
-        }
-        setShowData(true);
     };
-
 
     const handleNextStep = async () => {
-        // Update formData before API call
+        // update central from / in varibles
         updateFormData(1, {
+            ...formData,
             applicationType: selectedType,
             verificationOption: selectedOption,
             verificationNumber: localFormData.verifynumber,
             personalDetails: {
-                auth_type: selectedOption,
-                verificationOption: selectedOption,
-                verifynumber: localFormData.verifynumber,
+                ...formData,
                 first_name: localFormData.first_name,
                 middle_name: localFormData.middle_name,
                 last_name: localFormData.last_name,
@@ -99,14 +72,16 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 pincode: localFormData.pincode,
                 city: localFormData.city,
                 district: localFormData.district,
-                state: localFormData.state,
+                state: localFormData.state
             }
-        })
+        });
 
+        // integration to send data below
         const payload = {
             auth_type: selectedOption,
             auth_code: localFormData.verifynumber,
             first_name: localFormData.first_name,
+            auth_status: "Pending", // or get from form if needed
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
@@ -122,30 +97,33 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             district: localFormData.district,
             state: localFormData.state,
         };
-        onNext();
+
         try {
             const response = await agentService.agentEnroll(payload);
-            if (response && response.application_no) {
-                updateFormData({
+            if (response && response.application_no && response.application_id) {
+                updateFormData(1, {
                     ...formData,
-                    application_no: response.application_no
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                localStorage.setItem('application_no', response.application_no)
+                localStorage.setItem('application_no', response.application_no);
+                localStorage.setItem('application_id', response.application_id);
                 onNext();
             }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: JSON.stringify(error),
+                text: error,
             });
         }
+        onNext();
     };
 
     return (
         <>
             <div className='form-container'>
-                <div className="flex flex-wrap items-top">
-                    <div className="lg:w-1/2 md:full sm:w-full">
+                <div className="flex flex-wrap items-top ">
+                    <div className="lg:w-1/2 md:full sm:w-full my-4">
                         <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
                         <div className="application-type-container">
                             <label className="application-type">
@@ -159,11 +137,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-add"></i>
-                                    <span className="text-black font-medium">New Customer</span>
+                                    <span className="font-medium">New Customer</span>
                                 </div>
                             </label>
 
-                            <label className="application-type">
+                            <label className="application-type ">
                                 <input
                                     type="radio"
                                     name="applicationType"
@@ -174,20 +152,20 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-check"></i>
-                                    <span className="text-black font-medium">Re-KYC</span>
+                                    <span className="font-medium">Re-KYC</span>
                                 </div>
                             </label>
                         </div>
 
                         {selectedType && (
-                            <div className="my-5">
-                                <h2 className="text-xl font-bold my-2">Choose the Option to Verify</h2>
+                            <div className='my-4'>
+                                <h2 className="text-xl font-bold mb-2">Choose the Option to Verify</h2>
                                 <form className="flex flex-wrap items-center justify-start">
                                     <label className="flex me-4">
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="Aadhar Card"
+                                            name="option"
                                             value="Aadhar Card"
                                             checked={selectedOption === 'Aadhar Card'}
                                             onChange={handleRadioChange}
@@ -199,7 +177,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="Pan Card"
+                                            name="option"
                                             value="Pan Card"
                                             checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
@@ -211,7 +189,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="DigiLocker"
+                                            name="option"
                                             value="DigiLocker"
                                             checked={selectedOption === 'DigiLocker'}
                                             onChange={handleRadioChange}
@@ -221,8 +199,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 </form>
 
                                 {selectedOption && (
-                                    <div className="my-2">
-                                        <div className="flex items-center mt-5">
+                                    <div className="mt-6">
+                                        <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
                                                     type="text"
@@ -246,19 +224,19 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         </div>
                                     </div>
                                 )}
-                                <br />
+
                             </div>
                         )}
                     </div>
                     <div className="hidden lg:block lg:w-1/2 md:w-1/2">
-                        <img src={workingman} alt="workingman" className="w-4/5 m-auto" />
+                        <img src={workingman} alt="workingman" className="w-3/4 m-auto" />
                     </div>
                 </div>
 
                 {showData && (
                     <>
                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.firstname.label}
@@ -291,7 +269,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 max={50}
                                 validationType="TEXT_ONLY"
                             />
-
+                            {/* Date of Birth - Using DATE validation */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}
@@ -302,15 +280,17 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="DATE"
                             />
 
+                            {/* Gender - Text with 20 char limit */}
                             <CommanSelect
-                                value={localFormData.gender}
-                                label={labels.gender.label}
-                                name="gender"
                                 onChange={handleChange}
+                                label={labels.gender.label}
+                                value={localFormData.gender}
+                                name="gender"
                                 required
                                 options={gender}
                             />
 
+                            {/* Mobile - Using PHONE validation with 15 digit limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.mobile.label}
@@ -318,10 +298,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 name="mobile"
                                 value={localFormData.mobile}
                                 required
-                                max={15}
+                                max={10}
                                 validationType="PHONE"
                             />
 
+                            {/* Complex Name - Text with 50 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.complexname.label}
@@ -333,17 +314,19 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHANUMERIC"
                             />
 
+                            {/* Flat/Room No - Alphanumeric with 20 char limit */}
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.flatnoroomno.label}
+                                label={labels.roomno.label}
                                 type="text"
                                 name="flat_no"
                                 value={localFormData.flat_no}
                                 required
-                                max={20}
+                                max={5}
                                 validationType="ALPHANUMERIC"
                             />
 
+                            {/* Area - Text with 50 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.area.label}
@@ -355,6 +338,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE"
                             />
 
+                            {/* Landmark - Text with 50 char limit (more flexible) */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.landmark.label}
@@ -366,6 +350,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="EVERYTHING"
                             />
 
+                            {/* Country - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.country.label}
@@ -377,6 +362,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE"
                             />
 
+                            {/* Pincode - Numbers only with standard 6-10 digit limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.pincode.label}
@@ -384,10 +370,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 name="pincode"
                                 value={localFormData.pincode}
                                 required
-                                max={10}
+                                max={6}
                                 validationType="NUMBER_ONLY"
                             />
 
+                            {/* City - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.city.label}
@@ -399,6 +386,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE"
                             />
 
+                            {/* District - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.district.label}
@@ -410,6 +398,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE"
                             />
 
+                            {/* State - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.state.label}

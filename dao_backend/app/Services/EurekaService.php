@@ -19,7 +19,8 @@ class EurekaService
         
         $this->eurekaUrl = 'http://172.16.1.224:8061/eureka';
         $this->appName = config('app.name');
-        $this->instanceId = gethostbyname(gethostname()) . ':' . $this->appName . ':' . config('app.port');
+        //  $this->instanceId = gethostbyname(gethostname()) . ':' . $this->appName . ':' . config('app.port');
+        $this->instanceId = 'stpl' . ':' . $this->appName . ':' . config('app.port');
         $this->hostName = gethostname();
         $this->port = config('app.port');
     }
@@ -29,9 +30,11 @@ class EurekaService
         $body = [
             'instance' => [
                 'instanceId' => $this->instanceId,
+                //   'instanceId' => 'stpl',
                 'hostName' => $this->hostName,
                 'app' => $this->appName,
-                'ipAddr' => gethostbyname(gethostname()),
+                // 'ipAddr' => gethostbyname(gethostname()),
+                'ipAddr' => '127.0.0.1',
                 'status' => 'UP',
                 'port' => [
                     '$' => $this->port,
@@ -43,6 +46,8 @@ class EurekaService
                 ]
             ]
         ];
+
+        // dd($body);
 
         return Http::withHeaders([
             'Content-Type' => 'application/json'

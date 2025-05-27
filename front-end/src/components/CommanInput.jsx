@@ -72,7 +72,7 @@ const CommanInput = ({
     };
 
     return (
-        <div className={clsx('floating-input-height relative w-full', className)}>
+        <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md', className)}>
             <input
                 id={name}
                 name={name}
@@ -83,8 +83,8 @@ const CommanInput = ({
                 onBlur={handleBlur}
                 required={required}
                 className={clsx(
-                    'peer block w-full appearance-none border border-gray-300 bg-transparent px-4 py-2 text-sm text-gray-900 placeholder-transparent dark:text-white dark:border-gray-700',
-                    'rounded-md transition-all',
+                    'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+                    ' transition-all ',
                     {
                         'border-red-500': error && touched,
                     }
@@ -96,10 +96,10 @@ const CommanInput = ({
             <label
                 htmlFor={name}
                 className={clsx(
-                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none',
+                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
                     {
                         'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-400 translate-y-0.5': !shouldFloat,
+                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
                     }
                 )}
             >
@@ -108,7 +108,7 @@ const CommanInput = ({
 
             {error && touched && (
                 <p className="mt-1 text-xs text-red-500">
-                    {errorMessage || error}
+                    {label} : {errorMessage || error}
                 </p>
             )}
         </div>

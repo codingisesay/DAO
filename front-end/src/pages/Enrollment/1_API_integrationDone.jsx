@@ -49,7 +49,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const fetchShowData = () => {
         const val = localFormData.verifynumber;
 
-        if (selectedOption === 'AadharNumber' && val.length !== 12) {
+        if (selectedOption === 'adhar_card' && val.length !== 12) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Aadhaar',
@@ -75,7 +75,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleNextStep = async () => {
         // Update formData before API call
-        updateFormData(1, payload);
+        // updateFormData(1, payload);
 
         const payload = {
             auth_type: selectedOption,
@@ -133,7 +133,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-add"></i>
-                                    <span className="text-black font-medium">New Customer</span>
+                                    <span className="font-medium">New Customer</span>
                                 </div>
                             </label>
 
@@ -148,7 +148,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 />
                                 <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
                                     <i className="bi bi-person-fill-check"></i>
-                                    <span className="text-black font-medium">Re-KYC</span>
+                                    <span className="font-medium">Re-KYC</span>
                                 </div>
                             </label>
                         </div>

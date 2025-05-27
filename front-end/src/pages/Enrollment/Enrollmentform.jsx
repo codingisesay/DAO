@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(5);
     const [complete, setComplete] = useState(false);
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
@@ -39,7 +39,12 @@ function Enrollmentform() {
         },
         permanentAddress: {},
         correspondenceAddress: {},
-        documents: [],
+        documents: {
+            identityProof: null,
+            addressProof: null,
+            signatureProof: null,
+            customerPhoto: null
+        },
         personalDetailsf5: [],
     });
     // Update form data handler
@@ -61,6 +66,11 @@ function Enrollmentform() {
                         ? { ...prev.permanentAddress }
                         : { ...prev.correspondenceAddress, ...data.correspondenceAddress }
                 };
+            } else if (step === 3) {
+                return {
+                    ...prev,
+                    documents: data.documents
+                };
             }
             else if (step === 5) {
                 return {
@@ -74,15 +84,13 @@ function Enrollmentform() {
         });
     };
 
-    //     const updateFormData = (newData) => {
-    //     setFormData(prev => ({ ...prev, ...newData }));
-    // };
+
 
     const handleNext = () => {
+        console.log('Final form data:', formData);
         if (currentStep === 6) {
             setComplete(true);
             // On final submission
-            console.log('Final form data:', formData);
             // Here you would typically send the data to your API
         } else {
             setCurrentStep((prev) => prev + 1);
@@ -167,7 +175,7 @@ function Enrollmentform() {
                     />
                 </div>
                 <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
-                    <div className='work-area'>
+                    <div className='work-area dark:bg-gray-900'>
                         {renderCurrentPage()}
                     </div>
                 </div>
