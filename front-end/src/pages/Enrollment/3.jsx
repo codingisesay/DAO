@@ -10,20 +10,20 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 
     const handleDocumentsUpdate = async (newDocuments) => {
-        const formData = new FormData();
-        formData.append('application_id', 60);
+        const formDataObj = new FormData();
+        formDataObj.append('application_id', formData.application_id); // <-- Use the real ID
 
         newDocuments.forEach((doc) => {
             if (doc.file instanceof File) {
-                formData.append('files[]', doc.file);
-                formData.append('document_types[]', doc.name);
+                formDataObj.append('files[]', doc.file);
+                formDataObj.append('document_types[]', doc.name);
             }
         });
 
         try {
             const response = await apiService.post(
                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
-                formData,
+                formDataObj,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }

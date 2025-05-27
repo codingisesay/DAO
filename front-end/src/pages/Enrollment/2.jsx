@@ -1,14 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AddressForm from './2B';
 import PersonalDetailsForm from './2A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
-import { apiService } from '../../utils/storage';
-import { API_ENDPOINTS } from '../../services/api';
-
+import { personalDetailsService } from '../../services/apiServices';
+import Swal from 'sweetalert2';
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
+
+    // Restore application_id if missing
+    useEffect(() => {
+        console.log('Step 2: formData.application_id =', formData.application_id); // <-- Debug log
+        if (!formData.application_id) {
+            const storedId = localStorage.getItem('application_id');
+            if (storedId) {
+                updateFormData({ ...formData, application_id: storedId });
+            } else {
+                alert('No application found. Please start a new application.');
+                if (onBack) onBack();
+            }
+        }
+    }, []);
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -47,9 +60,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     religion: pd.religion,
                     caste: pd.caste,
                     marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                    alt_mob_no: pd.alt_mob_no,
+                    alt_mob_no: pd.alternatemobile,
                     email: pd.email,
-                    adhar_card: pd.adhar_card,
+                    adhar_card: pd.aadharnumber,
                     pan_card: pd.pannumber,
                     passport: pd.passportno,
                     driving_license: pd.drivinglicence,
@@ -57,7 +70,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     status: formData.status,
                 };
 
-                let response = await apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, payload);
+                let response = await personalDetailsService.create(payload);
                 alert(response.data.message || 'Personal details saved successfully.');
                 handleNext();
             } else if (activeStep === 1) {
@@ -96,7 +109,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             }
         } catch (err) {
             // ...error handling...
-            alert('Failed to save personal details or address details');
         }
     };
 
@@ -105,25 +117,25 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             const ad = formData.addressDetails || formData; // adjust as per your state shape
             const payload = {
 
-                application_id: "APP202505220001",
-                per_complex_name: "Green Valley Residency",
-                per_flat_no: "B-204",
-                per_area: "Andheri East",
-                per_landmark: "Near Metro Station",
-                per_country: "India",
-                per_pincode: "400069",
-                per_city: "Mumbai",
-                per_district: "Mumbai Suburban",
-                per_state: "Maharashtra",
-                cor_complex: "Skyline Heights",
-                cor_flat_no: "D-501",
-                cor_area: "Powai",
-                cor_landmark: "Opposite Hiranandani Hospital",
-                cor_country: "India",
-                cor_pincode: "400076",
-                cor_city: "Mumbai",
-                cor_district: "Mumbai Suburban",
-                cor_state: "Maharashtra",
+                // application_id: "APP202505220001",
+                // per_complex_name: "Green Valley Residency",
+                // per_flat_no: "B-204",
+                // per_area: "Andheri East",
+                // per_landmark: "Near Metro Station",
+                // per_country: "India",
+                // per_pincode: "400069",
+                // per_city: "Mumbai",
+                // per_district: "Mumbai Suburban",
+                // per_state: "Maharashtra",
+                // cor_complex: "Skyline Heights",
+                // cor_flat_no: "D-501",
+                // cor_area: "Powai",
+                // cor_landmark: "Opposite Hiranandani Hospital",
+                // cor_country: "India",
+                // cor_pincode: "400076",
+                // cor_city: "Mumbai",
+                // cor_district: "Mumbai Suburban",
+                // cor_state: "Maharashtra",
 
 
                 status: null, // or as needed

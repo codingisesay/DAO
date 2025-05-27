@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
@@ -7,7 +6,11 @@ import CommonButton from '../../components/CommonButton';
 import { gender } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
+<<<<<<< HEAD
 import { agentService } from '../../services/apiServices'
+=======
+import { agentService } from '../../services/apiServices';
+>>>>>>> c62b96d242dc33d1ca77b2a4d360d7ea00c7b87f
 
 
 function P1({ onNext, onBack, formData, updateFormData }) {
@@ -77,12 +80,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             }
         });
 
-        //integration to send data below
+        // integration to send data below
         const payload = {
             auth_type: selectedOption,
             auth_code: localFormData.verifynumber,
-            auth_status: 'Pending',
             first_name: localFormData.first_name,
+            auth_status: "Pending", // or get from form if needed
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
@@ -100,23 +103,24 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         };
 
         try {
-            // alert('called')
             const response = await agentService.agentEnroll(payload);
-            if (response && response.application_no) {
-                updateFormData({
+            if (response && response.application_no && response.application_id) {
+                updateFormData(1, {
                     ...formData,
-                    application_no: response.application_no
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                localStorage.setItem('application_no', response.application_no)
+                localStorage.setItem('application_no', response.application_no);
+                localStorage.setItem('application_id', response.application_id);
                 onNext();
             }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: JSON.stringify(error),
+                text: error,
             });
         }
-        // onNext();
+        onNext();
     };
 
     return (

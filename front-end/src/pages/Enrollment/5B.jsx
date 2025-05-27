@@ -143,7 +143,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             // Loop through each nominee and send to API
             for (const nominee of nominees) {
                 const payload = {
-                    // If application_id is hardcoded in backend, you can omit it
+                    application_id: formData.application_id, // <-- Always include this!
                     salutation: nominee.details.nomineeSalutation,
                     first_name: nominee.details.nomineeFirstName,
                     middle_name: nominee.details.nomineeMiddleName,
