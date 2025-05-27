@@ -143,7 +143,7 @@ public function savePersonalDetails(Request $request)
 public function saveAddressDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 4]); // Replace 4 with a valid ID
+    $request->merge(['application_id' => 50]); // Replace 4 with a valid ID
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -223,18 +223,20 @@ public function saveLivePhoto(Request $request)
 public function saveApplicationDocument(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 4]);
+    $request->merge(['application_id' => 50]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'document_type' => 'required|string|max:191',
         'status' => 'nullable|in:APPROVED,REJECT',
-        'file' => 'required|file|max:10240', // max 10MB
+        'files' => 'required|array|min:1',
+        'files.*' => 'file|max:10240', // max 10MB per file
     ]);
 
-    $file = $request->file('file');
-    $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-    $path = $file->storeAs('application_documents', $filename, 'public');
+    $documents = [];
+    foreach ($request->file('files') as $file) {
+        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('application_documents', $filename, 'public');
 
     // Update if exists, otherwise create
     $document = ApplicationDocument::updateOrCreate(
@@ -252,11 +254,11 @@ public function saveApplicationDocument(Request $request)
     );
 
     return response()->json([
-        'message' => 'Document uploaded successfully.',
-        'data' => $document,
+        'message' => 'Documents uploaded successfully.',
+        'data' => $documents,
     ], 201);
 }
-
+}
 // Store account personal details
 public function saveAccountPersonalDetails(Request $request)
 {

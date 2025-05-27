@@ -9,6 +9,7 @@ class ServiceToCustomer extends Model
 {
     use HasFactory;
 
+    
     protected $table = 'service_to_customers';
 
     protected $fillable = [

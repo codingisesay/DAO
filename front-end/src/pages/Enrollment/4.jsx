@@ -8,8 +8,6 @@ function p4({ onNext, onBack }) {
             <div className="form-container">
                 <h2 className="text-xl font-bold mb-2">Video KYC</h2>
                 <VideoKYCInstructions />
-                {/* <LivePhoto /> */}
-                import CommonButton from './CommonButton';
 
                 <div className="next-back-btns">
                     <CommonButton className="btn-back" onClick={onBack}>
