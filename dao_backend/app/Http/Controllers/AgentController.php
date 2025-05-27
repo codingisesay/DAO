@@ -108,7 +108,7 @@ public function getApplicationDetails(Request $request, $id)
 public function savePersonalDetails(Request $request)
 {
     // Hardcode application_id for testing
-    $request->merge(['application_id' => 50]); // Replace 1 with a valid ID from your DB
+    $request->merge(['application_id' => 4]); // Replace 4 with a valid ID from your DB
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -183,8 +183,8 @@ public function saveAddressDetails(Request $request)
 // Store live photo
 public function saveLivePhoto(Request $request)
 {
-    // Hardcode application_id as 4
-    $request->merge(['application_id' => 50]);
+    // Hardcode application_id as 6 for testing
+    $request->merge(['application_id' => 6]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
@@ -223,30 +223,30 @@ public function saveLivePhoto(Request $request)
 public function saveApplicationDocument(Request $request)
 {
     // Hardcode application_id for testing if needed
-    $request->merge(['application_id' => 50]);
+    $request->merge(['application_id' => 4]);
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'document_type' => 'required|string|max:191',
-        'status' => 'nullable|in:APPROVED,REJECT',
+        'document_types' => 'required|array|min:1',
+        'document_types.*' => 'required|string|max:191',
         'files' => 'required|array|min:1',
-        'files.*' => 'file|max:10240', // max 10MB per file
+        'files.*' => 'file|max:10240',
     ]);
 
     $documents = [];
-    foreach ($request->file('files') as $file) {
-        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('application_documents', $filename, 'public');
+   foreach ($validated['files'] as $index => $file) {
+    $documentType = $validated['document_types'][$index] ?? null;
+    $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
+    $path = $file->storeAs('application_documents', $filename, 'public');
 
-    // Update if exists, otherwise create
-    $document = ApplicationDocument::updateOrCreate(
+    ApplicationDocument::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
-            'document_type' => $validated['document_type'],
+            'document_type' => $documentType,
         ],
         [
             'application_id' => $validated['application_id'],
-            'document_type' => $validated['document_type'],
+            'document_type' => $documentType,
             'file_name' => $filename,
             'file_path' => $path,
             'status' => $validated['status'] ?? null,

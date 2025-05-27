@@ -10,24 +10,27 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 
     const handleDocumentsUpdate = async (newDocuments) => {
-        alert('called')
-        setlocalform(newDocuments);
-        // Update formData in parent component
-        console.log('data to send to enrole form : ,', newDocuments)
-        updateFormData(3, { documents: newDocuments });
+        const formData = new FormData();
+        formData.append('application_id', 4);
 
-        const payload = {
-            application_id: 50,
-            document_type: localform[0].name,
-            file: localform[0].image, // max 10MB
-        };
-        console.log('ready photodata to send : ', payload)
+        newDocuments.forEach((doc) => {
+            if (doc.file instanceof File) {
+                formData.append('files[]', doc.file);
+                formData.append('document_types[]', doc.name);
+            }
+        });
 
         try {
-            const response = await apiService.post(API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE, payload);
+            const response = await apiService.post(
+                API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
+                formData,
+                {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                }
+            );
             Swal.fire({
                 icon: 'success',
-                title: response.data.message || 'Address details saved successfully.',
+                title: response.data.message || 'Document uploaded successfully.',
                 showConfirmButton: false,
                 timer: 1500
             });
