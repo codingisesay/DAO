@@ -49,7 +49,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const fetchShowData = () => {
         const val = localFormData.verifynumber;
 
-        if (selectedOption === 'AadharNumber' && val.length !== 12) {
+        if (selectedOption === 'adhar_card' && val.length !== 12) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Aadhaar',

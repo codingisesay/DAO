@@ -126,7 +126,11 @@ public function savePersonalDetails(Request $request)
         'status' => 'nullable|in:APPROVED,REJECT',
     ]);
 
-    $personalDetails = ApplicationPersonalDetails::create($validated);
+    // Update if exists, otherwise create
+    $personalDetails = \App\Models\ApplicationPersonalDetails::updateOrCreate(
+        ['application_id' => $validated['application_id']],
+        $validated
+    );
 
     return response()->json([
         'message' => 'Personal details saved successfully.',
@@ -142,7 +146,7 @@ public function saveAddressDetails(Request $request)
     $request->merge(['application_id' => 50]); // Replace 4 with a valid ID
 
     $validated = $request->validate([
-        'application_id' => 'integer|exists:customer_application_details,id',
+        'application_id' => 'required|integer|exists:customer_application_details,id',
         'per_complex_name' => 'string|max:191',
         'per_flat_no' => 'string|max:191',
         'per_area' => 'string|max:191',
@@ -164,7 +168,11 @@ public function saveAddressDetails(Request $request)
         'status' => 'nullable|in:APPROVED,REJECT',
     ]);
 
-    $addressDetails = ApplicationAddressDetails::create($validated);
+    // Update if exists, otherwise create
+    $addressDetails = \App\Models\ApplicationAddressDetails::updateOrCreate(
+        ['application_id' => $validated['application_id']],
+        $validated
+    );
 
     return response()->json([
         'message' => 'Address details saved successfully.',
@@ -190,14 +198,20 @@ public function saveLivePhoto(Request $request)
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
     $path = $file->storeAs('live_photos', $filename, 'public');
 
-    $photo = ApplicantLivePhoto::create([
-        'application_id' => $validated['application_id'],
-        'longitude' => $validated['longitude'] ?? null,
-        'latitude' => $validated['latitude'] ?? null,
-        'name' => $filename,
-        'path' => $path,
-        'status' => $validated['status'] ?? null,
-    ]);
+    // Update if exists, otherwise create
+    $photo = ApplicantLivePhoto::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+        ],
+        [
+            'application_id' => $validated['application_id'],
+            'longitude' => $validated['longitude'] ?? null,
+            'latitude' => $validated['latitude'] ?? null,
+            'name' => $filename,
+            'path' => $path,
+            'status' => $validated['status'] ?? null,
+        ]
+    );
 
     return response()->json([
         'message' => 'Live photo uploaded successfully.',
@@ -224,15 +238,20 @@ public function saveApplicationDocument(Request $request)
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('application_documents', $filename, 'public');
 
-        $document = ApplicationDocument::create([
+    // Update if exists, otherwise create
+    $document = ApplicationDocument::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+            'document_type' => $validated['document_type'],
+        ],
+        [
             'application_id' => $validated['application_id'],
             'document_type' => $validated['document_type'],
             'file_name' => $filename,
             'file_path' => $path,
             'status' => $validated['status'] ?? null,
-        ]);
-        $documents[] = $document;
-    }
+        ]
+    );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',
@@ -240,6 +259,7 @@ public function saveApplicationDocument(Request $request)
     ], 201);
 }
 
+}
 // Store account personal details
 public function saveAccountPersonalDetails(Request $request)
 {
@@ -269,7 +289,11 @@ public function saveAccountPersonalDetails(Request $request)
         'status' => 'nullable|in:APPROVED,REJECT',
     ]);
 
-    $accountPersonalDetail = AccountPersonalDetail::create($validated);
+    // Update if exists, otherwise create
+    $accountPersonalDetail = AccountPersonalDetail::updateOrCreate(
+        ['application_id' => $validated['application_id']],
+        $validated
+    );
 
     return response()->json([
         'message' => 'Account personal details saved successfully.',
@@ -306,7 +330,15 @@ public function saveAccountNominee(Request $request)
         'status' => 'nullable|in:APPROVED,REJECT',
     ]);
 
-    $nominee = AccountNominee::create($validated);
+    // Use a combination of fields to avoid duplicate nominees for the same application
+    $nominee = AccountNominee::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+            'first_name' => $validated['first_name'],
+            'dob' => $validated['dob'],
+        ],
+        $validated
+    );
 
     return response()->json([
         'message' => 'Account nominee saved successfully.',
@@ -325,7 +357,14 @@ public function saveServiceToCustomer(Request $request)
         'banking_services_id' => 'required|integer|exists:banking_services,id',
     ]);
 
-    $service = ServiceToCustomer::create($validated);
+    // Update if exists, otherwise create
+    $service = ServiceToCustomer::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+            'banking_services_id' => $validated['banking_services_id'],
+        ],
+        $validated
+    );
 
     return response()->json([
         'message' => 'Service to customer saved successfully.',

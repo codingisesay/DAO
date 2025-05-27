@@ -17,9 +17,9 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         caste: formData.personalDetails?.caste || '',
         maritalStatus: formData.personalDetails?.maritalStatus || '',
         mobile: formData.personalDetails?.mobile || '',
-        alternatemobile: formData.personalDetails?.alternatemobile || '',
+        alt_mob_no: formData.personalDetails?.alt_mob_no || '',
         email: formData.personalDetails?.email || '',
-        aadharnumber: formData.personalDetails?.aadharnumber || '',
+        adhar_card: formData.personalDetails?.adhar_card || '',
         pannumber: formData.personalDetails?.pannumber || '',
         drivinglicence: formData.personalDetails?.drivinglicence || '',
         voterid: formData.personalDetails?.voterid || '',
@@ -166,10 +166,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                 {/* Alternate Mobile - Phone number validation */}
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.alternatemobile.label}
+                    label={labels.alt_mob_no.label}
                     type="text"
-                    name="alternatemobile"
-                    value={localFormData.alternatemobile}
+                    name="alt_mob_no"
+                    value={localFormData.alt_mob_no}
                     required
                     max={10}
                     validationType="PHONE"
@@ -189,10 +189,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                 {/* Aadhar Number - 12 digit number */}
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.aadharnumber.label}
+                    label={labels.adhar_card.label}
                     type="text"
-                    name="aadharnumber"
-                    value={localFormData.aadharnumber}
+                    name="adhar_card"
+                    value={localFormData.adhar_card}
                     required
                     max={12}
                     validationType="NUMBER_ONLY"
