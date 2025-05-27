@@ -44,6 +44,11 @@ export const serviceToCustomerService = {
   create: (data) => apiService.post(API_ENDPOINTS.SERVICE_TO_CUSTOMER.CREATE, data),
 };
 
+export const applicationDetailsService = {
+  getFullDetails: (id) =>
+    apiService.get(`/agent/full-application-details/${id}`),
+};
+
 export const forgotpass = {
   forgotPass: (identifier) =>
     apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),
@@ -431,4 +436,4 @@ export const accountService = {
 
   moduletype: (id) =>
     apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
-};
+}; 

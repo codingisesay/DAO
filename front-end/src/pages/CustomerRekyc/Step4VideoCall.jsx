@@ -10,13 +10,22 @@ const Step4VideoCall = ({
   handleChange,
   nextStep,
   prevStep,
-  skipStep,
+  // skipStep,
 }) => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const skipStep = () => {
+    Swal.fire({
+      title: 'Application Submitted without VideoKYC!',
+      text: 'You have chosen to skip VideoKYC.',
+      icon: 'info',
+      confirmButtonText: 'OK'
+    });
+  };
+  const handleCombinedSubmit = (e) => {
     e.preventDefault();
 
+    // First show main submission message
     Swal.fire({
       title: 'Application Submitted!',
       text: 'Your application has been received successfully.',
@@ -24,10 +33,15 @@ const Step4VideoCall = ({
       confirmButtonText: 'OK'
     }).then((result) => {
       if (result.isConfirmed) {
+        // Optionally trigger the second message
+        skipStep();  // This shows the skipped KYC message
+
+        // Navigate after showing both messages
         navigate('/admindashboard');
       }
     });
   };
+
 
   return (
     <div className="form-step">
@@ -52,7 +66,9 @@ const Step4VideoCall = ({
             Self V-KYC
           </CommonButton>
 
-          <CommonButton onClick={skipStep}
+          <CommonButton
+            onClick={handleCombinedSubmit}
+            // onClick={skipStep}
             className="btn-login my-3 w-[200px]"
           >
             Skip V-KYC & Next
@@ -75,7 +91,7 @@ const Step4VideoCall = ({
         </CommonButton>
         <CommonButton
           className="btn-next border-0"
-          onClick={handleSubmit}
+          onClick={handleCombinedSubmit}
         >
           Submit Application
         </CommonButton>

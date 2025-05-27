@@ -66,7 +66,7 @@ const Step2PersonalDetails = ({ formData, handleChange, updateProgress, subProgr
         <div className=" mx-auto p-4 ">
             <h1 className="text-2xl font-bold mb-6">Customer Details</h1>
 
-            <form onSubmit={handleSubmit} className="flex flex-evenly  sm:flex-row gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-evenly sm:flex-row gap-4">
                 {/* Aadhaar Section */}
                 <section className="bg-gray-50 p-3 rounded-lg shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">Aadhaar Extracted Details</h2>

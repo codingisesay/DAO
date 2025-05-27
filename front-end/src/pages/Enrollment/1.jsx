@@ -52,30 +52,30 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleNextStep = async () => {
         // update central from / in varibles
-        updateFormData(1, {
-            ...formData,
-            applicationType: selectedType,
-            verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
-            personalDetails: {
-                ...formData,
-                first_name: localFormData.first_name,
-                middle_name: localFormData.middle_name,
-                last_name: localFormData.last_name,
-                DOB: localFormData.DOB,
-                gender: localFormData.gender,
-                mobile: localFormData.mobile,
-                complex_name: localFormData.complex_name,
-                flat_no: localFormData.flat_no,
-                area: localFormData.area,
-                landmark: localFormData.landmark,
-                country: localFormData.country,
-                pincode: localFormData.pincode,
-                city: localFormData.city,
-                district: localFormData.district,
-                state: localFormData.state
-            }
-        });
+        // updateFormData(1, {
+        //     ...formData,
+        //     applicationType: selectedType,
+        //     verificationOption: selectedOption,
+        //     verificationNumber: localFormData.verifynumber,
+        //     personalDetails: {
+        //         ...formData,
+        //         first_name: localFormData.first_name,
+        //         middle_name: localFormData.middle_name,
+        //         last_name: localFormData.last_name,
+        //         DOB: localFormData.DOB,
+        //         gender: localFormData.gender,
+        //         mobile: localFormData.mobile,
+        //         complex_name: localFormData.complex_name,
+        //         flat_no: localFormData.flat_no,
+        //         area: localFormData.area,
+        //         landmark: localFormData.landmark,
+        //         country: localFormData.country,
+        //         pincode: localFormData.pincode,
+        //         city: localFormData.city,
+        //         district: localFormData.district,
+        //         state: localFormData.state
+        //     }
+        // });
 
         //integration to send data below
         const payload = {
@@ -165,8 +165,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Aadhar Number"
-                                            checked={selectedOption === 'Aadhar Number'}
+                                            value="Aadhar Card"
+                                            checked={selectedOption === 'Aadhar Card'}
                                             onChange={handleRadioChange}
                                         />
                                         Aadhar Number
@@ -177,8 +177,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Pan Number"
-                                            checked={selectedOption === 'Pan Number'}
+                                            value="Pan Card"
+                                            checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
                                         />
                                         Pan Number

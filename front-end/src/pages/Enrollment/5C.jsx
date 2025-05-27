@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
+import CommonButton from '../../components/CommonButton';
+import { serviceToCustomerService } from '../../services/apiServices';
+import Swal from 'sweetalert2';
 
-function BankFacility({ formData, updateFormData }) {
+function BankFacility({ formData, updateFormData, onBack, onNext }) {
     const [localFormData, setLocalFormData] = useState({
         eBankingServices: formData.bankFacility?.eBankingServices || {
             atmCard: false,
@@ -51,6 +54,35 @@ function BankFacility({ formData, updateFormData }) {
             ...prev,
             otherFacilityText: e.target.value
         }));
+    };
+
+    const submitServiceToCustomer = async () => {
+        try {
+            // Prepare the payload
+            const payload = {
+                // If application_id is hardcoded in backend, you can omit it
+                banking_services_id: 1, // Replace with your actual field
+                // Add other fields if needed
+            };
+
+            const response = await serviceToCustomerService.create(payload);
+
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Service to customer saved!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            if (onNext) onNext();
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to save service to customer'
+            });
+        }
     };
 
     return (
@@ -143,6 +175,14 @@ function BankFacility({ formData, updateFormData }) {
                         />
                     </div>
                 )}
+            </div>
+            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
+                <CommonButton onClick={onBack} variant="outlined">
+                    Back
+                </CommonButton>
+                <CommonButton onClick={submitServiceToCustomer} variant="contained">
+                    Save & Continue
+                </CommonButton>
             </div>
         </div>
     );

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { accountNomineeService } from '../../services/apiServices';
+import Swal from 'sweetalert2';
 
-function NominationForm({ formData, updateFormData }) {
+function NominationForm({ formData, updateFormData, onBack, onNext }) {
     const [nominees, setNominees] = useState(
         formData.nominationDetails?.nominees || [{
             id: 1,
@@ -85,6 +87,53 @@ function NominationForm({ formData, updateFormData }) {
         }
     };
 
+
+    const submitnomini = async () => {
+        try {
+            // Loop through each nominee and send to API
+            for (const nominee of nominees) {
+                const payload = {
+                    // If application_id is hardcoded in backend, you can omit it
+                    salutation: nominee.details.nomineeSalutation,
+                    first_name: nominee.details.nomineeFirstName,
+                    middle_name: nominee.details.nomineeMiddleName,
+                    last_name: nominee.details.nomineeLastName,
+                    relationship: nominee.details.nomineeRelation,
+                    percentage: nominee.details.nomineePercentage,
+                    dob: nominee.details.nomineeDOB,
+                    age: nominee.details.nomineeAge,
+                    nom_complex_name: nominee.address.nomineeComplexName,
+                    nom_flat_no: nominee.address.nomineeBuildingName,
+                    nom_area: nominee.address.nomineeArea,
+                    nom_landmark: nominee.address.nomineeLandmark,
+                    nom_country: nominee.address.nomineeCountry,
+                    nom_pincode: nominee.address.nomineePinCode,
+                    nom_city: nominee.address.nomineeCity,
+                    nom_district: nominee.address.nomineeDistrict,
+                    nom_state: nominee.address.nomineeState,
+                    status: "APPROVED"
+                };
+
+                await accountNomineeService.create(payload);
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Nominee(s) saved successfully!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            if (onNext) onNext();
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to save nominee(s)'
+            });
+        }
+    }
     // useEffect(() => {
     //     updateFormData({
     //         ...formData,
@@ -245,6 +294,15 @@ function NominationForm({ formData, updateFormData }) {
                     className="px-4 py-2 bg-green-500 text-white rounded"
                 >
                     Add Nominee
+                </CommonButton>
+            </div>
+
+            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
+                <CommonButton onClick={onBack} variant="outlined">
+                    Back
+                </CommonButton>
+                <CommonButton onClick={submitnomini} variant="contained">
+                    Save & Continue
                 </CommonButton>
             </div>
         </div>
