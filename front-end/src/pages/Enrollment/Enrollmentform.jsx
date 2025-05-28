@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(6);
+    const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
