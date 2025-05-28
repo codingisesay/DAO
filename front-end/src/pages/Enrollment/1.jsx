@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { gender } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import { agentService } from '../../services/apiServices';
+import { agentService } from '../../services/apiServices'
 
 
 function P1({ onNext, onBack, formData, updateFormData }) {

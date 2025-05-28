@@ -231,7 +231,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 value={formData[`${prefix}_pincode`] || ''}
                 onChange={handleChange}
                 required
-                max={10}
+                max={6}
                 validationType="NUMBER_ONLY"
                 disabled={disabled && prefix === 'cor'}
             />

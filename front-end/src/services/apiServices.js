@@ -436,5 +436,4 @@ export const accountService = {
 
   moduletype: (id) =>
     apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
-};
-
+}; 

@@ -16,12 +16,12 @@ const gender = [
 const salutation = [
     { value: 'MR', label: 'Mr' },
     { value: 'MRS', label: 'Mrs' },
-    { value: 'MS', label: 'Ms' },
-    { value: 'DR', label: 'Dr' },
-    { value: 'PROF', label: 'Prof' },
-    { value: 'MASTER', label: 'Master' },
-    { value: 'MISS', label: 'Miss' },
-    { value: 'MX', label: 'Mx' }, // gender-neutral
+    // { value: 'MS', label: 'Ms' },
+    // { value: 'DR', label: 'Dr' },
+    // { value: 'PROF', label: 'Prof' },
+    // { value: 'MASTER', label: 'Master' },
+    // { value: 'MISS', label: 'Miss' },
+    // { value: 'MX', label: 'Mx' },
 ];
 
 const maritalStatusOptions = [

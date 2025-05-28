@@ -54,7 +54,7 @@ class AgentController extends Controller
             'area' => 'nullable|string',
             'landmark' => 'nullable|string',
             'country' => 'nullable|string',
-            'pincode' => 'nullable|string',
+            'pincode' => 'nullable|string', 
             'city' => 'nullable|string',
             'district' => 'nullable|string',
             'state' => 'nullable|string',

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ProgressIndicator from "./ProgressIndicator";
 import Step1PersonalInfo from "./Step1PersonalInfo";
-import Step2JobDetails from "./Step2PersonalDetails";
+import Step2JobDetails from "./Step2PersonalD";
 import Step3Nomination from "./Step3DocumentUpload";
 import Step4VideoCall from "./Step4VideoCall";
 import Step5AccountDetails from "./Step5AccoutDetails";
@@ -21,6 +21,7 @@ function CustomerForm() {
         // Application Details
         application_no: '',
         application_id: null,
+        status: null, // 'APPROVED', 'REJECT'
 
         // Personal Information
         first_name: '',
@@ -180,8 +181,8 @@ function CustomerForm() {
         2: "pending",
         3: "pending",
         4: "pending",
-        5: "pending",
-        6: "pending",
+        // 5: "pending",
+        // 6: "pending",
     });
     const [subProgress, setSubProgress] = useState({
         "2A": "pending",
@@ -225,7 +226,8 @@ function CustomerForm() {
             setProgress({ ...progress, 1: "completed", 2: "inprogress" });
             setCurrentStep(2);
         } else if (currentStep === 2) {
-            // Step 2 navigation is handled within the Step2JobDetails component
+            setProgress({ ...progress, 2: "completed", 3: "inprogress" });
+            setCurrentStep(3);
         } else if (currentStep === 3) {
             setProgress({ ...progress, 3: "completed", 4: "inprogress" });
             setCurrentStep(4);
@@ -324,10 +326,12 @@ function CustomerForm() {
                                         updateProgress={updateStep2Progress}
                                         subProgress={subProgress}
                                         completeStep={completeStep2}
-                                        prevStep={() => {
-                                            setProgress({ ...progress, 1: "inprogress", 2: "pending" });
-                                            setCurrentStep(1);
-                                        }}
+                                        nextStep={nextStep}
+                                        prevStep={prevStep}
+                                    // prevStep={() => {
+                                    //     setProgress({ ...progress, 1: "inprogress", 2: "pending" });
+                                    //     setCurrentStep(1);
+                                    // }}
                                     />
                                 )}
 
@@ -350,7 +354,7 @@ function CustomerForm() {
                                     />
                                 )}
 
-                                {currentStep === 5 && (
+                                {/* {currentStep === 5 && (
                                     <Step5AccountDetails
                                         formData={formData}
                                         handleChange={handleChange}
@@ -372,7 +376,7 @@ function CustomerForm() {
                                         }}
                                         handleSubmit={handleSubmit}
                                     />
-                                )}
+                                )} */}
                             </form>
                         </div>
                     </div>
