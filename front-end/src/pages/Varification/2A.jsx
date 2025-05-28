@@ -99,7 +99,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                 />
                 <CommanInput
                     onChange={handleChange}
-                    label={labels.flatnoroomno.label}
+                    label='Flat no/Room no'
                     type="text"
                     name="flatNoRoomNo"
                     value={localFormData.flatNoRoomNo}
