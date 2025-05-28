@@ -13,6 +13,7 @@
 /front-end/node_modules
 /front-end/build
 
+
 # General
 *.log
 *.DS_Store
