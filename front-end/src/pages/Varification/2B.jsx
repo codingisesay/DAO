@@ -14,7 +14,7 @@ function AddressSection({ formData, handleChange }) {
                 required
             />
             <CommanInput
-                label={labels.flatnoroomno.label}
+                label={labels.roomno.label}
                 name="flatnoroomno"
                 value={formData.flatnoroomno}
                 onChange={handleChange}

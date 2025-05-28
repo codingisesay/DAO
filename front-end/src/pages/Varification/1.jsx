@@ -4,7 +4,7 @@ import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-
+import Swal from 'sweetalert2';
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
     const [selectedType, setSelectedType] = useState(formData.applicationType || '');
@@ -44,7 +44,26 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             setShowData(true);
         }
     };
+    const handleRejectClick = async () => {
+        const { value: reason } = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Please provide a reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
 
+        if (reason) {
+            onNext(reason); // Call your onNext function with the reason
+        }
+    };
     const handleNextStep = () => {
         // Update the central form data before proceeding
         updateFormData(1, {
@@ -248,7 +267,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.flatnoroomno.label}
+                                label='Flat no/Room no'
                                 type="text"
                                 name="flatnoroomno"
                                 value={localFormData.flatnoroomno}
@@ -316,9 +335,13 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             </div>
 
             <div className="next-back-btns">
-                <CommonButton className="text-red-500 btn-back text-red-500" onClick={onBack}>
+                <CommonButton
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                    onClick={handleRejectClick}
+                >
                     Reject & Continue
                 </CommonButton>
+
 
                 <CommonButton
                     className="btn-next "

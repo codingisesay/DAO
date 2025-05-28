@@ -4,7 +4,7 @@ import PersonalDetailsForm from './2A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
-
+import Swal from 'sweetalert2';
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
 
@@ -25,7 +25,32 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             setActiveStep(activeStep - 1);
         }
     };
+    const handleNextStep = () => {
+        // Update the central form data before proceeding
 
+        onNext();
+    };
+
+    const handleRejectClick = async () => {
+        const { value: reason } = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Please provide a reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (reason) {
+            onNext(reason); // Call your onNext function with the reason
+        }
+    };
     const handleStepSubmit = (stepData) => {
         updateFormData(2, stepData); // Step 2 data
     };
@@ -68,20 +93,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
             <div className="next-back-btns">
                 <CommonButton
-                    className="btn-back"
-                    onClick={activeStep === 0 ? onBack : handleBack}
-                    iconLeft={<i className="bi bi-chevron-double-left"></i>}
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                    onClick={handleRejectClick}
                 >
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    Reject & Continue
                 </CommonButton>
 
+
                 <CommonButton
-                    className="btn-next"
-                    onClick={activeStep === 2 ? onNext : handleNext}
-                    iconRight={<i className="bi bi-chevron-double-right"></i>}
+                    className="btn-next "
+                    onClick={handleNextStep}
                 >
-                    {activeStep === 2 ? 'Next' : 'Next'}&nbsp;
-                    <i className="bi bi-chevron-double-right"></i>
+                    Accept & Continue
                 </CommonButton>
             </div>
         </div>
