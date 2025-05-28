@@ -20,6 +20,9 @@ const Dashboard = () => {
     const handleRedireact = () => {
         navigate('/enrollmentform'); // Change to your route
     };
+    const handlekyc = () => {
+        navigate('/rekyc'); // Change to your route
+    };
     const handleLogout = () => {
         logout();
         navigate('/login');
@@ -54,14 +57,22 @@ const Dashboard = () => {
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
-
-                    <CommonButton
-                        type="button"
-                        className="btn-login"
-                        onClick={handleRedireact}
-                    >
-                        &nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;
-                    </CommonButton>
+                    <div>
+                        <CommonButton
+                            type="button"
+                            className="btn-login me-4"
+                            onClick={handleRedireact}
+                        >
+                            &nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Start Enrollment&nbsp;
+                        </CommonButton>
+                        <CommonButton
+                            type="button"
+                            className="btn-login"
+                            onClick={handlekyc}
+                        >
+                            &nbsp;<i className="bi bi-pencil-square"></i>&nbsp;Re-KYC&nbsp;
+                        </CommonButton>
+                    </div>
                 </div>
 
                 <div className="mx-auto flex flex-wrap">

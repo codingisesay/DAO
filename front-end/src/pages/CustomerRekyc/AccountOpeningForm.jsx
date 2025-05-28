@@ -21,7 +21,6 @@ function CustomerForm() {
         // Application Details
         application_no: '',
         application_id: null,
-        status: null, // 'APPROVED', 'REJECT'
 
         // Personal Information
         first_name: '',
