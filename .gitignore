@@ -12,7 +12,7 @@
 # React
 /front-end/node_modules
 /front-end/build
-/front-end/node_modules/.vite
+
 
 # General
 *.log
