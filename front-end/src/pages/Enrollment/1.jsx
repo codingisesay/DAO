@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
@@ -52,36 +51,37 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleNextStep = async () => {
         // update central from / in varibles
-        // updateFormData(1, {
-        //     ...formData,
-        //     applicationType: selectedType,
-        //     verificationOption: selectedOption,
-        //     verificationNumber: localFormData.verifynumber,
-        //     personalDetails: {
-        //         ...formData,
-        //         first_name: localFormData.first_name,
-        //         middle_name: localFormData.middle_name,
-        //         last_name: localFormData.last_name,
-        //         DOB: localFormData.DOB,
-        //         gender: localFormData.gender,
-        //         mobile: localFormData.mobile,
-        //         complex_name: localFormData.complex_name,
-        //         flat_no: localFormData.flat_no,
-        //         area: localFormData.area,
-        //         landmark: localFormData.landmark,
-        //         country: localFormData.country,
-        //         pincode: localFormData.pincode,
-        //         city: localFormData.city,
-        //         district: localFormData.district,
-        //         state: localFormData.state
-        //     }
-        // });
+        updateFormData(1, {
+            ...formData,
+            applicationType: selectedType,
+            verificationOption: selectedOption,
+            verificationNumber: localFormData.verifynumber,
+            personalDetails: {
+                ...formData,
+                first_name: localFormData.first_name,
+                middle_name: localFormData.middle_name,
+                last_name: localFormData.last_name,
+                DOB: localFormData.DOB,
+                gender: localFormData.gender,
+                mobile: localFormData.mobile,
+                complex_name: localFormData.complex_name,
+                flat_no: localFormData.flat_no,
+                area: localFormData.area,
+                landmark: localFormData.landmark,
+                country: localFormData.country,
+                pincode: localFormData.pincode,
+                city: localFormData.city,
+                district: localFormData.district,
+                state: localFormData.state
+            }
+        });
 
-        //integration to send data below
+        // integration to send data below
         const payload = {
             auth_type: selectedOption,
             auth_code: localFormData.verifynumber,
             first_name: localFormData.first_name,
+            auth_status: "Pending", // or get from form if needed
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
@@ -99,23 +99,24 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         };
 
         try {
-            // alert('called')
             const response = await agentService.agentEnroll(payload);
-            if (response && response.application_no) {
-                updateFormData({
+            if (response && response.application_no && response.application_id) {
+                updateFormData(1, {
                     ...formData,
-                    application_no: response.application_no
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                localStorage.setItem('application_no', response.application_no)
+                localStorage.setItem('application_no', response.application_no);
+                localStorage.setItem('application_id', response.application_id);
                 onNext();
             }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: JSON.stringify(error),
+                text: error,
             });
         }
-        // onNext();
+        onNext();
     };
 
     return (

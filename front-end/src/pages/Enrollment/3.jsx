@@ -10,20 +10,20 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 
     const handleDocumentsUpdate = async (newDocuments) => {
-        const formData = new FormData();
-        formData.append('application_id', 4);
+        const formDataObj = new FormData();
+        formDataObj.append('application_id', formData.application_id); // <-- Use the real ID
 
         newDocuments.forEach((doc) => {
             if (doc.file instanceof File) {
-                formData.append('files[]', doc.file);
-                formData.append('document_types[]', doc.name);
+                formDataObj.append('files[]', doc.file);
+                formDataObj.append('document_types[]', doc.name);
             }
         });
 
         try {
             const response = await apiService.post(
                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
-                formData,
+                formDataObj,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 }
@@ -71,28 +71,3 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 export default P3;// import React from 'react';
 
-
-// import DocumentUpload from './3A';
-// import CommonButton from '../../components/CommonButton';
-// import { DocumentProvider } from './DocumentContext';
-
-// function P3({ onNext, onBack, formData, updateFormData }) {
-//     const [tableData, setTableData] = React.useState([]);
-//     return (
-//         <DocumentProvider>
-//             <div className="form-container">
-//                 <DocumentUpload />
-//                 <div className="next-back-btns mt-6">
-//                     <CommonButton className="btn-back" onClick={onBack}>
-//                         <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-//                     </CommonButton>
-//                     <CommonButton className="btn-next" onClick={onNext}>
-//                         Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-//                     </CommonButton>
-//                 </div>
-//             </div>
-//         </DocumentProvider>
-//     );
-// }
-
-// export default P3;
