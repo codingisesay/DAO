@@ -113,10 +113,18 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         } catch (error) {
             Swal.fire({
                 icon: 'error',
-                text: error,
+                title: 'Error!',
+                text: 'Something went wrong. Please try again.',
             });
         }
-        onNext();
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Your data has been saved successfully.',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        // onNext();
     };
 
     return (

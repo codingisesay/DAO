@@ -71,7 +71,12 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 };
 
                 let response = await personalDetailsService.create(payload);
-                alert(response.data.message || 'Personal details saved successfully.');
+                Swal.fire({
+                    icon: 'success',
+                    title: response.data.message || 'Personal details saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 handleNext();
             } else if (activeStep === 1) {
                 const ad = formData.addressDetails || {};
