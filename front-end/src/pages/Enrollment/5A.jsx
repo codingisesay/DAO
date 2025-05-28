@@ -60,6 +60,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
             }
 
             const payload = {
+                application_id: formData.application_id, // <-- Add this line!
                 father_prefix_name: localFormData.fatherSpousePrefixName,
                 father_first_name: localFormData.fatherSpouseFirstName,
                 father_middle_name: localFormData.fatherSpouseMiddleName,
