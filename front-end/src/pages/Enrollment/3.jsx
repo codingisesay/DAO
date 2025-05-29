@@ -2,7 +2,7 @@ import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
 import { DocumentProvider } from './DocumentContext';
-import { apiService } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import Swal from 'sweetalert2';
 function P3({ onNext, onBack, formData, updateFormData }) {
@@ -21,7 +21,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         });
 
         try {
-            const response = await apiService.post(
+            const response = await daoApi.post(
                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
                 formDataObj,
                 {

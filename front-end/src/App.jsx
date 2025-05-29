@@ -15,6 +15,10 @@ import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 import AccountTbl from './pages/Adminpages/AccountTbl';
 import Customercreation from './pages/CustomerCreation/AccountOpeningForm';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -40,6 +44,7 @@ export const App = () => {
           <Route path="/varify-account/01" element={<Varificationform />} />
         </Routes>
       </Router>
+      <ToastContainer />
     </div>
   );
 };

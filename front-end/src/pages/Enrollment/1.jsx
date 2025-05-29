@@ -6,12 +6,11 @@ import CommonButton from '../../components/CommonButton';
 import { gender } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import { agentService } from '../../services/apiServices'
-
-
+import { agentService } from '../../services/apiServices';
+import { toast } from 'react-toastify';
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
-    const [selectedType, setSelectedType] = useState(formData.applicationType || '');
+    const [selectedType, setSelectedType] = useState(formData.applicationType || 'new');
     const [showData, setShowData] = useState(!!formData.verificationNumber);
 
     const [localFormData, setLocalFormData] = useState({
@@ -41,15 +40,24 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const handleRadioChange = (e) => {
         setSelectedOption(e.target.value);
     };
-
+    const validateAadhaar = (aadhaarNumber) => {
+        const aadhaarRegex = /^[0-9]{12}$/;
+        return aadhaarRegex.test(aadhaarNumber);
+    };
+    const validatePAN = (panNumber) => {
+        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+        return panRegex.test(panNumber);
+    };
     const fetchShowData = (e) => {
         e.preventDefault();
+
         if (localFormData.verifynumber) {
             setShowData(true);
         }
     };
 
-    const handleNextStep = async () => {
+    const handleNextStep = async (e) => {
+        e.preventDefault();
         // update central from / in varibles
         updateFormData(1, {
             ...formData,
@@ -99,8 +107,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         };
 
         try {
+            console.log(payload)
             const response = await agentService.agentEnroll(payload);
-            if (response && response.application_no && response.application_id) {
+            console.log('heey its respone : ', response.data.application_no)
+            if (response && JSON.stringify(response).includes('201')) {
                 updateFormData(1, {
                     ...formData,
                     application_no: response.application_no,
@@ -108,7 +118,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 });
                 localStorage.setItem('application_no', response.application_no);
                 localStorage.setItem('application_id', response.application_id);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Your data has been saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 onNext();
+                alert('hey')
             }
         } catch (error) {
             Swal.fire({
@@ -117,14 +135,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 text: 'Something went wrong. Please try again.',
             });
         }
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Your data has been saved successfully.',
-            showConfirmButton: false,
-            timer: 1500
-        });
-        // onNext();
+
     };
 
     return (
@@ -132,9 +143,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             <div className='form-container'>
                 <div className="flex flex-wrap items-top ">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
-                        <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
+                        <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
                         <div className="application-type-container">
-                            <label className="application-type">
+                            <lable className="application-type">
                                 <input
                                     type="radio"
                                     name="applicationType"
@@ -147,22 +158,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <i className="bi bi-person-fill-add"></i>
                                     <span className="font-medium">New Customer</span>
                                 </div>
-                            </label>
+                            </lable>
 
-                            <label className="application-type ">
-                                <input
-                                    type="radio"
-                                    name="applicationType"
-                                    value="rekyc"
-                                    className="hidden peer"
-                                    checked={selectedType === 'rekyc'}
-                                    onChange={() => setSelectedType('rekyc')}
-                                />
-                                <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
-                                    <i className="bi bi-person-fill-check"></i>
-                                    <span className="font-medium">Re-KYC</span>
-                                </div>
-                            </label>
                         </div>
 
                         {selectedType && (
@@ -206,25 +203,27 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     </label>
                                 </form>
 
-                                {selectedOption && (
-                                    <div className="mt-6">
+                                {selectedOption === 'Aadhar Card' && (
+                                    <div className="mt-3">
+                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (UID)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
-                                                    type="text"
-                                                    label={`Enter ${selectedOption}`}
-                                                    value={localFormData.verifynumber}
                                                     onChange={handleChange}
+                                                    label="Enter Aadhar Number"
+                                                    type="text"
                                                     name="verifynumber"
-                                                    placeholder={`Enter ${selectedOption}`}
+                                                    value={localFormData.verifynumber}
                                                     required
+                                                    maxLength={12}
+                                                    validationType="NUMBER_ONLY"
                                                 />
                                             </div>
                                             <div className="md:w-1/2">
                                                 <CommonButton
-                                                    className="btn-login"
+                                                    className="btn-login px-6"
                                                     onClick={fetchShowData}
-                                                    disabled={!localFormData.verifynumber}
+                                                    disabled={!localFormData.verifynumber || localFormData.verifynumber.length !== 12}
                                                 >
                                                     Submit
                                                 </CommonButton>
@@ -233,6 +232,52 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     </div>
                                 )}
 
+                                {selectedOption === 'Pan Card' && (
+                                    <div className="mt-3">
+                                        <p className='mb-3 text-sm'>Please enter a valid PAN (format: AAAAA9999A)</p>
+                                        <div className="flex items-center">
+                                            <div className="md:w-1/2 me-4">
+                                                <CommanInput
+                                                    onChange={handleChange}
+                                                    label="Enter PAN Number"
+                                                    type="text"
+                                                    name="verifynumber"
+                                                    value={localFormData.verifynumber}
+                                                    required
+                                                    maxLength={10}
+                                                    validationType="PAN"
+                                                    onInput={(e) => {
+                                                        // Auto-uppercase the input
+                                                        e.target.value = e.target.value.toUpperCase();
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="md:w-1/2">
+                                                <CommonButton
+                                                    className="btn-login px-6"
+                                                    onClick={fetchShowData}
+                                                    disabled={!localFormData.verifynumber || !validatePAN(localFormData.verifynumber)}
+                                                >
+                                                    Submit
+                                                </CommonButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedOption === 'DigiLocker' && (
+                                    <div className="mt-6">
+                                        <CommonButton
+                                            className="btn-login px-6"
+                                            onClick={() => {
+                                                // Add your DigiLocker linking logic here
+                                                console.log("Link via DigiLocker clicked");
+                                            }}
+                                        >
+                                            Link via DigiLocker
+                                        </CommonButton>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

@@ -1,6 +1,6 @@
 export const API_ENDPOINTS = {
-  // BASE_URL: "http://172.16.1.224:8090",
-  BASE_URL: "http://127.0.0.1:8000/api",
+  BASE_URL_LOGIN: "http://172.16.1.224:8090", // For login only
+  BASE_URL_DAO: "http://127.0.0.1:8000/api",  // For everything else
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -18,7 +18,6 @@ export const API_ENDPOINTS = {
 
   PERSONAL_DETAILS: {
     CREATE: '/agent/personal-details',
-    // UPDATE: (id) => `/agent/personal-details/${id}` // if you want update
   },
 
   ADDRESS_DETAILS: {
