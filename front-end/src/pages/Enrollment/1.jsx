@@ -147,11 +147,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             if (response && JSON.stringify(response).includes('201')) {
                 updateFormData(1, {
                     ...formData,
-                    application_no: response.application_no,
-                    application_id: response.application_id,
+                    application_no: response.data.application_no,
+                    application_id: response.data.application_id,
                 });
-                localStorage.setItem('application_no', response.application_no);
-                localStorage.setItem('application_id', response.application_id);
+                localStorage.setItem('application_no', response.data.application_no);
+                localStorage.setItem('application_id', response.data.application_id);
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -160,7 +160,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     timer: 1500
                 });
                 onNext();
-                alert('hey')
+                // alert('hey')
             }
         } catch (error) {
             Swal.fire({

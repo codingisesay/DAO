@@ -38,28 +38,27 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         }
 
         setIsLoading(true);
-        
-        try {
-            const formDataObj = new FormData();
-            formDataObj.append('application_id', formData.id || 5); // Use the real ID from formData if available
 
-            // Filter out documents that don't have files (in case of placeholders)
-            const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
-            
-            if (documentsWithFiles.length === 0) {
-                throw new Error('No valid documents to upload');
-            }
+        const formDataObj = new FormData();
+        formDataObj.append('application_id', formData.id || 5); // Use the real ID from formData if available
 
-            documentsWithFiles.forEach((doc) => {
-                formDataObj.append('files[]', doc.file);
-                formDataObj.append('document_types[]', doc.name);
-            });
+        // Filter out documents that don't have files (in case of placeholders)
+        const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
+
+        if (documentsWithFiles.length === 0) {
+            throw new Error('No valid documents to upload');
+        }
+
+        documentsWithFiles.forEach((doc) => {
+            formDataObj.append('files[]', doc.file);
+            formDataObj.append('document_types[]', doc.name);
+        });
 
 
         try {
             const response = await daoApi.post(
 
-           
+
 
                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
                 formDataObj,
@@ -97,21 +96,23 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         } finally {
             setIsLoading(false);
         }
-    };
+
+    }
+
 
     return (
         <DocumentProvider>
             <div className="form-container">
-                <DocumentUpload 
-                    onDocumentsUpdate={handleDocumentsUpdate} 
+                <DocumentUpload
+                    onDocumentsUpdate={handleDocumentsUpdate}
                     initialDocuments={documents}
                 />
                 <div className="next-back-btns mt-6">
                     <CommonButton className="btn-back" onClick={onBack}>
                         <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                     </CommonButton>
-                    <CommonButton 
-                        className="btn-next" 
+                    <CommonButton
+                        className="btn-next"
                         onClick={handleSubmit}
                         disabled={isLoading}
                     >
@@ -130,77 +131,4 @@ function P3({ onNext, onBack, formData, updateFormData }) {
     );
 }
 
-export default P3;
-// import React from 'react';
-// import DocumentUpload from './3A';
-// import CommonButton from '../../components/CommonButton';
-// import { DocumentProvider } from './DocumentContext';
-// import { apiService } from '../../utils/storage';
-// import { API_ENDPOINTS } from '../../services/api';
-// import Swal from 'sweetalert2';
-// function P3({ onNext, onBack, formData, updateFormData }) {
-//     const [localform, setlocalform] = React.useState([]);
-
-
-//     const handleDocumentsUpdate = async (newDocuments) => {
-//         const formDataObj = new FormData();
-//         formDataObj.append('application_id', 5); // <-- Use the real ID
-
-//         newDocuments.forEach((doc) => {
-//             if (doc.file instanceof File) {
-//                 formDataObj.append('files[]', doc.file);
-//                 formDataObj.append('document_types[]', doc.name);
-//             }
-//         });
-
-//         try {
-//             const response = await apiService.post(
-//                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
-//                 formDataObj,
-//                 {
-//                     headers: { 'Content-Type': 'multipart/form-data' }
-//                 }
-//             );
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: response.data.message || 'Document uploaded successfully.',
-//                 showConfirmButton: false,
-//                 timer: 1500
-//             });
-
-//             updateFormData({
-//                 ...formData,
-
-//             });
-
-//             if (onNext) {
-//                 onNext();
-//             }
-//         } catch (error) {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Error',
-//                 text: JSON.stringify(error)
-//             });
-//         }
-//     }
-
-//     return (
-//         <DocumentProvider>
-//             <div className="form-container">
-//                 <DocumentUpload onDocumentsUpdate={handleDocumentsUpdate} />
-//                 <div className="next-back-btns mt-6">
-//                     <CommonButton className="btn-back" onClick={onBack}>
-//                         <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-//                     </CommonButton>
-//                     <CommonButton className="btn-next" onClick={onNext}>
-//                         Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-//                     </CommonButton>
-//                 </div>
-//             </div>
-//         </DocumentProvider>
-//     );
-// }
-
-// export default P3;// import React from 'react';
-
+export default P3; 
