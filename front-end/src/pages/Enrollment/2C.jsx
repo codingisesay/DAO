@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
-import { apiService } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2'
@@ -20,7 +20,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
         console.log('ready photodata to send : ', payload.photo)
 
         try {
-            const response = await apiService.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
+            const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
             Swal.fire({
                 icon: 'success',
                 title: response.data.message || 'Address details saved successfully.',

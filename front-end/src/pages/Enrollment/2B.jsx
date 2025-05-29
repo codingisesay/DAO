@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { apiService } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
@@ -40,7 +40,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         };
 
         try {
-            const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            const response = await daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
             Swal.fire({
                 icon: 'success',
                 title: response.data.message || 'Address details saved successfully.',

@@ -123,7 +123,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         let hasError = false;
         nominees.forEach((nominee, idx) => {
             const nomineeErrors = validateNominee(nominee);
-            if (Object.keys(nomineeErrors).length > 0) {
+            if (Object.keys(nomineeErrors).length < 0) {
                 allErrors[nominee.id] = nomineeErrors;
                 hasError = true;
             }

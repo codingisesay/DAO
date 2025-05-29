@@ -3,7 +3,7 @@ import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
 import { DocumentProvider } from './DocumentContext';
-import { apiService } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import Swal from 'sweetalert2';
 import DAOExtraction from './3B_DAOExtraction';
@@ -55,7 +55,12 @@ function P3({ onNext, onBack, formData, updateFormData }) {
                 formDataObj.append('document_types[]', doc.name);
             });
 
-            const response = await apiService.post(
+
+        try {
+            const response = await daoApi.post(
+
+           
+
                 API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
                 formDataObj,
                 {
