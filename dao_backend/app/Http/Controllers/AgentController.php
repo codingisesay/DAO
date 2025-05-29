@@ -417,4 +417,27 @@ public function getFullApplicationDetails($applicationId)
         ]
     ]);
 }
+
+public function getApplicationByAadhar(Request $request)
+{
+    $request->validate([
+        'auth_code' => 'required|string'
+    ]);
+
+    $application = \DB::table('customer_application_details')
+        ->where('auth_type', 'Aadhar Card')
+        ->where('auth_code', $request->auth_code)
+        ->first();
+
+    if (!$application) {
+        return response()->json(['message' => 'No application found for this Aadhaar number.'], 404);
+    }
+
+    // Optionally fetch related details as in getFullApplicationDetails
+    return response()->json([
+        'message' => 'Application found.',
+        'data' => $application
+    ]);
+}
+
 }

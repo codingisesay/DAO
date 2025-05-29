@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Services\EurekaService;
 use App\Http\Controllers\Api\AuthProxyController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -56,6 +57,12 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
         Route::get('/agent/full-application-details/{id}', [AgentController::class, 'getFullApplicationDetails']);
         Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
+        //rekyc
+        Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
+        //Admin routes
+        Route::get('/admin/applications', [AdminController::class, 'getAllApplications']);
+        Route::get('/admin/applications/pending', [AdminController::class, 'getAllApplicationsPending']);
+        Route::get('/admin/applications/rejected', [AdminController::class, 'getAllApplicationsRejected']);
     // });
 
     Route::middleware('role:employee,admin')->group(function () {

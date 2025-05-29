@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
@@ -9,11 +8,13 @@ import AccountBarChart from './AdminDashboard_validationBarGraph';
 import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
-import RejectedTbl from './RejectedTbl'
+import RejectedTbl from './RejectedTbl';
+import { adminService } from '../../services/apiServices'; // <-- Import your service
 
 function ApprovedTable() {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
+    const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth();
     const navigate = useNavigate();
 
@@ -24,6 +25,20 @@ function ApprovedTable() {
         logout();
         navigate('/login');
     };
+
+    useEffect(() => {
+        // Call the approved applications API
+        const fetchData = async () => {
+            try {
+                const response = await adminService.getAllApplications();
+                setTbldata(response.data.data || []);
+                console.log("Table Data:", response.data.data);
+            } catch (error) {
+                console.error("Failed to fetch approved applications:", error);
+            }
+        };
+        fetchData();
+    }, []);
     return (
         <>
 
@@ -52,7 +67,8 @@ function ApprovedTable() {
 
                 <div className="container mx-auto">
                     <div className='work-area'>
-                        <RejectedTbl />
+                        {/* Pass tbldata to your table component */}
+                        <RejectedTbl data={tbldata} />
                     </div>
                 </div>
             </div>

@@ -49,6 +49,32 @@ export const applicationDetailsService = {
     apiService.get(`/agent/full-application-details/${id}`),
 };
 
+export const applicationDetailsServices = {
+  getByAadhar: (auth_code) =>
+    apiService.post('/application/by-aadhar', { auth_code }),
+  // ...other methods
+};
+
+export const adminService = {
+  getAllApplications: () =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
+  getAllApplicationsPending: () =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
+  getAllApllicationsRejected: () =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_REJECTED_APPLICATIONS),
+};
+
+
+
+
+
+
+
+
+
+
+
+
 export const forgotpass = {
   forgotPass: (identifier) =>
     apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),

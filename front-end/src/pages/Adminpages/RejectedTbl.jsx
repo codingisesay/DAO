@@ -72,7 +72,7 @@ const RejectedApplications = () => {
 
     return (
         <div >
-            <h2 className="text-xl font-semibold mb-4">Total Rejected Application</h2>
+            {/* <h2 className="text-xl font-semibold mb-4">Total Rejected Application</h2> */}
 
             {/* Tab Buttons */}
             <div className="flex mb-4">

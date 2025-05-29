@@ -46,7 +46,11 @@ export const API_ENDPOINTS = {
     CREATE: '/agent/service-to-customer',
   },
 
-  ADMIN: {},
+  ADMIN: {
+    GET_ALL_APPLICATIONS: '/admin/applications',
+    GET_ALL_PENDING_APPLICATIONS: '/admin/applications/pending',
+    GET_ALL_APPLICATIONS_REJECTED: '/admin/applications/rejected',
+  },
 
   BANK: {
     CREATE: "/auth/banks",
