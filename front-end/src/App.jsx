@@ -13,7 +13,7 @@ import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 import AccountTbl from './pages/Adminpages/AccountTbl';
-import Customercreation from './pages/CustomerCreation/AccountOpeningForm';
+import Customercreation from './pages/Enrollment/3B_DAOExtraction';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

@@ -376,7 +376,7 @@ public function saveServiceToCustomer(Request $request)
 public function getFullApplicationDetails($applicationId)
 {
     // Hardcode application_id for testing
-    $applicationId = 1; // <-- Hardcoded for testing
+    // $applicationId = 1; // <-- Hardcoded for testing
 
     // Fetch from customer_application_details
     $application = DB::table('customer_application_details')
@@ -398,6 +398,10 @@ public function getFullApplicationDetails($applicationId)
         ->where('application_id', $applicationId)
         ->get();
 
+    $applicationAddresss = DB::table('application_address_details')
+        ->where('application_id', $applicationId)
+        ->get();
+
     if (!$application) {
         return response()->json(['message' => 'Application not found'], 404);
     }
@@ -409,6 +413,7 @@ public function getFullApplicationDetails($applicationId)
             'personal_details' => $personalDetails,
             'account_personal_details' => $accountPersonalDetails,
             'account_nominees' => $accountNominees,
+            'application_addresss' => $applicationAddresss,
         ]
     ]);
 }
