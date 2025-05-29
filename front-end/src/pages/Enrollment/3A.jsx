@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import Tesseract from 'tesseract.js';
 import Swal from 'sweetalert2';
-
+import DAOExtraction from './3B_DAOExtraction';
 const DocumentUpload = ({ onDocumentsUpdate }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
     const [selectedAddressProof, setSelectedAddressProof] = useState('');
@@ -182,7 +182,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
         reader.onload = async () => {
             const imageData = reader.result;
             setPreviewImage(imageData);
-
+            // console.log("Image Data may required validation :", file);
             let isValid = true;
             let extractedInfo = null;
 
@@ -211,6 +211,8 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 docType = `${documentValue}_JPG`;
             }
 
+            //abstraction below
+            // DAOExtraction(file);
             // Add to documents table
             const newDocument = {
                 id: Date.now(),
