@@ -70,4 +70,30 @@ const caste = [
     { value: 'NOT_SPECIFIED', label: 'Prefer not to say' },
 ];
 
+
+const userdummydata = {
+    aadhardetails: {
+        auth_type: "Aadhar Card",
+        auth_code: "987654321098",
+        auth_status: "Verified",
+        first_name: "Rahul",
+        middle_name: "Kumar",
+        last_name: "Sharma",
+        DOB: "15/07/1985",
+        gender: "Male",
+        mobile: "9876543210",
+        complex_name: "Sunshine Apartments",
+        flat_no: "B-204",
+        area: "MG Road",
+        landmark: "Near City Mall",
+        country: "India",
+        pincode: "560001",
+        city: "Bangalore",
+        district: "Bangalore Urban",
+        state: "Karnataka"
+    }
+
+}
+
+
 export { userDetails, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste };

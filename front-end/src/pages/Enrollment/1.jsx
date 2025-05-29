@@ -39,6 +39,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleRadioChange = (e) => {
         setSelectedOption(e.target.value);
+        setShowData(false);
     };
     const validateAadhaar = (aadhaarNumber) => {
         const aadhaarRegex = /^[0-9]{12}$/;
@@ -51,8 +52,41 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const fetchShowData = (e) => {
         e.preventDefault();
 
-        if (localFormData.verifynumber) {
-            setShowData(true);
+        if (selectedOption === 'Aadhar Card') {
+            if (validateAadhaar(localFormData.verifynumber)) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Aadhar Card verified!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setShowData(true);
+            } else {
+                toast.error('Please enter a valid 12-digit Aadhaar number');
+            }
+        } else if (selectedOption === 'Pan Card') {
+            if (validatePAN(localFormData.verifynumber)) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pan Card verified!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setShowData(true);
+            } else {
+                toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+            }
+        } else if (selectedOption === 'DigiLocker') {
+            // Handle DigiLocker verification logic here
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Your data has been saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            console.log("DigiLocker verification logic");
+            setShowData(true); // Assuming DigiLocker verification is successful
         }
     };
 
