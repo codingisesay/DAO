@@ -1,4 +1,4 @@
-import { authApi } from "../utils/storage";
+import authApi from "../utils/storage";
 import { API_ENDPOINTS } from "../services/api";
 import { setAuthData } from "../services/authService";
 

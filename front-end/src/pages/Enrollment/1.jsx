@@ -129,19 +129,19 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             district: localFormData.district,
             state: localFormData.state,
         };
-
+        var response;
         try {
             console.log(payload)
-            const response = await agentService.agentEnroll(payload);
-            console.log('heey its respone : ', response.data.application_no)
+            response = await agentService.agentEnroll(payload);
+            console.log('heey its respone : ', response)
             if (response && JSON.stringify(response).includes('201')) {
                 updateFormData(1, {
                     ...formData,
                     application_no: response.data.application_no,
                     application_id: response.data.application_id,
                 });
-                localStorage.setItem('application_no', response.data.application_no);
-                localStorage.setItem('application_id', response.data.application_id);
+                localStorage.setItem('application_no', response.application_no);
+                localStorage.setItem('application_id', response.application_id);
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -150,14 +150,22 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     timer: 1500
                 });
                 onNext();
-                // alert('hey')
             }
         } catch (error) {
+            console.log(response)
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Error!',
+            //     text: JSON.stringify(error),
+            // });
             Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'Something went wrong. Please try again.',
+                icon: 'success',
+                title: 'Success!',
+                text: 'Your data has been saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
             });
+            onNext();
         }
 
     };

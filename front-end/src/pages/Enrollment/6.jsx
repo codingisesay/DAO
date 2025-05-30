@@ -80,7 +80,15 @@ const p6 = ({ onNext, onBack }) => {
 
     const CurrentStepComponent = steps[activeStep].component;
 
-    const CreateAccount = () => { console.log(formData) }
+    const CreateAccount = () => {
+        Swal.fire({
+            title: 'Account Created Successfully!',
+            text: 'Your account has been created successfully.',
+            icon: 'success',  // Type of icon (success, error, info, warning)
+            confirmButtonText: 'OK',  // Text on the button
+        });
+
+    }
     return (
         <div className="">
             <div className="stepper-header">

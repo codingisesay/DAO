@@ -1,25 +1,25 @@
-import { authApi, daoApi } from "../utils/storage";
+import { apiService } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
 
 export const agentService = {
   agentEnroll: (data) =>
-    daoApi.post(API_ENDPOINTS.AGENT.AGENTENROLL, data)
+    apiService.post(API_ENDPOINTS.AGENT.AGENTENROLL, data)
 }
 
 export const personalDetailsService = {
-  create: (data) => daoApi.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, data),
-  // update: (id, data) => daoApi.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
+  create: (data) => apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, data),
+  // update: (id, data) => apiService.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
 };
 
 export const addressDetailsService = {
-  create: (data) => daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),
-  // update: (id, data) => daoApi.put(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
+  create: (data) => apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),
+  // update: (id, data) => apiService.put(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
 };
 
 export const livePhotoService = {
   upload: (formData) =>
-    daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, formData, {
+    apiService.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 };
@@ -27,54 +27,54 @@ export const livePhotoService = {
 
 export const applicationDocumentService = {
   upload: (formData) =>
-    daoApi.post(API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE, formData, {
+    apiService.post(API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 };
 
 export const accountPersonalDetailsService = {
-  create: (data) => daoApi.post(API_ENDPOINTS.ACCOUNT_PERSONAL_DETAILS.CREATE, data),
+  create: (data) => apiService.post(API_ENDPOINTS.ACCOUNT_PERSONAL_DETAILS.CREATE, data),
 };
 
 export const accountNomineeService = {
-  create: (data) => daoApi.post(API_ENDPOINTS.ACCOUNT_NOMINEE.CREATE, data),
+  create: (data) => apiService.post(API_ENDPOINTS.ACCOUNT_NOMINEE.CREATE, data),
 };
 
 export const serviceToCustomerService = {
-  create: (data) => daoApi.post(API_ENDPOINTS.SERVICE_TO_CUSTOMER.CREATE, data),
+  create: (data) => apiService.post(API_ENDPOINTS.SERVICE_TO_CUSTOMER.CREATE, data),
 };
 
 export const applicationDetailsService = {
   getFullDetails: (id) =>
-    daoApi.get(`/agent/full-application-details/${id}`),
+    apiService.get(`/agent/full-application-details/${id}`),
 };
 
 export const forgotpass = {
   forgotPass: (identifier) =>
-    daoApi.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),
+    apiService.post(API_ENDPOINTS.AUTH.FORGOTPASS(identifier)),
 
   otpverify: (identifier, otp) =>
-    daoApi.post(API_ENDPOINTS.AUTH.OTPVERIFY(identifier, otp)),
+    apiService.post(API_ENDPOINTS.AUTH.OTPVERIFY(identifier, otp)),
 
   setpass: (identifier, newPassword) =>
-    daoApi.post(API_ENDPOINTS.AUTH.SETPASS(identifier, newPassword)),
+    apiService.post(API_ENDPOINTS.AUTH.SETPASS(identifier, newPassword)),
 };
 
 export const branchService = {
-  createBranch: (data) => daoApi.post(API_ENDPOINTS.BRANCH.CREATE, data),
+  createBranch: (data) => apiService.post(API_ENDPOINTS.BRANCH.CREATE, data),
 
   getAllBranches: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.BRANCH.GET_ALL(page, size)),
+    apiService.get(API_ENDPOINTS.BRANCH.GET_ALL(page, size)),
 
-  getBranchById: (id) => daoApi.get(API_ENDPOINTS.BRANCH.GET_BY_ID(id)),
+  getBranchById: (id) => apiService.get(API_ENDPOINTS.BRANCH.GET_BY_ID(id)),
 
   updateBranch: (id, data) =>
-    daoApi.put(API_ENDPOINTS.BRANCH.UPDATE(id), data),
+    apiService.put(API_ENDPOINTS.BRANCH.UPDATE(id), data),
 
-  deleteBranch: (id) => daoApi.delete(API_ENDPOINTS.BRANCH.DELETE(id)),
+  deleteBranch: (id) => apiService.delete(API_ENDPOINTS.BRANCH.DELETE(id)),
 
   duplicatebranchcheack: (id) =>
-    daoApi.get(API_ENDPOINTS.BRANCH.BRANCH_DUPLICATION(id)),
+    apiService.get(API_ENDPOINTS.BRANCH.BRANCH_DUPLICATION(id)),
 
   search: async ({
     branchCode,
@@ -92,34 +92,34 @@ export const branchService = {
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const userService = {
-  createUsers: (data) => authApi.post(API_ENDPOINTS.USER.CREATE, data),
+  createUsers: (data) => apiService.post(API_ENDPOINTS.USER.CREATE, data),
 
   getAllUsers: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.USER.GET_ALL(page, size)), // Pass page & size
+    apiService.get(API_ENDPOINTS.USER.GET_ALL(page, size)), // Pass page & size
 
-  getUserById: (id) => daoApi.get(API_ENDPOINTS.USER.GET_BY_ID(id)),
+  getUserById: (id) => apiService.get(API_ENDPOINTS.USER.GET_BY_ID(id)),
 
-  updateUser: (id, data) => daoApi.put(API_ENDPOINTS.USER.UPDATE(id), data),
+  updateUser: (id, data) => apiService.put(API_ENDPOINTS.USER.UPDATE(id), data),
 
-  deleteUser: (id) => daoApi.delete(API_ENDPOINTS.USER.DELETE(id)),
+  deleteUser: (id) => apiService.delete(API_ENDPOINTS.USER.DELETE(id)),
 
-  approveUser: (id) => daoApi.put(API_ENDPOINTS.USER.APPROVE(id)),
+  approveUser: (id) => apiService.put(API_ENDPOINTS.USER.APPROVE(id)),
 
   duplicateusercheck: (id) =>
-    daoApi.get(API_ENDPOINTS.USER.USER_DUPLICATION(id)),
+    apiService.get(API_ENDPOINTS.USER.USER_DUPLICATION(id)),
 
   duplicateempcodecheck: (id) =>
-    daoApi.get(API_ENDPOINTS.USER.EPM_CODE_DUPLICATE(id)),
+    apiService.get(API_ENDPOINTS.USER.EPM_CODE_DUPLICATE(id)),
 
   unapproveUser: (data, page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.USER.UNAPPROVE(data, page, size)),
+    apiService.get(API_ENDPOINTS.USER.UNAPPROVE(data, page, size)),
 
-  getbranches: () => daoApi.get(API_ENDPOINTS.BRANCH.GETBRANCH),
+  getbranches: () => apiService.get(API_ENDPOINTS.BRANCH.GETBRANCH),
 
   search: async ({
     userName,
@@ -135,71 +135,71 @@ export const userService = {
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const dashbard1 = {
-  getAccOpened: () => daoApi.get(API_ENDPOINTS.DASHBOARD.ACCOPENED),
-  getAccClosed: () => daoApi.get(API_ENDPOINTS.DASHBOARD.ACCCLOSED),
-  getEmiDue: () => daoApi.get(API_ENDPOINTS.DASHBOARD.EMIDUE),
+  getAccOpened: () => apiService.get(API_ENDPOINTS.DASHBOARD.ACCOPENED),
+  getAccClosed: () => apiService.get(API_ENDPOINTS.DASHBOARD.ACCCLOSED),
+  getEmiDue: () => apiService.get(API_ENDPOINTS.DASHBOARD.EMIDUE),
   getLoanDisbursment: () =>
-    daoApi.get(API_ENDPOINTS.DASHBOARD.LOANDISBERSMENTINSIGHTS),
+    apiService.get(API_ENDPOINTS.DASHBOARD.LOANDISBERSMENTINSIGHTS),
   getRepaymentsPrinciple: () =>
-    daoApi.get(API_ENDPOINTS.DASHBOARD.REPAYMENTSPRINCIPLE),
+    apiService.get(API_ENDPOINTS.DASHBOARD.REPAYMENTSPRINCIPLE),
   getRepaymentsInterest: () =>
-    daoApi.get(API_ENDPOINTS.DASHBOARD.REPAYMENTSINTEREST),
-  getOrament: () => daoApi.get(API_ENDPOINTS.DASHBOARD.ORNAMENTS),
+    apiService.get(API_ENDPOINTS.DASHBOARD.REPAYMENTSINTEREST),
+  getOrament: () => apiService.get(API_ENDPOINTS.DASHBOARD.ORNAMENTS),
   getLoanSancioned: () =>
-    daoApi.get(API_ENDPOINTS.DASHBOARD.NEWLOANSANCTION),
-  getEmiDueList: () => daoApi.get(API_ENDPOINTS.DASHBOARD.EMIDUELIST),
-  getLoanPotfolio: () => daoApi.get(API_ENDPOINTS.DASHBOARD.LOANPOTFOLIO),
+    apiService.get(API_ENDPOINTS.DASHBOARD.NEWLOANSANCTION),
+  getEmiDueList: () => apiService.get(API_ENDPOINTS.DASHBOARD.EMIDUELIST),
+  getLoanPotfolio: () => apiService.get(API_ENDPOINTS.DASHBOARD.LOANPOTFOLIO),
 };
 
 export const overdueDashboard = {
   getMaturityPattern: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.MATURITYPATTERN),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.MATURITYPATTERN),
   getDisbursedAmountTrends: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.DISBURSEDAMOUNTTREND),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.DISBURSEDAMOUNTTREND),
   getTotelPladge: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.TOTELPLLEDGE),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.TOTELPLLEDGE),
   getMonthlyNpaTrends: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.MONTHLYNPATRENDS),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.MONTHLYNPATRENDS),
   getDefaulterAndNpa: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.DEFAUULTERANDNPA),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.DEFAUULTERANDNPA),
   getOverdueLoans: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.OVERDUELOANS),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.OVERDUELOANS),
   getKilogramWaight: () =>
-    daoApi.get(API_ENDPOINTS.OVERDUEDASHBOARD.KILOGRAM),
+    apiService.get(API_ENDPOINTS.OVERDUEDASHBOARD.KILOGRAM),
 };
 
 export const stockApi = {
-  createStock: (data) => daoApi.post(API_ENDPOINTS.STOCK.CREATE, data),
+  createStock: (data) => apiService.post(API_ENDPOINTS.STOCK.CREATE, data),
   // getAllStock: (page = 0, size = 10) =>
-  //   daoApi.get(API_ENDPOINTS.STOCK.GETALLSTOCK(page, size)),
+  //   apiService.get(API_ENDPOINTS.STOCK.GETALLSTOCK(page, size)),
   getAllUnapproveStock: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.STOCK.UNAPPROVE(page, size)),
-  getUserById: (id) => daoApi.get(API_ENDPOINTS.STOCK.GET_BY_ID(id)),
-  approveStock: (id) => daoApi.put(API_ENDPOINTS.STOCK.APPROVE(id)),
+    apiService.get(API_ENDPOINTS.STOCK.UNAPPROVE(page, size)),
+  getUserById: (id) => apiService.get(API_ENDPOINTS.STOCK.GET_BY_ID(id)),
+  approveStock: (id) => apiService.put(API_ENDPOINTS.STOCK.APPROVE(id)),
   updateStock: (id, data) =>
-    daoApi.put(API_ENDPOINTS.STOCK.UPDATE(id), data),
+    apiService.put(API_ENDPOINTS.STOCK.UPDATE(id), data),
   search: async ({ effectiveDate, page = 0, size = 10 }) => {
     const searchURL = API_ENDPOINTS.STOCK.SEARCH({
       effectiveDate,
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const issue = {
-  getFrom: () => daoApi.get(API_ENDPOINTS.ISSUE.FETCHFROM),
+  getFrom: () => apiService.get(API_ENDPOINTS.ISSUE.FETCHFROM),
   checkAvailibility: (data) =>
-    daoApi.post(API_ENDPOINTS.ISSUE.CHECKAVAILIBITY, data),
-  createIssue: (data) => daoApi.put(API_ENDPOINTS.ISSUE.CREATE, data),
+    apiService.post(API_ENDPOINTS.ISSUE.CHECKAVAILIBITY, data),
+  createIssue: (data) => apiService.put(API_ENDPOINTS.ISSUE.CREATE, data),
   viewIssue: (id, id2, page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.ISSUE.VIEW(id, id2, page, size, 2)),
+    apiService.get(API_ENDPOINTS.ISSUE.VIEW(id, id2, page, size, 2)),
   search: async ({
     page = 0,
     size = 10,
@@ -214,61 +214,61 @@ export const issue = {
       maxPacketNo,
       effectiveDate,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const subloanDashboard = {
-  getSummeryAcc: () => daoApi.get(API_ENDPOINTS.SUBLOANDASHBOARD.SUMMERY),
+  getSummeryAcc: () => apiService.get(API_ENDPOINTS.SUBLOANDASHBOARD.SUMMERY),
   getOrnamentCount: () =>
-    daoApi.get(API_ENDPOINTS.SUBLOANDASHBOARD.ORNAMENTSCOUNT),
+    apiService.get(API_ENDPOINTS.SUBLOANDASHBOARD.ORNAMENTSCOUNT),
   getOrnamentWeight: () =>
-    daoApi.get(API_ENDPOINTS.SUBLOANDASHBOARD.WEIGHTOFGOLD),
+    apiService.get(API_ENDPOINTS.SUBLOANDASHBOARD.WEIGHTOFGOLD),
   getAccNoList: (id) =>
-    daoApi.get(API_ENDPOINTS.SUBLOANDASHBOARD.GETACCNO(id)),
+    apiService.get(API_ENDPOINTS.SUBLOANDASHBOARD.GETACCNO(id)),
   accountWiseDetails: (accountNo) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.SUBLOANDASHBOARD.ACCOUNTWISEDETAILS(accountNo)
     ),
 };
 
 export const bankService = {
-  createBank: (data) => daoApi.post(API_ENDPOINTS.BANK.CREATE, data),
+  createBank: (data) => apiService.post(API_ENDPOINTS.BANK.CREATE, data),
 
-  getAllBank: () => daoApi.get(API_ENDPOINTS.BANK.GET_ALL),
+  getAllBank: () => apiService.get(API_ENDPOINTS.BANK.GET_ALL),
 
-  getBankById: (id) => daoApi.get(API_ENDPOINTS.BANK.GET_BY_ID(id)),
+  getBankById: (id) => apiService.get(API_ENDPOINTS.BANK.GET_BY_ID(id)),
 
-  updateBank: (id, data) => daoApi.put(API_ENDPOINTS.BANK.UPDATE(id), data),
+  updateBank: (id, data) => apiService.put(API_ENDPOINTS.BANK.UPDATE(id), data),
 
-  deleteBank: (id) => daoApi.delete(API_ENDPOINTS.BANK.DELETE(id)),
+  deleteBank: (id) => apiService.delete(API_ENDPOINTS.BANK.DELETE(id)),
 };
 
 export const ProductMasterService = {
   createProductMaster: (data) =>
-    daoApi.post(API_ENDPOINTS.PRODUCT.CREATE, data),
+    apiService.post(API_ENDPOINTS.PRODUCT.CREATE, data),
 
   getAllProductMaster: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.PRODUCT.GET_ALL(page, size)),
+    apiService.get(API_ENDPOINTS.PRODUCT.GET_ALL(page, size)),
 
   // getBrowseProductMaster: () =>
-  //   daoApi.get(API_ENDPOINTS.PRODUCT.GET_BROWSE(id)),
+  //   apiService.get(API_ENDPOINTS.PRODUCT.GET_BROWSE(id)),
 
-  getProductMById: (id) => daoApi.get(API_ENDPOINTS.PRODUCT.GET_BY_ID(id)),
+  getProductMById: (id) => apiService.get(API_ENDPOINTS.PRODUCT.GET_BY_ID(id)),
 
   updateProductMaster: (id, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCT.UPDATE(id), data),
+    apiService.put(API_ENDPOINTS.PRODUCT.UPDATE(id), data),
 
   deleteProductMaster: (id) =>
-    daoApi.delete(API_ENDPOINTS.PRODUCT.DELETE(id)),
+    apiService.delete(API_ENDPOINTS.PRODUCT.DELETE(id)),
 
   duplicateproductcheack: (id) =>
-    daoApi.get(API_ENDPOINTS.PRODUCT.PRODUCT_DUPLICATION_CHECK(id)),
+    apiService.get(API_ENDPOINTS.PRODUCT.PRODUCT_DUPLICATION_CHECK(id)),
 
   unapproveproduct: (data, page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.PRODUCT.UNAPPROVE(data, page, size)),
+    apiService.get(API_ENDPOINTS.PRODUCT.UNAPPROVE(data, page, size)),
 
-  approveproduct: (id) => daoApi.put(API_ENDPOINTS.PRODUCT.APPROVE(id)),
+  approveproduct: (id) => apiService.put(API_ENDPOINTS.PRODUCT.APPROVE(id)),
 
   search: async ({
     productCode,
@@ -286,34 +286,34 @@ export const ProductMasterService = {
       sortField,
       sortOrder,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 export const productInterestParamsService = {
   createproductInterestParams: (data) =>
-    daoApi.post(API_ENDPOINTS.PRODUCTINTEREST.CREATE, data),
+    apiService.post(API_ENDPOINTS.PRODUCTINTEREST.CREATE, data),
 
   getAllproductInterestParams: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.PRODUCTINTEREST.GET_ALL(page, size)),
+    apiService.get(API_ENDPOINTS.PRODUCTINTEREST.GET_ALL(page, size)),
 
   getproductInterestParamsById: (branchcode, productcode) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.PRODUCTINTEREST.GET_BY_ID(branchcode, productcode)
     ),
 
   duplicateCheckProductParams: (id1, id2) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.PRODUCTINTEREST.PROD_PARAM_DUPLICATION_CHECK(id1, id2)
     ),
 
   updateproductInterestParams: (id1, id2, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCTINTEREST.UPDATE(id1, id2), data),
+    apiService.put(API_ENDPOINTS.PRODUCTINTEREST.UPDATE(id1, id2), data),
 
   unapproveproductInterestParams: (data, page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.PRODUCTINTEREST.UNAPPROVE(data, page, size)),
+    apiService.get(API_ENDPOINTS.PRODUCTINTEREST.UNAPPROVE(data, page, size)),
 
   approveproductInt: (id1, id2, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCTINTEREST.APPROVE(id1, id2), data),
+    apiService.put(API_ENDPOINTS.PRODUCTINTEREST.APPROVE(id1, id2), data),
 
   search: async ({
     branchCode,
@@ -329,24 +329,24 @@ export const productInterestParamsService = {
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const productInterestEntity = {
   createproductInterestEntity: (data) =>
-    daoApi.post(API_ENDPOINTS.PRODUCTINTERESTENTITY.CREATE, data),
+    apiService.post(API_ENDPOINTS.PRODUCTINTERESTENTITY.CREATE, data),
 
   getAllproductInterestParams: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.PRODUCTINTERESTENTITY.GET_ALL(page, size)),
+    apiService.get(API_ENDPOINTS.PRODUCTINTERESTENTITY.GET_ALL(page, size)),
 
   getproductInterestParamsById: (productcode, effectiveDate) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.PRODUCTINTERESTENTITY.GET_BY_ID(productcode, effectiveDate)
     ),
 
   updateproductInterestMasterParams: (productcode, effectiveDate, data) =>
-    daoApi.put(
+    apiService.put(
       API_ENDPOINTS.PRODUCTINTERESTENTITY.INTEREST_UPDATE(
         productcode,
         effectiveDate
@@ -355,12 +355,12 @@ export const productInterestEntity = {
     ),
 
   duplicateinterestcheack: (id1, id2) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.PRODUCTINTERESTENTITY.INTEREST_DUPLICATION_CHECK(id1, id2)
     ),
 
   unapproveproductInterest: (data) =>
-    daoApi.get(API_ENDPOINTS.PRODUCTINTERESTENTITY.UNAPPROVE, data),
+    apiService.get(API_ENDPOINTS.PRODUCTINTERESTENTITY.UNAPPROVE, data),
   search: async ({ productCode, effectiveDate, page = 0, size = 10 }) => {
     const searchURL = API_ENDPOINTS.PRODUCTINTERESTENTITY.SEARCH({
       productCode,
@@ -368,13 +368,13 @@ export const productInterestEntity = {
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 };
 
 export const accountService = {
   getAccountNoformat: (productCode, effectiveDate, schemeCode) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.ACCOUNT.ACCTNUMFORMAT(
         productCode,
         effectiveDate,
@@ -383,28 +383,28 @@ export const accountService = {
     ),
 
   existByAcctNo: (accountPrefix, accountNumber, edate) =>
-    daoApi.get(
+    apiService.get(
       API_ENDPOINTS.ACCOUNT.EXISTBYACCTNO(accountPrefix, accountNumber, edate)
     ),
 
-  createAccount: (data) => daoApi.post(API_ENDPOINTS.ACCOUNT.CREATE, data),
+  createAccount: (data) => apiService.post(API_ENDPOINTS.ACCOUNT.CREATE, data),
 
   getAllAccounts: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.ACCOUNT.GET_ALL(page, size)),
+    apiService.get(API_ENDPOINTS.ACCOUNT.GET_ALL(page, size)),
 
-  getAccountById: (id) => daoApi.get(API_ENDPOINTS.ACCOUNT.GET_BY_ID(id)),
+  getAccountById: (id) => apiService.get(API_ENDPOINTS.ACCOUNT.GET_BY_ID(id)),
 
   updateAccount: (id, data) =>
-    daoApi.put(API_ENDPOINTS.ACCOUNT.UPDATE(id), data),
+    apiService.put(API_ENDPOINTS.ACCOUNT.UPDATE(id), data),
 
-  deleteAccount: (id) => daoApi.delete(API_ENDPOINTS.ACCOUNT.DELETE(id)),
+  deleteAccount: (id) => apiService.delete(API_ENDPOINTS.ACCOUNT.DELETE(id)),
 
   unapproveAccounts: (page = 0, size = 10) =>
-    daoApi.get(API_ENDPOINTS.ACCOUNT.UNAPPROVE(page, size)),
+    apiService.get(API_ENDPOINTS.ACCOUNT.UNAPPROVE(page, size)),
 
-  approveAccount: (id) => daoApi.put(API_ENDPOINTS.ACCOUNT.APPROVE(id)),
+  approveAccount: (id) => apiService.put(API_ENDPOINTS.ACCOUNT.APPROVE(id)),
 
-  closingbalance: (id) => daoApi.get(API_ENDPOINTS.ACCOUNT.BALANCE(id)),
+  closingbalance: (id) => apiService.get(API_ENDPOINTS.ACCOUNT.BALANCE(id)),
 
   search: async ({
     accountNo,
@@ -426,14 +426,14 @@ export const accountService = {
       page,
       size,
     });
-    return daoApi.get(searchURL);
+    return apiService.get(searchURL);
   },
 
-  getPledged: (id) => daoApi.get(API_ENDPOINTS.ACCOUNT.GETPLEDGED(id)),
+  getPledged: (id) => apiService.get(API_ENDPOINTS.ACCOUNT.GETPLEDGED(id)),
 
   notmoduletypelist: (id) =>
-    daoApi.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_NOT_MODULETYPE_LOOKUP(id)),
+    apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_NOT_MODULETYPE_LOOKUP(id)),
 
   moduletype: (id) =>
-    daoApi.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
+    apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
 }; 

@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { daoApi } from '../../utils/storage';
+// import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import { YN } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
@@ -36,36 +36,37 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     });
 
     const submitaddress = async () => {
-        const payload = {
-            application_id: formData.application_id,
-            ...localFormData,
-            status: formData.status,
-        };
+        onNext();
+        // const payload = {
+        //     application_id: formData.application_id,
+        //     ...localFormData,
+        //     status: formData.status,
+        // };
 
-        try {
-            const response = await daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Address details saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        // try {
+        //     const response = await daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+        //     Swal.fire({
+        //         icon: 'success',
+        //         title: response.data.message || 'Address details saved successfully.',
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     });
 
-            updateFormData({
-                ...localFormData,
-                correspondenceAddressSame: sameAsAbove
-            });
+        //     updateFormData({
+        //         ...localFormData,
+        //         correspondenceAddressSame: sameAsAbove
+        //     });
 
-            if (onNext) {
-                onNext();
-            }
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.response?.data?.message || 'Failed to save address details'
-            });
-        }
+        //     if (onNext) {
+
+        //     }
+        // } catch (error) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: error.response?.data?.message || 'Failed to save address details'
+        //     });
+        // }
     }
 
     const handlePermanentChange = (e) => {

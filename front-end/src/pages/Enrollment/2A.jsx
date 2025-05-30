@@ -175,7 +175,7 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                         validationType="PHONE"
 
                     />
-                    {localFormData.mobile === localFormData.alt_mob_no && alert('numbers can not be same')}
+                    {/* {localFormData.mobile === localFormData.alt_mob_no && alert('numbers can not be same')} */}
                     {/* Email - Email validation */}
                     <CommanInput
                         onChange={handleChange}

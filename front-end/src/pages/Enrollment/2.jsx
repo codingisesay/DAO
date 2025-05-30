@@ -10,18 +10,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
 
     // Restore application_id if missing
-    useEffect(() => {
-        console.log('Step 2: formData.application_id =', formData.application_id); // <-- Debug log
-        if (!formData.application_id) {
-            const storedId = localStorage.getItem('application_id');
-            if (storedId) {
-                updateFormData({ ...formData, application_id: storedId });
-            } else {
-                alert('No application found. Please start a new application.');
-                if (onBack) onBack();
-            }
-        }
-    }, []);
+    // useEffect(() => {
+    //     console.log('Step 2: formData.application_id =', formData.application_id); // <-- Debug log
+    //     if (!formData.application_id) {
+    //         const storedId = localStorage.getItem('application_id');
+    //         if (storedId) {
+    //             updateFormData({ ...formData, application_id: storedId });
+    //         } else {
+    //             alert('No application found. Please start a new application.');
+    //             if (onBack) onBack();
+    //         }
+    //     }
+    // }, []);
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -49,109 +49,111 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
     // Updated handleSubmit to use API_ENDPOINTS and check for application_id
     const handleSubmit = async (e) => {
-        if (e && e.preventDefault) e.preventDefault(); handleNext();
-        try {
-            if (activeStep === 0) {
-                // Personal Details API
-                const pd = formData.personalDetails || {};
-                const payload = {
-                    application_id: formData.application_id,
-                    salutation: pd.salutation,
-                    religion: pd.religion,
-                    caste: pd.caste,
-                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                    alt_mob_no: pd.alternatemobile,
-                    email: pd.email,
-                    adhar_card: pd.aadharnumber,
-                    pan_card: pd.pannumber,
-                    passport: pd.passportno,
-                    driving_license: pd.drivinglicence,
-                    voter_id: pd.voterid,
-                    status: formData.status,
-                };
+        handleNext();
+        // if (e && e.preventDefault) e.preventDefault(); handleNext();
+        // try {
+        //     if (activeStep === 0) {
+        //         // Personal Details API
+        //         const pd = formData.personalDetails || {};
+        //         const payload = {
+        //             application_id: formData.application_id,
+        //             salutation: pd.salutation,
+        //             religion: pd.religion,
+        //             caste: pd.caste,
+        //             marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+        //             alt_mob_no: pd.alternatemobile,
+        //             email: pd.email,
+        //             adhar_card: pd.aadharnumber,
+        //             pan_card: pd.pannumber,
+        //             passport: pd.passportno,
+        //             driving_license: pd.drivinglicence,
+        //             voter_id: pd.voterid,
+        //             status: formData.status,
+        //         };
 
-                let response = await personalDetailsService.create(payload);
-                Swal.fire({
-                    icon: 'success',
-                    title: response.data.message || 'Personal details saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                handleNext();
-            } else if (activeStep === 1) {
-                const ad = formData.addressDetails || {};
-                console.log("DEBUG: addressDetails in formData", ad);
-                // Address Details API
-                const payload = {
-                    application_id: formData.application_id,
-                    per_complex_name: ad.perComplexName,
-                    per_flat_no: ad.perFlatNo,
-                    per_area: ad.perArea,
-                    per_landmark: ad.perLandmark,
-                    per_country: ad.perCountry,
-                    per_pincode: ad.perPincode,
-                    per_city: ad.perCity,
-                    per_district: ad.perDistrict,
-                    per_state: ad.perState,
-                    per_resident: ad.perResident,
-                    per_residence_status: ad.perResidenceStatus,
-                    resi_doc: ad.resiDoc,
-                    cor_complex: ad.corComplex,
-                    cor_flat_no: ad.corFlatNo,
-                    cor_area: ad.corArea,
-                    cor_landmark: ad.corLandmark,
-                    cor_country: ad.corCountry,
-                    cor_pincode: ad.corPincode,
-                    cor_city: ad.corCity,
-                    cor_district: ad.corDistrict,
-                    cor_state: ad.corState,
-                    status: formData.status,
-                };
+        //         let response = await personalDetailsService.create(payload);
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: response.data.message || 'Personal details saved successfully.',
+        //             showConfirmButton: false,
+        //             timer: 1500
+        //         });
+        //         handleNext();
+        //     } else if (activeStep === 1) {
+        //         const ad = formData.addressDetails || {};
+        //         console.log("DEBUG: addressDetails in formData", ad);
+        //         // Address Details API
+        //         const payload = {
+        //             application_id: formData.application_id,
+        //             per_complex_name: ad.perComplexName,
+        //             per_flat_no: ad.perFlatNo,
+        //             per_area: ad.perArea,
+        //             per_landmark: ad.perLandmark,
+        //             per_country: ad.perCountry,
+        //             per_pincode: ad.perPincode,
+        //             per_city: ad.perCity,
+        //             per_district: ad.perDistrict,
+        //             per_state: ad.perState,
+        //             per_resident: ad.perResident,
+        //             per_residence_status: ad.perResidenceStatus,
+        //             resi_doc: ad.resiDoc,
+        //             cor_complex: ad.corComplex,
+        //             cor_flat_no: ad.corFlatNo,
+        //             cor_area: ad.corArea,
+        //             cor_landmark: ad.corLandmark,
+        //             cor_country: ad.corCountry,
+        //             cor_pincode: ad.corPincode,
+        //             cor_city: ad.corCity,
+        //             cor_district: ad.corDistrict,
+        //             cor_state: ad.corState,
+        //             status: formData.status,
+        //         };
 
-                let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-                alert(response.data.message || 'Address details saved successfully.');
+        //         let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+        //         alert(response.data.message || 'Address details saved successfully.');
 
-            }
-        } catch (err) {
-            // ...error handling...
-        }
+        //     }
+        // } catch (err) {
+        //     // ...error handling...
+        // }
     };
 
     const handleAddressSubmit = async () => {
-        try {
-            const ad = formData.addressDetails || formData; // adjust as per your state shape
-            const payload = {
+        handleNext();
+        // try {
+        //     const ad = formData.addressDetails || formData; // adjust as per your state shape
+        //     const payload = {
 
-                // application_id: "APP202505220001",
-                // per_complex_name: "Green Valley Residency",
-                // per_flat_no: "B-204",
-                // per_area: "Andheri East",
-                // per_landmark: "Near Metro Station",
-                // per_country: "India",
-                // per_pincode: "400069",
-                // per_city: "Mumbai",
-                // per_district: "Mumbai Suburban",
-                // per_state: "Maharashtra",
-                // cor_complex: "Skyline Heights",
-                // cor_flat_no: "D-501",
-                // cor_area: "Powai",
-                // cor_landmark: "Opposite Hiranandani Hospital",
-                // cor_country: "India",
-                // cor_pincode: "400076",
-                // cor_city: "Mumbai",
-                // cor_district: "Mumbai Suburban",
-                // cor_state: "Maharashtra",
+        //         // application_id: "APP202505220001",
+        //         // per_complex_name: "Green Valley Residency",
+        //         // per_flat_no: "B-204",
+        //         // per_area: "Andheri East",
+        //         // per_landmark: "Near Metro Station",
+        //         // per_country: "India",
+        //         // per_pincode: "400069",
+        //         // per_city: "Mumbai",
+        //         // per_district: "Mumbai Suburban",
+        //         // per_state: "Maharashtra",
+        //         // cor_complex: "Skyline Heights",
+        //         // cor_flat_no: "D-501",
+        //         // cor_area: "Powai",
+        //         // cor_landmark: "Opposite Hiranandani Hospital",
+        //         // cor_country: "India",
+        //         // cor_pincode: "400076",
+        //         // cor_city: "Mumbai",
+        //         // cor_district: "Mumbai Suburban",
+        //         // cor_state: "Maharashtra",
 
 
-                status: null, // or as needed
-            };
+        //         status: null, // or as needed
+        //     };
 
-            // const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-            // alert(response.data.message || 'Address details saved successfully.');
-            handleNext();
-        } catch (err) {
-            alert('Failed to save address details');
-        }
+        //     // const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+        //     // alert(response.data.message || 'Address details saved successfully.');
+        //     handleNext();
+        // } catch (err) {
+        //     alert('Failed to save address details');
+        // }
     };
 
     const CurrentStepComponent = steps[activeStep].component;

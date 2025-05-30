@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Tesseract from 'tesseract.js';
+import workingman from '../../assets/imgs/upload_placeholder.png';
 import Swal from 'sweetalert2';
 import DAOExtraction from './3B_DAOExtraction';
 const DocumentUpload = ({ onDocumentsUpdate }) => {
@@ -431,14 +432,15 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 />
 
                 {/* Preview Section */}
-                {previewImage && (
-                    <div className="preview-section my-1">
-                        <div className="text-center p-1 rounded">
-                            <img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" />
+                <div className="preview-section my-1">
+                    <div className="text-center p-1 rounded">
+                        {previewImage ?
+                            (<img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" />)
+                            : (<img src={workingman} alt="Document preview" className="h-[200px] w-auto mx-auto   rounded-lg" />)}
 
-                        </div>
                     </div>
-                )}
+                </div>
+
             </div>
             {/* Documents Table */}
             <div className="documents-table mt-8">
