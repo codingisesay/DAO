@@ -8,7 +8,7 @@ import AccountBarChart from './AdminDashboard_validationBarGraph';
 import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
-import RejectedTbl from './RejectedTbl';
+import CommanTbl from './CommanTbl';
 import { adminService } from '../../services/apiServices'; // <-- Import your service
 
 function ApprovedTable() {
@@ -30,9 +30,9 @@ function ApprovedTable() {
         // Call the approved applications API
         const fetchData = async () => {
             try {
-                const response = await adminService.getAllApplications();
-                setTbldata(response.data.data || []);
-                console.log("Table Data:", response.data.data);
+                const response = await adminService.getAllApplicationsPending();
+                setTbldata(response.data || []);
+                console.log("Table Data:", response.data);
             } catch (error) {
                 console.error("Failed to fetch approved applications:", error);
             }
@@ -68,7 +68,7 @@ function ApprovedTable() {
                 <div className="container mx-auto">
                     <div className='work-area'>
                         {/* Pass tbldata to your table component */}
-                        <RejectedTbl data={tbldata} />
+                        <CommanTbl tbldata={tbldata} />
                     </div>
                 </div>
             </div>

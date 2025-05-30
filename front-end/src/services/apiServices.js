@@ -61,7 +61,26 @@ export const adminService = {
   getAllApplicationsPending: () =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
   getAllApllicationsRejected: () =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_REJECTED_APPLICATIONS),
+    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
+
+  updateApplicationStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
+  updatePersonalDetailsStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
+  updateDocumentsStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
+  updateAddressDetailsStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
+  updateLivePhotosStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
+  updateAccountPersonalDetailsStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
+  updateNomineesStatus: (id, status) =>
+    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
+  // Clicking on the view button in the admin dashboard
+  getFullApplicationDetails: (id) =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+
 };
 
 

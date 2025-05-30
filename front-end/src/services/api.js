@@ -50,6 +50,15 @@ export const API_ENDPOINTS = {
     GET_ALL_APPLICATIONS: '/admin/applications',
     GET_ALL_PENDING_APPLICATIONS: '/admin/applications/pending',
     GET_ALL_APPLICATIONS_REJECTED: '/admin/applications/rejected',
+    UPDATE_APPLICATION_STATUS: '/admin/application/update-status',
+    UPDATE_PERSONAL_DETAILS_STATUS: '/admin/personal-details/update-status',
+    UPDATE_DOCUMENTS_STATUS: '/admin/documents/update-status',
+    UPDATE_ADDRESS_DETAILS_STATUS: '/admin/address-details/update-status',
+    UPDATE_LIVE_PHOTOS_STATUS: '/admin/live-photos/update-status',
+    UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS: '/admin/account-personal-details/update-status',
+    UPDATE_NOMINEES_STATUS: '/admin/nominees/update-status',
+    //clicking on the view button in the admin dashboard
+    GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
   },
 
   BANK: {

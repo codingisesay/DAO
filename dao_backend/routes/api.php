@@ -63,6 +63,22 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         Route::get('/admin/applications', [AdminController::class, 'getAllApplications']);
         Route::get('/admin/applications/pending', [AdminController::class, 'getAllApplicationsPending']);
         Route::get('/admin/applications/rejected', [AdminController::class, 'getAllApplicationsRejected']);
+        // Update status for customer_application_details
+        Route::post('/admin/application/update-status', [AdminController::class, 'updateApplicationStatus']);
+        // Update status for application_personal_details
+        Route::post('/admin/personal-details/update-status', [AdminController::class, 'updatePersonalDetailsStatus']);
+        // Update status for application_documents
+        Route::post('/admin/documents/update-status', [AdminController::class, 'updateDocumentsStatus']);
+        // Update status for application_address_details
+        Route::post('/admin/address-details/update-status', [AdminController::class, 'updateAddressDetailsStatus']);
+        // Update status for applicant_live_photos
+        Route::post('/admin/live-photos/update-status', [AdminController::class, 'updateLivePhotosStatus']);
+        // Update status for account_personal_details
+        Route::post('/admin/account-personal-details/update-status', [AdminController::class, 'updateAccountPersonalDetailsStatus']);
+        // Update status for account_nominees
+        Route::post('/admin/nominees/update-status', [AdminController::class, 'updateNomineesStatus']);
+        // get the data after clicking view button in admin panel
+        Route::get('/admin/application-details/{id}', [AdminController::class, 'getFullApplicationDetails']);
     // });
 
     Route::middleware('role:employee,admin')->group(function () {
@@ -74,4 +90,5 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         return response()->json($request->get('auth_user'));
     });
 // });
+
 

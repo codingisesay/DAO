@@ -12,7 +12,7 @@ import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
-import AccountTbl from './pages/Adminpages/AccountTbl';
+import AccountTbl from './pages/Adminpages/ApproveTbl';
 import Customercreation from './pages/Enrollment/3B_DAOExtraction';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 export const App = () => {
