@@ -52,6 +52,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 photoType="customer"
                 onCapture={(data) => { setLocalFormData(data); console.log('After cature : ', data) }}
             />
+
+
+            {/* om integration button
             <div className="flex justify-between mt-6">
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
@@ -59,8 +62,10 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 <CommonButton onClick={() => submitaddress(localFormData)} variant="contained">
                     Save & Continue
                 </CommonButton>
-            </div>
-            {/* <div className="text-center">
+            </div> */}
+            {/* ankita test buttons
+            
+            <div className="text-center">
                 <button
                     onClick={() => {
                         const customerPhoto = localStorage.getItem('customerPhoto');

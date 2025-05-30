@@ -1,13 +1,6 @@
 
 // Define form fields
 
-const userDetails = [
-    { label: 'User ID', name: 'userId', type: 'text' },
-    { label: 'User Name', name: 'userName', type: 'text' },
-    { label: 'Email Id', name: 'email', type: 'email' },
-    { label: 'Mobile No', name: 'mobile', type: 'text' }
-];
-
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
@@ -23,7 +16,10 @@ const salutation = [
     // { value: 'MISS', label: 'Miss' },
     // { value: 'MX', label: 'Mx' },
 ];
-
+const YN = [
+    { value: 'YES', label: 'Yes' },
+    { value: 'NO', label: 'No' },
+];
 const maritalStatusOptions = [
     { value: 'Single', label: 'Single' },
     { value: 'Married', label: 'Married' },
@@ -70,6 +66,27 @@ const caste = [
     { value: 'NOT_SPECIFIED', label: 'Prefer not to say' },
 ];
 
+const relation = [
+    { value: 'FATHER', label: 'Father' },
+    { value: 'MOTHER', label: 'Mother' },
+    { value: 'SPOUSE', label: 'Spouse' },
+    { value: 'SON', label: 'Son' },
+    { value: 'DAUGHTER', label: 'Daughter' },
+    { value: 'BROTHER', label: 'Brother' },
+    { value: 'SISTER', label: 'Sister' },
+    { value: 'GUARDIAN', label: 'Guardian' },
+    { value: 'OTHER', label: 'Other' },
+];
+const salaryrange = [
+    { value: 'BELOW_1L', label: 'Below ₹1,00,000' },
+    { value: '1L_3L', label: '₹1,00,000 – ₹3,00,000' },
+    { value: '3L_5L', label: '₹3,00,000 – ₹5,00,000' },
+    { value: '5L_10L', label: '₹5,00,000 – ₹10,00,000' },
+    { value: '10L_15L', label: '₹10,00,000 – ₹15,00,000' },
+    { value: '15L_25L', label: '₹15,00,000 – ₹25,00,000' },
+    { value: '25L_PLUS', label: 'Above ₹25,00,000' }
+];
+
 
 const userdummydata = {
     aadhardetails: {
@@ -79,11 +96,11 @@ const userdummydata = {
         first_name: "Rahul",
         middle_name: "Kumar",
         last_name: "Sharma",
-        DOB: "15/07/1985",
+        DOB: '1985-07-11',
         gender: "Male",
         mobile: "9876543210",
         complex_name: "Sunshine Apartments",
-        flat_no: "B-204",
+        flat_no: "B204",
         area: "MG Road",
         landmark: "Near City Mall",
         country: "India",
@@ -96,4 +113,4 @@ const userdummydata = {
 }
 
 
-export { userDetails, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste };
+export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange };

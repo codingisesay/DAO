@@ -3,33 +3,37 @@ import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { gender } from '../../data/data';
+import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
 import { agentService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
+import { form } from 'framer-motion/client';
 function P1({ onNext, onBack, formData, updateFormData }) {
-    const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
-    const [selectedType, setSelectedType] = useState(formData.applicationType || 'new');
-    const [showData, setShowData] = useState(!!formData.verificationNumber);
+    const [selectedOption, setSelectedOption] = useState(formData.auth_type || '');
+    const [selectedType, setSelectedType] = useState('new');
+    const [showData, setShowData] = useState(!!formData.auth_code);
 
     const [localFormData, setLocalFormData] = useState({
-        first_name: formData.personalDetails?.first_name || '',
-        middle_name: formData.personalDetails?.middle_name || '',
-        last_name: formData.personalDetails?.last_name || '',
-        DOB: formData.personalDetails?.DOB || '',
-        gender: formData.personalDetails?.gender || '',
-        mobile: formData.personalDetails?.mobile || '',
-        verifynumber: formData.verificationNumber || '',
-        complex_name: formData.personalDetails?.complex_name || '',
-        flat_no: formData.personalDetails?.flat_no || '',
-        area: formData.personalDetails?.area || '',
-        landmark: formData.personalDetails?.landmark || '',
-        country: formData.personalDetails?.country || '',
-        pincode: formData.personalDetails?.pincode || '',
-        city: formData.personalDetails?.city || '',
-        district: formData.personalDetails?.district || '',
-        state: formData.personalDetails?.state || ''
+        first_name: formData.first_name || '',
+        middle_name: formData.middle_name || '',
+        last_name: formData.last_name || '',
+        auth_type: formData.auth_type || '',
+        auth_code: formData.auth_code || '',
+        first_name: formData.first_name || '',
+        DOB: formData.DOB || '',
+        gender: formData.gender || '',
+        mobile: formData.mobile || '',
+        verifynumber: formData.auth_code || '',
+        complex_name: formData.complex_name || '',
+        flat_no: formData.flat_no || '',
+        area: formData.area || '',
+        landmark: formData.landmark || '',
+        country: formData.country || '',
+        pincode: formData.pincode || '',
+        city: formData.city || '',
+        district: formData.district || '',
+        state: formData.state || ''
     });
 
     const handleChange = (e) => {
@@ -50,8 +54,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         return panRegex.test(panNumber);
     };
     const fetchShowData = (e) => {
-        e.preventDefault();
 
+        e.preventDefault();
         if (selectedOption === 'Aadhar Card') {
             if (validateAadhaar(localFormData.verifynumber)) {
                 Swal.fire({
@@ -61,6 +65,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     timer: 1500
                 });
                 setShowData(true);
+                setLocalFormData({ ...localFormData, ...userdummydata.aadhardetails });
+                // console.log(localFormData)
             } else {
                 toast.error('Please enter a valid 12-digit Aadhaar number');
             }
@@ -94,28 +100,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         e.preventDefault();
         // update central from / in varibles
         updateFormData(1, {
+            ...localFormData,
             ...formData,
-            applicationType: selectedType,
+            auth_type: selectedType,
             verificationOption: selectedOption,
             verificationNumber: localFormData.verifynumber,
-            personalDetails: {
-                ...formData,
-                first_name: localFormData.first_name,
-                middle_name: localFormData.middle_name,
-                last_name: localFormData.last_name,
-                DOB: localFormData.DOB,
-                gender: localFormData.gender,
-                mobile: localFormData.mobile,
-                complex_name: localFormData.complex_name,
-                flat_no: localFormData.flat_no,
-                area: localFormData.area,
-                landmark: localFormData.landmark,
-                country: localFormData.country,
-                pincode: localFormData.pincode,
-                city: localFormData.city,
-                district: localFormData.district,
-                state: localFormData.state
-            }
+
         });
 
         // integration to send data below
@@ -179,10 +169,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
                         <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
                         <div className="application-type-container">
-                            <lable className="application-type">
+                            <label className="application-type">
                                 <input
                                     type="radio"
-                                    name="applicationType"
+                                    name="auth_type"
                                     value="new"
                                     className="hidden peer"
                                     checked={selectedType === 'new'}
@@ -192,7 +182,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <i className="bi bi-person-fill-add"></i>
                                     <span className="font-medium">New Customer</span>
                                 </div>
-                            </lable>
+                            </label>
 
                         </div>
 
@@ -332,7 +322,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.first_name}
                                 required
                                 max={50}
-                                validationType="TEXT_ONLY"
+                                validationType="TEXT_ONLY" disabled={true}
                             />
 
                             <CommanInput
@@ -341,9 +331,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="middle_name"
                                 value={localFormData.middle_name}
-                                required
                                 max={50}
-                                validationType="TEXT_ONLY"
+                                validationType="TEXT_ONLY" disabled={true}
                             />
 
                             <CommanInput
@@ -354,7 +343,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.last_name}
                                 required
                                 max={50}
-                                validationType="TEXT_ONLY"
+                                validationType="TEXT_ONLY" disabled={true}
                             />
                             {/* Date of Birth - Using DATE validation */}
                             <CommanInput
@@ -364,7 +353,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 name="DOB"
                                 value={localFormData.DOB}
                                 required
-                                validationType="DATE"
+                                validationType="DATE" disabled={true}
                             />
 
                             {/* Gender - Text with 20 char limit */}
@@ -374,7 +363,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.gender}
                                 name="gender"
                                 required
-                                options={gender}
+                                options={gender} disabled={true}
                             />
 
                             {/* Mobile - Using PHONE validation with 15 digit limit */}
@@ -386,7 +375,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.mobile}
                                 required
                                 max={10}
-                                validationType="PHONE"
+                                validationType="PHONE" disabled={true}
                             />
 
                             {/* Complex Name - Text with 50 char limit */}
@@ -398,7 +387,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.complex_name}
                                 required
                                 max={50}
-                                validationType="ALPHANUMERIC"
+                                validationType="ALPHANUMERIC" disabled={true}
                             />
 
                             {/* Flat/Room No - Alphanumeric with 20 char limit */}
@@ -410,7 +399,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.flat_no}
                                 required
                                 max={5}
-                                validationType="ALPHANUMERIC"
+                                validationType="ALPHANUMERIC" disabled={true}
                             />
 
                             {/* Area - Text with 50 char limit */}
@@ -422,7 +411,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.area}
                                 required
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
+                                validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
                             {/* Landmark - Text with 50 char limit (more flexible) */}
@@ -434,7 +423,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.landmark}
                                 required
                                 max={50}
-                                validationType="EVERYTHING"
+                                validationType="EVERYTHING" disabled={true}
                             />
 
                             {/* Country - Text with 30 char limit */}
@@ -446,7 +435,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.country}
                                 required
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
+                                validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
                             {/* Pincode - Numbers only with standard 6-10 digit limit */}
@@ -458,7 +447,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.pincode}
                                 required
                                 max={6}
-                                validationType="NUMBER_ONLY"
+                                validationType="NUMBER_ONLY" disabled={true}
                             />
 
                             {/* City - Text with 30 char limit */}
@@ -470,7 +459,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.city}
                                 required
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
+                                validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
                             {/* District - Text with 30 char limit */}
@@ -482,7 +471,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.district}
                                 required
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
+                                validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
                             {/* State - Text with 30 char limit */}
@@ -494,7 +483,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 value={localFormData.state}
                                 required
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
+                                validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
                         </div>
                     </>

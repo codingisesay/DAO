@@ -97,7 +97,7 @@ export const branchService = {
 };
 
 export const userService = {
-  createUsers: (data) => daoApi.post(API_ENDPOINTS.USER.CREATE, data),
+  createUsers: (data) => authApi.post(API_ENDPOINTS.USER.CREATE, data),
 
   getAllUsers: (page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.USER.GET_ALL(page, size)), // Pass page & size

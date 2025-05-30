@@ -56,7 +56,7 @@ export const API_ENDPOINTS = {
   },
 
 
-  //users
+  //users required handeled as agent registeration
   USER: {
     CREATE: "/auth/users",
     GET_ALL: (id, id1) => `/auth/users?page=${id}&size=${id1}`,

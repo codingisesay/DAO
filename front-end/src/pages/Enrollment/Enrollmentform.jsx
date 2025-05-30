@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(5);
     const [complete, setComplete] = useState(false);
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
@@ -143,7 +143,7 @@ function Enrollmentform() {
                 return <Page6
                     onComplete={() => {
                         setComplete(true);
-                        console.log('Final form data:', formData);
+                        // console.log('Final form data:', formData);
                     }}
                     onBack={handleBack}
                     formData={formData}

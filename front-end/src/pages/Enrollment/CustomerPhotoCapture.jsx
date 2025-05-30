@@ -33,7 +33,7 @@ const PhotoCapture = ({
 
     // Configuration based on photo type
     const isCustomerPhoto = photoType === 'customer';
-    const title = isCustomerPhoto ? 'Customer Photo' : 'Agent Photo';
+    const title = isCustomerPhoto ? 'Customer Live Photo' : 'Agent Live Photo';
 
     // 1. Geolocation Setup
     useEffect(() => {
@@ -271,7 +271,7 @@ const PhotoCapture = ({
 
     return (
         <div className="max-w-4xl mx-auto  bg-white rounded-lg ">
-            <h2 className="text-xl font-bold mb-3 text-center text-gray-800">{title}</h2>
+            <h2 className="text-xl font-bold mb-3  text-gray-800">{title} </h2>
 
             <div className="flex flex-col md:flex-row gap-6 items-center ">
                 {/* Camera/Preview Section */}

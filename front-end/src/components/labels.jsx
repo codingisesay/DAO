@@ -21,7 +21,7 @@ const labels = {
         label: "Last Name",
     },
     dob: {
-        label: "Date of Birth",
+        label: "DOB",
     },
     gender: {
         label: "Gender",
