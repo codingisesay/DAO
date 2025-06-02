@@ -12,9 +12,14 @@ import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
-import AccountTbl from './pages/Adminpages/ApproveTbl';
 import Customercreation from './pages/Enrollment/3B_DAOExtraction';
+import AccountTbl from './pages/Adminpages/AccountTbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import DAOExtraction from './pages/Enrollment/GetSignphoto'
+
+
 export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
@@ -26,7 +31,7 @@ export const App = () => {
 
       <Router>
         <Routes>
-          <Route path="/" element={<Customercreation />} />
+          <Route path="/" element={<DAOExtraction />} />
           <Route path="/rekyc" element={<Rekyc />} />
           <Route path="/login" element={<Login />} />
           {/* <Route path="/dashboard" element={<Dashboard />} /> */}
@@ -40,6 +45,7 @@ export const App = () => {
           <Route path="/varify-account/01" element={<Varificationform />} />
         </Routes>
       </Router>
+      <ToastContainer />
     </div>
   );
 };

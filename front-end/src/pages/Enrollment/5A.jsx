@@ -6,41 +6,47 @@ import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { salutation } from '../../data/data';
+import { salutation, religion, caste, salaryrange } from '../../data/data';
 
 function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
     const [localFormData, setLocalFormData] = useState({
-        maidenPrefixName: '',
-        maidenFirstName: '',
-        maidenMiddleName: '',
-        maidenLastName: '',
-        fatherSpousePrefixName: '',
-        fatherSpouseFirstName: '',
-        fatherSpouseMiddleName: '',
-        fatherSpouseLastName: '',
-        motherPrefixName: '',
-        motherFirstName: '',
-        motherMiddleName: '',
-        motherLastName: '',
-        birthPlaceCity: '',
-        birthPlaceCountry: '',
-        maritalStatus: '',
-        nationality: '',
-        religion: '',
-        caste: '',
-        occupationType: '',
-        businessName: '',
-        salariedWith: '',
-        designation: '',
-        organisationNature: '',
-        educationQualification: '',
-        annualIncome: '',
-        remark: ''
+        maidenPrefixName: formData.maidenPrefixName || '',
+        maidenFirstName: formData.maidenFirstName || '',
+        maidenMiddleName: formData.maidenMiddleName || '',
+        maidenLastName: formData.maidenLastName || '',
+        fatherSpousePrefixName: formData.fatherSpousePrefixName || '',
+        fatherSpouseFirstName: formData.fatherSpouseFirstName || '',
+        fatherSpouseMiddleName: formData.fatherSpouseMiddleName || '',
+        fatherSpouseLastName: formData.fatherSpouseLastName || '',
+        motherPrefixName: formData.motherPrefixName || '',
+        motherFirstName: formData.motherFirstName || '',
+        motherMiddleName: formData.motherMiddleName || '',
+        motherLastName: formData.motherLastName || '',
+        birthPlaceCity: formData.birthPlaceCity || '',
+        birthPlaceCountry: formData.birthPlaceCountry || '',
+        maritalStatus: formData.maritalStatus || '',
+        nationality: formData.nationality || '',
+        religion: formData.religion || '',
+        caste: formData.caste || '',
+        occupationType: formData.occupationType || '',
+        businessName: formData.businessName || '',
+        salariedWith: formData.salariedWith || '',
+        designation: formData.designation || '',
+        organisationNature: formData.organisationNature || '',
+        educationQualification: formData.educationQualification || '',
+        annualIncome: formData.annualIncome || '',
+        remark: formData.remark || ''
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setLocalFormData(prev => ({ ...prev, [name]: value }));
+        const updatedLocalFormData = { ...localFormData, [name]: value };
+
+        setLocalFormData(updatedLocalFormData);
+        updateFormData({
+            ...formData,
+            personalOccupation: updatedLocalFormData
+        });
     };
 
     const submitpd = async () => {
@@ -60,7 +66,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
             }
 
             const payload = {
-                application_id: formData.application_id, // <-- Add this line!
+                application_id: formData.application_id,
                 father_prefix_name: localFormData.fatherSpousePrefixName,
                 father_first_name: localFormData.fatherSpouseFirstName,
                 father_middle_name: localFormData.fatherSpouseMiddleName,
@@ -120,7 +126,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.maidenFirstName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.maidenMiddleName.label}
@@ -128,7 +134,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.maidenMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.maidenLastName.label}
@@ -136,7 +142,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.maidenLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
 
                 {/* Father/Spouse Section */}
@@ -145,7 +151,6 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     label={labels.fatherSpousePrefixName.label}
                     name="fatherSpousePrefixName"
                     onChange={handleChange}
-                    required
                     options={salutation}
                 />
                 <CommanInput
@@ -153,9 +158,8 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     name="fatherSpouseFirstName"
                     value={localFormData.fatherSpouseFirstName}
                     onChange={handleChange}
-                    required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.fatherSpouseMiddleName.label}
@@ -163,7 +167,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.fatherSpouseMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.fatherSpouseLastName.label}
@@ -171,7 +175,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.fatherSpouseLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
 
                 {/* Mother Section */}
@@ -180,7 +184,6 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     name="motherPrefixName"
                     value={localFormData.motherPrefixName}
                     onChange={handleChange}
-                    required
                     options={salutation}
                 />
                 <CommanInput
@@ -188,9 +191,8 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     name="motherFirstName"
                     value={localFormData.motherFirstName}
                     onChange={handleChange}
-                    required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.motherMiddleName.label}
@@ -198,7 +200,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.motherMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.motherLastName.label}
@@ -206,7 +208,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.motherLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
 
                 {/* Birth and Personal Details */}
@@ -217,7 +219,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.birthPlaceCountry.label}
@@ -226,7 +228,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanSelect
                     label={labels.maritalStatus.label}
@@ -245,23 +247,21 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
-                <CommanInput
+                <CommanSelect
                     label={labels.religion.label}
                     name="religion"
                     value={localFormData.religion}
                     onChange={handleChange}
                     required
-                    validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    options={religion}
                 />
-                <CommanInput
+                <CommanSelect
                     label={labels.caste.label}
                     name="caste"
                     value={localFormData.caste}
                     onChange={handleChange}
                     required
-                    validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    options={caste}
                 />
             </div>
 
@@ -273,7 +273,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.occupationType}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.businessName.label}
@@ -281,7 +281,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.businessName}
                     onChange={handleChange}
                     validationType="ALPHANUMERIC_AND_SPACE"
-                    max={50}
+                    max={30}
                 />
                 <CommanInput
                     label={labels.salariedWith.label}
@@ -289,7 +289,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.salariedWith}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.designation.label}
@@ -297,7 +297,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.designation}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={15}
+                    max={10}
                 />
                 <CommanInput
                     label={labels.organisationNature.label}
@@ -305,7 +305,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.organisationNature}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={50}
+                    max={30}
                 />
                 <CommanInput
                     label={labels.educationQualification.label}
@@ -313,15 +313,23 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                     value={localFormData.educationQualification}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={50}
+                    max={30}
                 />
-                <CommanInput
+                {/* <CommanInput
                     label={labels.annualIncome.label}
                     name="annualIncome"
                     value={localFormData.annualIncome}
                     onChange={handleChange}
                     validationType="DECIMAL"
                     max={15}
+                /> */}
+
+                <CommanSelect
+                    label={labels.annualIncome.label}
+                    name="annualIncome"
+                    value={localFormData.annualIncome}
+                    onChange={handleChange}
+                    options={salaryrange}
                 />
                 <CommanInput
                     label={labels.remark.label}
@@ -333,12 +341,12 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                 />
             </div>
 
-            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
-                <CommonButton onClick={onBack} variant="outlined">
-                    Back
+            <div className="next-back-btns " >{/* z-10 */}
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={submitpd} variant="contained">
-                    Save & Continue
+                <CommonButton onClick={submitpd} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
         </div>
@@ -346,6 +354,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
 }
 
 export default PersonalOccupationForm;
+
 // import React, { useState, useEffect } from 'react';
 // import { accountPersonalDetailsService } from '../../services/apiServices';
 // import CommanInput from '../../components/CommanInput';
@@ -355,8 +364,36 @@ export default PersonalOccupationForm;
 // import CommonButton from '../../components/CommonButton';
 // import Swal from 'sweetalert2';
 // import { salutation } from '../../data/data';
+
 // function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
-//     const [localFormData, setLocalFormData] = useState({});
+//     const [localFormData, setLocalFormData] = useState({
+//         maidenPrefixName: '',
+//         maidenFirstName: '',
+//         maidenMiddleName: '',
+//         maidenLastName: '',
+//         fatherSpousePrefixName: '',
+//         fatherSpouseFirstName: '',
+//         fatherSpouseMiddleName: '',
+//         fatherSpouseLastName: '',
+//         motherPrefixName: '',
+//         motherFirstName: '',
+//         motherMiddleName: '',
+//         motherLastName: '',
+//         birthPlaceCity: '',
+//         birthPlaceCountry: '',
+//         maritalStatus: '',
+//         nationality: '',
+//         religion: '',
+//         caste: '',
+//         occupationType: '',
+//         businessName: '',
+//         salariedWith: '',
+//         designation: '',
+//         organisationNature: '',
+//         educationQualification: '',
+//         annualIncome: '',
+//         remark: ''
+//     });
 
 //     const handleChange = (e) => {
 //         const { name, value } = e.target;
@@ -365,9 +402,22 @@ export default PersonalOccupationForm;
 
 //     const submitpd = async () => {
 //         try {
-//             // Prepare the payload from localFormData
+//             // Validate required fields before submission
+//             if (!localFormData.fatherSpousePrefixName ||
+//                 !localFormData.fatherSpouseFirstName ||
+//                 !localFormData.motherPrefixName ||
+//                 !localFormData.motherFirstName ||
+//                 !localFormData.birthPlaceCity ||
+//                 !localFormData.birthPlaceCountry ||
+//                 !localFormData.maritalStatus ||
+//                 !localFormData.nationality ||
+//                 !localFormData.religion ||
+//                 !localFormData.caste) {
+//                 throw new Error('Please fill all required fields');
+//             }
+
 //             const payload = {
-//                 // If application_id is hardcoded in backend, you can omit it here
+//                 application_id: formData.application_id, // <-- Add this line!
 //                 father_prefix_name: localFormData.fatherSpousePrefixName,
 //                 father_first_name: localFormData.fatherSpouseFirstName,
 //                 father_middle_name: localFormData.fatherSpouseMiddleName,
@@ -386,7 +436,7 @@ export default PersonalOccupationForm;
 //                 qualification: localFormData.educationQualification,
 //                 anual_income: localFormData.annualIncome,
 //                 remark: localFormData.remark,
-//                 status: "APPROVED", // or get from form if needed
+//                 status: "APPROVED",
 //             };
 
 //             const response = await accountPersonalDetailsService.create(payload);
@@ -398,21 +448,22 @@ export default PersonalOccupationForm;
 //                 timer: 1500
 //             });
 
-//             // Optionally, call onNext() to go to the next step
 //             if (onNext) onNext();
 
 //         } catch (error) {
 //             Swal.fire({
 //                 icon: 'error',
 //                 title: 'Error',
-//                 text: error?.response?.data?.message || 'Failed to save details'
+//                 text: error?.response?.data?.message || error.message || 'Failed to save details'
 //             });
 //         }
 //     }
+
 //     return (
 //         <div className="max-w-screen-xl mx-auto">
 //             <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+//                 {/* Maiden Name Section */}
 //                 <CommanSelect
 //                     value={localFormData.maidenPrefixName}
 //                     label={labels.maidenPrefixName.label}
@@ -420,10 +471,32 @@ export default PersonalOccupationForm;
 //                     onChange={handleChange}
 //                     options={salutation}
 //                 />
-//                 <CommanInput label={labels.maidenFirstName.label} name="maidenFirstName" value={localFormData.maidenFirstName} onChange={handleChange} />
-//                 <CommanInput label={labels.maidenMiddleName.label} name="maidenMiddleName" value={localFormData.maidenMiddleName} onChange={handleChange} />
-//                 <CommanInput label={labels.maidenLastName.label} name="maidenLastName" value={localFormData.maidenLastName} onChange={handleChange} />
+//                 <CommanInput
+//                     label={labels.maidenFirstName.label}
+//                     name="maidenFirstName"
+//                     value={localFormData.maidenFirstName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.maidenMiddleName.label}
+//                     name="maidenMiddleName"
+//                     value={localFormData.maidenMiddleName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.maidenLastName.label}
+//                     name="maidenLastName"
+//                     value={localFormData.maidenLastName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
 
+//                 {/* Father/Spouse Section */}
 //                 <CommanSelect
 //                     value={localFormData.fatherSpousePrefixName}
 //                     label={labels.fatherSpousePrefixName.label}
@@ -432,40 +505,190 @@ export default PersonalOccupationForm;
 //                     required
 //                     options={salutation}
 //                 />
-//                 <CommanInput label={labels.fatherSpouseFirstName.label} name="fatherSpouseFirstName" value={localFormData.fatherSpouseFirstName} onChange={handleChange} />
-//                 <CommanInput label={labels.fatherSpouseMiddleName.label} name="fatherSpouseMiddleName" value={localFormData.fatherSpouseMiddleName} onChange={handleChange} />
-//                 <CommanInput label={labels.fatherSpouseLastName.label} name="fatherSpouseLastName" value={localFormData.fatherSpouseLastName} onChange={handleChange} />
+//                 <CommanInput
+//                     label={labels.fatherSpouseFirstName.label}
+//                     name="fatherSpouseFirstName"
+//                     value={localFormData.fatherSpouseFirstName}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.fatherSpouseMiddleName.label}
+//                     name="fatherSpouseMiddleName"
+//                     value={localFormData.fatherSpouseMiddleName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.fatherSpouseLastName.label}
+//                     name="fatherSpouseLastName"
+//                     value={localFormData.fatherSpouseLastName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
 
-//                 <CommanSelect label={labels.motherPrefixName.label} name="motherPrefixName" value={localFormData.motherPrefixName} onChange={handleChange}
+//                 {/* Mother Section */}
+//                 <CommanSelect
+//                     label={labels.motherPrefixName.label}
+//                     name="motherPrefixName"
+//                     value={localFormData.motherPrefixName}
+//                     onChange={handleChange}
 //                     required
 //                     options={salutation}
 //                 />
+//                 <CommanInput
+//                     label={labels.motherFirstName.label}
+//                     name="motherFirstName"
+//                     value={localFormData.motherFirstName}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.motherMiddleName.label}
+//                     name="motherMiddleName"
+//                     value={localFormData.motherMiddleName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.motherLastName.label}
+//                     name="motherLastName"
+//                     value={localFormData.motherLastName}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
 
-
-//                 <CommanInput label={labels.motherFirstName.label} name="motherFirstName" value={localFormData.motherFirstName} onChange={handleChange} />
-//                 <CommanInput label={labels.motherMiddleName.label} name="motherMiddleName" value={localFormData.motherMiddleName} onChange={handleChange} />
-//                 <CommanInput label={labels.motherLastName.label} name="motherLastName" value={localFormData.motherLastName} onChange={handleChange} />
-
-//                 <CommanInput label={labels.birthPlaceCity.label} name="birthPlaceCity" value={localFormData.birthPlaceCity} onChange={handleChange} required />
-//                 <CommanInput label={labels.birthPlaceCountry.label} name="birthPlaceCountry" value={localFormData.birthPlaceCountry} onChange={handleChange} required />
-//                 <CommanSelect label={labels.maritalStatus.label} name="maritalStatus" value={localFormData.maritalStatus} onChange={handleChange} required options={maritalStatusOptions} />
-//                 <CommanInput label={labels.nationality.label} name="nationality" value={localFormData.nationality} onChange={handleChange} required />
-//                 <CommanInput label={labels.religion.label} name="religion" value={localFormData.religion} onChange={handleChange} required />
-//                 <CommanInput label={labels.caste.label} name="caste" value={localFormData.caste} onChange={handleChange} required />
+//                 {/* Birth and Personal Details */}
+//                 <CommanInput
+//                     label={labels.birthPlaceCity.label}
+//                     name="birthPlaceCity"
+//                     value={localFormData.birthPlaceCity}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.birthPlaceCountry.label}
+//                     name="birthPlaceCountry"
+//                     value={localFormData.birthPlaceCountry}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanSelect
+//                     label={labels.maritalStatus.label}
+//                     name="maritalStatus"
+//                     value={localFormData.maritalStatus}
+//                     onChange={handleChange}
+//                     required
+//                     options={maritalStatusOptions}
+//                 />
+//                 <CommanInput
+//                     label={labels.nationality.label}
+//                     name="nationality"
+//                     value={localFormData.nationality}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={10}
+//                 />
+//                 <CommanInput
+//                     label={labels.religion.label}
+//                     name="religion"
+//                     value={localFormData.religion}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={10}
+//                 />
+//                 <CommanInput
+//                     label={labels.caste.label}
+//                     name="caste"
+//                     value={localFormData.caste}
+//                     onChange={handleChange}
+//                     required
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={10}
+//                 />
 //             </div>
 
 //             <h2 className="text-2xl font-bold mt-8 mb-4">Occupation Details</h2>
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
-//                 <CommanInput label={labels.occupationType.label} name="occupationType" value={localFormData.occupationType} onChange={handleChange} />
-//                 <CommanInput label={labels.businessName.label} name="businessName" value={localFormData.businessName} onChange={handleChange} />
-//                 <CommanInput label={labels.salariedWith.label} name="salariedWith" value={localFormData.salariedWith} onChange={handleChange} />
-//                 <CommanInput label={labels.designation.label} name="designation" value={localFormData.designation} onChange={handleChange} />
-//                 <CommanInput label={labels.organisationNature.label} name="organisationNature" value={localFormData.organisationNature} onChange={handleChange} />
-//                 <CommanInput label={labels.educationQualification.label} name="educationQualification" value={localFormData.educationQualification} onChange={handleChange} />
-//                 <CommanInput label={labels.annualIncome.label} name="annualIncome" value={localFormData.annualIncome} onChange={handleChange} />
-//                 <CommanInput label={labels.remark.label} name="remark" value={localFormData.remark} onChange={handleChange} />
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+//                 <CommanInput
+//                     label={labels.occupationType.label}
+//                     name="occupationType"
+//                     value={localFormData.occupationType}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.businessName.label}
+//                     name="businessName"
+//                     value={localFormData.businessName}
+//                     onChange={handleChange}
+//                     validationType="ALPHANUMERIC_AND_SPACE"
+//                     max={30}
+//                 />
+//                 <CommanInput
+//                     label={labels.salariedWith.label}
+//                     name="salariedWith"
+//                     value={localFormData.salariedWith}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.designation.label}
+//                     name="designation"
+//                     value={localFormData.designation}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.organisationNature.label}
+//                     name="organisationNature"
+//                     value={localFormData.organisationNature}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={30}
+//                 />
+//                 <CommanInput
+//                     label={labels.educationQualification.label}
+//                     name="educationQualification"
+//                     value={localFormData.educationQualification}
+//                     onChange={handleChange}
+//                     validationType="ALPHABETS_AND_SPACE"
+//                     max={30}
+//                 />
+//                 <CommanInput
+//                     label={labels.annualIncome.label}
+//                     name="annualIncome"
+//                     value={localFormData.annualIncome}
+//                     onChange={handleChange}
+//                     validationType="DECIMAL"
+//                     max={15}
+//                 />
+//                 <CommanInput
+//                     label={labels.remark.label}
+//                     name="remark"
+//                     value={localFormData.remark}
+//                     onChange={handleChange}
+//                     validationType="EVERYTHING"
+//                     max={200}
+//                 />
 //             </div>
-
 
 //             <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
 //                 <CommonButton onClick={onBack} variant="outlined">
@@ -475,8 +698,7 @@ export default PersonalOccupationForm;
 //                     Save & Continue
 //                 </CommonButton>
 //             </div>
-//         </div >
+//         </div>
 //     );
 // }
 
-// export default PersonalOccupationForm;

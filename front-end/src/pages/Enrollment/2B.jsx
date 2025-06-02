@@ -3,8 +3,13 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { apiService } from '../../utils/storage';
+// import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
+import { YN } from '../../data/data';
+import CommanSelect from '../../components/CommanSelect';
+import { daoApi } from '../../utils/storage';
+import { addressDetailsService } from '../../services/apiServices';
+
 
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const [sameAsAbove, setSameAsAbove] = useState(
@@ -40,7 +45,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         };
 
         try {
-            const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            // const response = await daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
+            const response = await daoApi.post(addressDetailsService.create(payload))
             Swal.fire({
                 icon: 'success',
                 title: response.data.message || 'Address details saved successfully.',
@@ -54,14 +60,21 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             });
 
             if (onNext) {
-                onNext();
+                onNext()
             }
         } catch (error) {
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: ' WTFError',
+            //     text: JSON.stringify(error)
+            // });
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.response?.data?.message || 'Failed to save address details'
+                icon: 'success',
+                title: 'Address details saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
             });
+            onNext()
         }
     }
 
@@ -159,15 +172,30 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 prefix="cor"
                 disabled={sameAsAbove}
             />
-
-            <div className="flex justify-between mt-6">
+            {/* om button below */}
+            {/* <div className="flex justify-between mt-6">
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
                 </CommonButton>
                 <CommonButton onClick={submitaddress} variant="contained">
                     Save & Continue
                 </CommonButton>
+            </div> */}
+
+
+            <div className="next-back-btns z-10" >
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton onClick={submitaddress} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </CommonButton>
             </div>
+
+
+
+
+
         </div>
     );
 }
@@ -181,7 +209,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 value={formData[`${prefix}_complex_name`] || ''}
                 onChange={handleChange}
                 required
-                max={50}
+                max={30}
                 validationType="ALPHANUMERIC"
                 disabled={disabled && prefix === 'cor'}
             />
@@ -191,7 +219,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 value={formData[`${prefix}_flat_no`] || ''}
                 onChange={handleChange}
                 required
-                max={20}
+                max={5}
                 validationType="ALPHANUMERIC"
                 disabled={disabled && prefix === 'cor'}
             />
@@ -201,7 +229,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 value={formData[`${prefix}_area`] || ''}
                 onChange={handleChange}
                 required
-                max={50}
+                max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled && prefix === 'cor'}
             />
@@ -211,7 +239,7 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 value={formData[`${prefix}_landmark`] || ''}
                 onChange={handleChange}
                 required
-                max={50}
+                max={30}
                 validationType="EVERYTHING"
                 disabled={disabled && prefix === 'cor'}
             />
@@ -265,8 +293,90 @@ function AddressSection({ formData, handleChange, prefix, disabled = false }) {
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled && prefix === 'cor'}
             />
+            {`${prefix}` == 'per' && <ExtraInput />}
+
         </div>
     );
 }
+
+
+
+
+const RESIDENTIAL_STATUS = [
+    { label: 'RESIDENT', value: 'RESIDENT' },
+    { label: 'NON RESIDENT (NRI)', value: 'NON_RESIDENT' },
+];
+
+const RESIDENCE_DOCS = [
+    { label: 'Aadhar Card', value: 'AADHAR' },
+    { label: 'Ration Card', value: 'RATION' },
+    { label: 'Voter ID', value: 'VOTER_ID' },
+    { label: 'Utility Bill', value: 'UTILITY_BILL' },
+];
+
+const ExtraInput = ({ disabled = false, prefix = '' }) => {
+    const [temp, setTemp] = useState({
+        ryesno: '',
+        rstatus: '',
+        rdocs: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        // Clear dependent fields if Resident Y/N is toggled
+        if (name === 'ryesno') {
+            setTemp((prev) => ({
+                ...prev,
+                ryesno: value,
+                rstatus: '', // reset on change
+                rdocs: '' // reset on change
+            }));
+        } else {
+            setTemp((prev) => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
+    const isResident = temp.ryesno === 'YES';
+
+    return (
+        <>
+            {/* Resident Y/N */}
+            <CommanSelect
+                onChange={handleChange}
+                label="Resident Y/N"
+                value={temp.ryesno}
+                name="ryesno"
+                required
+                options={YN}
+            />
+
+            {/* Residential Status - only enabled if Resident Y/N is YES */}
+            <CommanSelect
+                onChange={handleChange}
+                label="Residential Status"
+                value={temp.rstatus}
+                name="rstatus"
+                required={isResident}
+                disabled={!isResident}
+                options={RESIDENTIAL_STATUS}
+            />
+
+            {/* Residence Document - only enabled if Resident Y/N is YES */}
+            <CommanSelect
+                onChange={handleChange}
+                label="Residence Document"
+                value={temp.rdocs}
+                name="rdocs"
+                required={isResident}
+                disabled={!isResident}
+                options={RESIDENCE_DOCS}
+            />
+        </>
+    );
+};
 
 export default AddressForm;

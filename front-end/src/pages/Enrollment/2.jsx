@@ -10,18 +10,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
 
     // Restore application_id if missing
-    useEffect(() => {
-        console.log('Step 2: formData.application_id =', formData.application_id); // <-- Debug log
-        if (!formData.application_id) {
-            const storedId = localStorage.getItem('application_id');
-            if (storedId) {
-                updateFormData({ ...formData, application_id: storedId });
-            } else {
-                alert('No application found. Please start a new application.');
-                if (onBack) onBack();
-            }
-        }
-    }, []);
+    // useEffect(() => {
+    //     console.log('Step 2: formData.application_id =', formData.application_id); // <-- Debug log
+    //     if (!formData.application_id) {
+    //         const storedId = localStorage.getItem('application_id');
+    //         if (storedId) {
+    //             updateFormData({ ...formData, application_id: storedId });
+    //         } else {
+    //             alert('No application found. Please start a new application.');
+    //             if (onBack) onBack();
+    //         }
+    //     }
+    // }, []);
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -117,42 +117,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         }
     };
 
-    const handleAddressSubmit = async () => {
-        try {
-            const ad = formData.addressDetails || formData; // adjust as per your state shape
-            const payload = {
-
-                // application_id: "APP202505220001",
-                // per_complex_name: "Green Valley Residency",
-                // per_flat_no: "B-204",
-                // per_area: "Andheri East",
-                // per_landmark: "Near Metro Station",
-                // per_country: "India",
-                // per_pincode: "400069",
-                // per_city: "Mumbai",
-                // per_district: "Mumbai Suburban",
-                // per_state: "Maharashtra",
-                // cor_complex: "Skyline Heights",
-                // cor_flat_no: "D-501",
-                // cor_area: "Powai",
-                // cor_landmark: "Opposite Hiranandani Hospital",
-                // cor_country: "India",
-                // cor_pincode: "400076",
-                // cor_city: "Mumbai",
-                // cor_district: "Mumbai Suburban",
-                // cor_state: "Maharashtra",
-
-
-                status: null, // or as needed
-            };
-
-            // const response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);
-            // alert(response.data.message || 'Address details saved successfully.');
-            handleNext();
-        } catch (err) {
-            alert('Failed to save address details');
-        }
-    };
 
     const CurrentStepComponent = steps[activeStep].component;
 
@@ -205,9 +169,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     onClick={
                         activeStep === 0
                             ? handleSubmit // Personal Details
-                            : activeStep === 1
-                                ? handleAddressSubmit // Address Details
-                                : onNext // Photo step
+                            : onNext // Photo step
                     }
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >

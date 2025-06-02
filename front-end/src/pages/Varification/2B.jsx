@@ -1,226 +1,292 @@
+import labels from '../../components/labels';
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
-import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
 
-function AddressSection({ formData, handleChange }) {
-    return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
-            <CommanInput
-                label={labels.complexname.label}
-                name="complexname"
-                value={formData.complexname}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.roomno.label}
-                name="flatnoroomno"
-                value={formData.flatnoroomno}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.area.label}
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.landmark.label}
-                name="landmark"
-                value={formData.landmark}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.country.label}
-                name="country"
-                value={formData.country}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.pincode.label}
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.city.label}
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.district.label}
-                name="district"
-                value={formData.district}
-                onChange={handleChange}
-                required
-            />
-            <CommanInput
-                label={labels.state.label}
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                required
-            />
-        </div>
-    );
-}
-
-function AddressForm({ formData, updateFormData, onNext, onBack }) {
-    const [sameAsAbove, setSameAsAbove] = useState(
-        formData.correspondenceAddressSame || false
-    );
-
-    const [localFormData, setLocalFormData] = useState({
-        permanentAddress: {
-            ...formData.permanentAddress,
-            complexname: formData.permanentAddress?.complexName || '',
-            flatnoroomno: formData.permanentAddress?.flatNo || '',
-            // Map other fields as needed
-        },
-        correspondenceAddress: {
-            ...formData.correspondenceAddress,
-            complexname: formData.correspondenceAddress?.complexName || '',
-            flatnoroomno: formData.correspondenceAddress?.flatNo || '',
-            // Map other fields as needed
-        }
+const AddressInputs = () => {
+    const [formData, setFormData] = useState({
+        application_id: '',
+        // Permanent Address
+        per_complex_name: '',
+        per_flat_no: '',
+        per_area: '',
+        per_landmark: '',
+        per_country: '',
+        per_pincode: '',
+        per_city: '',
+        per_district: '',
+        per_state: '',
+        // Correspondence Address
+        cor_complex: '',
+        cor_flat_no: '',
+        cor_area: '',
+        cor_landmark: '',
+        cor_country: '',
+        cor_pincode: '',
+        cor_city: '',
+        cor_district: '',
+        cor_state: '',
+        status: 'APPROVED'
     });
 
-    const handlePermanentChange = (e) => {
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
-        setLocalFormData(prev => {
-            const updated = {
-                ...prev,
-                permanentAddress: {
-                    ...prev.permanentAddress,
-                    [name]: value
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Add your validation and submission logic here
+        console.log('Form submitted:', formData);
+    };
+
+    return (
+        <div className="max-w-screen-xl mx-auto ">
+
+            <form  >
+                {/* Application ID */}
+
+
+                {/* Permanent Address Section */}
+                <div className=" pb-3">
+                    <h2 className="text-xl font-bold mb-4">Permanent Address</h2>
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
+                        <CommanInput
+                            label="Complex Name"
+                            name="per_complex_name"
+                            value={formData.per_complex_name}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_complex_name}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Flat/Building No"
+                            name="per_flat_no"
+                            value={formData.per_flat_no}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_flat_no}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Area"
+                            name="per_area"
+                            value={formData.per_area}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_area}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Landmark"
+                            name="per_landmark"
+                            value={formData.per_landmark}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_landmark}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Country"
+                            name="per_country"
+                            value={formData.per_country}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_country}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Pincode"
+                            name="per_pincode"
+                            value={formData.per_pincode}
+                            onChange={handleChange}
+                            max={191}
+                            validationType="NUMBER_ONLY"
+                            error={errors.per_pincode}
+                            readOnly={true} />
+                        <CommanInput
+                            label="City"
+                            name="per_city"
+                            value={formData.per_city}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_city}
+                            readOnly={true} />
+                        <CommanInput
+                            label="District"
+                            name="per_district"
+                            value={formData.per_district}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_district}
+                            readOnly={true} />
+                        <CommanInput
+                            label="State"
+                            name="per_state"
+                            value={formData.per_state}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.per_state}
+                            readOnly={true} />
+                    </div>
+                </div>
+
+                {/* Correspondence Address Section */}
+                <div className="  pb-2">
+                    <h2 className="text-xl font-bold mb-4">Correspondence Address</h2>
+                    <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
+                        <CommanInput
+                            label="Complex Name"
+                            name="cor_complex"
+                            value={formData.cor_complex}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_complex}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Flat/Building No"
+                            name="cor_flat_no"
+                            value={formData.cor_flat_no}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_flat_no}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Area"
+                            name="cor_area"
+                            value={formData.cor_area}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_area}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Landmark"
+                            name="cor_landmark"
+                            value={formData.cor_landmark}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_landmark}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Country"
+                            name="cor_country"
+                            value={formData.cor_country}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_country}
+                            readOnly={true} />
+                        <CommanInput
+                            label="Pincode"
+                            name="cor_pincode"
+                            value={formData.cor_pincode}
+                            onChange={handleChange}
+                            max={191}
+                            validationType="NUMBER_ONLY"
+                            error={errors.cor_pincode}
+                            readOnly={true} />
+                        <CommanInput
+                            label="City"
+                            name="cor_city"
+                            value={formData.cor_city}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_city}
+                            readOnly={true} />
+                        <CommanInput
+                            label="District"
+                            name="cor_district"
+                            value={formData.cor_district}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_district}
+                            readOnly={true} />
+                        <CommanInput
+                            label="State"
+                            name="cor_state"
+                            value={formData.cor_state}
+                            onChange={handleChange}
+                            max={191}
+                            error={errors.cor_state}
+                            readOnly={true} />
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    );
+};
+
+
+
+
+
+
+
+
+
+function AddressForm({ formData, updateFormData, onNext, onBack }) {
+
+
+    const handleRejectClick = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Please provide a reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
                 }
-            };
-
-            if (sameAsAbove) {
-                updated.correspondenceAddress = { ...updated.permanentAddress };
-            }
-            return updated;
-        });
-    };
-
-    const handleCorrespondenceChange = (e) => {
-        const { name, value } = e.target;
-        setLocalFormData(prev => ({
-            ...prev,
-            correspondenceAddress: {
-                ...prev.correspondenceAddress,
-                [name]: value
-            }
-        }));
-    };
-
-    const handleSameAsAboveToggle = () => {
-        const newValue = !sameAsAbove;
-        setSameAsAbove(newValue);
-
-        setLocalFormData(prev => ({
-            ...prev,
-            correspondenceAddress: newValue
-                ? { ...prev.permanentAddress }
-                : prev.correspondenceAddress
-        }));
-    };
-
-    const handleClearCorrespondence = () => {
-        setLocalFormData(prev => ({
-            ...prev,
-            correspondenceAddress: {
-                complexname: '',
-                flatnoroomno: '',
-                area: '',
-                landmark: '',
-                country: '',
-                pincode: '',
-                city: '',
-                district: '',
-                state: '',
-            }
-        }));
-        setSameAsAbove(false);
-    };
-
-    const handleSubmit = () => {
-        updateFormData({
-            permanentAddress: {
-                complexName: localFormData.permanentAddress.complexname,
-                flatNo: localFormData.permanentAddress.flatnoroomno,
-                area: localFormData.permanentAddress.area,
-                landmark: localFormData.permanentAddress.landmark,
-                country: localFormData.permanentAddress.country,
-                pincode: localFormData.permanentAddress.pincode,
-                city: localFormData.permanentAddress.city,
-                district: localFormData.permanentAddress.district,
-                state: localFormData.permanentAddress.state
             },
-            correspondenceAddressSame: sameAsAbove,
-            correspondenceAddress: {
-                complexName: localFormData.correspondenceAddress.complexname,
-                flatNo: localFormData.correspondenceAddress.flatnoroomno,
-                area: localFormData.correspondenceAddress.area,
-                landmark: localFormData.correspondenceAddress.landmark,
-                country: localFormData.correspondenceAddress.country,
-                pincode: localFormData.correspondenceAddress.pincode,
-                city: localFormData.correspondenceAddress.city,
-                district: localFormData.correspondenceAddress.district,
-                state: localFormData.correspondenceAddress.state
-            }
         });
-        onNext();
+
+        if (result.isConfirmed && result.value) {
+            onNext(); // Called when user confirms with valid input
+        } else if (result.isDismissed) {
+            // onReject?.(); // Called when user cancels or dismisses the alert
+        }
     };
+
+    const handleNextStep = () => { onNext(); };
+
 
     return (
         <div className="address-form">
-            <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
-            <AddressSection
-                formData={localFormData.permanentAddress}
-                handleChange={handlePermanentChange}
-            />
 
-            <div className="flex items-center mt-6 mb-2">
-                <input
-                    type="checkbox"
-                    checked={sameAsAbove}
-                    onChange={handleSameAsAboveToggle}
-                    className="mr-2"
-                />
-                <label className="font-semibold">Same As Above</label>
+            <AddressInputs />
 
-                <CommonButton
-                    onClick={handleClearCorrespondence}
-                    className="ml-auto text-green-600 font-medium flex items-center"
-                >
-                    <i className="bi bi-arrow-clockwise mr-1"></i> Clear
-                </CommonButton>
-            </div>
-
-            <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>
-            <AddressSection
-                formData={localFormData.correspondenceAddress}
-                handleChange={handleCorrespondenceChange}
-            />
-
-            <div className="next-back-btns z-10">
+            {/* <div className="next-back-btns z-10">
                 <CommonButton className="btn-back border-0" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    Reject & Continue
                 </CommonButton>
                 <CommonButton
                     className="btn-next border-0"
                     onClick={handleSubmit}
                 >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Accept & Continue
+                </CommonButton>
+            </div> */}
+            <div className="next-back-btns z-10">
+                <CommonButton
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                    onClick={handleRejectClick}
+                >
+                    Reject & Continue
+                </CommonButton>
+
+
+                <CommonButton
+                    className="btn-next "
+                    onClick={handleNextStep}
+                >
+                    Accept & Continue
                 </CommonButton>
             </div>
         </div>

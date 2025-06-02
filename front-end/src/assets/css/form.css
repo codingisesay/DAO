@@ -444,3 +444,11 @@ tr:hover {
     right: 0;
     bottom: 0;
 }
+
+.document-upload-container table .bi {
+    color: red
+}
+
+.document-upload-container .bi {
+    color: #00A86B;
+}

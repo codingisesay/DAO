@@ -48,7 +48,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="firstName"
                     value={localFormData.firstName}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.middlename.label}
@@ -56,7 +56,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="middleName"
                     value={localFormData.middleName}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.lastname.label}
@@ -64,7 +64,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="lastName"
                     value={localFormData.lastName}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.dob.label}
@@ -72,7 +72,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="dob"
                     value={localFormData.dob}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.gender.label}
@@ -80,7 +80,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="gender"
                     value={localFormData.gender}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.mobile.label}
@@ -88,7 +88,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="mobile"
                     value={localFormData.mobile}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.complexname.label}
@@ -96,7 +96,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="complexName"
                     value={localFormData.complexName}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label='Flat no/Room no'
@@ -104,7 +104,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="flatNoRoomNo"
                     value={localFormData.flatNoRoomNo}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.area.label}
@@ -112,7 +112,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="area"
                     value={localFormData.area}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.landmark.label}
@@ -120,7 +120,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="landmark"
                     value={localFormData.landmark}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.country.label}
@@ -128,7 +128,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="country"
                     value={localFormData.country}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.pincode.label}
@@ -136,7 +136,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="pincode"
                     value={localFormData.pincode}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.city.label}
@@ -144,7 +144,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="city"
                     value={localFormData.city}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.district.label}
@@ -152,7 +152,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="district"
                     value={localFormData.district}
                     required
-                />
+                    readOnly={true} />
                 <CommanInput
                     onChange={handleChange}
                     label={labels.state.label}
@@ -160,7 +160,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     name="state"
                     value={localFormData.state}
                     required
-                />
+                    readOnly={true} />
             </div>
 
 

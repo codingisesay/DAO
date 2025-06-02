@@ -90,6 +90,10 @@ export const VALIDATION_PATTERNS = {
         pattern: /^(?:[0-9]|[12][0-9]|3[01])$/,
         message: "Day should be between 0 to 31",
     },
+    DRIVINGLICENCE: {
+        pattern: /^[A-Z]{2}\d{2}\s\d{11}$/,
+        message: "e.g., 'RJ19 20190012345'",
+    },
     // All: {
     //   pattern: '/.*/',
     //   // message:""

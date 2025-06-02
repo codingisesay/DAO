@@ -1,6 +1,7 @@
 export const API_ENDPOINTS = {
-  // BASE_URL: "http://172.16.1.224:8090",
-  BASE_URL: "http://127.0.0.1:8000/api",
+  // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
+  BASE_URL_LOGIN: "http://127.0.0.1:8000", // For login only
+  BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -13,37 +14,36 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    AGENTENROLL: '/agent/enrollment'
+    AGENTENROLL: '/api/agent/enrollment'
   },
 
   PERSONAL_DETAILS: {
-    CREATE: '/agent/personal-details',
-    // UPDATE: (id) => `/agent/personal-details/${id}` // if you want update
+    CREATE: '/api/agent/personal-details',
   },
 
   ADDRESS_DETAILS: {
-    CREATE: '/agent/address-details',
+    CREATE: '/api/agent/address-details',
     // ...
   },
 
   LIVE_PHOTO: {
-    CREATE: '/agent/live-photo',
+    CREATE: '/api/agent/live-photo',
   },
 
   APPLICATION_DOCUMENT: {
-    CREATE: '/agent/application-document',
+    CREATE: '/api/agent/application-document',
   },
 
   ACCOUNT_PERSONAL_DETAILS: {
-    CREATE: '/agent/account-personal-details',
+    CREATE: '/api/agent/account-personal-details',
   },
 
   ACCOUNT_NOMINEE: {
-    CREATE: '/agent/account-nominee',
+    CREATE: '/api/agent/account-nominee',
   },
 
   SERVICE_TO_CUSTOMER: {
-    CREATE: '/agent/service-to-customer',
+    CREATE: '/api/agent/service-to-customer',
   },
 
   ADMIN: {
@@ -70,7 +70,7 @@ export const API_ENDPOINTS = {
   },
 
 
-  //users
+  //users required handeled as agent registeration
   USER: {
     CREATE: "/auth/users",
     GET_ALL: (id, id1) => `/auth/users?page=${id}&size=${id1}`,
