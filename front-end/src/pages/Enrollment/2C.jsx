@@ -1,49 +1,53 @@
+
+
 import React, { useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
 // import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2'
+// import { apiService } from '../../utils/storage';
+import { livePhotoService } from '../../services/apiServices';
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
 
 
     const submitaddress = async (localFormData) => {
-        onNext();
-        // const payload = {
-        //     application_id: 43,
-        //     longitude: JSON.stringify(localFormData.metadata.location.longitude),
-        //     latitude: JSON.stringify(localFormData.metadata.location.latitude),
-        //     photo: localFormData.file,
-        //     // ...localFormData,
-        //     // status: formData.status,
-        // };
-        // console.log('ready photodata to send : ', payload.photo)
+        const payload = {
+            application_id: 43,
+            longitude: JSON.stringify(localFormData.metadata.location.longitude),
+            latitude: JSON.stringify(localFormData.metadata.location.latitude),
+            photo: localFormData.file,
+            ...localFormData,
+            status: formData.status,
+        };
+        console.log('ready photodata to send : ', payload)
 
-        // try {
-        //     const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: response.data.message || 'Address details saved successfully.',
-        //         showConfirmButton: false,
-        //         timer: 1500
-        //     });
+        try {
+            const response = await apiService.post(livePhotoService.upload(payload));
+            // const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Address details saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
 
-        //     updateFormData({
-        //         ...localFormData,
-        //         correspondenceAddressSame: sameAsAbove
-        //     });
+            updateFormData({
+                ...localFormData,
+                correspondenceAddressSame: sameAsAbove
+            });
 
-        //     if (onNext) {
-        //         onNext();
-        //     }
-        // } catch (error) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Error',
-        //         text: error.response?.data?.message || 'Failed to save address details'
-        //     });
-        // }
+            if (onNext) {
+                onNext();
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: JSON.stringify(error)
+            });
+        }
     }
 
 
@@ -55,7 +59,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
             />
 
 
-            {/* om integration button
+            {/* om integration button/ */}
             <div className="flex justify-between mt-6">
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
@@ -63,10 +67,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 <CommonButton onClick={() => submitaddress(localFormData)} variant="contained">
                     Save & Continue
                 </CommonButton>
-            </div> */}
-            {/* ankita test buttons
-            
-            <div className="text-center">
+            </div>
+
+            {/* <div className="text-center">
                 <button
                     onClick={() => {
                         const customerPhoto = localStorage.getItem('customerPhoto');
@@ -76,9 +79,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg"
                 >
                     Submit All Photos
-                </button>
-            </div> */}
-        </div>
+                </button></div> */}
+
+        </div >
     );
 };
 

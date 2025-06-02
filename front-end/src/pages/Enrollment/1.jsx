@@ -9,9 +9,10 @@ import Swal from 'sweetalert2';
 import { agentService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
 import { form } from 'framer-motion/client';
+
 function P1({ onNext, onBack, formData, updateFormData }) {
-    const [selectedOption, setSelectedOption] = useState(formData.auth_type || '');
-    const [selectedType, setSelectedType] = useState('new');
+    const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
+    const [selectedType, setSelectedType] = useState(formData.auth_type || 'new');
     const [showData, setShowData] = useState(!!formData.auth_code);
 
     const [localFormData, setLocalFormData] = useState({
@@ -20,7 +21,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         last_name: formData.last_name || '',
         auth_type: formData.auth_type || '',
         auth_code: formData.auth_code || '',
-        first_name: formData.first_name || '',
         DOB: formData.DOB || '',
         gender: formData.gender || '',
         mobile: formData.mobile || '',
@@ -42,19 +42,24 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     };
 
     const handleRadioChange = (e) => {
-        setSelectedOption(e.target.value);
+        const value = e.target.value;
+        setSelectedOption(value);
         setShowData(false);
+        // Clear verification number when changing option
+        setLocalFormData(prev => ({ ...prev, verifynumber: '' }));
     };
+
     const validateAadhaar = (aadhaarNumber) => {
         const aadhaarRegex = /^[0-9]{12}$/;
         return aadhaarRegex.test(aadhaarNumber);
     };
+
     const validatePAN = (panNumber) => {
         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
         return panRegex.test(panNumber);
     };
-    const fetchShowData = (e) => {
 
+    const fetchShowData = (e) => {
         e.preventDefault();
         if (selectedOption === 'Aadhar Card') {
             if (validateAadhaar(localFormData.verifynumber)) {
@@ -66,7 +71,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 });
                 setShowData(true);
                 setLocalFormData({ ...localFormData, ...userdummydata.aadhardetails });
-                // console.log(localFormData)
             } else {
                 toast.error('Please enter a valid 12-digit Aadhaar number');
             }
@@ -83,7 +87,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
             }
         } else if (selectedOption === 'DigiLocker') {
-            // Handle DigiLocker verification logic here
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
@@ -91,29 +94,27 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 showConfirmButton: false,
                 timer: 1500
             });
-            console.log("DigiLocker verification logic");
-            setShowData(true); // Assuming DigiLocker verification is successful
+            setShowData(true);
         }
     };
 
     const handleNextStep = async (e) => {
         e.preventDefault();
-        // update central from / in varibles
-        updateFormData(1, {
+        // Update form data with current state
+        const updatedData = {
             ...localFormData,
-            ...formData,
             auth_type: selectedType,
             verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
+            auth_code: localFormData.verifynumber,
+        };
 
-        });
+        updateFormData(1, updatedData);
 
-        // integration to send data below
         const payload = {
             auth_type: selectedOption,
             auth_code: localFormData.verifynumber,
             first_name: localFormData.first_name,
-            auth_status: "Pending", // or get from form if needed
+            auth_status: "Pending",
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
@@ -129,14 +130,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             district: localFormData.district,
             state: localFormData.state,
         };
-        var response;
+
         try {
-            console.log(payload)
-            response = await agentService.agentEnroll(payload);
-            console.log('heey its respone : ', response)
+            const response = await agentService.agentEnroll(payload);
             if (response && JSON.stringify(response).includes('201')) {
                 updateFormData(1, {
-                    ...formData,
+                    ...updatedData,
                     application_no: response.data.application_no,
                     application_id: response.data.application_id,
                 });
@@ -152,22 +151,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 onNext();
             }
         } catch (error) {
-            console.log(response)
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Error!',
-            //     text: JSON.stringify(error),
-            // });
             Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Your data has been saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
+                icon: 'error',
+                title: 'Error!',
+                text: JSON.stringify(error),
             });
-            onNext();
         }
-
     };
 
     return (
@@ -191,7 +180,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <span className="font-medium">New Customer</span>
                                 </div>
                             </label>
-
                         </div>
 
                         {selectedType && (
@@ -279,7 +267,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     maxLength={10}
                                                     validationType="PAN"
                                                     onInput={(e) => {
-                                                        // Auto-uppercase the input
                                                         e.target.value = e.target.value.toUpperCase();
                                                     }}
                                                 />
@@ -302,7 +289,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <CommonButton
                                             className="btn-login px-6"
                                             onClick={() => {
-                                                // Add your DigiLocker linking logic here
                                                 console.log("Link via DigiLocker clicked");
                                             }}
                                         >
@@ -353,7 +339,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 max={50}
                                 validationType="TEXT_ONLY" disabled={true}
                             />
-                            {/* Date of Birth - Using DATE validation */}
+
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}
@@ -364,7 +350,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="DATE" disabled={true}
                             />
 
-                            {/* Gender - Text with 20 char limit */}
                             <CommanSelect
                                 onChange={handleChange}
                                 label={labels.gender.label}
@@ -374,7 +359,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 options={gender} disabled={true}
                             />
 
-                            {/* Mobile - Using PHONE validation with 15 digit limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.mobile.label}
@@ -386,7 +370,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="PHONE" disabled={true}
                             />
 
-                            {/* Complex Name - Text with 50 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.complexname.label}
@@ -398,7 +381,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHANUMERIC" disabled={true}
                             />
 
-                            {/* Flat/Room No - Alphanumeric with 20 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.roomno.label}
@@ -410,7 +392,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHANUMERIC" disabled={true}
                             />
 
-                            {/* Area - Text with 50 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.area.label}
@@ -422,7 +403,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
-                            {/* Landmark - Text with 50 char limit (more flexible) */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.landmark.label}
@@ -434,7 +414,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="EVERYTHING" disabled={true}
                             />
 
-                            {/* Country - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.country.label}
@@ -446,7 +425,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
-                            {/* Pincode - Numbers only with standard 6-10 digit limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.pincode.label}
@@ -458,7 +436,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="NUMBER_ONLY" disabled={true}
                             />
 
-                            {/* City - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.city.label}
@@ -470,7 +447,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
-                            {/* District - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.district.label}
@@ -482,7 +458,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
 
-                            {/* State - Text with 30 char limit */}
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.state.label}
@@ -494,22 +469,22 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
                         </div>
+
+                        <div className="next-back-btns">
+
+
+                            <CommonButton
+                                className="btn-next"
+                                onClick={handleNextStep}
+                                disabled={!showData}
+                            >
+                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                            </CommonButton>
+                        </div>
                     </>
                 )}
             </div>
 
-            <div className="next-back-btns">
-                <CommonButton className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-
-                <CommonButton
-                    className="btn-next"
-                    onClick={handleNextStep}
-                >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                </CommonButton>
-            </div>
         </>
     );
 }

@@ -1,10 +1,13 @@
 
 import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
+import CommanSelect from '../../components/CommanSelect';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { salutation, } from '../../data/data';
 import Swal from 'sweetalert2';
+
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
     const [selectedType, setSelectedType] = useState(formData.applicationType || '');
@@ -45,13 +48,14 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         }
     };
     const handleRejectClick = async () => {
-        const { value: reason } = await Swal.fire({
+        const result = await Swal.fire({
             title: 'Reason for Rejection',
             input: 'text',
             inputLabel: 'Please provide a reason',
             inputPlaceholder: 'Enter reason here...',
             showCancelButton: true,
             confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
             className: 'btn-login',
             inputValidator: (value) => {
                 if (!value) {
@@ -60,162 +64,38 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             },
         });
 
-        if (reason) {
-            onNext(reason); // Call your onNext function with the reason
+        if (result.isConfirmed && result.value) {
+            onNext(); // Called when user confirms with valid input
+        } else if (result.isDismissed) {
+            // onReject?.(); // Called when user cancels or dismisses the alert
         }
     };
-    const handleNextStep = () => {
-        // Update the central form data before proceeding
-        updateFormData(1, {
-            applicationType: selectedType,
-            verificationOption: selectedOption,
-            verificationNumber: localFormData.verifynumber,
-            personalDetails: {
-                firstName: localFormData.firstname,
-                middleName: localFormData.middlename,
-                lastName: localFormData.lastname,
-                dob: localFormData.dob,
-                gender: localFormData.gender,
-                mobile: localFormData.mobile,
-                complexName: localFormData.complexname,
-                flatNoRoomNo: localFormData.flatnoroomno,
-                area: localFormData.area,
-                landmark: localFormData.landmark,
-                country: localFormData.country,
-                pincode: localFormData.pincode,
-                city: localFormData.city,
-                district: localFormData.district,
-                state: localFormData.state
-            }
-        });
-        onNext();
-    };
+
+    const handleNextStep = () => { onNext(); };
 
     return (
         <>
             <div className='form-container'>
+                <h2 className="text-xl font-bold mb-2">Pending Application : 00001</h2>
                 <div className="flex flex-wrap items-top">
-                    <div className="lg:w-1/2 md:full sm:w-full">
-                        <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
-                        <div className="application-type-container">
-                            <label className="application-type">
-                                <input
-                                    type="radio"
-                                    name="applicationType"
-                                    value="new"
-                                    className="hidden peer"
-                                    checked={selectedType === 'new'}
-                                    onChange={() => setSelectedType('new')}
-                                />
-                                <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
-                                    <i className="bi bi-person-fill-add"></i>
-                                    <span className="font-medium">New Customer</span>
-                                </div>
-                            </label>
-
-                            <label className="application-type">
-                                <input
-                                    type="radio"
-                                    name="applicationType"
-                                    value="rekyc"
-                                    className="hidden peer"
-                                    checked={selectedType === 'rekyc'}
-                                    onChange={() => setSelectedType('rekyc')}
-                                />
-                                <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
-                                    <i className="bi bi-person-fill-check"></i>
-                                    <span className="font-medium">Re-KYC</span>
-                                </div>
-                            </label>
-                        </div>
-
-                        {selectedType && (
-                            <>
-                                <h2 className="text-xl font-bold mb-2">Choose the Option to Verify</h2>
-                                <form className="flex flex-wrap items-center justify-start">
-                                    <label className="flex me-4">
-                                        <input
-                                            className="me-2"
-                                            type="radio"
-                                            name="option"
-                                            value="Aadhar Number"
-                                            checked={selectedOption === 'Aadhar Number'}
-                                            onChange={handleRadioChange}
-                                        />
-                                        Aadhar Number
-                                    </label>
-
-                                    <label className="flex me-4">
-                                        <input
-                                            className="me-2"
-                                            type="radio"
-                                            name="option"
-                                            value="Pan Number"
-                                            checked={selectedOption === 'Pan Number'}
-                                            onChange={handleRadioChange}
-                                        />
-                                        Pan Number
-                                    </label>
-
-                                    <label className="flex me-4">
-                                        <input
-                                            className="me-2"
-                                            type="radio"
-                                            name="option"
-                                            value="DigiLocker"
-                                            checked={selectedOption === 'DigiLocker'}
-                                            onChange={handleRadioChange}
-                                        />
-                                        DigiLocker
-                                    </label>
-                                </form>
-
-                                {selectedOption && (
-                                    <div className="mt-2">
-                                        <div className="flex items-center">
-                                            <div className="md:w-1/2 me-4">
-                                                <CommanInput
-                                                    type="text"
-                                                    label={`Enter ${selectedOption}`}
-                                                    value={localFormData.verifynumber}
-                                                    onChange={handleChange}
-                                                    name="verifynumber"
-                                                    placeholder={`Enter ${selectedOption}`}
-                                                    required
-                                                />
-                                            </div>
-                                            <div className="md:w-1/2">
-                                                <CommonButton
-                                                    className="btn-login"
-                                                    onClick={fetchShowData}
-                                                    disabled={!localFormData.verifynumber}
-                                                >
-                                                    Submit
-                                                </CommonButton>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                <br />
-                            </>
-                        )}
-                    </div>
-                    <div className="hidden lg:block lg:w-1/2 md:w-1/2">
-                        <img src={workingman} alt="workingman" className="w-4/5 m-auto" />
-                    </div>
-                </div>
-
-                {showData && (
-                    <>
-                        <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
+                    <div className="lg:w-3/4 md:full sm:w-full"><br />
+                        <p>Customer Application Form Details</p> <br />
+                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-3">
+                            <CommanSelect
+                                onChange={handleChange}
+                                label={labels.salutation.label}
+                                name="salutation"
+                                value={localFormData.salutation}
+                                options={salutation}
+                                readOnly={true}
+                            />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.firstname.label}
                                 type="text"
                                 name="firstname"
                                 value={localFormData.firstname}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -223,7 +103,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="middlename"
                                 value={localFormData.middlename}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -231,7 +111,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="lastname"
                                 value={localFormData.lastname}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -239,7 +119,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="date"
                                 name="dob"
                                 value={localFormData.dob}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -247,7 +127,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="gender"
                                 value={localFormData.gender}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -255,7 +135,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="mobile"
                                 value={localFormData.mobile}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -263,7 +143,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="complexname"
                                 value={localFormData.complexname}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -271,7 +151,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="flatnoroomno"
                                 value={localFormData.flatnoroomno}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -279,7 +159,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="area"
                                 value={localFormData.area}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -287,7 +167,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="landmark"
                                 value={localFormData.landmark}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -295,7 +175,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="country"
                                 value={localFormData.country}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -303,7 +183,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="pincode"
                                 value={localFormData.pincode}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -311,7 +191,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="city"
                                 value={localFormData.city}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -319,7 +199,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="district"
                                 value={localFormData.district}
-                                required
+                                readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -327,384 +207,36 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 type="text"
                                 name="state"
                                 value={localFormData.state}
-                                required
+                                readOnly={true}
                             />
                         </div>
-                    </>
-                )}
-            </div>
 
-            <div className="next-back-btns">
-                <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
-                    onClick={handleRejectClick}
-                >
-                    Reject & Continue
-                </CommonButton>
+                    </div>
+                    <div className="lg:w-1/4 md:full sm:w-full text-center">
+                        <img src='https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_items_boosted&w=740' width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" />
+                        <br />
+                        <p>Customer Photo</p>
+                    </div>
+                    <div className="next-back-btns">
+                        <CommonButton
+                            className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                            onClick={handleRejectClick}
+                        >
+                            Reject & Continue
+                        </CommonButton>
 
 
-                <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
-                >
-                    Accept & Continue
-                </CommonButton>
+                        <CommonButton
+                            className="btn-next "
+                            onClick={handleNextStep}
+                        >
+                            Accept & Continue
+                        </CommonButton>
+                    </div>
+                </div>
             </div>
         </>
     );
 }
 
-export default P1;
-// import React, { useState } from 'react';
-// import CommanInput from '../../components/CommanInput';
-// import workingman from '../../assets/imgs/workingman1.png';
-// import labels from '../../components/labels';
-// import CommonButton from '../../components/CommonButton';
-// function p1({ onNext, onBack, formData, updateFormData }) {
-//     const [selectedOption, setSelectedOption] = useState('');
-//     const [selectedType, setSelectedType] = useState('');
-//     const [showData, setShowData] = useState(false);
-
-//     const [localFormData, setLocalFormData] = useState({
-//         ...formData.personalDetails,
-//         verifynumber: formData.verificationNumber || ''
-//     });
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setLocalFormData({ ...localFormData, [name]: value });
-//     };
-//     // Handle the change of radio button selection
-//     const handleRadioChange = (e) => {
-//         setSelectedOption(e.target.value);
-//     };
-//     const fetchShowData = (e) => {
-//         e.preventDefault();
-//         setShowData(true);
-//     }
-
-//     const handleNextStep = () => {
-//         // Update the central form data before proceeding
-//         updateFormData(1, {
-//             applicationType: selectedType,
-//             verificationOption: selectedOption,
-//             verificationNumber: localFormData.verifynumber,
-//             personalDetails: {
-//                 firstName: localFormData.firstname,
-//                 middleName: localFormData.middlename,
-//                 lastName: localFormData.lastname,
-//                 dob: localFormData.dob,
-//                 gender: localFormData.gender,
-//                 mobile: localFormData.mobile,
-//                 complexName: localFormData.complexname, // Added complexName field
-//                 flatNoRoomNo: localFormData.flatnoroomno, // Added flatNoRoomNo field
-//                 area: localFormData.area, // Added area field
-//                 landmark: localFormData.landmark, // Added landmark field
-//                 country: localFormData.country, // Added country field
-//                 pincode: localFormData.pincode, // Added pincode field
-//                 city: localFormData.city, // Added city field
-//                 district: localFormData.district, // Added district field
-//                 state: localFormData.state // Added state field
-//             }
-//         });
-
-
-//         onNext()
-//     }
-
-
-//     return (
-//         <>
-//             <div className='form-container'>
-//                 <div className="flex flex-wrap items-top  ">
-//                     <div className="lg:w-1/2 md:full sm:w-full">
-//                         {/* application type selection below */}
-//                         <>
-//                             <h2 className="text-xl font-bold mb-2">Choose Application Type</h2>
-
-//                             <div className="application-type-container">
-//                                 <label className="application-type">
-//                                     <input
-//                                         type="radio"
-//                                         name="applicationType"
-//                                         value="new"
-//                                         className="hidden peer"
-//                                         checked={selectedType === 'new'}
-//                                         onChange={() => setSelectedType('new')}
-//                                     />
-//                                     <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
-//                                         <i className="bi bi-person-fill-add"></i>
-//                                         <span className="font-medium">New Customer</span>
-//                                     </div>
-//                                 </label>
-
-//                                 <label className="application-type">
-//                                     <input
-//                                         type="radio"
-//                                         name="applicationType"
-//                                         value="rekyc"
-//                                         className="hidden peer"
-//                                         checked={selectedType === 'rekyc'}
-//                                         onChange={() => setSelectedType('rekyc')}
-//                                     />
-//                                     <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
-//                                         <i className="bi bi-person-fill-check"></i>
-//                                         <span className="font-medium">Re-KYC</span>
-//                                     </div>
-//                                 </label>
-//                             </div>
-
-//                             {selectedType &&
-//                                 <>
-//                                     {/* aadhar pan digilocker input below */}
-//                                     <h2 className="text-xl font-bold mb-2">Choose  the Option to Verify</h2>
-//                                     <form className="flex flex-wrap items-center justify-start">
-//                                         <label className=" flex me-4">
-//                                             <input className="me-2"
-//                                                 type="radio"
-//                                                 name="option"
-//                                                 value="Aadhar Number"
-//                                                 checked={selectedOption === 'Aadhar Number'}
-//                                                 onChange={handleRadioChange}
-//                                             />
-//                                             Aadhar Number
-//                                         </label>
-
-//                                         <label className=" flex me-4">
-//                                             <input className="me-2"
-//                                                 type="radio"
-//                                                 name="option"
-//                                                 value="Pan Number"
-//                                                 checked={selectedOption === 'Pan Number'}
-//                                                 onChange={handleRadioChange}
-//                                             />
-//                                             Pan Number
-//                                         </label>
-
-//                                         <label className=" flex me-4">
-//                                             <input className="me-2"
-//                                                 type="radio"
-//                                                 name="option"
-//                                                 value="DigiLocker"
-//                                                 checked={selectedOption === 'DigiLocker'}
-//                                                 onChange={handleRadioChange}
-//                                             />
-//                                             DigiLocker
-//                                         </label>
-//                                     </form>
-
-//                                     {selectedOption && (
-//                                         <div className="mt-2">
-//                                             {/* <p>Enter {selectedOption}:</p> */}
-//                                             <div className="flex items-center ">
-//                                                 <div className="md:w-1/2 me-4">
-//                                                     <CommanInput
-//                                                         type="text" label={`Enter ${selectedOption}`}
-//                                                         value={localFormData.verifynumber}
-//                                                         onChange={handleChange} name="verifynumber"
-//                                                         placeholder={`Enter ${selectedOption}`} required
-//                                                     />
-//                                                 </div>
-//                                                 <div className="md:w-1/2">
-//                                                     <CommonButton className="btn-login" onClick={fetchShowData}>  Submit</CommonButton>
-
-//                                                     {/* <span className="btn-login" onClick={fetchShowData}>Submit</span> */}
-//                                                 </div>
-//                                             </div>
-
-//                                         </div>
-//                                     )} <br />
-//                                 </>
-//                             }
-//                         </>
-//                     </div>
-//                     <div className="hidden lg:block lg:w-1/2 md:w-1/2"><img src={workingman} alt="workingman" className=" w-4/5 m-auto" /></div>
-//                 </div>
-//                 {showData &&
-//                     <>
-//                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-//                         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.firstname.label}
-//                                     type="text"
-//                                     name="firstname"
-//                                     value={localFormData.firstname}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.middlename.label}
-//                                     type="text"
-//                                     name="middlename"
-//                                     value={localFormData.middlename}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.lastname.label}
-//                                     type="text"
-//                                     name="lastname"
-//                                     value={localFormData.lastname}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.dob.label}
-//                                     type="date"
-//                                     name="dob"
-//                                     value={localFormData.dob}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.gender.label}
-//                                     type="text"
-//                                     name="gender"
-//                                     value={localFormData.gender}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.mobile.label}
-//                                     type="text"
-//                                     name="mobile"
-//                                     value={localFormData.mobile}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.complexname.label}
-//                                     type="text"
-//                                     name="complexname"
-//                                     value={localFormData.complexname}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.flatnoroomno.label}
-//                                     type="text"
-//                                     name="flatnoroomno"
-//                                     value={localFormData.flatnoroomno}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.area.label}
-//                                     type="text"
-//                                     name="area"
-//                                     value={localFormData.area}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.landmark.label}
-//                                     type="text"
-//                                     name="landmark"
-//                                     value={localFormData.landmark}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.country.label}
-//                                     type="text"
-//                                     name="country"
-//                                     value={localFormData.country}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.pincode.label}
-//                                     type="text"
-//                                     name="pincode"
-//                                     value={localFormData.pincode}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.city.label}
-//                                     type="text"
-//                                     name="city"
-//                                     value={localFormData.city}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.district.label}
-//                                     type="text"
-//                                     name="district"
-//                                     value={localFormData.district}
-//                                     required
-//                                 />
-//                             </div>
-
-//                             <div className="">
-//                                 <CommanInput
-//                                     onChange={handleChange}
-//                                     label={labels.state.label}
-//                                     type="text"
-//                                     name="state"
-//                                     value={localFormData.state}
-//                                     required
-//                                 />
-//                             </div>
-//                         </div>
-//                     </>
-//                 }
-//             </div >
-
-
-//             <div className="next-back-btns">
-//                 <CommonButton className="btn-back" onClick={onBack}>
-//                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-//                 </CommonButton>
-
-//                 <CommonButton className="btn-next" onClick={handleNextStep}>
-//                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-//                 </CommonButton>
-//             </div>
-
-//         </>
-//     );
-// }
-
-// export default p1;
+export default P1; 

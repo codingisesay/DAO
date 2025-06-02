@@ -1,6 +1,7 @@
 export const API_ENDPOINTS = {
-  BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
-  // BASE_URL_DAO: "http://127.0.0.1:8090/dao/api",  // For everything else
+  // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
+  BASE_URL_LOGIN: "http://127.0.0.1:8000", // For login only
+  BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -13,36 +14,36 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    AGENTENROLL: '/dao/api/agent/enrollment'
+    AGENTENROLL: '/api/agent/enrollment'
   },
 
   PERSONAL_DETAILS: {
-    CREATE: '/dao/api/agent/personal-details',
+    CREATE: '/api/agent/personal-details',
   },
 
   ADDRESS_DETAILS: {
-    CREATE: '/dao/api/agent/address-details',
+    CREATE: '/api/agent/address-details',
     // ...
   },
 
   LIVE_PHOTO: {
-    CREATE: '/dao/api/agent/live-photo',
+    CREATE: '/api/agent/live-photo',
   },
 
   APPLICATION_DOCUMENT: {
-    CREATE: '/dao/api/agent/application-document',
+    CREATE: '/api/agent/application-document',
   },
 
   ACCOUNT_PERSONAL_DETAILS: {
-    CREATE: '/dao/api/agent/account-personal-details',
+    CREATE: '/api/agent/account-personal-details',
   },
 
   ACCOUNT_NOMINEE: {
-    CREATE: '/dao/api/agent/account-nominee',
+    CREATE: '/api/agent/account-nominee',
   },
 
   SERVICE_TO_CUSTOMER: {
-    CREATE: '/dao/api/agent/service-to-customer',
+    CREATE: '/api/agent/service-to-customer',
   },
 
   ADMIN: {},

@@ -3,10 +3,11 @@ import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
 import { DocumentProvider } from './DocumentContext';
-// import { daoApi } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import Swal from 'sweetalert2';
 import DAOExtraction from './3B_DAOExtraction';
+import { applicationDocumentService } from '../../services/apiServices';
 function P3({ onNext, onBack, formData, updateFormData }) {
     const [documents, setDocuments] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -24,7 +25,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         setDocuments(newDocuments);
 
         DAOExtraction();
-        localStorage.setItem('applicationDocuments', JSON.stringify(newDocuments));
+        localStorage.setItem('applicationDocuments', JSON.stringify(newDocuments)); ``
     };
 
     const handleSubmit = async () => {
@@ -57,17 +58,15 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 
         // try {
-        //     const response = await daoApi.post(
+        //     // const response = await daoApi.post(
 
-
-
-        //         API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
-        //         formDataObj,
-        //         {
-        //             headers: { 'Content-Type': 'multipart/form-data' }
-        //         }
-        //     );
-
+        //     //     API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
+        //     //     formDataObj,
+        //     //     {
+        //     //         headers: { 'Content-Type': 'multipart/form-data' }
+        //     //     }
+        //     // );
+        //     const respone = daoApi.post(applicationDocumentService.upload(formDataObj))
         //     // Clear localStorage after successful upload
         //     localStorage.removeItem('applicationDocuments');
 
@@ -97,9 +96,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         // } finally {
         //     setIsLoading(false);
         // }
-
     }
-
 
     return (
         <DocumentProvider>
