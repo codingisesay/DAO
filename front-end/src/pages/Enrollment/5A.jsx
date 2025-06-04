@@ -67,6 +67,11 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
 
             const payload = {
                 application_id: formData.application_id,
+                maiden_prefix_name: localFormData.maidenPrefixName,
+                maiden_first_name: localFormData.maidenFirstName,
+                maiden_middle_name: localFormData.maidenMiddleName,
+                maiden_last_name: localFormData.maidenLastName,
+
                 father_prefix_name: localFormData.fatherSpousePrefixName,
                 father_first_name: localFormData.fatherSpouseFirstName,
                 father_middle_name: localFormData.fatherSpouseMiddleName,
@@ -85,9 +90,9 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                 qualification: localFormData.educationQualification,
                 anual_income: localFormData.annualIncome,
                 remark: localFormData.remark,
-                status: "APPROVED",
+                status: "Pending",
             };
-
+            console.log('nominie :', payload)
             const response = await accountPersonalDetailsService.create(payload);
 
             Swal.fire({
@@ -341,7 +346,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
                 />
             </div>
 
-            <div className="next-back-btns " >{/* z-10 */}
+            <div className="next-back-btns z-10" >{/* z-10 */}
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>

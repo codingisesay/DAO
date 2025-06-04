@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import workingman from '../../assets/imgs/upload_placeholder.png';
 import Swal from 'sweetalert2';
-import DAOExtraction from './3B_DAOExtraction';
 
 const DocumentUpload = ({ onDocumentsUpdate }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
@@ -80,7 +79,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                     return { isValid: false };
                 }
 
-                if (hasGovtIndia && hasAadhaarNumber && hasDOB) {
+                if (hasGovtIndia && hasAadhaarNumber && hasDOB || false) {
                     const extractedInfo = {
                         name: result.data.text.match(/([A-Z][a-z]+(\s[A-Z][a-z]+)+)/)?.[0] || 'Not found',
                         dob: result.data.text.match(/\d{2}\/\d{2}\/\d{4}/)?.[0] || 'Not found',
@@ -95,8 +94,8 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 return { isValid: true };
             } else if (side === 'back') {
                 // Back side validation - check for UIDAI website
-                const hasUIDAI = /uidai\.gov\.in/i.test(result.data.text);
-                const hasQRCode = /qr code/i.test(result.data.text);
+                const hasUIDAI = /Address/i.test(result.data.text);
+                // const hasQRCode = /qr code/i.test(result.data.text);
 
                 if (!hasUIDAI) {
                     Swal.fire('Error', 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)', 'error');
@@ -371,7 +370,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
         <div className="document-upload-container p-4 mx-auto">
             <h2 className="text-2xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
-                <i class="bi bi-info-circle"></i>&nbsp;
+                <i className="bi bi-info-circle"></i>&nbsp;
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>
             </div>
 
@@ -554,7 +553,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                                 onClick={() => removeDocument(doc.id)}
                                                 className="text-red-500 hover:text-red-700"
                                             >
-                                                <i class="bi bi-trash"></i>
+                                                <i className="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>

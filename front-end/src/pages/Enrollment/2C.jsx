@@ -6,7 +6,7 @@ import PhotoCapture from './CustomerPhotoCapture';
 import { API_ENDPOINTS } from '../../services/api';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2'
-// import { apiService } from '../../utils/storage';
+import { daoApi } from '../../utils/storage';
 import { livePhotoService } from '../../services/apiServices';
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
@@ -14,7 +14,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
 
     const submitaddress = async (localFormData) => {
         const payload = {
-            application_id: 43,
+            application_id: formData.application_id,
             longitude: JSON.stringify(localFormData.metadata.location.longitude),
             latitude: JSON.stringify(localFormData.metadata.location.latitude),
             photo: localFormData.file,
@@ -24,7 +24,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
         console.log('ready photodata to send : ', payload)
 
         try {
-            const response = await apiService.post(livePhotoService.upload(payload));
+            const response = await daoApi.post(livePhotoService.upload(payload));
             // const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
             Swal.fire({
                 icon: 'success',
@@ -42,6 +42,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 onNext();
             }
         } catch (error) {
+            console.log(error)
             Swal.fire({
                 icon: 'error',
                 title: 'Error',

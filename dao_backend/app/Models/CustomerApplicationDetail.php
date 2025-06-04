@@ -25,12 +25,13 @@ class CustomerApplicationDetail extends Model
         'complex_name',
         'flat_no',
         'area',
-        'lankmark',
+        'landmark',
         'country',
         'pincode',
         'city',
         'district',
         'state',
+        'status',
         'agent_id',
     ];
     protected $casts = [

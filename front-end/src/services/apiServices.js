@@ -46,40 +46,40 @@ export const serviceToCustomerService = {
 
 export const applicationDetailsService = {
   getFullDetails: (id) =>
-    daoApi.get(`/agent/full-application-details/${id}`),
+    daoApi.get(`/api/agent/full-application-details/${id}`),
 };
 
 export const applicationDetailsServices = {
   getByAadhar: (auth_code) =>
-    apiService.post('/application/by-aadhar', { auth_code }),
+    daoApi.post('/api/application/by-aadhar', { auth_code }),
   // ...other methods
 };
 
 export const adminService = {
   getAllApplications: () =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
   getAllApplicationsPending: () =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
   getAllApllicationsRejected: () =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
 
   updateApplicationStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
   updatePersonalDetailsStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
   updateDocumentsStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
   updateAddressDetailsStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
   updateLivePhotosStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
   updateAccountPersonalDetailsStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
   updateNomineesStatus: (id, status) =>
-    apiService.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
   // Clicking on the view button in the admin dashboard
   getFullApplicationDetails: (id) =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
 
 };
 

@@ -17,6 +17,7 @@ function Enrollmentform() {
     const [formData, setFormData] = useState({
         application_no: '',
         applicationType: '',
+        salutation: '',
         verificationOption: '',
         verificationNumber: '',
         correspondenceAddressSame: false,

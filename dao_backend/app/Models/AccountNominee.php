@@ -30,7 +30,6 @@ class AccountNominee extends Model
         'nom_city',
         'nom_state',
         'nom_district',
-        'nom_mobile',
-        'status',
+        'nom_mobile', 
     ];
 }

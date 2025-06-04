@@ -13,6 +13,7 @@ import { gender, salutation, religion, caste, maritalStatusOptions } from '../..
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
 import { applicationDetailsService } from '../../services/apiServices';
+import { daodocbase } from '../../data/data'
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
@@ -26,11 +27,12 @@ const ViewApplicationForm = () => {
         const fetchDetails = async () => {
             try {
                 const response = await applicationDetailsService.getFullDetails(applicationId);
+                console.log(response.data);
                 if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss } = response.data;
+                    const { application, personal_details, account_personal_details, application_addresss, customerphoto, custdoc } = response.data.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     setFormData({
-                        application_id: application.id,
+                        application_id: applicationId,
                         // Authentication
                         auth_type: application.auth_type,
                         auth_code: application.auth_code,
@@ -103,13 +105,20 @@ const ViewApplicationForm = () => {
                         qualification: account_personal_details?.qualification,
                         anual_income: account_personal_details?.anual_income,
                         remark: account_personal_details?.remark,
+
+                        // photo: daodocbase + response.data.data.customerpic[0].path || null,
+                        // signature: daodocbase + response.data.data.customerdoc[0].file_path || null,
+                        // photo: daodocbase + customerphoto.path || null,
+                        // signature: daodocbase + custdoc.file_path || null,
                     });
+                    // console.log('sign : ', response.data.data.custdoc[0].file_path)
                 }
             } catch (error) {
+                console.log(error)
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Failed to fetch application details'
+                    text: JSON.stringify(error)
                 });
             }
         };

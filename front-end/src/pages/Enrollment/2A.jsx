@@ -5,36 +5,50 @@ import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
+import { use } from 'react';
 
 function PersonalDetailsForm({ formData, updateFormData }) {
+
+    // const applicationId = localStorage.getItem('application_id');
+    // useEffect(async() => {
+
+    //     const response = await applicationDetailsService.getFullDetails(applicationId);
+    //     console.log(response.data);
+
+
+
+    // }
+    // )
     const [localFormData, setLocalFormData] = useState({
-        salutation: formData.salutation || '',
-        first_name: formData.first_name || '',
-        middle_name: formData.middle_name || '',
-        last_name: formData.last_name || '',
-        DOB: formData.DOB || '',
-        gender: formData.gender || '',
-        religion: formData.religion || '',
-        caste: formData.caste || '',
-        maritalStatus: formData.maritalStatus || '',
-        mobile: formData.mobile || '',
-        alt_mob_no: formData.alt_mob_no || '',
-        email: formData.email || '',
-        adhar_card: formData.adhar_card || '',
-        pannumber: formData.pannumber || '',
-        drivinglicence: formData.drivinglicence || '',
-        voterid: formData.voterid || '',
-        passportno: formData.passportno || '',
-        complex_name: formData.complex_name || '',
-        flat_no: formData.flat_no || '',
-        area: formData.area || '',
-        landmark: formData.landmark || '',
-        country: formData.country || '',
-        pincode: formData.pincode || '',
-        city: formData.city || '',
-        district: formData.district || '',
-        state: formData.state || ''
-    });
+        salutation: formData.personalDetails.salutation || formData.salutation || '',
+        first_name: formData.personalDetails.first_name || formData.first_name || '',
+        middle_name: formData.personalDetails.middle_name || formData.middle_name || '',
+        last_name: formData.personalDetails.last_name || formData.last_name || '',
+        DOB: formData.personalDetails.DOB || formData.DOB || '',
+        gender: formData.personalDetails.gender || formData.gender || '',
+        religion: formData.personalDetails.religion || formData.religion || '',
+        caste: formData.personalDetails.caste || formData.caste || '',
+        maritalStatus: formData.personalDetails.maritalStatus || formData.maritalStatus || '',
+        mobile: formData.personalDetails.mobile || formData.mobile || '',
+        alt_mob_no: formData.personalDetails.alt_mob_no || formData.alt_mob_no || '',
+        email: formData.personalDetails.email || formData.email || '',
+        adhar_card: formData.personalDetails.adhar_card || formData.adhar_card || '',
+        pannumber: formData.personalDetails.pannumber || formData.pannumber || '',
+        drivinglicence: formData.personalDetails.drivinglicence || formData.drivinglicence || '',
+        voterid: formData.personalDetails.voterid || formData.voterid || '',
+        passportno: formData.personalDetails.passportno || formData.passportno || '',
+        complex_name: formData.personalDetails.complex_name || formData.complex_name || '',
+        flat_no: formData.personalDetails.flat_no || formData.flat_no || '',
+        area: formData.personalDetails.area || formData.area || '',
+        landmark: formData.personalDetails.landmark || formData.landmark || '',
+        country: formData.personalDetails.country || formData.country || '',
+        pincode: formData.personalDetails.pincode || formData.pincode || '',
+        city: formData.personalDetails.city || formData.city || '',
+        district: formData.personalDetails.district || formData.district || '',
+        state: formData.personalDetails.state || formData.state || '',
+        status: 'Pending'
+    }
+    );
     const handleChange = (e) => {
         const { name, value } = e.target;
 

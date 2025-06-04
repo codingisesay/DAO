@@ -33,7 +33,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         if (activeStep < steps.length - 1) {
             setActiveStep(activeStep + 1);
         }
-        console.log('formdata till step : ', formData)
+        // console.log('formdata till step : ', formData)
 
     };
 
@@ -60,24 +60,36 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     religion: pd.religion,
                     caste: pd.caste,
                     marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-                    alt_mob_no: pd.alternatemobile,
+                    alt_mob_no: pd.alt_mob_no,
                     email: pd.email,
-                    adhar_card: pd.aadharnumber,
+                    adhar_card: pd.adhar_card,
                     pan_card: pd.pannumber,
                     passport: pd.passportno,
                     driving_license: pd.drivinglicence,
                     voter_id: pd.voterid,
-                    status: formData.status,
+                    status: 'Pending'
                 };
 
-                let response = await personalDetailsService.create(payload);
-                Swal.fire({
-                    icon: 'success',
-                    title: response.data.message || 'Personal details saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                handleNext();
+                try {
+                    let response = await personalDetailsService.create(payload);
+                    if (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.data.message || 'Personal details saved successfully.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        handleNext();
+                    }
+                } catch (error) {
+                    console.error("Error saving personal details:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: error.response?.data?.message || 'An unexpected error occurred.',
+                    });
+                }
+
             } else if (activeStep === 1) {
                 const ad = formData.addressDetails || {};
                 console.log("DEBUG: addressDetails in formData", ad);
@@ -96,7 +108,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     per_resident: ad.perResident,
                     per_residence_status: ad.perResidenceStatus,
                     resi_doc: ad.resiDoc,
-                    cor_complex: ad.corComplex,
+                    cor_complex_name: ad.corComplex,
                     cor_flat_no: ad.corFlatNo,
                     cor_area: ad.corArea,
                     cor_landmark: ad.corLandmark,
@@ -105,7 +117,10 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     cor_city: ad.corCity,
                     cor_district: ad.corDistrict,
                     cor_state: ad.corState,
-                    status: formData.status,
+                    per_resident: ad.per_resident,
+                    per_residence_status: ad.per_residence_status,
+                    resi_doc: ad.resi_doc,
+                    status: 'Pending',
                 };
 
                 let response = await apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, payload);

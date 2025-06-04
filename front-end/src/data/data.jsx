@@ -1,6 +1,6 @@
 
 // Define form fields
-
+const daodocbase = 'http://127.0.0.1:8000/storage/';
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
@@ -9,11 +9,11 @@ const gender = [
 const salutation = [
     { value: 'MR', label: 'Mr' },
     { value: 'MRS', label: 'Mrs' },
-    // { value: 'MS', label: 'Ms' },
-    // { value: 'DR', label: 'Dr' },
-    // { value: 'PROF', label: 'Prof' },
+    { value: 'MS', label: 'Ms' },
+    { value: 'DR', label: 'Dr' },
+    { value: 'PROF', label: 'Prof' },
     // { value: 'MASTER', label: 'Master' },
-    // { value: 'MISS', label: 'Miss' },
+    { value: 'MISS', label: 'Miss' },
     // { value: 'MX', label: 'Mx' },
 ];
 const YN = [
@@ -93,8 +93,8 @@ const userdummydata = {
         auth_type: "Aadhar Card",
         auth_code: "987654321098",
         auth_status: "Verified",
-        first_name: "Rahul",
-        middle_name: "Kumar",
+        first_name: "Kisan",
+        middle_name: "Pandya",
         last_name: "Sharma",
         DOB: '1985-07-11',
         gender: "Male",
@@ -113,4 +113,4 @@ const userdummydata = {
 }
 
 
-export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange };
+export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange, daodocbase };

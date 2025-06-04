@@ -18,18 +18,18 @@ const ImageWithDetails = () => {
                 <div className="space-y-4">
                     <div className="flex items-start">
                         <span className="text-gray-700 min-w-[100px]">
-                            <i class="bi bi-send text-green-700"></i> Latitude
+                            <i className="bi bi-send text-green-700"></i> Latitude
                         </span>
                         <span className="text-gray-900">1915283154778</span>
                     </div>
                     <div className="flex items-start">
                         <span className="text-gray-700 min-w-[100px]">
-                            <i class="bi bi-send text-green-700"></i> Longitude
+                            <i className="bi bi-send text-green-700"></i> Longitude
                         </span>
                         <span className="text-gray-900">202284979556</span>
                     </div>
                     <div className="flex items-start">
-                        <span className="text-gray-700 min-w-[100px]"><i class="bi bi-geo-alt text-green-700"></i> Current Address :</span>
+                        <span className="text-gray-700 min-w-[100px]"><i className="bi bi-geo-alt text-green-700"></i> Current Address :</span>
                         <span className="text-gray-900">
                             Wagle Estate, Centrum Business Square<br />
                             Thane East 400152

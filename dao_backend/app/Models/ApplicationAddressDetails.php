@@ -22,7 +22,7 @@ class ApplicationAddressDetails extends Model
         'per_city',
         'per_district',
         'per_state',
-        'cor_complex',
+        'cor_complex_name',
         'cor_flat_no',
         'cor_area',
         'cor_landmark',
@@ -31,6 +31,9 @@ class ApplicationAddressDetails extends Model
         'cor_city',
         'cor_district',
         'cor_state',
+        'per_resident',
+        'per_residence_status',
+        'resi_doc',
         'status',
     ];
 }

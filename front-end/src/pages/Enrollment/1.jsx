@@ -129,18 +129,20 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             city: localFormData.city,
             district: localFormData.district,
             state: localFormData.state,
+            status: "Pending",
         };
-
         try {
             const response = await agentService.agentEnroll(payload);
+            console.log('Submitted Data: ', response)
             if (response && JSON.stringify(response).includes('201')) {
                 updateFormData(1, {
                     ...updatedData,
                     application_no: response.data.application_no,
                     application_id: response.data.application_id,
                 });
-                localStorage.setItem('application_no', response.application_no);
-                localStorage.setItem('application_id', response.application_id);
+                // localStorage.setItem('application_no', response.data.application_no);
+                localStorage.setItem('application_id', response.data.application_id);
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
