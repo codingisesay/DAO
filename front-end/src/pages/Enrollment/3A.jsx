@@ -1,7 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
+import workingman from '../../assets/imgs/upload_placeholder.png';
 import Swal from 'sweetalert2';
-import DAOExtraction from './3B_DAOExtraction';
+
 const DocumentUpload = ({ onDocumentsUpdate }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
     const [selectedAddressProof, setSelectedAddressProof] = useState('');
@@ -11,6 +12,12 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
     const [uploadSide, setUploadSide] = useState(''); // 'front' or 'back' for Aadhaar
     const fileInputRef = useRef(null);
     const [loading, setLoading] = useState(false);
+    const [showCameraModal, setShowCameraModal] = useState(false);
+    const [stream, setStream] = useState(null);
+    const videoRef = useRef(null);
+    const [activeDocumentType, setActiveDocumentType] = useState('');
+    const [activeDocumentValue, setActiveDocumentValue] = useState('');
+    const [activeSide, setActiveSide] = useState('');
 
     const identityProofOptions = [
         { value: 'PAN', label: 'PAN Card' },
@@ -72,7 +79,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                     return { isValid: false };
                 }
 
-                if (hasGovtIndia && hasAadhaarNumber && hasDOB) {
+                if (hasGovtIndia && hasAadhaarNumber && hasDOB || false) {
                     const extractedInfo = {
                         name: result.data.text.match(/([A-Z][a-z]+(\s[A-Z][a-z]+)+)/)?.[0] || 'Not found',
                         dob: result.data.text.match(/\d{2}\/\d{2}\/\d{4}/)?.[0] || 'Not found',
@@ -87,8 +94,8 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 return { isValid: true };
             } else if (side === 'back') {
                 // Back side validation - check for UIDAI website
-                const hasUIDAI = /uidai\.gov\.in/i.test(result.data.text);
-                const hasQRCode = /qr code/i.test(result.data.text);
+                const hasUIDAI = /Address/i.test(result.data.text);
+                // const hasQRCode = /qr code/i.test(result.data.text);
 
                 if (!hasUIDAI) {
                     Swal.fire('Error', 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)', 'error');
@@ -163,6 +170,70 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
         }
     };
 
+    const processImage = async (imageData, documentType, documentValue, side, skipValidation = false) => {
+        let isValid = true;
+        let extractedInfo = null;
+
+        if (!skipValidation) {
+            if (documentValue === 'AADHAAR') {
+                const validationResult = await validateAadharCard(imageData, side);
+                isValid = validationResult.isValid;
+                extractedInfo = validationResult.extractedInfo;
+            }
+            else if (documentValue === 'PAN') {
+                const validationResult = await validatePANCard(imageData);
+                isValid = validationResult.isValid;
+                extractedInfo = validationResult.extractedInfo;
+            }
+
+            if (!isValid) {
+                setPreviewImage(null);
+                return false;
+            }
+        }
+
+        // Determine the document type based on side for Aadhaar
+        let docType = documentValue;
+        if (documentValue === 'AADHAAR') {
+            docType = side === 'front' ? 'AADHAAR_FRONT_JPG' : 'AADHAAR_BACK_JPG';
+        } else {
+            docType = `${documentValue}_JPG`;
+        }
+
+        // Create a blob from the image data
+        const blob = await fetch(imageData).then(res => res.blob());
+        const file = new File([blob], `${documentValue}_${side || 'document'}.jpg`, { type: 'image/jpeg' });
+
+        // Add to documents table
+        const newDocument = {
+            id: Date.now(),
+            type: docType,
+            name: side ? `${documentValue.toLowerCase()} ${side}` : `${documentValue.toLowerCase()} document`,
+            image: imageData, // for preview
+            file: file,       // store the File object
+            uploadedAt: new Date().toLocaleString(),
+            documentCategory: documentType,
+            isValid: isValid,
+            ...(extractedInfo && { extractedInfo })
+        };
+
+        const updatedDocuments = [...documents, newDocument];
+        setDocuments(updatedDocuments);
+        if (onDocumentsUpdate) {
+            onDocumentsUpdate(updatedDocuments);
+        }
+
+        // Only reset dropdown if both sides are uploaded for Aadhaar
+        if (documentValue !== 'AADHAAR' ||
+            (documentValue === 'AADHAAR' && isDocumentUploaded('AADHAAR'))) {
+            if (documentType === 'identity') setSelectedIdentityProof('');
+            if (documentType === 'address') setSelectedAddressProof('');
+            if (documentType === 'signature') setSelectedSignatureProof('');
+        }
+
+        return true;
+    };
+
     const handleFileChange = async (e, documentType, documentValue, side) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -182,70 +253,61 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
         reader.onload = async () => {
             const imageData = reader.result;
             setPreviewImage(imageData);
-            // console.log("Image Data may required validation :", file);
-            let isValid = true;
-            let extractedInfo = null;
-
-            if (documentValue === 'AADHAAR') {
-                const validationResult = await validateAadharCard(imageData, side);
-                isValid = validationResult.isValid;
-                extractedInfo = validationResult.extractedInfo;
-            }
-            else if (documentValue === 'PAN') {
-                const validationResult = await validatePANCard(imageData);
-                isValid = validationResult.isValid;
-                extractedInfo = validationResult.extractedInfo;
-            }
-
-            if (!isValid) {
-                if (fileInputRef.current) fileInputRef.current.value = '';
-                setPreviewImage(null);
-                return;
-            }
-
-            // Determine the document type based on side for Aadhaar
-            let docType = documentValue;
-            if (documentValue === 'AADHAAR') {
-                docType = side === 'front' ? 'AADHAAR_FRONT_JPG' : 'AADHAAR_BACK_JPG';
-            } else {
-                docType = `${documentValue}_JPG`;
-            }
-
-            //abstraction below
-            // DAOExtraction(file);
-            // Add to documents table
-            const newDocument = {
-                id: Date.now(),
-                type: docType,
-                name: side ? `${documentValue.toLowerCase()} ${side}` : `${documentValue.toLowerCase()} document`,
-                image: imageData, // for preview
-                file: file,       // <-- store the real File object here!
-                uploadedAt: new Date().toLocaleString(),
-                documentCategory: documentType,
-                isValid: isValid,
-                ...(extractedInfo && { extractedInfo })
-            };
-
-            setDocuments([...documents, newDocument]);
-            // After updating documents, call the callback
-            const updatedDocuments = [...documents, newDocument];
-            setDocuments(updatedDocuments);
-            if (onDocumentsUpdate) {
-                onDocumentsUpdate(updatedDocuments);
-            }
-
-            // Only reset dropdown if both sides are uploaded for Aadhaar
-            if (documentValue !== 'AADHAAR' ||
-                (documentValue === 'AADHAAR' && isDocumentUploaded('AADHAAR'))) {
-                if (documentType === 'identity') setSelectedIdentityProof('');
-                if (documentType === 'address') setSelectedAddressProof('');
-                if (documentType === 'signature') setSelectedSignatureProof('');
-            }
-
+            await processImage(imageData, documentType, documentValue, side);
         };
         reader.readAsDataURL(file);
     };
 
+    const startCamera = async (documentType, documentValue, side) => {
+        setActiveDocumentType(documentType);
+        setActiveDocumentValue(documentValue);
+        setActiveSide(side);
+
+        try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment' }
+            });
+            setStream(mediaStream);
+            setShowCameraModal(true);
+
+            // Wait for the video element to be available
+            setTimeout(() => {
+                if (videoRef.current) {
+                    videoRef.current.srcObject = mediaStream;
+                }
+            }, 100);
+        } catch (err) {
+            console.error("Error accessing camera:", err);
+            Swal.fire('Error', 'Could not access the camera. Please check permissions.', 'error');
+        }
+    };
+
+    const stopCamera = () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            setStream(null);
+        }
+        setShowCameraModal(false);
+    };
+
+    const capturePhoto = async () => {
+        if (!videoRef.current) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+        const imageData = canvas.toDataURL('image/jpeg');
+        setPreviewImage(imageData);
+
+        // Skip validation for camera captures
+        const success = await processImage(imageData, activeDocumentType, activeDocumentValue, activeSide, true);
+        if (success) {
+            stopCamera();
+        }
+    };
 
     const removeDocument = (id) => {
         const updatedDocuments = documents.filter(doc => doc.id !== id);
@@ -295,11 +357,20 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
         };
     };
 
+    useEffect(() => {
+        return () => {
+            // Clean up camera stream when component unmounts
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, [stream]);
+
     return (
         <div className="document-upload-container p-4 mx-auto">
             <h2 className="text-2xl font-bold mb-1">Upload Documents</h2>
-            <div className="text-sm text-gray-600 mb-6 flex items-center">
-                <input type="checkbox" className="mr-2" />
+            <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
+                <i className="bi bi-info-circle"></i>&nbsp;
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>
             </div>
 
@@ -309,6 +380,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                     <div className="document-section">
                         <div className="flex items-center relative">
                             <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Identity Proof</span>
+
                             <select
                                 className="flex-1 p-2 border rounded mt-2"
                                 value={selectedIdentityProof}
@@ -326,21 +398,24 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                             option.label}
                                     </option>
                                 ))}
-                            </select>
+                            </select> &emsp;
                             {selectedIdentityProof && !isDocumentUploaded(selectedIdentityProof) && (
-                                <span
-                                    onClick={() => triggerFileInput('identity', selectedIdentityProof, '')}
-                                    className="bi bi-cloud-upload ms-4 text-xl text-blue-600 cursor-pointer"
-                                    title="Upload"
-                                > </span>
+                                <div className="mt-2 flex flex-col">
+                                    {/* <div className="text-center text-gray-600 mb-2">Signature</div> */}
+                                    <div className="flex justify-center gap-4">
+                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('identity', selectedIdentityProof, '')}></span>
+                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('identity', selectedIdentityProof, '')}></span>
+                                    </div>
+                                </div>
                             )}
+
                         </div>
                     </div>
 
                     {/* Address Proof Section */}
                     <div className="document-section">
                         <div className="flex items-center relative">
-                            <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Address Proof</span>
+                            {/* <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Address Proof</span> */}
                             <select
                                 className="flex-1 p-2 border rounded mt-2"
                                 value={selectedAddressProof}
@@ -358,34 +433,35 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                             option.label}
                                     </option>
                                 ))}
-                            </select>
+                            </select> &emsp;
                             {selectedAddressProof && !isDocumentUploaded(selectedAddressProof) && (
-                                <div className="flex items-center ms-4 gap-2">
+                                <div className="mt-2">
                                     {selectedAddressProof === 'AADHAAR' ? (
                                         <>
                                             {!isAadhaarFrontUploaded() && (
-                                                <button
-                                                    onClick={() => triggerFileInput('address', selectedAddressProof, 'front')}
-                                                    className="text-blue-600 text-sm px-2 py-1 border border-blue-600 rounded"
-                                                >
-                                                    <span className='bi bi-cloud-upload'></span>&nbsp;Front
-                                                </button>
+                                                <div className="mb-4 flex flex-col">
+                                                    <div className="flex justify-center gap-4">F
+                                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('address', selectedAddressProof, 'front')}></span>
+                                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('address', selectedAddressProof, 'front')}></span>
+                                                    </div>
+                                                </div>
                                             )}
                                             {!isAadhaarBackUploaded() && (
-                                                <button
-                                                    onClick={() => triggerFileInput('address', selectedAddressProof, 'back')}
-                                                    className="text-blue-600 text-sm px-2 py-1 border border-blue-600 rounded"
-                                                >
-                                                    <span className='bi bi-cloud-upload'></span>&nbsp;Back
-                                                </button>
+                                                <div className="flex flex-col">
+                                                    <div className="flex justify-center gap-4">B
+                                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('address', selectedAddressProof, 'back')}></span>
+                                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('address', selectedAddressProof, 'back')}></span>
+                                                    </div>
+                                                </div>
                                             )}
                                         </>
                                     ) : (
-                                        <span
-                                            onClick={() => triggerFileInput('address', selectedAddressProof, '')}
-                                            className="bi bi-cloud-upload text-xl text-blue-600 cursor-pointer"
-                                            title="Upload"
-                                        > </span>
+                                        <div className="flex flex-col">
+                                            {/* <div className="text-center text-gray-600 mb-2">Signature</div> */}
+                                            <div className="flex justify-center gap-4">
+                                                <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('address', selectedAddressProof, '')}></span>
+                                                <span className="bi bi-camera mr-2" onClick={() => startCamera('address', selectedAddressProof, '')}></span>                                        </div>
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -395,7 +471,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                     {/* Signature Proof Section */}
                     <div className="document-section">
                         <div className="flex items-center relative">
-                            <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Signature</span>
+                            {/* <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Signature</span> */}
                             <select
                                 className="flex-1 p-2 border rounded mt-2"
                                 value={selectedSignatureProof}
@@ -410,13 +486,16 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                         `${signatureProofOption.label} (Already Uploaded)` :
                                         signatureProofOption.label}
                                 </option>
-                            </select>
+                            </select>&emsp;
+
                             {selectedSignatureProof && !isDocumentUploaded(selectedSignatureProof) && (
-                                <span
-                                    onClick={() => triggerFileInput('signature', selectedSignatureProof, '')}
-                                    className="bi bi-cloud-upload ms-4 text-xl text-blue-600 cursor-pointer"
-                                    title="Upload"
-                                > </span>
+                                <div className="mt-2 flex flex-col">
+                                    {/* <div className="text-center text-gray-600 mb-2">Signature</div> */}
+                                    <div className="flex justify-center gap-4">
+                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('signature', selectedSignatureProof, '')}></span>
+                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('signature', selectedSignatureProof, '')}></span>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
@@ -431,15 +510,15 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                 />
 
                 {/* Preview Section */}
-                {previewImage && (
-                    <div className="preview-section my-1">
-                        <div className="text-center p-1 rounded">
-                            <img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" />
-
-                        </div>
+                <div className="preview-section my-1">
+                    <div className="text-center p-1 rounded">
+                        {previewImage ?
+                            (<img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" />)
+                            : (<img src={workingman} alt="Document preview" className="h-[200px] w-auto mx-auto rounded-lg" />)}
                     </div>
-                )}
+                </div>
             </div>
+
             {/* Documents Table */}
             <div className="documents-table mt-8">
                 <div className="overflow-x-auto">
@@ -449,7 +528,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                 <th className="border p-2 text-left">Document Type</th>
                                 <th className="border p-2 text-left">Image</th>
                                 <th className="border p-2 text-left">Signature</th>
-                                <th className="border p-2 text-left">Face</th>
+                                <th className="border p-2 text-left">Photo</th>
                                 <th className="border p-2 text-left">Action</th>
                             </tr>
                         </thead>
@@ -474,7 +553,7 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                                                 onClick={() => removeDocument(doc.id)}
                                                 className="text-red-500 hover:text-red-700"
                                             >
-                                                Remove
+                                                <i className="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -490,8 +569,42 @@ const DocumentUpload = ({ onDocumentsUpdate }) => {
                     </table>
                 </div>
             </div>
+
+            {/* Camera Modal */}
+            {showCameraModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                    <div className="bg-white p-4 rounded-lg max-w-md w-full">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold">Take Photo</h3>
+                            <button onClick={stopCamera} className="text-gray-500 hover:text-gray-700">
+                                <span className="bi bi-x text-2xl"></span>
+                            </button>
+                        </div>
+                        <div className="mb-4">
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                playsInline
+                                className="w-full h-auto border rounded"
+                            />
+                        </div>
+                        <div className="flex justify-center">
+                            <button
+                                onClick={capturePhoto}
+                                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-full"
+                            >
+                                <span className="bi bi-camera text-xl"></span>
+                            </button>
+                        </div>
+                        <div className="mt-4 text-sm text-gray-600 text-center">
+                            Position the document clearly in the frame and click the camera button
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
 
 export default DocumentUpload;
+

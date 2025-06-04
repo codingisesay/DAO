@@ -12,6 +12,10 @@ class AccountPersonalDetail extends Model
     protected $table = 'account_personal_details';
 
     protected $fillable = [
+          'maiden_prefix',
+        'maiden_first_name',
+        'maiden_middle_name',
+        'maiden_last_name',
         'application_id',
         'father_prefix_name',
         'father_first_name',

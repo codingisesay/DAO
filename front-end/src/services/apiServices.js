@@ -1,4 +1,4 @@
-import { authApi, daoApi } from "../utils/storage";
+import { daoApi } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
 
@@ -46,8 +46,53 @@ export const serviceToCustomerService = {
 
 export const applicationDetailsService = {
   getFullDetails: (id) =>
-    daoApi.get(`/agent/full-application-details/${id}`),
+    daoApi.get(`/api/agent/full-application-details/${id}`),
 };
+
+export const applicationDetailsServices = {
+  getByAadhar: (auth_code) =>
+    daoApi.post('/api/application/by-aadhar', { auth_code }),
+  // ...other methods
+};
+
+export const adminService = {
+  getAllApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
+  getAllApplicationsPending: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
+  getAllApllicationsRejected: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
+
+  updateApplicationStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
+  updatePersonalDetailsStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
+  updateDocumentsStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
+  updateAddressDetailsStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
+  updateLivePhotosStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
+  updateAccountPersonalDetailsStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
+  updateNomineesStatus: (id, status) =>
+    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
+  // Clicking on the view button in the admin dashboard
+  getFullApplicationDetails: (id) =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+
+};
+
+
+
+
+
+
+
+
+
+
+
 
 export const forgotpass = {
   forgotPass: (identifier) =>

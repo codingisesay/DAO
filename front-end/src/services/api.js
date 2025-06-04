@@ -1,6 +1,7 @@
 export const API_ENDPOINTS = {
-  BASE_URL_LOGIN: "http://172.16.1.224:8090", // For login only
-  BASE_URL_DAO: "http://127.0.0.1:8000/api",  // For everything else
+  // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
+  BASE_URL_LOGIN: "http://127.0.0.1:8000", // For login only
+  BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
   AUTH: {
     LOGIN: "/auth/api/login",
@@ -13,39 +14,52 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    AGENTENROLL: '/agent/enrollment'
+    AGENTENROLL: '/api/agent/enrollment'
   },
 
   PERSONAL_DETAILS: {
-    CREATE: '/agent/personal-details',
+    CREATE: '/api/agent/personal-details',
   },
 
   ADDRESS_DETAILS: {
-    CREATE: '/agent/address-details',
+    CREATE: '/api/agent/address-details',
     // ...
   },
 
   LIVE_PHOTO: {
-    CREATE: '/agent/live-photo',
+    CREATE: '/api/agent/live-photo',
   },
 
   APPLICATION_DOCUMENT: {
-    CREATE: '/agent/application-document',
+    CREATE: '/api/agent/application-document',
   },
 
   ACCOUNT_PERSONAL_DETAILS: {
-    CREATE: '/agent/account-personal-details',
+    CREATE: '/api/agent/account-personal-details',
   },
 
   ACCOUNT_NOMINEE: {
-    CREATE: '/agent/account-nominee',
+    CREATE: '/api/agent/account-nominee',
   },
 
   SERVICE_TO_CUSTOMER: {
-    CREATE: '/agent/service-to-customer',
+    CREATE: '/api/agent/service-to-customer',
   },
 
-  ADMIN: {},
+  ADMIN: {
+    GET_ALL_APPLICATIONS: '/api/admin/applications',
+    GET_ALL_PENDING_APPLICATIONS: '/api/admin/applications/pending',
+    GET_ALL_APPLICATIONS_REJECTED: '/api/admin/applications/rejected',
+    UPDATE_APPLICATION_STATUS: '/api/admin/application/update-status',
+    UPDATE_PERSONAL_DETAILS_STATUS: '/api/admin/personal-details/update-status',
+    UPDATE_DOCUMENTS_STATUS: '/api/admin/documents/update-status',
+    UPDATE_ADDRESS_DETAILS_STATUS: '/api/admin/address-details/update-status',
+    UPDATE_LIVE_PHOTOS_STATUS: '/api/admin/live-photos/update-status',
+    UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS: '/api/admin/account-personal-details/update-status',
+    UPDATE_NOMINEES_STATUS: '/api/admin/nominees/update-status',
+    //clicking on the view button in the admin dashboard
+    GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
+  },
 
   BANK: {
     CREATE: "/auth/banks",
@@ -56,7 +70,7 @@ export const API_ENDPOINTS = {
   },
 
 
-  //users
+  //users required handeled as agent registeration
   USER: {
     CREATE: "/auth/users",
     GET_ALL: (id, id1) => `/auth/users?page=${id}&size=${id1}`,

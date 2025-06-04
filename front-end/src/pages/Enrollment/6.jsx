@@ -3,6 +3,7 @@ import PersonalDetailsForm from './6A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
 const p6 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
 
@@ -80,7 +81,16 @@ const p6 = ({ onNext, onBack }) => {
 
     const CurrentStepComponent = steps[activeStep].component;
 
-    const CreateAccount = () => { console.log(formData) }
+    const CreateAccount = () => {
+        handleNext();
+        // Swal.fire({
+        //     title: 'Account Created Successfully!',
+        //     text: 'Your account has been created successfully.',
+        //     icon: 'success',  // Type of icon (success, error, info, warning)
+        //     confirmButtonText: 'OK',  // Text on the button
+        // });
+
+    }
     return (
         <div className="">
             <div className="stepper-header">

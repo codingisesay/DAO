@@ -14,8 +14,12 @@ import CommonButton from '../../components/CommonButton';
 const Dashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
+
     const { logout } = useAuth();
     const navigate = useNavigate();
+
+    // Remove 'application_id' from localStorage
+    localStorage.removeItem('application_id');
 
     const handleRedireact = () => {
         navigate('/enrollmentform'); // Change to your route

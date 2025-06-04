@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "http://127.0.0.1:8000",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -23,6 +24,7 @@
     "framer-motion": "^12.12.1",
     "highcharts": "^12.2.0",
     "highcharts-react-official": "^3.2.2",
+    "mui-datatables": "^4.3.0",
     "react": "^19.0.0",
     "react-bootstrap-icons": "^1.11.6",
     "react-date-range": "^2.0.1",

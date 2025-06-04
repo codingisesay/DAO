@@ -14,6 +14,7 @@ const CommanInput = ({
     errorMessage,
     onValidation,
     max,
+    disabled,
     ...rest
 }) => {
     const [isFocused, setIsFocused] = useState(false);
@@ -91,6 +92,7 @@ const CommanInput = ({
                 )}
                 placeholder={label}
                 maxLength={max}
+                disabled={disabled}
                 {...rest}
             />
             <label

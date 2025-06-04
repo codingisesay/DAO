@@ -292,6 +292,16 @@ function CustomerForm() {
         setCurrentStep(6);
     };
 
+    // Add this handler
+    const handleAadharDataFetched = (data) => {
+        setFormData(prev => ({
+            ...prev,
+            ...data // Merge fetched data into formData
+        }));
+        setProgress({ ...progress, 1: "completed", 2: "inprogress" });
+        setCurrentStep(2); // Move to Step 2
+    };
+
     return (
         <div className="enrollment-form-container p-1">
             <div className='flex justify-around items-center flex-wrap'>
@@ -312,9 +322,7 @@ function CustomerForm() {
                                     <Step1PersonalInfo
                                         formData={formData}
                                         handleChange={handleChange}
-                                        nextStep={nextStep}
-                                        onTypeChange={handleTypeChange}      // <-- add this
-                                        onOptionChange={handleOptionChange}  // <-- add this
+                                        onAadharDataFetched={handleAadharDataFetched} // <-- Pass handler
                                     />
                                 )}
 
@@ -327,10 +335,6 @@ function CustomerForm() {
                                         completeStep={completeStep2}
                                         nextStep={nextStep}
                                         prevStep={prevStep}
-                                    // prevStep={() => {
-                                    //     setProgress({ ...progress, 1: "inprogress", 2: "pending" });
-                                    //     setCurrentStep(1);
-                                    // }}
                                     />
                                 )}
 

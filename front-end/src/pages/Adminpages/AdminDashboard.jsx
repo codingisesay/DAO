@@ -62,7 +62,7 @@ const AdminDashboard = () => {
                     <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1">
-                                <div className="md:w-1/2">
+                                <Link to="/approved" className="md:w-1/3  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
                                         <div className="card-text">
@@ -70,8 +70,8 @@ const AdminDashboard = () => {
                                             <small>Approved</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="md:w-1/2">
+                                </Link>
+                                <Link to="/pending" className="md:w-1/3  ">
                                     <div className="pending-card">
                                         <i className="bi bi-clipboard2-minus"></i>
                                         <div className="card-text">
@@ -79,8 +79,8 @@ const AdminDashboard = () => {
                                             <small>Pending</small>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="md:w-1/2">
+                                </Link>
+                                <Link to="/rejected" className="md:w-1/3  ">
                                     <div className="rejected-card">
                                         <i className="bi bi-clipboard2-x"></i>
                                         <div className="card-text">
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
                                             <small>Rejected</small>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
 
                             </div>
                         </div>

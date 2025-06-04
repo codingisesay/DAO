@@ -1,26 +1,31 @@
+
+
 import React, { useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
-import { daoApi } from '../../utils/storage';
+// import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2'
+import { daoApi } from '../../utils/storage';
+import { livePhotoService } from '../../services/apiServices';
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
 
 
     const submitaddress = async (localFormData) => {
         const payload = {
-            application_id: 43,
+            application_id: formData.application_id,
             longitude: JSON.stringify(localFormData.metadata.location.longitude),
             latitude: JSON.stringify(localFormData.metadata.location.latitude),
             photo: localFormData.file,
-            // ...localFormData,
-            // status: formData.status,
+            ...localFormData,
+            status: formData.status,
         };
-        console.log('ready photodata to send : ', payload.photo)
+        console.log('ready photodata to send : ', payload)
 
         try {
-            const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
+            const response = await daoApi.post(livePhotoService.upload(payload));
+            // const response = await daoApi.post(API_ENDPOINTS.LIVE_PHOTO.CREATE, payload);
             Swal.fire({
                 icon: 'success',
                 title: response.data.message || 'Address details saved successfully.',
@@ -37,10 +42,11 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 onNext();
             }
         } catch (error) {
+            console.log(error)
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.message || 'Failed to save address details'
+                text: JSON.stringify(error)
             });
         }
     }
@@ -52,6 +58,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 photoType="customer"
                 onCapture={(data) => { setLocalFormData(data); console.log('After cature : ', data) }}
             />
+
+
+            {/* om integration button/ */}
             <div className="flex justify-between mt-6">
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
@@ -60,6 +69,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     Save & Continue
                 </CommonButton>
             </div>
+
             {/* <div className="text-center">
                 <button
                     onClick={() => {
@@ -70,9 +80,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg"
                 >
                     Submit All Photos
-                </button>
-            </div> */}
-        </div>
+                </button></div> */}
+
+        </div >
     );
 };
 

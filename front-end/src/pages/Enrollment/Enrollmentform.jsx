@@ -17,6 +17,7 @@ function Enrollmentform() {
     const [formData, setFormData] = useState({
         application_no: '',
         applicationType: '',
+        salutation: '',
         verificationOption: '',
         verificationNumber: '',
         correspondenceAddressSame: false,
@@ -143,7 +144,7 @@ function Enrollmentform() {
                 return <Page6
                     onComplete={() => {
                         setComplete(true);
-                        console.log('Final form data:', formData);
+                        // console.log('Final form data:', formData);
                     }}
                     onBack={handleBack}
                     formData={formData}

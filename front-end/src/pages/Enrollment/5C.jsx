@@ -5,8 +5,11 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import { serviceToCustomerService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
+import { a } from 'framer-motion/client';
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
+
+    const storedId = localStorage.getItem('application_id');
     const [localFormData, setLocalFormData] = useState({
         eBankingServices: formData.bankFacility?.eBankingServices || {
             atmCard: false,
@@ -61,6 +64,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             // Prepare the payload
             const payload = {
                 // If application_id is hardcoded in backend, you can omit it
+                application_id: Number(storedId), // Replace with your actual field
                 banking_services_id: 1, // Replace with your actual field
                 // Add other fields if needed
             };
