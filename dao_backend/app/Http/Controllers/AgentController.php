@@ -341,13 +341,11 @@ public function saveApplicationDocument(Request $request)
 
         $documents[] = $doc;
     }
-
-    DB::table('document_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
         
-       
-    ]);
+        DB::table('document_approved_status')->updateOrInsert(
+            ['application_id' => $validated['application_id']],
+            ['status' => 'Pending']
+        );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',
@@ -497,11 +495,10 @@ public function saveAccountNominee(Request $request)
         );
         $savedNominees[] = $nominee;
     }
-
-    DB::table('nominee_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
-    ]);
+DB::table('nominee_approved_status')->updateOrInsert(
+    ['application_id' => $validated['application_id']],
+    ['status' => 'Pending']
+);
 
     return response()->json([
         'message' => 'Account nominees saved successfully.',

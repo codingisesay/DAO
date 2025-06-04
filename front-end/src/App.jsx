@@ -18,7 +18,8 @@ import UserTable from './muitbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './pages/Enrollment/GetSignphoto'
+import DAOExtraction from './pages/Enrollment/GetSignphoto';
+import PrintApplication from './pages/Enrollment/PrintApplication';
 
 
 export const App = () => {
@@ -44,6 +45,8 @@ export const App = () => {
           <Route path="/pending" element={<AccountTbl />} /> */}
           <Route path="/rejected" element={<AccountTbl />} />
           <Route path="/varify-account/01" element={<Varificationform />} />
+          // In your router configuration
+          <Route path="/print-application" element={<PrintApplication />} />
         </Routes>
       </Router>
       <ToastContainer />
