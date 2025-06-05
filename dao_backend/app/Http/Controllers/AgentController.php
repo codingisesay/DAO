@@ -457,15 +457,14 @@ public function saveServiceToCustomer(Request $request)
 
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'application_id' => 'required|integer|exists:customer_application_details,id',
-        'banking_services_id' => 'required|integer|exists:banking_services,id',
+        'banking_services_facilities_id' => 'required|integer|exists:banking_services,id',
     ]);
 
     // Update if exists, otherwise create
     $service = ServiceToCustomer::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
-            'banking_services_id' => $validated['banking_services_id'],
+            'banking_services_facilities_id' => $validated['banking_services_facilities_id'],
         ],
         $validated
     );

@@ -247,6 +247,116 @@ public function updateApplicationPersonalDetails($application_id, Request $reque
     ], 200);
 }
 
+public function updateApplicationAddressDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_address_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicantLivePhotos($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('applicant_live_photos')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicationDocuments($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('document_approved_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAccountPersonalDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('account_personal_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAccountNominees($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('nominee_approved_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateServiceToCustomer($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_service_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+
+
 
 
 }

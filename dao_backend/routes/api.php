@@ -61,6 +61,12 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 //update customer application details
           Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
           Route::post('/admin/updateApplicationPersonalDetails/{application_id}', [AdminController::class, 'updateApplicationPersonalDetails']);
+          Route::post('/admin/updateApplicationAddressDetails/{application_id}', [AdminController::class, 'updateApplicationAddressDetails']);
+          Route::post('/admin/updateApplicantLivePhotos/{application_id}', [AdminController::class, 'updateApplicantLivePhotos']);
+          Route::post('/admin/updateApplicationDocuments/{application_id}', [AdminController::class, 'updateApplicationDocuments']);
+          Route::post('/admin/updateAccountPersonalDetails/{application_id}', [AdminController::class, 'updateAccountPersonalDetails']);
+          Route::post('/admin/updateAccountNominees/{application_id}', [AdminController::class, 'updateAccountNominees']);
+          Route::post('/admin/updateServiceToCustomer/{application_id}', [AdminController::class, 'updateServiceToCustomer']);
    
 
     // });
