@@ -12,7 +12,7 @@ import { livePhotoService, applicationDetailsService } from '../../services/apiS
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
-
+    const application_id = localStorage.getItem('application_id') || formData.application_id;
 
     useEffect(() => {
         const storedData = localStorage.getItem('customerPhotoData');
@@ -28,7 +28,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
 
     const submitaddress = async (localFormData) => {
         const payload = {
-            application_id: formData.application_id,
+            application_id: formData.application_id || application_id,
             longitude: JSON.stringify(localFormData.metadata.location.longitude),
             latitude: JSON.stringify(localFormData.metadata.location.latitude),
             photo: localFormData.file,

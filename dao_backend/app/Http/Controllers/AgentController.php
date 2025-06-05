@@ -234,7 +234,7 @@ public function saveLivePhoto(Request $request)
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
-        'status' => 'nullable|in:APPROVED,REJECT',
+        'status' => 'nullable',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
@@ -292,6 +292,8 @@ public function saveAgentLivePhoto(Request $request)
             'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
+
+    
  
     return response()->json([
         'message' => 'Agent Live photo uploaded successfully.',

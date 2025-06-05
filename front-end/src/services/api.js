@@ -46,6 +46,10 @@ export const API_ENDPOINTS = {
     CREATE: '/api/agent/service-to-customer',
   },
 
+  AGENT_LIVE_PHOTO: {
+    CREATE: '/api/agent/agent-live-photo',
+  },
+
   ADMIN: {
     GET_ALL_APPLICATIONS: '/api/admin/applications',
     GET_ALL_PENDING_APPLICATIONS: '/api/admin/applications/pending',

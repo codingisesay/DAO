@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
@@ -23,9 +24,10 @@ function P3({ onNext, onBack, formData, updateFormData }) {
     const handleDocumentsUpdate = (newDocuments) => {
         // Save documents to state and localStorage
         setDocuments(newDocuments);
-        console.log('Updated documents:', newDocuments);
+
         // DAOExtraction();
-        localStorage.setItem('applicationDocuments', JSON.stringify(newDocuments)); ``
+        localStorage.setItem('applicationDocuments', newDocuments);
+        console.log('Updated documents:', newDocuments);
     };
 
     const handleSubmit = async () => {
@@ -43,9 +45,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
         const formDataObj = new FormData();
         formDataObj.append('application_id', storedId);
-        // formDataObj.append('application_id', formData.application_id); // Use the real ID from formData if available
 
-        // Filter out documents that don't have files (in case of placeholders)
         const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
 
         if (documentsWithFiles.length === 0) {
@@ -59,13 +59,6 @@ function P3({ onNext, onBack, formData, updateFormData }) {
 
 
         try {
-            // const response = await daoApi.post(
-            //     API_ENDPOINTS.APPLICATION_DOCUMENT.CREATE,
-            //     formDataObj,
-            //     {
-            //         headers: { 'Content-Type': 'multipart/form-data' }
-            //     }
-            // );
             const respone = daoApi.post(applicationDocumentService.upload(formDataObj))
             // Clear localStorage after successful upload
             localStorage.removeItem('applicationDocuments');
@@ -83,10 +76,7 @@ function P3({ onNext, onBack, formData, updateFormData }) {
                 documents: documents.map(doc => ({ name: doc.name })) // Save document names without files
             });
             onNext();
-            // Proceed to next step
-            // if (onNext) {
-            //     onNext();
-            // }
+
         } catch (error) {
             Swal.fire({
                 icon: 'error',

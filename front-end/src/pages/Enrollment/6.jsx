@@ -1,6 +1,6 @@
 import React, { act, useState } from 'react';
 import PersonalDetailsForm from './6A';
-import CameraCapture from './2C';
+import CameraCapture from './6B';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
@@ -82,13 +82,19 @@ const p6 = ({ onNext, onBack }) => {
     const CurrentStepComponent = steps[activeStep].component;
 
     const CreateAccount = () => {
+
+
+
+
+
+
         handleNext();
-        // Swal.fire({
-        //     title: 'Account Created Successfully!',
-        //     text: 'Your account has been created successfully.',
-        //     icon: 'success',  // Type of icon (success, error, info, warning)
-        //     confirmButtonText: 'OK',  // Text on the button
-        // });
+        Swal.fire({
+            title: 'Account Created Successfully!',
+            text: 'Your account has been created successfully.',
+            icon: 'success',  // Type of icon (success, error, info, warning)
+            confirmButtonText: 'OK',  // Text on the button
+        });
 
     }
     return (
@@ -130,10 +136,13 @@ const p6 = ({ onNext, onBack }) => {
                 <CurrentStepComponent
                     formData={formData}
                     onChange={handleFormChange}
+                    onNext={handleNext}
+                    onBack={handleBack}
                 />
             </div>
 
             <div className="next-back-btns">
+
                 <CommonButton
                     className="btn-back"
                     onClick={activeStep === 0 ? onBack : handleBack}
@@ -144,11 +153,15 @@ const p6 = ({ onNext, onBack }) => {
 
                 <CommonButton
                     className="btn-next"
-                    onClick={CreateAccount}
-                    // onClick={activeStep === 2 ? onNext : handleNext}
+                    // onClick={CreateAccount}
+                    onClick={activeStep === 1 ? CreateAccount : handleNext}
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+
+                    {activeStep === 1 ?
+                        <>Submit</> :
+
+                        <>Next&nbsp;<i className="bi bi-chevron-double-right"></i></>}
                 </CommonButton>
             </div>
         </div>

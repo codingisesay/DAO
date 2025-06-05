@@ -24,6 +24,13 @@ export const livePhotoService = {
     }),
 };
 
+export const agentlivephotoSave = {
+  upload: (formData) =>
+    daoApi.post(API_ENDPOINTS.AGENT_LIVE_PHOTO.CREATE, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+};
+
 
 export const applicationDocumentService = {
   upload: (formData) =>

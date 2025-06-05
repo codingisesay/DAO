@@ -190,8 +190,8 @@ const PhotoCapture = ({
         const imageSrc = webcamRef.current.getScreenshot();
         const blob = dataURLtoBlob(imageSrc);
         const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        // const previewUrl = URL.createObjectURL(file);
-        const previewUrl = await fileToBase64(file);
+        const previewUrl = URL.createObjectURL(file);
+        // const previewUrl = await fileToBase64(file);
 
 
         const capturedData = {
@@ -209,6 +209,7 @@ const PhotoCapture = ({
 
         // For localStorage, store the minimal data needed to recreate the preview
         const storageData = {
+            file: file,
             previewUrl: previewUrl,
             timestamp: capturedData.timestamp,
             metadata: capturedData.metadata

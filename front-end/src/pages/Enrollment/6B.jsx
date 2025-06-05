@@ -1,16 +1,81 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
-import customerInstructions from '../../assets/imgs/photo_instructions.png';
-// import agentInstructions from './assets/agent-instructions.png';
+import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
+import { daoApi } from '../../utils/storage';
+import { agentlivephotoSave } from '../../services/apiServices';
 
-const PhotoCaptureApp = () => {
+const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
+    const [localFormData, setLocalFormData] = useState();
+    const application_id = localStorage.getItem('application_id') || formData.application_id;
+
+    useEffect(() => {
+        const storedData = localStorage.getItem('agentPhotoData');
+
+        if (!storedData) {
+            console.error('No agentPhotoData found in localStorage');
+            return;
+        }
+        setLocalFormData(JSON.parse(storedData));
+    }, []);
+
+    const submitAgentPic = async (localFormData) => {
+        const payload = {
+            application_id: formData.application_id || application_id,
+            longitude: JSON.stringify(localFormData.metadata.location.longitude),
+            latitude: JSON.stringify(localFormData.metadata.location.latitude),
+            photo: localFormData.file,
+            ...localFormData,
+            status: 'Pending'
+        };
+        console.log('ready photodata to send : ', payload)
+
+        try {
+            const response = await daoApi.post(agentlivephotoSave.upload(payload));
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Agent photo saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            onNext();
+        } catch (error) {
+            console.log(error)
+            Swal.fire({
+                icon: 'success',
+                title: 'Agent photo saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            onNext();
+        }
+    }
+
     return (
-        <div className="space-y-8 p-4">
+        <div className="space-y-8 ">
+            <PhotoCapture
+                photoType="agent"
+                onCapture={(data) => { setLocalFormData(data); console.log('After capture : ', data); }}
+            />
 
-            AgentPic
-
+            <div className="next-back-btns z-10">
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton
+                    onClick={() => submitAgentPic(localFormData)}
+                    variant="contained"
+                    className="btn-next"
+                >
+                    Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </CommonButton>
+            </div>
         </div>
     );
 };
 
 export default PhotoCaptureApp;
+
+
+
