@@ -11,7 +11,11 @@ use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
 use App\Models\AgentLivePhoto;
+use App\Models\CustomerApplicationStatus;
+
 use App\Models\ServiceToCustomer;
+
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
@@ -112,39 +116,6 @@ public function getApplicationDetails(Request $request, $id)
 }
 
 
-// Store personal details
-// public function savePersonalDetails(Request $request)
-// {
-//     // Hardcode application_id for testing
-//     // $request->merge(['application_id' => 1]); // Replace 4 with a valid ID from your DB
-
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'salutation' => 'required',
-//         'religion' => 'required',
-//         'caste' => 'nullable|string|max:191',
-//         'marital_status' => 'required',
-//         'alt_mob_no' => 'nullable|string|max:191',
-//         'email' => 'nullable|email|max:191',
-//         'adhar_card' => 'nullable|string|max:191',
-//         'pan_card' => 'nullable|string|max:191',
-//         'passport' => 'nullable|string|max:191',
-//         'driving_license' => 'nullable|string|max:191',
-//         'voter_id' => 'nullable|string|max:191',
-//         'status' => 'nullable',
-//     ]);
-
-//     // Update if exists, otherwise create
-//     $personalDetails = \App\Models\ApplicationPersonalDetails::updateOrCreate(
-//         ['application_id' => $validated['application_id']],
-//         $validated
-//     );
-
-//     return response()->json([
-//         'message' => 'Personal details saved successfully.',
-//         'data' => $personalDetails,
-//     ], 201);
-// }
 
 public function savePersonalDetails(Request $request)
 {
@@ -263,6 +234,7 @@ public function saveLivePhoto(Request $request)
     ], 201);
 }
 
+
 public function saveAgentLivePhoto(Request $request)
 {
     $validated = $request->validate([
@@ -273,11 +245,11 @@ public function saveAgentLivePhoto(Request $request)
         'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
- 
+
     $file = $request->file('photo');
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
     $path = $file->storeAs('agent_live_photos', $filename, 'public');
- 
+
     $photo = AgentLivePhoto::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
@@ -293,55 +265,27 @@ public function saveAgentLivePhoto(Request $request)
         ]
     );
 
-    
- 
-    return response()->json([
+    $customerStaus = CustomerApplicationStatus::updateOrCreate([
+        'application_id' => $validated['application_id'],
+        'status' => 'Pending',
+   ] );
+
+   if($customerStaus){
+
+     return response()->json([
         'message' => 'Agent Live photo uploaded successfully.',
         'data' => $photo,
     ], 201);
+
+   }
+
+    return response()->json([
+        'message' => 'Error uploading agent live photo.',
+        
+    ]);
 }
 
-// Store application document
-// public function saveApplicationDocument(Request $request)
-// {
-//     // Hardcode application_id for testing if needed
-//     // $request->merge(['application_id' => 1]);
 
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'document_types' => 'required|array|min:1',
-//         'document_types.*' => 'required|string|max:191',
-//         'files' => 'required|array|min:1',
-//         'files.*' => 'file|max:10240',
-//     ]);
-
-//     $documents = [];
-//    foreach ($validated['files'] as $index => $file) {
-//     $documentType = $validated['document_types'][$index] ?? null;
-//     $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-//     $path = $file->storeAs('application_documents', $filename, 'public');
-
-//     ApplicationDocument::updateOrCreate(
-//         [
-//             'application_id' => $validated['application_id'],
-//             'document_type' => $documentType,
-//         ],
-//         [
-//             'application_id' => $validated['application_id'],
-//             'document_type' => $documentType,
-//             'file_name' => $filename,
-//             'file_path' => $path,
-           
-//         ]
-//     );
-
-//     return response()->json([
-//         'message' => 'Documents uploaded successfully.',
-//         'data' => $documents,
-//     ], 201);
-// }
-
-// }
 
 
 
@@ -448,50 +392,7 @@ public function saveAccountPersonalDetails(Request $request)
     ], 201);
 }
 
-// Store account nominee details
-// public function saveAccountNominee(Request $request)
-// {
-//     // Hardcode application_id for testing if needed
-//     // $request->merge(['application_id' => 1]);
 
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'salutation' => 'required',
-//         'first_name' => 'required|string|max:191',
-//         'middle_name' => 'nullable|string|max:191',
-//         'last_name' => 'nullable|string|max:191',
-//         'relationship' => 'required|string|max:191',
-//         'percentage' => 'required|string|max:191',
-//         'dob' => 'required|date',
-//         'age' => 'required|string|max:191',
-//         'nom_complex_name' => 'nullable|string|max:191',
-//         'nom_flat_no' => 'nullable|string|max:191',
-//         'nom_area' => 'nullable|string|max:191',
-//         'nom_landmark' => 'nullable|string|max:191',
-//         'nom_country' => 'nullable|string|max:191',
-//         'nom_pincode' => 'nullable|string|max:191',
-//         'nom_city' => 'nullable|string|max:191',
-//         'nom_state' => 'nullable|string|max:191',
-//         'nom_district' => 'nullable|string|max:191',
-//         'nom_mobile' => 'nullable|string|max:191',
-       
-//     ]);
-
-//     // Use a combination of fields to avoid duplicate nominees for the same application
-//     $nominee = AccountNominee::updateOrCreate(
-//         [
-//             'application_id' => $validated['application_id'],
-//             'first_name' => $validated['first_name'],
-//             'dob' => $validated['dob'],
-//         ],
-//         $validated
-//     );
-
-//     return response()->json([
-//         'message' => 'Account nominee saved successfully.',
-//         'data' => $nominee,
-//     ], 201);
-// }
 
 
 
