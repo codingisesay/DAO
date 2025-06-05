@@ -44,6 +44,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     // Route::middleware('role:admin')->group(function () {
    
    Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
+   Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
 
     // });
 

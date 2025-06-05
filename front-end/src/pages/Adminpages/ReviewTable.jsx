@@ -9,7 +9,7 @@ import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
 import CommanTbl from './CommanTbl';
-import { accountsStatusListService } from '../../services/apiServices'; // <-- Import your service
+import { recentPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
 
 function ReviewTable() {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -30,9 +30,9 @@ function ReviewTable() {
         // Call the approved applications API
         const fetchData = async () => {
             try {
-                const response = await accountsStatusListService.getList();
+                const response = await recentPendingApplicationsService.getList();
                 setTbldata(response.data.data || []);
-                console.log("Table Data:", response.data.data);
+                console.log("Table Data:", response);
             } catch (error) {
                 console.error("Failed to fetch approved applications:", error);
             }

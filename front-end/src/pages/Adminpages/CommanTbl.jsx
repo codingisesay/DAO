@@ -81,11 +81,11 @@ const CommanTbl = ({ tbldata }) => {
                 <thead className="bg-green-600 text-white">
                     <tr>
                         <th className="p-2">Serial No.</th>
-                        <th className="p-2">customer name</th>
+                        <th className="p-2">Agent name</th>
+                        <th className="p-2">Application Date</th>
                         <th className="p-2">Application No.</th>
-                        <th className="p-2">customer id</th>
-                        <th className="p-2">Date of Birth</th>
-                        <th className="p-2">Auth Type</th>
+                        <th className="p-2">Customer Name</th>
+                        {/* <th className="p-2">Auth Type</th> */}
                         {/* <th className="p-2">Rejected Reason</th> */}
                         <th className="p-2">Action</th>
                     </tr>
@@ -94,15 +94,13 @@ const CommanTbl = ({ tbldata }) => {
                     {tbldata.map((tbldt, index) => (
                         <tr key={tbldt.id} className="text-center">
                             <td className="border p-2">0{index + 1}.</td>
-                            <td className="border p-2">{tbldt.first_name}</td>
+                            <td className="border p-2">PARESH</td>
+                            <td className="border p-2">{tbldt.created_at}</td>
                             <td className="border p-2">{tbldt.application_no}</td>
-                            <td className="border p-2">{tbldt.id}</td>
-                            <td className="border p-2">{tbldt.DOB}</td>
-                            <td className="border p-2">{tbldt.auth_type}</td>
-                            {/* <td className="border p-2">{tbldt.reason}</td> */}
+                            <td className="border p-2">{tbldt.first_name} {tbldt.middle_name} {tbldt.last_Name}   </td>
                             <td className="border p-2">
                                 <button className="border px-3 py-1 rounded text-green-600 border-green-600">
-                                    <Link to="/varify-account/01"> View</Link>
+                                    <Link to={`/varify-account/${tbldt.application_id}`}>Verify</Link>
                                 </button>
                             </td>
                         </tr>

@@ -67,7 +67,10 @@ export const accountsStatusListService = {
     daoApi.get(API_ENDPOINTS.ACCOUNTS_STATUS_LIST.GET_LIST),
 };
 
-
+export const recentPendingApplicationsService = {
+  getList: () =>
+    daoApi.get(API_ENDPOINTS.RECENT_PENDING_APPLICATIONS.GET_LIST),
+};
 
 
 

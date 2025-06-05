@@ -52,6 +52,9 @@ export const API_ENDPOINTS = {
 
   ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
 
+  RECENT_PENDING_APPLICATIONS: {
+    GET_LIST: '/api/admin/pendingApplication',
+  },
 
 
 

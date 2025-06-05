@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import workingman from '../../assets/imgs/workingman1.png';
@@ -7,29 +7,39 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import { salutation, } from '../../data/data';
 import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
+import { applicationDetailsService } from '../../services/apiServices'; // <-- Import your service
 
-function P1({ onNext, onBack, formData, updateFormData }) {
-    const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
-    const [selectedType, setSelectedType] = useState(formData.applicationType || '');
-    const [showData, setShowData] = useState(!!formData.verificationNumber);
-    const [localFormData, setLocalFormData] = useState({
-        firstname: formData.personalDetails?.firstName || '',
-        middlename: formData.personalDetails?.middleName || '',
-        lastname: formData.personalDetails?.lastName || '',
-        dob: formData.personalDetails?.dob || '',
-        gender: formData.personalDetails?.gender || '',
-        mobile: formData.personalDetails?.mobile || '',
-        verifynumber: formData.verificationNumber || '',
-        complexname: formData.personalDetails?.complexName || '',
-        flatnoroomno: formData.personalDetails?.flatNoRoomNo || '',
-        area: formData.personalDetails?.area || '',
-        landmark: formData.personalDetails?.landmark || '',
-        country: formData.personalDetails?.country || '',
-        pincode: formData.personalDetails?.pincode || '',
-        city: formData.personalDetails?.city || '',
-        district: formData.personalDetails?.district || '',
-        state: formData.personalDetails?.state || ''
-    });
+
+function P1({ onNext, onBack, updateFormData }) {
+    const [localFormData, setLocalFormData] = useState();
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                alert('called')
+                if (id) {
+                    const response = await applicationDetailsService.getFullDetails(id);
+                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    console.log('Application details saved to localStorage.');
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [id]);
+
+
+
+
+
+
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -64,9 +74,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const handleNextStep = () => { onNext(); };
 
     return (
-        <>
-            <div className='form-container'>
-                <h2 className="text-xl font-bold mb-2">Pending Application : 00001</h2>
+        <> <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
+            {/* <div className='form-container'>
+                <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
@@ -224,7 +234,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                         </CommonButton>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </>
     );
 }
