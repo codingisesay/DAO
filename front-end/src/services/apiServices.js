@@ -62,6 +62,21 @@ export const applicationDetailsServices = {
   // ...other methods
 };
 
+export const accountsStatusListService = {
+  getList: () =>
+    daoApi.get(API_ENDPOINTS.ACCOUNTS_STATUS_LIST.GET_LIST),
+};
+
+
+
+
+
+
+
+
+
+
+// om data below
 export const adminService = {
   getAllApplications: () =>
     daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
@@ -89,6 +104,7 @@ export const adminService = {
     daoApi.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
 
 };
+// om data above
 
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
@@ -8,6 +8,8 @@ import AccountBarChart from './AdminDashboard_validationBarGraph';
 import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
+import { accountsStatusListService } from '../../services/apiServices';
+import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -22,6 +24,30 @@ const AdminDashboard = () => {
         logout();
         navigate('/login');
     };
+
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await accountsStatusListService.getList();
+                if (response) {
+                    console.log(response)
+                }
+            } catch (error) {
+                console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: JSON.stringify(error)
+                });
+            }
+        };
+        fetchDetails();
+    }, []);
+
+
+
+
     const handleDateChange = (range) => {
         console.log("Selected Range:", range);
     };
@@ -61,7 +87,8 @@ const AdminDashboard = () => {
                 <div className="mx-auto flex flex-wrap">
                     <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
-                            <div className="dashboard-top-caard-collection flex my-1">
+                            <StatusDashboard />
+                            {/* <div className="dashboard-top-caard-collection flex my-1">
                                 <Link to="/approved" className="md:w-1/4  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
@@ -99,11 +126,21 @@ const AdminDashboard = () => {
                                     </div>
                                 </Link>
 
-                            </div>
+                            </div> */}
                         </div>
                         <h2 className="text-xl font-bold mb-2">Re-KYC</h2>
                         <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1 flex-wrap ">
+
+                                <Link to="/rejected" className="md:w-1/4  ">
+                                    <div className="recent-applyed-card">
+                                        <i className="bi bi-clipboard2-x"></i>
+                                        <div className="card-text">
+                                            <span className="dashboard-card-count">50+</span>
+                                            <small>Review</small>
+                                        </div>
+                                    </div>
+                                </Link>
                                 <Link to="/approved" className="md:w-1/4  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
@@ -120,15 +157,6 @@ const AdminDashboard = () => {
                                         <div className="card-text">
                                             <span className="dashboard-card-count">200+</span>
                                             <small>Pending</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <Link to="/rejected" className="md:w-1/4  ">
-                                    <div className="recent-applyed-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Review</small>
                                         </div>
                                     </div>
                                 </Link>
@@ -205,5 +233,89 @@ const AdminDashboard = () => {
         </>
     );
 };
+
+
+
+
+
+function StatusDashboard() {
+    const [statusCounts, setStatusCounts] = useState({
+        Pending: 0,
+        Approved: 0,
+        Rejected: 0,
+        // Review: 0/
+    });
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await accountsStatusListService.getList();
+                if (response && response.data) {
+                    // Count the statuses
+                    const counts = response.data.data.reduce((acc, item) => {
+                        acc[item.status] = (acc[item.status] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    setStatusCounts({
+                        Pending: counts.Pending || 0,
+                        Approved: counts.Approved || 0,
+                        Rejected: counts.Rejected || 0,
+                        // Review: counts.Pending || 0
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: JSON.stringify(error)
+                });
+            }
+        };
+        fetchDetails();
+    }, []);
+
+    return (
+        <div className="dashboard-top-caard-collection flex my-1">
+            <Link to="/review" className="md:w-1/4">
+                <div className="recent-applyed-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Pending}</span>
+                        <small>Review</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/approved" className="md:w-1/4">
+                <div className="approved-card">
+                    <i className="bi bi-clipboard2-check"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Approved}</span>
+                        <small>Approved</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/pending" className="md:w-1/4">
+                <div className="pending-card">
+                    <i className="bi bi-clipboard2-minus"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Pending}</span>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/rejected" className="md:w-1/4">
+                <div className="rejected-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <small>Rejected</small>
+                    </div>
+                </div>
+            </Link>
+        </div>
+    );
+}
 
 export default AdminDashboard;

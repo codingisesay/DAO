@@ -50,6 +50,21 @@ export const API_ENDPOINTS = {
     CREATE: '/api/agent/agent-live-photo',
   },
 
+  ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // om data below
   ADMIN: {
     GET_ALL_APPLICATIONS: '/api/admin/applications',
     GET_ALL_PENDING_APPLICATIONS: '/api/admin/applications/pending',
@@ -64,6 +79,21 @@ export const API_ENDPOINTS = {
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
   },
+
+
+
+  // om data above
+
+
+
+
+
+
+
+
+
+
+
 
   BANK: {
     CREATE: "/auth/banks",
