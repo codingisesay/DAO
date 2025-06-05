@@ -57,6 +57,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
       Route::get('/admin/fetchApplicationDocuments/{application_id}', [AdminController::class, 'getApplicationDocuments']);
       Route::get('/admin/fetchAccountPersonalDetails/{application_id}', [AdminController::class, 'getAccountPersonalDetails']);
        Route::get('/admin/fetchAccountNominees/{application_id}', [AdminController::class, 'getAccountNominees']);
+       Route::get('/admin/fetchServiceToCustomer/{application_id}', [AdminController::class, 'getServiceToCustomer']);
    
 
     // });
@@ -80,6 +81,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
         //rekyc
         Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
+        Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
         //Admin routes
 
     // });

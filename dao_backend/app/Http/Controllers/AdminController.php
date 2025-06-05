@@ -214,7 +214,15 @@ public function getAccountNominees($application_id)
 
 }
 
+function getServiceToCustomer($application_id)
+{
+    $services = DB::table('service_to_customers')
+        ->where('application_id', $application_id)
+        ->get();
 
+    return response()->json([
+        'services' => $services,
+    ], 200);
 
-
+}
 }
