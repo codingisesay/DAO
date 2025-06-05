@@ -559,4 +559,31 @@ public function getApplicationByAadhar(Request $request)
     ]);
 }
 
+public function getBankingServices()
+{
+    // Join banking_services with banking_services_facilities
+    $bankingServices = DB::table('banking_services')
+        ->leftJoin('banking_services_facilities', 'banking_services.id', '=', 'banking_services_facilities.banking_service_id')
+        ->select(
+            'banking_services.id as service_id',
+            'banking_services.name as service_name',
+            'banking_services.status as service_status',
+            'banking_services.created_at as service_created_at',
+            'banking_services.updated_at as service_updated_at',
+            'banking_services_facilities.id as facility_id',
+            'banking_services_facilities.name as facility_name',
+            'banking_services_facilities.status as facility_status',
+            'banking_services_facilities.banking_service_id'
+        )
+        ->get();
+
+    if ($bankingServices->isEmpty()) {
+        return response()->json(['message' => 'No banking services found.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Banking services fetched successfully.',
+        'data' => $bankingServices,
+    ]);
+}
 }
