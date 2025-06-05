@@ -8,22 +8,62 @@ import CommonButton from '../../components/CommonButton';
 import { salutation, } from '../../data/data';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { applicationDetailsService } from '../../services/apiServices'; // <-- Import your service
+import { applicationDetailsService, pendingAccountDataS1 } from '../../services/apiServices'; // <-- Import your service
 
 
 function P1({ onNext, onBack, updateFormData }) {
-    const [localFormData, setLocalFormData] = useState();
+    const [localFormData, setLocalFormData] = useState({
+        salutation: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        DOB: '',
+        gender: '',
+        mobile: '',
+        complex_name: '',
+        flat_no: '',
+        area: '',
+        landmark: '',
+        country: '',
+        pincode: '',
+        city: '',
+        district: '',
+        state: '',
 
+    });
     const { id } = useParams();
+    var application, personal;
 
     useEffect(() => {
         const fetchAndStoreDetails = async () => {
             try {
-                alert('called')
+                // alert('called')
                 if (id) {
-                    const response = await applicationDetailsService.getFullDetails(id);
+                    const response = await pendingAccountDataS1.getDetailsS1(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('Application details saved to localStorage.');
+                    console.log('got data :', response.data.details);
+                    const application = response.data.details || {};
+                    // const personal = response?.data?.personal_details || {};
+
+                    setLocalFormData({
+                        salutation: application.salutation || '',
+                        first_name: application.first_name || '',
+                        middle_name: application.middle_name || '',
+                        last_name: application.last_name || '',
+                        DOB: application.DOB || '',
+                        gender: application.gender || '',
+                        mobile: application.mobile || '',
+                        complex_name: application.complex_name || '',
+                        flat_no: application.flat_no || '',
+                        area: application.area || '',
+                        landmark: application.landmark || '',
+                        country: application.country || '',
+                        pincode: application.pincode || '',
+                        city: application.city || '',
+                        district: application.district || '',
+                        state: application.state || '',
+
+                    });
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -74,51 +114,19 @@ function P1({ onNext, onBack, updateFormData }) {
     const handleNextStep = () => { onNext(); };
 
     return (
-        <> <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
-            {/* <div className='form-container'>
+        <>
+            <div className='form-container'>
                 <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
                         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-3">
-                            <CommanSelect
-                                onChange={handleChange}
-                                label={labels.salutation.label}
-                                name="salutation"
-                                value={localFormData.salutation}
-                                options={salutation}
-                                readOnly={true}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label={labels.firstname.label}
-                                type="text"
-                                name="firstname"
-                                value={localFormData.firstname}
-                                readOnly={true}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label={labels.middlename.label}
-                                type="text"
-                                name="middlename"
-                                value={localFormData.middlename}
-                                readOnly={true}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label={labels.lastname.label}
-                                type="text"
-                                name="lastname"
-                                value={localFormData.lastname}
-                                readOnly={true}
-                            />
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}
                                 type="date"
                                 name="dob"
-                                value={localFormData.dob}
+                                value={localFormData.DOB}
                                 readOnly={true}
                             />
                             <CommanInput
@@ -131,84 +139,96 @@ function P1({ onNext, onBack, updateFormData }) {
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.mobile.label}
-                                type="text"
+                                label="First Name"
+                                name="first_name"
+                                value={localFormData.first_name}
+                                readOnly={true}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Middle Name"
+                                name="middle_name"
+                                value={localFormData.middle_name}
+                                readOnly={true}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Last Name"
+                                name="last_name"
+                                value={localFormData.last_name}
+                                readOnly={true}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Mobile No."
                                 name="mobile"
                                 value={localFormData.mobile}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.complexname.label}
-                                type="text"
-                                name="complexname"
-                                value={localFormData.complexname}
-                                readOnly={true}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label='Flat no/Room no'
-                                type="text"
-                                name="flatnoroomno"
-                                value={localFormData.flatnoroomno}
-                                readOnly={true}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label={labels.area.label}
-                                type="text"
+                                label="Area"
                                 name="area"
                                 value={localFormData.area}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.landmark.label}
-                                type="text"
+                                label="Complex Name"
+                                name="complex_name"
+                                value={localFormData.complex_name}
+                                readOnly={true}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Flat No./Bldg Name"
+                                name="flat_no"
+                                value={localFormData.flat_no}
+                                readOnly={true}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Nearby Landmark"
                                 name="landmark"
                                 value={localFormData.landmark}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.country.label}
-                                type="text"
+                                label="Country"
                                 name="country"
                                 value={localFormData.country}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.pincode.label}
-                                type="text"
+                                label="Pin Code"
                                 name="pincode"
                                 value={localFormData.pincode}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.city.label}
-                                type="text"
+                                label="City"
                                 name="city"
                                 value={localFormData.city}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.district.label}
-                                type="text"
+                                label="District"
                                 name="district"
                                 value={localFormData.district}
                                 readOnly={true}
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label={labels.state.label}
-                                type="text"
+                                label="State"
                                 name="state"
                                 value={localFormData.state}
                                 readOnly={true}
                             />
+
                         </div>
 
                     </div>
@@ -234,7 +254,7 @@ function P1({ onNext, onBack, updateFormData }) {
                         </CommonButton>
                     </div>
                 </div>
-            </div> */}
+            </div>
         </>
     );
 }

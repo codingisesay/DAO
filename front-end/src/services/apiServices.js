@@ -72,6 +72,10 @@ export const recentPendingApplicationsService = {
     daoApi.get(API_ENDPOINTS.RECENT_PENDING_APPLICATIONS.GET_LIST),
 };
 
+export const pendingAccountDataS1 = {
+  getDetailsS1: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S1(id)),
+}
 
 
 

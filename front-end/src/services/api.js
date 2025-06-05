@@ -56,8 +56,9 @@ export const API_ENDPOINTS = {
     GET_LIST: '/api/admin/pendingApplication',
   },
 
-
-
+  PENDING_ACCOUNT: {
+    GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
+  },
 
 
 
