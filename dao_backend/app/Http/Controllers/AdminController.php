@@ -113,25 +113,7 @@ public function getDetailsForCustomerDetails($application_id)
 }
 
 
-public function updateCustomerApplicationDetails($application_id, Request $request)
-{
-    $admin_id = $request->input('admin_id');
-    $status = $request->input('status');
-    $status_comment = $request->input('status_comment');
 
-    $updated = DB::table('customer_application_details')
-        ->where('id', $application_id)
-        ->update([
-            'admin_id' => $admin_id,
-            'status' => $status,
-            'status_comment' => $status_comment,
-        ]);
-
-    return response()->json([
-        'success' => (bool)$updated,
-        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
-    ], 200);
-}
 
 public function getApplicationPersonalDetails($application_id)
 {
@@ -225,4 +207,46 @@ function getServiceToCustomer($application_id)
     ], 200);
 
 }
+
+//update status of application 
+public function updateCustomerApplicationDetails($application_id, Request $request)
+{
+    $admin_id = $request->input('admin_id');
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('customer_application_details')
+        ->where('id', $application_id)
+        ->update([
+            'admin_id' => $admin_id,
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicationPersonalDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_personal_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+
+
 }
