@@ -48,9 +48,17 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
    Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
    Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
    Route::get('/admin/pendingApplicationDetailsByID/{application_id}', [AdminController::class, 'getDetailsForCustomerDetails']);
+
+   Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
+   
+      Route::get('/admin/fetchApplicationPersonalDetails/{application_id}', [AdminController::class, 'getApplicationPersonalDetails']);
+      Route::get('/admin/fetchApplicationAddressDetails/{application_id}', [AdminController::class, 'getApplicationAddressDetails']);
+      Route::get('/admin/fetchApplicantLivePhotosDetails/{application_id}', [AdminController::class, 'getApplicantLivePhotosDetails']);
+        // Route::get('/admin/fetchApplicationDocuments/{application_id}', [AdminController::class, 'getApplicantLivePhotosDetails']);
    
 
     // });
+
 
 
 

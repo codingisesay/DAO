@@ -112,4 +112,69 @@ public function getDetailsForCustomerDetails($application_id)
     ], 200);
 }
 
+
+public function updateCustomerApplicationDetails($application_id, Request $request)
+{
+    $admin_id = $request->input('admin_id');
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('customer_application_details')
+        ->where('id', $application_id)
+        ->update([
+            'admin_id' => $admin_id,
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function getApplicationPersonalDetails($application_id)
+{
+    $details = DB::table('application_personal_details')
+        ->join('customer_application_details', 'application_personal_details.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'application_personal_details.*',
+            'customer_application_details.*'
+            // Add more fields from customer_application_details if needed
+        )
+        ->where('application_personal_details.application_id', $application_id)
+        ->first();
+
+    return response()->json([
+        'details' => $details,
+    ], 200);
+}
+
+public function getApplicationAddressDetails($application_id)
+{
+    $details = DB::table('application_address_details')
+        ->join('customer_application_details', 'application_address_details.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'application_address_details.*',
+            'customer_application_details.*'
+            // Add more fields from customer_application_details if needed
+        )
+        ->where('application_address_details.application_id', $application_id)
+        ->first();
+
+    return response()->json([
+        'details' => $details,
+    ], 200);
+}
+
+public function getApplicantLivePhotosDetails($application_id)
+{
+    $photos = DB::table('applicant_live_photos')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'photos' => $photos,
+    ], 200);
+}
 }
