@@ -62,7 +62,7 @@ const AdminDashboard = () => {
                     <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1">
-                                <Link to="/approved" className="md:w-1/3  ">
+                                <Link to="/approved" className="md:w-1/4  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
                                         <div className="card-text">
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                 </Link>
-                                <Link to="/pending" className="md:w-1/3  ">
+                                <Link to="/pending" className="md:w-1/4  ">
                                     <div className="pending-card">
                                         <i className="bi bi-clipboard2-minus"></i>
                                         <div className="card-text">
@@ -80,7 +80,16 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                 </Link>
-                                <Link to="/rejected" className="md:w-1/3  ">
+                                <Link to="/rejected" className="md:w-1/4  ">
+                                    <div className="recent-applyed-card">
+                                        <i className="bi bi-clipboard2-x"></i>
+                                        <div className="card-text">
+                                            <span className="dashboard-card-count">50+</span>
+                                            <small>Review</small>
+                                        </div>
+                                    </div>
+                                </Link>
+                                <Link to="/rejected" className="md:w-1/4  ">
                                     <div className="rejected-card">
                                         <i className="bi bi-clipboard2-x"></i>
                                         <div className="card-text">
@@ -95,7 +104,7 @@ const AdminDashboard = () => {
                         <h2 className="text-xl font-bold mb-2">Re-KYC</h2>
                         <div className='w-full sm:w-full p-1'>
                             <div className="dashboard-top-caard-collection flex my-1 flex-wrap ">
-                                <Link to="/approved" className="md:w-1/3  ">
+                                <Link to="/approved" className="md:w-1/4  ">
                                     <div className="approved-card">
                                         <i className="bi bi-clipboard2-check"></i>
                                         <div className="card-text">
@@ -105,7 +114,7 @@ const AdminDashboard = () => {
                                     </div>
                                 </Link>
 
-                                <Link to="/pending" className="md:w-1/3  ">
+                                <Link to="/pending" className="md:w-1/4  ">
                                     <div className="pending-card">
                                         <i className="bi bi-clipboard2-minus"></i>
                                         <div className="card-text">
@@ -114,8 +123,17 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                 </Link>
+                                <Link to="/rejected" className="md:w-1/4  ">
+                                    <div className="recent-applyed-card">
+                                        <i className="bi bi-clipboard2-x"></i>
+                                        <div className="card-text">
+                                            <span className="dashboard-card-count">50+</span>
+                                            <small>Review</small>
+                                        </div>
+                                    </div>
+                                </Link>
 
-                                <Link to="/rejected" className="md:w-1/3  ">
+                                <Link to="/rejected" className="md:w-1/4  ">
                                     <div className="rejected-card">
                                         <i className="bi bi-clipboard2-x"></i>
                                         <div className="card-text">

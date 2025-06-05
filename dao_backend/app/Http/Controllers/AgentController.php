@@ -10,6 +10,7 @@ use App\Models\ApplicantLivePhoto;
 use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
+use App\Models\AgentLivePhoto;
 use App\Models\ServiceToCustomer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -258,6 +259,42 @@ public function saveLivePhoto(Request $request)
 
     return response()->json([
         'message' => 'Live photo uploaded successfully.',
+        'data' => $photo,
+    ], 201);
+}
+
+public function saveAgentLivePhoto(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'longitude' => 'required|string|max:255', // match DB
+        'latitude' => 'required|string|max:255',  // match DB
+        'status' => 'nullable|in:Pending,Approved,Reject,Review', // match DB enum
+        'status_comment' => 'nullable|string|max:255',
+        'photo' => 'required|image|max:5120', // max 5MB
+    ]);
+ 
+    $file = $request->file('photo');
+    $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
+    $path = $file->storeAs('agent_live_photos', $filename, 'public');
+ 
+    $photo = AgentLivePhoto::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+        ],
+        [
+            'application_id' => $validated['application_id'],
+            'longitude' => $validated['longitude'],
+            'latitude' => $validated['latitude'],
+            'name' => $filename,
+            'path' => $path,
+            'status' => $validated['status'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
+ 
+    return response()->json([
+        'message' => 'Agent Live photo uploaded successfully.',
         'data' => $photo,
     ], 201);
 }

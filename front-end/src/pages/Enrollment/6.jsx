@@ -148,7 +148,7 @@ const p6 = ({ onNext, onBack }) => {
                     // onClick={activeStep === 2 ? onNext : handleNext}
                     iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
         </div>

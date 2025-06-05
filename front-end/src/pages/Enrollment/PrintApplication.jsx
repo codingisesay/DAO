@@ -20,7 +20,7 @@ const ApplicationPdf = () => {
     const applicationId = localStorage.getItem('application_id');
 
     useEffect(() => {
-        alert(applicationId)
+        // alert(applicationId)
         if (!applicationId) return;
         const fetchDetails = async () => {
             try {
@@ -105,7 +105,8 @@ const ApplicationPdf = () => {
                         qualification: account_personal_details?.qualification,
                         anual_income: account_personal_details?.anual_income,
                         remark: account_personal_details?.remark,
-                        photo: workingman || daodocbase + customerpic.path,
+
+                        photo: customerpic ? daodocbase + customerpic[0].path : null,
                         signature: daodocbase + signatureDoc.file_path || null,
                     });
                 }

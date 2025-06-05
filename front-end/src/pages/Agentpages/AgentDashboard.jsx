@@ -22,6 +22,7 @@ const Dashboard = () => {
     localStorage.removeItem('application_id');
 
     const handleRedireact = () => {
+        localStorage.removeItem('application_id'); // Clear any previous application ID
         navigate('/enrollmentform'); // Change to your route
     };
     const handlekyc = () => {

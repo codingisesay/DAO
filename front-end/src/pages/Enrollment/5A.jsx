@@ -67,7 +67,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
 
             const payload = {
                 application_id: formData.application_id,
-                maiden_prefix_name: localFormData.maidenPrefixName,
+                maiden_prefix: localFormData.maidenPrefixName,
                 maiden_first_name: localFormData.maidenFirstName,
                 maiden_middle_name: localFormData.maidenMiddleName,
                 maiden_last_name: localFormData.maidenLastName,

@@ -115,6 +115,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             auth_code: localFormData.verifynumber,
             first_name: localFormData.first_name,
             auth_status: "Pending",
+            adhar_card: localFormData.verifynumber,
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
