@@ -54,7 +54,9 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
       Route::get('/admin/fetchApplicationPersonalDetails/{application_id}', [AdminController::class, 'getApplicationPersonalDetails']);
       Route::get('/admin/fetchApplicationAddressDetails/{application_id}', [AdminController::class, 'getApplicationAddressDetails']);
       Route::get('/admin/fetchApplicantLivePhotosDetails/{application_id}', [AdminController::class, 'getApplicantLivePhotosDetails']);
-        // Route::get('/admin/fetchApplicationDocuments/{application_id}', [AdminController::class, 'getApplicantLivePhotosDetails']);
+      Route::get('/admin/fetchApplicationDocuments/{application_id}', [AdminController::class, 'getApplicationDocuments']);
+      Route::get('/admin/fetchAccountPersonalDetails/{application_id}', [AdminController::class, 'getAccountPersonalDetails']);
+       Route::get('/admin/fetchAccountNominees/{application_id}', [AdminController::class, 'getAccountNominees']);
    
 
     // });
