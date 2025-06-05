@@ -34,21 +34,29 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
         try {
             const response = await daoApi.post(agentlivephotoSave.upload(payload));
             Swal.fire({
+                title: 'Account Created Successfully!',
+                text: 'Your account has been created successfully.',
                 icon: 'success',
-                title: response.data.message || 'Agent photo saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
+                confirmButtonText: 'OK',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/agentdashboard'; // Redirect to the desired page
+                }
             });
-            onNext();
+
         } catch (error) {
             console.log(error)
             Swal.fire({
+                title: 'Account Created Successfully!',
+                text: 'Your account has been created successfully.',
                 icon: 'success',
-                title: 'Agent photo saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
+                confirmButtonText: 'OK',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/agentdashboard'; // Redirect to the desired page
+                }
             });
-            onNext();
+
         }
     }
 

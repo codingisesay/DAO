@@ -82,19 +82,17 @@ const p6 = ({ onNext, onBack }) => {
     const CurrentStepComponent = steps[activeStep].component;
 
     const CreateAccount = () => {
-
-
-
-
-
-
-        handleNext();
         Swal.fire({
             title: 'Account Created Successfully!',
             text: 'Your account has been created successfully.',
-            icon: 'success',  // Type of icon (success, error, info, warning)
-            confirmButtonText: 'OK',  // Text on the button
+            icon: 'success',
+            confirmButtonText: 'OK',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/agentdashboard'; // Redirect to the desired page
+            }
         });
+
 
     }
     return (
