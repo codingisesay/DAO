@@ -208,6 +208,21 @@ function getServiceToCustomer($application_id)
 
 }
 
+function fetchAgentLivePhotos($application_id)
+{
+    $services = DB::table('agent_live_photos')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'services' => $services,
+    ], 200);
+
+}
+
+
+
+
 //update status of application 
 public function updateCustomerApplicationDetails($application_id, Request $request)
 {
@@ -343,6 +358,24 @@ public function updateServiceToCustomer($application_id, Request $request)
     $status_comment = $request->input('status_comment');
 
     $updated = DB::table('application_service_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAgentLivePhotos($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('agent_live_photos')
         ->where('application_id', $application_id)
         ->update([
             'status' => $status,

@@ -14,6 +14,6 @@ class ServiceToCustomer extends Model
 
     protected $fillable = [
         'application_id',
-        'banking_services_id',
+        'banking_services_facilities_id',
     ];
 }

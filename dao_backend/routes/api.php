@@ -58,6 +58,9 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
       Route::get('/admin/fetchAccountPersonalDetails/{application_id}', [AdminController::class, 'getAccountPersonalDetails']);
        Route::get('/admin/fetchAccountNominees/{application_id}', [AdminController::class, 'getAccountNominees']);
        Route::get('/admin/fetchServiceToCustomer/{application_id}', [AdminController::class, 'getServiceToCustomer']);
+
+       Route::get('/admin/fetchAgentLivePhotos/{application_id}', [AdminController::class, 'fetchAgentLivePhotos']);
+
 //update customer application details
           Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
           Route::post('/admin/updateApplicationPersonalDetails/{application_id}', [AdminController::class, 'updateApplicationPersonalDetails']);
@@ -67,6 +70,8 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
           Route::post('/admin/updateAccountPersonalDetails/{application_id}', [AdminController::class, 'updateAccountPersonalDetails']);
           Route::post('/admin/updateAccountNominees/{application_id}', [AdminController::class, 'updateAccountNominees']);
           Route::post('/admin/updateServiceToCustomer/{application_id}', [AdminController::class, 'updateServiceToCustomer']);
+
+          Route::post('/admin/updateAgentLivePhotos/{application_id}', [AdminController::class, 'updateAgentLivePhotos']);
    
 
     // });
