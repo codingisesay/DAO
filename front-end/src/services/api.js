@@ -58,6 +58,10 @@ export const API_ENDPOINTS = {
 
   PENDING_ACCOUNT: {
     GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
+    GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,
+    GET_DATAILS_S2B: (id) => `/api/admin/fetchApplicationAddressDetails/${id}`,
+    GET_DATAILS_S2C: (id) => `/api/admin/fetchApplicantLivePhotosDetails/${id}`,
+    GET_DATAILS_S3: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
   },
 
 

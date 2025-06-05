@@ -1,8 +1,11 @@
 import labels from '../../components/labels';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
+import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
+
 
 const AddressInputs = () => {
     const [formData, setFormData] = useState({
@@ -29,6 +32,54 @@ const AddressInputs = () => {
         cor_state: '',
         status: 'APPROVED'
     });
+    const { id } = useParams();
+
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                // alert('called')
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS2B(id);
+                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    // console.log('got data addr:', response.data.details);
+                    const application = response.data.details || {};
+                    // const personal = response?.data?.personal_details || {};
+
+                    setFormData({
+                        application_id: application.application_id || '',
+                        // Permanent Address
+                        per_complex_name: application.per_complex_name || '',
+                        per_flat_no: application.per_flat_no || '',
+                        per_area: application.per_area || '',
+                        per_landmark: application.per_landmark || '',
+                        per_country: application.per_country || '',
+                        per_pincode: application.per_pincode || '',
+                        per_city: application.per_city || '',
+                        per_district: application.per_district || '',
+                        per_state: application.per_state || '',
+                        // Correspondence Address
+                        cor_complex: application.cor_complex_name || '',
+                        cor_flat_no: application.cor_flat_no || '',
+                        cor_area: application.cor_area || '',
+                        cor_landmark: application.cor_landmark || '',
+                        cor_country: application.cor_country || '',
+                        cor_pincode: application.cor_pincode || '',
+                        cor_city: application.cor_city || '',
+                        cor_district: application.cor_district || '',
+                        cor_state: application.cor_state || '',
+                        status: 'Pending'
+                    });
+
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [id]);
+
+
 
     const [errors, setErrors] = useState({});
 

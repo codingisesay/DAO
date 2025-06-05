@@ -8,8 +8,9 @@ import CommonButton from '../../components/CommonButton';
 import { salutation, } from '../../data/data';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { applicationDetailsService, pendingAccountDataS1 } from '../../services/apiServices'; // <-- Import your service
-
+import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
+import { daodocbase } from '../../data/data';
+import { base } from 'framer-motion/client';
 
 function P1({ onNext, onBack, updateFormData }) {
     const [localFormData, setLocalFormData] = useState({
@@ -32,16 +33,15 @@ function P1({ onNext, onBack, updateFormData }) {
 
     });
     const { id } = useParams();
-    var application, personal;
 
     useEffect(() => {
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
                 if (id) {
-                    const response = await pendingAccountDataS1.getDetailsS1(id);
+                    const response = await pendingAccountData.getDetailsS1(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('got data :', response.data.details);
+                    // console.log('got data :', response.data.details);
                     const application = response.data.details || {};
                     // const personal = response?.data?.personal_details || {};
 
@@ -62,8 +62,10 @@ function P1({ onNext, onBack, updateFormData }) {
                         city: application.city || '',
                         district: application.district || '',
                         state: application.state || '',
+                        photo: daodocbase + application.live_photo_path || '',
 
                     });
+                    // alert(localFormData.photo);
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -233,7 +235,8 @@ function P1({ onNext, onBack, updateFormData }) {
 
                     </div>
                     <div className="lg:w-1/4 md:full sm:w-full text-center">
-                        <img src='https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_items_boosted&w=740' width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" />
+                        <img src={localFormData.photo} width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" />
+                        {/* <img src='https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_items_boosted&w=740' width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" /> */}
                         <br />
                         <p>Customer Photo</p>
                     </div>

@@ -2,25 +2,77 @@ import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
+import { useParams } from 'react-router-dom';
+import { salutation, gender, religion, caste } from '../../data/data';
+
+import { pendingAccountData } from '../../services/apiServices';
+
 
 function PersonalDetailsForm({ formData, updateFormData, }) {
+    const { id } = useParams();
     const [localFormData, setLocalFormData] = useState({
-        firstName: formData.personalDetails?.firstName || '',
-        middleName: formData.personalDetails?.middleName || '',
-        lastName: formData.personalDetails?.lastName || '',
-        dob: formData.personalDetails?.dob || '',
-        gender: formData.personalDetails?.gender || '',
-        mobile: formData.personalDetails?.mobile || '',
-        complexName: formData.personalDetails?.complexName || '',
-        flatNoRoomNo: formData.personalDetails?.flatNoRoomNo || '',
-        area: formData.personalDetails?.area || '',
-        landmark: formData.personalDetails?.landmark || '',
-        country: formData.personalDetails?.country || '',
-        pincode: formData.personalDetails?.pincode || '',
-        city: formData.personalDetails?.city || '',
-        district: formData.personalDetails?.district || '',
-        state: formData.personalDetails?.state || ''
+        salutation: '',
+        first_name: '',
+        middle_name: '',
+        last_name: '',
+        DOB: '',
+        gender: '',
+        mobile: '',
+        complexName: '',
+        flatNoRoomNo: '',
+        area: '',
+        landmark: '',
+        country: '',
+        pincode: '',
+        city: '',
+        district: '',
+        state: ''
     });
+
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                // alert('called')
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS2A(id);
+                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    // console.log('got data :', response.data.details);
+                    const application = response.data.details || {};
+                    // const personal = response?.data?.personal_details || {};
+
+                    setLocalFormData({
+                        salutation: application.salutation || '',
+                        first_name: application.first_name || '',
+                        middle_name: application.middle_name || '',
+                        last_name: application.last_name || '',
+                        DOB: application.DOB || '',
+                        gender: application.gender || '',
+                        mobile: application.mobile || '',
+                        complexName: application.complex_name || '',
+                        flatNoRoomNo: application.flat_no || '',
+                        area: application.area || '',
+                        landmark: application.landmark || '',
+                        country: application.country || '',
+                        pincode: application.pincode || '',
+                        city: application.city || '',
+                        district: application.district || '',
+                        state: application.state || '',
+
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [id]);
+
+
+
+
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,10 +95,19 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
                 <CommanInput
                     onChange={handleChange}
+                    label={labels.salutation.label}
+                    name="salutation"
+                    value={localFormData.salutation}
+                    // options={salutation}
+                    required
+                />
+
+                <CommanInput
+                    onChange={handleChange}
                     label={labels.firstname.label}
                     type="text"
                     name="firstName"
-                    value={localFormData.firstName}
+                    value={localFormData.first_name}
                     required
                     readOnly={true} />
                 <CommanInput
@@ -54,7 +115,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     label={labels.middlename.label}
                     type="text"
                     name="middleName"
-                    value={localFormData.middleName}
+                    value={localFormData.middle_name}
                     required
                     readOnly={true} />
                 <CommanInput
@@ -62,7 +123,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     label={labels.lastname.label}
                     type="text"
                     name="lastName"
-                    value={localFormData.lastName}
+                    value={localFormData.last_name}
                     required
                     readOnly={true} />
                 <CommanInput
@@ -70,7 +131,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     label={labels.dob.label}
                     type="date"
                     name="dob"
-                    value={localFormData.dob}
+                    value={localFormData.DOB}
                     required
                     readOnly={true} />
                 <CommanInput
