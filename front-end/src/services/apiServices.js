@@ -81,6 +81,13 @@ export const pendingAccountData = {
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S2B(id)),
   getDetailsS2C: (id) =>
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S2C(id)),
+
+  getDetailsS3: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S3(id)),
+  getDetailsS5A: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5A(id)),
+  getDetailsS5B: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5B(id)),
 }
 
 

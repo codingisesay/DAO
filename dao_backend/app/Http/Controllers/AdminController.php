@@ -177,4 +177,44 @@ public function getApplicantLivePhotosDetails($application_id)
         'photos' => $photos,
     ], 200);
 }
+
+public function getApplicationDocuments($application_id)
+{
+    $documents = DB::table('application_documents')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+public function getAccountPersonalDetails($application_id)
+{
+    $documents = DB::table('account_personal_details')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+public function getAccountNominees($application_id)
+{
+    $documents = DB::table('account_nominees')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+
+
+
 }

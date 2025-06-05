@@ -28,14 +28,14 @@ const ImageWithDetails = () => {
                     const response = await pendingAccountData.getDetailsS2C(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     console.log('got data 2C :', response.data.photos);
-                    const application = response.data.photos || {};
+                    const application = response.data.photos[0] || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setLocalFormData({
 
                         latitude: application.latitude || '',
                         longitude: application.longitude || '',
-                        photo: daodocbase + application[0].path || '',
+                        photo: daodocbase + application.path || '',
 
                     });
                     // alert(localFormData.photo);

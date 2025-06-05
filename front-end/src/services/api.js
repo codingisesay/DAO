@@ -61,7 +61,11 @@ export const API_ENDPOINTS = {
     GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,
     GET_DATAILS_S2B: (id) => `/api/admin/fetchApplicationAddressDetails/${id}`,
     GET_DATAILS_S2C: (id) => `/api/admin/fetchApplicantLivePhotosDetails/${id}`,
-    GET_DATAILS_S3: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
+
+    GET_DATAILS_S3: (id) => `/api/admin/fetchApplicationDocuments/${id}`,
+
+    GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
+    GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
   },
 
 
