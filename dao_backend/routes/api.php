@@ -45,6 +45,10 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
    
    Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
    Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
+   Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
+   Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
+   Route::get('/admin/pendingApplicationDetailsByID/{application_id}', [AdminController::class, 'getDetailsForCustomerDetails']);
+   
 
     // });
 
