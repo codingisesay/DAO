@@ -4,7 +4,7 @@ import CommanInput from '../../components/CommanInput';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
+import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
 
 
 const AddressInputs = () => {
@@ -78,9 +78,6 @@ const AddressInputs = () => {
 
         fetchAndStoreDetails();
     }, [id]);
-
-
-
     const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
@@ -91,19 +88,11 @@ const AddressInputs = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Add your validation and submission logic here
-        console.log('Form submitted:', formData);
-    };
 
     return (
         <div className="max-w-screen-xl mx-auto ">
 
             <form  >
-                {/* Application ID */}
-
-
                 {/* Permanent Address Section */}
                 <div className=" pb-3">
                     <h2 className="text-xl font-bold mb-4">Permanent Address</h2>
@@ -272,14 +261,9 @@ const AddressInputs = () => {
 
 
 
-
-
-
-
-
-
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
+    const { id } = useParams();
 
     const handleRejectClick = async () => {
         const result = await Swal.fire({
@@ -299,39 +283,98 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         });
 
         if (result.isConfirmed && result.value) {
-            onNext(); // Called when user confirms with valid input
+            const payload = {
+                application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS2B(id, payload);
+            onNext();
         } else if (result.isDismissed) {
-            // onReject?.(); // Called when user cancels or dismisses the alert
+            console.log('Rejection canceled');
         }
     };
 
-    const handleNextStep = () => { onNext(); };
+    const handleReviewClick = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Review',
+            input: 'text',
+            inputLabel: 'Please provide a reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
 
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS2B(id, payload);
+            onNext();
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const handleNextStep = async () => {
+        try {
+            const payload = {
+                applicaiton_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            await pendingAccountStatusUpdate.updateS2B(id, payload);
+            Swal.fire({
+                icon: 'success',
+                title: 'Address Details Approved Successfully',
+                timer: 2000,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            onNext();
+        }
+        catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: JSON.stringify(error),
+            });
+        }
+    }
 
     return (
         <div className="address-form">
 
             <AddressInputs />
 
-            {/* <div className="next-back-btns z-10">
-                <CommonButton className="btn-back border-0" onClick={onBack}>
-                    Reject & Continue
-                </CommonButton>
-                <CommonButton
-                    className="btn-next border-0"
-                    onClick={handleSubmit}
-                >
-                    Accept & Continue
-                </CommonButton>
-            </div> */}
+
             <div className="next-back-btns z-10">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
                     onClick={handleRejectClick}
                 >
                     Reject & Continue
                 </CommonButton>
 
+                <CommonButton
+                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                    onClick={handleReviewClick}
+                >
+                    Review & Continue
+                </CommonButton>
 
                 <CommonButton
                     className="btn-next "
@@ -340,6 +383,24 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                     Accept & Continue
                 </CommonButton>
             </div>
+
+
+
+            {/* <div className="next-back-btns z-10">
+                <CommonButton
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                    onClick={handleRejectClick}
+                >
+                    Reject & Continue
+                </CommonButton>
+
+                <CommonButton
+                    className="btn-next "
+                    onClick={handleNextStep}
+                >
+                    Accept & Continue
+                </CommonButton>
+            </div> */}
         </div>
     );
 }

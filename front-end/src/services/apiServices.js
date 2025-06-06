@@ -9,12 +9,12 @@ export const agentService = {
 
 export const personalDetailsService = {
   create: (data) => daoApi.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, data),
-  // update: (id, data) => daoApi.put(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
+  // update: (id, data) => daoApi.post(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
 };
 
 export const addressDetailsService = {
   create: (data) => daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),
-  // update: (id, data) => daoApi.put(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
+  // update: (id, data) => daoApi.post(API_ENDPOINTS.ADDRESS_DETAILS.UPDATE(id), data),
 };
 
 export const livePhotoService = {
@@ -88,9 +88,29 @@ export const pendingAccountData = {
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5A(id)),
   getDetailsS5B: (id) =>
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5B(id)),
+  getDetailsS5C: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5C(id)),
+
 }
 
-
+export const pendingAccountStatusUpdate = {
+  updateS1: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S1(id), data),
+  updateS2A: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S2A(id), data),
+  updateS2B: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S2B(id), data),
+  updateS2C: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S2C(id), data),
+  updateS3: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S3(id), data),
+  updateS5A: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S5A(id), data),
+  updateS5B: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S5B(id), data),
+  updateS5C: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S5C(id), data),
+};
 
 
 
@@ -157,7 +177,7 @@ export const branchService = {
   getBranchById: (id) => daoApi.get(API_ENDPOINTS.BRANCH.GET_BY_ID(id)),
 
   updateBranch: (id, data) =>
-    daoApi.put(API_ENDPOINTS.BRANCH.UPDATE(id), data),
+    daoApi.post(API_ENDPOINTS.BRANCH.UPDATE(id), data),
 
   deleteBranch: (id) => daoApi.delete(API_ENDPOINTS.BRANCH.DELETE(id)),
 
@@ -192,11 +212,11 @@ export const userService = {
 
   getUserById: (id) => daoApi.get(API_ENDPOINTS.USER.GET_BY_ID(id)),
 
-  updateUser: (id, data) => daoApi.put(API_ENDPOINTS.USER.UPDATE(id), data),
+  updateUser: (id, data) => daoApi.post(API_ENDPOINTS.USER.UPDATE(id), data),
 
   deleteUser: (id) => daoApi.delete(API_ENDPOINTS.USER.DELETE(id)),
 
-  approveUser: (id) => daoApi.put(API_ENDPOINTS.USER.APPROVE(id)),
+  approveUser: (id) => daoApi.post(API_ENDPOINTS.USER.APPROVE(id)),
 
   duplicateusercheck: (id) =>
     daoApi.get(API_ENDPOINTS.USER.USER_DUPLICATION(id)),
@@ -268,9 +288,9 @@ export const stockApi = {
   getAllUnapproveStock: (page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.STOCK.UNAPPROVE(page, size)),
   getUserById: (id) => daoApi.get(API_ENDPOINTS.STOCK.GET_BY_ID(id)),
-  approveStock: (id) => daoApi.put(API_ENDPOINTS.STOCK.APPROVE(id)),
+  approveStock: (id) => daoApi.post(API_ENDPOINTS.STOCK.APPROVE(id)),
   updateStock: (id, data) =>
-    daoApi.put(API_ENDPOINTS.STOCK.UPDATE(id), data),
+    daoApi.post(API_ENDPOINTS.STOCK.UPDATE(id), data),
   search: async ({ effectiveDate, page = 0, size = 10 }) => {
     const searchURL = API_ENDPOINTS.STOCK.SEARCH({
       effectiveDate,
@@ -285,7 +305,7 @@ export const issue = {
   getFrom: () => daoApi.get(API_ENDPOINTS.ISSUE.FETCHFROM),
   checkAvailibility: (data) =>
     daoApi.post(API_ENDPOINTS.ISSUE.CHECKAVAILIBITY, data),
-  createIssue: (data) => daoApi.put(API_ENDPOINTS.ISSUE.CREATE, data),
+  createIssue: (data) => daoApi.post(API_ENDPOINTS.ISSUE.CREATE, data),
   viewIssue: (id, id2, page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.ISSUE.VIEW(id, id2, page, size, 2)),
   search: async ({
@@ -327,7 +347,7 @@ export const bankService = {
 
   getBankById: (id) => daoApi.get(API_ENDPOINTS.BANK.GET_BY_ID(id)),
 
-  updateBank: (id, data) => daoApi.put(API_ENDPOINTS.BANK.UPDATE(id), data),
+  updateBank: (id, data) => daoApi.post(API_ENDPOINTS.BANK.UPDATE(id), data),
 
   deleteBank: (id) => daoApi.delete(API_ENDPOINTS.BANK.DELETE(id)),
 };
@@ -345,7 +365,7 @@ export const ProductMasterService = {
   getProductMById: (id) => daoApi.get(API_ENDPOINTS.PRODUCT.GET_BY_ID(id)),
 
   updateProductMaster: (id, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCT.UPDATE(id), data),
+    daoApi.post(API_ENDPOINTS.PRODUCT.UPDATE(id), data),
 
   deleteProductMaster: (id) =>
     daoApi.delete(API_ENDPOINTS.PRODUCT.DELETE(id)),
@@ -356,7 +376,7 @@ export const ProductMasterService = {
   unapproveproduct: (data, page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.PRODUCT.UNAPPROVE(data, page, size)),
 
-  approveproduct: (id) => daoApi.put(API_ENDPOINTS.PRODUCT.APPROVE(id)),
+  approveproduct: (id) => daoApi.post(API_ENDPOINTS.PRODUCT.APPROVE(id)),
 
   search: async ({
     productCode,
@@ -395,13 +415,13 @@ export const productInterestParamsService = {
     ),
 
   updateproductInterestParams: (id1, id2, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCTINTEREST.UPDATE(id1, id2), data),
+    daoApi.post(API_ENDPOINTS.PRODUCTINTEREST.UPDATE(id1, id2), data),
 
   unapproveproductInterestParams: (data, page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.PRODUCTINTEREST.UNAPPROVE(data, page, size)),
 
   approveproductInt: (id1, id2, data) =>
-    daoApi.put(API_ENDPOINTS.PRODUCTINTEREST.APPROVE(id1, id2), data),
+    daoApi.post(API_ENDPOINTS.PRODUCTINTEREST.APPROVE(id1, id2), data),
 
   search: async ({
     branchCode,
@@ -434,7 +454,7 @@ export const productInterestEntity = {
     ),
 
   updateproductInterestMasterParams: (productcode, effectiveDate, data) =>
-    daoApi.put(
+    daoApi.post(
       API_ENDPOINTS.PRODUCTINTERESTENTITY.INTEREST_UPDATE(
         productcode,
         effectiveDate
@@ -483,14 +503,14 @@ export const accountService = {
   getAccountById: (id) => daoApi.get(API_ENDPOINTS.ACCOUNT.GET_BY_ID(id)),
 
   updateAccount: (id, data) =>
-    daoApi.put(API_ENDPOINTS.ACCOUNT.UPDATE(id), data),
+    daoApi.post(API_ENDPOINTS.ACCOUNT.UPDATE(id), data),
 
   deleteAccount: (id) => daoApi.delete(API_ENDPOINTS.ACCOUNT.DELETE(id)),
 
   unapproveAccounts: (page = 0, size = 10) =>
     daoApi.get(API_ENDPOINTS.ACCOUNT.UNAPPROVE(page, size)),
 
-  approveAccount: (id) => daoApi.put(API_ENDPOINTS.ACCOUNT.APPROVE(id)),
+  approveAccount: (id) => daoApi.post(API_ENDPOINTS.ACCOUNT.APPROVE(id)),
 
   closingbalance: (id) => daoApi.get(API_ENDPOINTS.ACCOUNT.BALANCE(id)),
 

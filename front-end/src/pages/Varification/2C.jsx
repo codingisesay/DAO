@@ -3,21 +3,16 @@ import React, { useState, useEffect } from 'react';
 
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
+import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices'; // <-- Import your service
 import { daodocbase } from '../../data/data';
-import { form } from 'framer-motion/client';
+
+
 const ImageWithDetails = () => {
-
-
-
     const [localFormData, setLocalFormData] = useState({
         latitude: '',
         longitude: '',
         photo: '',
     });
-
-
-
     const { id } = useParams();
 
     useEffect(() => {
@@ -47,6 +42,11 @@ const ImageWithDetails = () => {
 
         fetchAndStoreDetails();
     }, [id]);
+
+
+
+
+
 
 
 

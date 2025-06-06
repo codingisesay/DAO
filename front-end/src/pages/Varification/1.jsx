@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
 import { daodocbase } from '../../data/data';
-import { base } from 'framer-motion/client';
+import { pendingAccountStatusUpdate } from '../../services/apiServices';
 
 function P1({ onNext, onBack, updateFormData }) {
     const [localFormData, setLocalFormData] = useState({
@@ -77,17 +77,10 @@ function P1({ onNext, onBack, updateFormData }) {
 
 
 
-
-
-
-
-
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLocalFormData(prev => ({ ...prev, [name]: value }));
     };
-
 
     const handleRejectClick = async () => {
         const result = await Swal.fire({
@@ -107,13 +100,88 @@ function P1({ onNext, onBack, updateFormData }) {
         });
 
         if (result.isConfirmed && result.value) {
-            onNext(); // Called when user confirms with valid input
+            const payload = {
+                application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS1(id, payload);
+            console.log('Payload:', payload);
+            onNext?.(payload); // pass the payload forward
         } else if (result.isDismissed) {
-            // onReject?.(); // Called when user cancels or dismisses the alert
+            console.log('Rejection canceled');
         }
     };
 
-    const handleNextStep = () => { onNext(); };
+    const handleReviewClick = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Review',
+            input: 'text',
+            inputLabel: 'Please provide a reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS1(id, payload);
+            console.log('Payload:', payload);
+            onNext?.(payload); // pass the payload forward
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const handleNextStep = () => {
+        // alert('called')
+        try {
+            const payload = {
+                applicaiton_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            const response = pendingAccountStatusUpdate.updateS1(id, payload);
+            Swal.fire({
+                icon: 'success',
+                title: 'Enrollment Details Approved Successfully',
+                timer: 2000,               // alert stays for 2 seconds
+                showConfirmButton: false,  // no "OK" button
+                allowOutsideClick: false,  // optional: prevent closing by clicking outside
+                allowEscapeKey: false,     // optional: prevent closing with Escape key
+                didOpen: () => {
+                    Swal.showLoading();   // optional: show loading spinner
+                },
+                willClose: () => {
+                    onNext(); // proceed after alert closes
+                }
+            });
+        }
+        catch (error) {
+            // console.error('Error updating status:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong while updating the status!',
+            });
+        }
+    }
+
+
 
     return (
         <>
@@ -242,12 +310,18 @@ function P1({ onNext, onBack, updateFormData }) {
                     </div>
                     <div className="next-back-btns">
                         <CommonButton
-                            className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
+                            className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
                             onClick={handleRejectClick}
                         >
                             Reject & Continue
                         </CommonButton>
 
+                        <CommonButton
+                            className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                            onClick={handleReviewClick}
+                        >
+                            Review & Continue
+                        </CommonButton>
 
                         <CommonButton
                             className="btn-next "

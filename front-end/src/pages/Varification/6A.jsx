@@ -5,9 +5,9 @@ import CommonButton from '../../components/CommonButton';
 function p6() {
     return (<>
 
-        <PersonalOccupationForm />
+        {/* <PersonalOccupationForm />
 
-        <AddressForm />
+        <AddressForm /> */}
 
         <>
             <br /><hr />

@@ -32,7 +32,7 @@ function ReviewTable() {
             try {
                 const response = await recentPendingApplicationsService.getList();
                 setTbldata(response.data.data || []);
-                console.log("Table Data:", response);
+                // console.log("Table Data:", response);
             } catch (error) {
                 console.error("Failed to fetch approved applications:", error);
             }

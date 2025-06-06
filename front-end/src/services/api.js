@@ -66,10 +66,23 @@ export const API_ENDPOINTS = {
 
     GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
     GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
+    GET_DATAILS_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
   },
+  PENDING_ACCOUNT_STATUS_UPDATE: {
+    UPDATE_S1: (id) => `/api/admin/updateCustomerApplicationDetails/${id}`,
+    UPDATE_S2A: (id) => `/api/admin/updateApplicationPersonalDetails/${id}`,
+    UPDATE_S2B: (id) => `/api/admin/updateApplicationAddressDetails/${id}`,
+    UPDATE_S2C: (id) => `/api/admin/updateApplicantLivePhotos/${id}`,
 
+    UPDATE_S3: (id) => `/api/admin/updateApplicationDocuments/${id}`,
 
+    UPDATE_S5A: (id) => `/api/admin/updateAccountPersonalDetails/${id}`,
+    UPDATE_S5B: (id) => `/api/admin/updateAccountNominees/${id}`,
+    UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
 
+  }
+
+  ,
 
 
 

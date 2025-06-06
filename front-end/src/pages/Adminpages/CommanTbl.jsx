@@ -69,7 +69,7 @@ const allData = [
 
 const CommanTbl = ({ tbldata }) => {
     const [activeTab, setActiveTab] = useState("agent");
-    console.log("data from main page to tbl page sent :", tbldata);
+    // console.log("data from main page to tbl page sent :", tbldata);
     return (
         <div >
 
