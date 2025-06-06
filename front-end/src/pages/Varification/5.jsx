@@ -12,6 +12,8 @@ import { useParams } from 'react-router-dom';
 const p2 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
+
     const [formData, setFormData] = useState({
         // Personal Details
         firstName: '',
@@ -52,18 +54,6 @@ const p2 = ({ onNext, onBack }) => {
         { label: 'Nomination Details', icon: 'bi bi-people', component: NominationForm },
         { label: 'Banking Facilities', icon: 'bi bi-bank', component: BankFacility }
     ];
-
-    // const handleNext = () => {
-    //     if (activeStep < steps.length - 1) {
-    //         setActiveStep(activeStep + 1);
-    //     }
-    // };
-
-    // const handleBack = () => {
-    //     if (activeStep > 0) {
-    //         setActiveStep(activeStep - 1);
-    //     }
-    // };
 
     const handleFormChange = (name, value) => {
         setFormData(prev => {
@@ -113,6 +103,8 @@ const p2 = ({ onNext, onBack }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -144,6 +136,8 @@ const p2 = ({ onNext, onBack }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -159,6 +153,8 @@ const p2 = ({ onNext, onBack }) => {
                 admin_id: 1
             }
             pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Personal Details Approved Successfully',

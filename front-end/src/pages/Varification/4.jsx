@@ -10,6 +10,7 @@ import { daodocbase } from '../../data/data';
 
 function p4({ onNext, onBack }) {
 
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const { id } = useParams();
 
     const handleRejectClick = async () => {
@@ -37,6 +38,8 @@ function p4({ onNext, onBack }) {
                 admin_id: 1
             };
             // await pendingAccountStatusUpdate.updateS3(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
             onNext(); // pass the payload forward
         } else if (result.isDismissed) {
@@ -69,6 +72,8 @@ function p4({ onNext, onBack }) {
                 admin_id: 1
             };
             // await pendingAccountStatusUpdate.updateS3(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
             onNext(); // pass the payload forward
         } else if (result.isDismissed) {
@@ -86,6 +91,8 @@ function p4({ onNext, onBack }) {
                 admin_id: 1
             }
             // const response = pendingAccountStatusUpdate.updateS3(id, payload);
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Enrollment Details Approved Successfully',

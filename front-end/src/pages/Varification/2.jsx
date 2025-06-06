@@ -13,6 +13,7 @@ import { a } from 'framer-motion/client';
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
@@ -46,6 +47,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -77,6 +80,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
+
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -92,6 +98,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             }
             pendingAccountStatusUpdate.updateS2A(id, payload);
+
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Personal Details Approved Successfully',

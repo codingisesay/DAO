@@ -74,8 +74,13 @@ function P1({ onNext, onBack, updateFormData }) {
 
         fetchAndStoreDetails();
     }, [id]);
+    if (!localStorage.getItem("approveStatusArray")) {
+        localStorage.setItem("approveStatusArray", JSON.stringify([]));
 
 
+    }
+
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -107,6 +112,9 @@ function P1({ onNext, onBack, updateFormData }) {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS1(id, payload);
+
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
             onNext?.(payload); // pass the payload forward
         } else if (result.isDismissed) {
@@ -139,6 +147,8 @@ function P1({ onNext, onBack, updateFormData }) {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS1(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
             onNext?.(payload); // pass the payload forward
         } else if (result.isDismissed) {
@@ -146,7 +156,7 @@ function P1({ onNext, onBack, updateFormData }) {
         }
     };
 
-    const handleNextStep = () => {
+    const handleNextStep = async () => {
         // alert('called')
         try {
             const payload = {
@@ -155,7 +165,10 @@ function P1({ onNext, onBack, updateFormData }) {
                 status_comment: '',
                 admin_id: 1
             }
-            const response = pendingAccountStatusUpdate.updateS1(id, payload);
+            await pendingAccountStatusUpdate.updateS1(id, payload);
+
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Enrollment Details Approved Successfully',

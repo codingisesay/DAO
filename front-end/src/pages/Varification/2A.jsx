@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
-import CommonButton from '../../components/CommonButton';
 import { useParams } from 'react-router-dom';
 import { salutation, gender, religion, caste } from '../../data/data';
 

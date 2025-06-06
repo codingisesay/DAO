@@ -8,6 +8,7 @@ import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/a
 
 
 const AddressInputs = () => {
+
     const [formData, setFormData] = useState({
         application_id: '',
         // Permanent Address
@@ -265,6 +266,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
     const { id } = useParams();
 
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const handleRejectClick = async () => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
@@ -290,6 +292,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2B(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -321,6 +325,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2B(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -336,6 +342,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 admin_id: 1
             }
             await pendingAccountStatusUpdate.updateS2B(id, payload);
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Address Details Approved Successfully',

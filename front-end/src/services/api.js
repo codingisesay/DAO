@@ -67,6 +67,7 @@ export const API_ENDPOINTS = {
     GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
     GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
     GET_DATAILS_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
+    GET_DATAILS_S6B: (id) => `/api/admin/fetchAgentLivePhotos/${id}`,
   },
   PENDING_ACCOUNT_STATUS_UPDATE: {
     UPDATE_S1: (id) => `/api/admin/updateCustomerApplicationDetails/${id}`,
@@ -79,6 +80,7 @@ export const API_ENDPOINTS = {
     UPDATE_S5A: (id) => `/api/admin/updateAccountPersonalDetails/${id}`,
     UPDATE_S5B: (id) => `/api/admin/updateAccountNominees/${id}`,
     UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
 
   }
 

@@ -450,34 +450,37 @@ DB::table('nominee_approved_status')->updateOrInsert(
 // Store service to customer
 public function saveServiceToCustomer(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => $validated['application_id'],]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'banking_services_facilities_id' => 'required|integer|exists:banking_services,id',
+        'banking_services_facilities_id' => 'required|array',
+        'banking_services_facilities_id.*' => 'required|integer|exists:banking_services_facilities,id',
     ]);
 
-    // Update if exists, otherwise create
-    $service = ServiceToCustomer::updateOrCreate(
-        [
-            'application_id' => $validated['application_id'],
-            'banking_services_facilities_id' => $validated['banking_services_facilities_id'],
-        ],
-        $validated
-    );
+    $saved = [];
+    foreach ($validated['banking_services_facilities_id'] as $facilityId) {
+        $service = ServiceToCustomer::updateOrCreate(
+            [
+                'application_id' => $validated['application_id'],
+                'banking_services_facilities_id' => $facilityId,
+            ],
+            [
+                'application_id' => $validated['application_id'],
+                'banking_services_facilities_id' => $facilityId,
+            ]
+        );
+        $saved[] = $service;
+    }
 
     return response()->json([
-        'message' => 'Service to customer saved successfully.',
-        'data' => $service,
+        'message' => 'Services to customer saved successfully.',
+        'data' => $saved,
     ], 201);
 }
 
 // Fetch full application details
 public function getFullApplicationDetails($applicationId)
 {
-    // Hardcode application_id for testing
-    // $applicationId = 1; // <-- Hardcoded for testing
+  
 
     // Fetch from customer_application_details
     $application = DB::table('customer_application_details')

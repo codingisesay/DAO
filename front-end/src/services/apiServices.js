@@ -90,6 +90,8 @@ export const pendingAccountData = {
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5B(id)),
   getDetailsS5C: (id) =>
     daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S5C(id)),
+  getDetailsS6B: (id) =>
+    daoApi.get(API_ENDPOINTS.PENDING_ACCOUNT.GET_DATAILS_S6B(id)),
 
 }
 
@@ -110,6 +112,8 @@ export const pendingAccountStatusUpdate = {
     daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S5B(id), data),
   updateS5C: (id, data) =>
     daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S5C(id), data),
+  updateS6B: (id, data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S6B(id), data),
 };
 
 
