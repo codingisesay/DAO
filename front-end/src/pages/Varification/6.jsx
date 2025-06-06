@@ -202,7 +202,7 @@ const p6 = ({ onNext, onBack }) => {
             });
 
             navigate('/admindashboard'); // Navigate to the admin dashboard after success
-
+            localStorage.getItem('application_id'.remove())
 
         }
         catch (error) {

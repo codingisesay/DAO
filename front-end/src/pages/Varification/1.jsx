@@ -35,6 +35,7 @@ function P1({ onNext, onBack, updateFormData }) {
     const { id } = useParams();
 
     useEffect(() => {
+        localStorage.setItem('application_id', id);
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
