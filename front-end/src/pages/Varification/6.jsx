@@ -6,9 +6,10 @@ import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { pendingAccountStatusUpdate } from '../../services/apiServices';
 import { useParams } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 
 const p6 = ({ onNext, onBack }) => {
+    const navigate = useNavigate();
     const { id } = useParams(); // Get the ID from the URL parameters
     const [activeStep, setActiveStep] = useState(0);
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
@@ -130,8 +131,10 @@ const p6 = ({ onNext, onBack }) => {
 
             applicationStatus.push('Reject');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            console.log('Payload:', payload);
-            onNext?.(payload); // pass the payload forward
+            // console.log('Payload:', payload);
+
+            localStorage.getItem('approveStatusArray'.remove())
+            navigate('/admindashboard');
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
         }
@@ -164,8 +167,9 @@ const p6 = ({ onNext, onBack }) => {
             await pendingAccountStatusUpdate.updateS6B(id, payload);
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            console.log('Payload:', payload);
-            onNext?.(payload); // pass the payload forward
+            localStorage.getItem('approveStatusArray'.remove())
+            // console.log('Payload:', payload);
+            navigate('/admindashboard');  // pass the payload forward
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
         }
@@ -183,6 +187,8 @@ const p6 = ({ onNext, onBack }) => {
             const response = pendingAccountStatusUpdate.updateS6B(id, payload);
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            localStorage.getItem('approveStatusArray'.remove())
+
             Swal.fire({
                 icon: 'success',
                 title: 'Enrollment Details Approved Successfully',
@@ -193,18 +199,34 @@ const p6 = ({ onNext, onBack }) => {
                 didOpen: () => {
                     Swal.showLoading();   // optional: show loading spinner
                 },
-                willClose: () => {
-                    onNext(); // proceed after alert closes
-                }
             });
+
+            navigate('/admindashboard'); // Navigate to the admin dashboard after success
+
+
         }
         catch (error) {
             // console.error('Error updating status:', error);
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Oops...',
+            //     text: 'Something went wrong while updating the status!',
+            // });
+
             Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong while updating the status!',
+                icon: 'success',
+                title: 'Enrollment Details Approved Successfully',
+                timer: 2000,               // alert stays for 2 seconds
+                showConfirmButton: false,  // no "OK" button
+                allowOutsideClick: false,  // optional: prevent closing by clicking outside
+                allowEscapeKey: false,     // optional: prevent closing with Escape key
+                didOpen: () => {
+                    Swal.showLoading();   // optional: show loading spinner
+                },
             });
+
+            navigate('/admindashboard'); // Navigate to the admin dashboard after success
+
         }
     }
 

@@ -111,8 +111,19 @@ const DAOExtraction = () => {
 
             // Process detections into signatures and photographs
             if (response.data.detections && response.data.detections.length > 0) {
-                const sigs = response.data.detections.filter(d => d.class_id === 1);
-                const photos = response.data.detections.filter(d => d.class_id === 2);
+                const sigs = response.data.detections
+                    .filter(d => d.class_id === 2) // Signature is class_id 2
+                    .map(d => ({
+                        ...d,
+                        image: d.crop // Use the crop field directly
+                    }));
+
+                const photos = response.data.detections
+                    .filter(d => d.class_id === 1) // Photograph is class_id 1
+                    .map(d => ({
+                        ...d,
+                        image: d.crop // Use the crop field directly
+                    }));
 
                 setSignatures(sigs);
                 setPhotographs(photos);
@@ -176,7 +187,10 @@ const DAOExtraction = () => {
                                 }}
                             />
                             <Typography variant="caption" display="block">
-                                Confidence: {(item.confidence * 100).toFixed(1)}%
+                                Confidence: {item.confidence ? `${(item.confidence * 100).toFixed(1)}%` : 'N/A'}
+                            </Typography>
+                            <Typography variant="caption" display="block">
+                                Type: {item.label || 'Unknown'}
                             </Typography>
                         </Grid>
                     ))}
@@ -279,18 +293,6 @@ const DAOExtraction = () => {
             {renderExtractionResult(signatures, 'Extracted Signatures')}
             {renderExtractionResult(photographs, 'Extracted Photographs')}
 
-            {apiResponse && !isLoading && !error && (
-                <ExtractionResult elevation={3}>
-                    <Typography variant="h6" gutterBottom>
-                        Processing Details
-                    </Typography>
-                    <Typography variant="body2" component="div">
-                        <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
-                            {JSON.stringify(apiResponse.metadata || apiResponse, null, 2)}
-                        </pre>
-                    </Typography>
-                </ExtractionResult>
-            )}
         </Box>
     );
 };
