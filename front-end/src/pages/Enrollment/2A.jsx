@@ -269,6 +269,7 @@ import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
+import Swal from 'sweetalert2';
 
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
@@ -308,6 +309,18 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedLocalFormData = { ...localFormData, [name]: value };
+
+        if (name === 'mobile' || name === 'alt_mob_no') {
+            if (localFormData.mobile === localFormData.alt_mob_no) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Mobile numbers must be different',
+                })
+            }
+        }
+
+
         setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
@@ -471,7 +484,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="text"
                         name="pannumber"
                         value={localFormData.pannumber}
-                        required={verificationMethod === 'Pan Card'} // Required if this was verification method
+                        required={true}
+                        // required={verificationMethod === 'Pan Card'}
                         max={10}
                         validationType="PAN"
                         disabled={verificationMethod === 'Pan Card'} // Disable if this was verification method

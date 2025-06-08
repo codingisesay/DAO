@@ -236,6 +236,15 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         try {
             if (activeStep === 0) {
                 const pd = formData.personalDetails || {};
+                if (!pd.email || !pd.alt_mob_no) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Required Fields Values Are Missing',
+                        // text: 'Email and Alternate Mobile Number are required.',
+                    });
+                    setIsSubmitting(false);
+                    return;
+                }
                 const payload = {
                     application_id: formData.application_id,
                     salutation: pd.salutation,
