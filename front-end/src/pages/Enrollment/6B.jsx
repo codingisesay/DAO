@@ -43,6 +43,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     window.location.href = '/agentdashboard'; // Redirect to the desired page
                 }
             });
+            localStorage.removeItem('customerPhotoData');
 
         } catch (error) {
             console.log(error)

@@ -88,6 +88,18 @@ const salaryrange = [
 ];
 
 
+const RESIDENTIAL_STATUS = [
+    { label: 'RESIDENT', value: 'RESIDENT' },
+    { label: 'NON RESIDENT (NRI)', value: 'NON_RESIDENT' },
+];
+
+const RESIDENCE_DOCS = [
+    { label: 'Aadhar Card', value: 'AADHAR' },
+    { label: 'Ration Card', value: 'RATION' },
+    { label: 'Voter ID', value: 'VOTER_ID' },
+    { label: 'Utility Bill', value: 'UTILITY_BILL' },
+];
+
 const userdummydata = {
     aadhardetails: {
         auth_type: "Aadhar Card",
@@ -113,4 +125,4 @@ const userdummydata = {
 }
 
 
-export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange, daodocbase };
+export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange, daodocbase, RESIDENCE_DOCS, RESIDENTIAL_STATUS };

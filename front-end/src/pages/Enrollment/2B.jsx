@@ -5,6 +5,7 @@ import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { addressDetailsService, applicationDetailsService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
+import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data'
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
     const applicationId = localStorage.getItem('application_id');
@@ -12,6 +13,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         formData.correspondenceAddressSame || false
     );
     useEffect(() => {
+        //this page is for address data after coming backword to the page
         if (!applicationId) return;
         const fetchDetails = async () => {
             try {
@@ -32,9 +34,6 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         };
         fetchDetails();
     }, [applicationId]);
-
-
-
 
 
     const [extraInputData, setExtraInputData] = useState({
@@ -464,10 +463,7 @@ const ExtraInput = ({ extraInputData, setExtraInputData, errors, handleChange, d
                 name="per_resident"
                 required
                 disabled={disabled}
-                options={[
-                    { label: 'Yes', value: 'YES' },
-                    { label: 'No', value: 'NO' }
-                ]}
+                options={YN}
                 error={errors.per_resident}
             />
 
@@ -480,10 +476,7 @@ const ExtraInput = ({ extraInputData, setExtraInputData, errors, handleChange, d
                     name="per_residence_status"
                     required
                     disabled={!isResidentYes || disabled}
-                    options={[
-                        { label: 'Resident', value: 'RESIDENT' },
-                        { label: 'Non Resident (NRI)', value: 'NON_RESIDENT' }
-                    ]}
+                    options={RESIDENTIAL_STATUS}
                     error={errors.per_residence_status}
                 />
             )}
@@ -497,12 +490,7 @@ const ExtraInput = ({ extraInputData, setExtraInputData, errors, handleChange, d
                     name="resi_doc"
                     required
                     disabled={disabled}
-                    options={[
-                        { label: 'Aadhar Card', value: 'AADHAR' },
-                        { label: 'Ration Card', value: 'RATION' },
-                        { label: 'Voter ID', value: 'VOTER' },
-                        { label: 'Electricity Bill', value: 'ELECTRICITY' }
-                    ]}
+                    options={RESIDENCE_DOC}
                     error={errors.resi_doc}
                 />
             )}
