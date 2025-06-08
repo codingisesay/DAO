@@ -458,3 +458,25 @@ tr:hover {
     border: none !important;
     border-bottom: none !important;
 }
+
+/* Loading spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Blur overlay */
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+/* Disabled button styling */
+.btn-next:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
