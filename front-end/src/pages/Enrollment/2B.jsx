@@ -490,7 +490,7 @@ const ExtraInput = ({ extraInputData, setExtraInputData, errors, handleChange, d
                     name="resi_doc"
                     required
                     disabled={disabled}
-                    options={RESIDENCE_DOC}
+                    options={RESIDENCE_DOCS}
                     error={errors.resi_doc}
                 />
             )}

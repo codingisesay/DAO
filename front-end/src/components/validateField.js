@@ -11,7 +11,7 @@ export const VALIDATION_PATTERNS = {
     },
     EMAIL: {
         pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        message: "Please enter a valid email address (e.g., user@example.com)",
+        message: " (e.g.user@example.com)",
     },
     PHONE: {
         pattern: /^[0-9]*$/,
