@@ -14,7 +14,8 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    AGENTENROLL: '/api/agent/enrollment'
+    AGENTENROLL: '/api/agent/enrollment',
+    GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/api/agent/full-applications/${agentId}`,
   },
 
   PERSONAL_DETAILS: {
@@ -57,9 +58,9 @@ export const API_ENDPOINTS = {
   },
 
   KYC: {
+    START_KYC: '/api/agent/kyc/start',
     SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
   },
-
 
   PENDING_ACCOUNT: {
     GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,

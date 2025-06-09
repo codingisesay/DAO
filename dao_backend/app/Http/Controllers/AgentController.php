@@ -611,4 +611,63 @@ public function getApplicationStatusByAgents($agent_id)
         'data' => $applications,
     ]);
 }
+
+
+public function getFullApplicationsByAgent($agent_id)
+{
+    // Fetch all applications for the agent
+    $applications = DB::table('customer_application_details')
+        ->where('agent_id', $agent_id)
+        ->get();
+
+    if ($applications->isEmpty()) {
+        return response()->json(['message' => 'No applications found for this agent.'], 404);
+    }
+
+    $result = [];
+
+    foreach ($applications as $application) {
+        $applicationId = $application->id;
+
+        $personalDetails = DB::table('application_personal_details')
+            ->where('application_id', $applicationId)
+            ->first();
+
+        $accountPersonalDetails = DB::table('account_personal_details')
+            ->where('application_id', $applicationId)
+            ->first();
+
+        $accountNominees = DB::table('account_nominees')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $applicationAddresss = DB::table('application_address_details')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $custlivepic = DB::table('applicant_live_photos')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $custumerdoc = DB::table('application_documents')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $result[] = [
+            'application' => $application,
+            'personal_details' => $personalDetails,
+            'account_personal_details' => $accountPersonalDetails,
+            'account_nominees' => $accountNominees,
+            'application_address' => $applicationAddresss,
+            'customerpic' => $custlivepic,
+            'customerdoc' => $custumerdoc,
+        ];
+    }
+
+    return response()->json([
+        'message' => 'Applications for agent fetched successfully.',
+        'data' => $result,
+    ]);
+}
+
 }
