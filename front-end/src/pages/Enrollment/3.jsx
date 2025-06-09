@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import DocumentUpload from './3A';
 import CommonButton from '../../components/CommonButton';
@@ -7,31 +5,54 @@ import { DocumentProvider } from './DocumentContext';
 import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import Swal from 'sweetalert2';
-// import DAOExtraction from './3B_DAOExtraction';
 import { applicationDocumentService } from '../../services/apiServices';
+
 function P3({ onNext, onBack, formData, updateFormData }) {
     const [documents, setDocuments] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(false);
     const storedId = localStorage.getItem('application_id');
+
     // Load saved documents from localStorage on component mount
     React.useEffect(() => {
         const savedDocuments = localStorage.getItem('applicationDocuments');
         if (savedDocuments) {
-            setDocuments(JSON.parse(savedDocuments));
+            try {
+                const parsedDocuments = JSON.parse(savedDocuments);
+                if (Array.isArray(parsedDocuments)) {
+                    // Convert image data back to preview format
+                    const restoredDocuments = parsedDocuments.map(doc => ({
+                        ...doc,
+                        file: null, // File objects can't be stored in localStorage
+                        image: doc.imageData || null // Restore image data for preview
+                    }));
+                    setDocuments(restoredDocuments);
+                }
+            } catch (error) {
+                console.error('Error parsing saved documents:', error);
+                localStorage.removeItem('applicationDocuments');
+            }
         }
     }, []);
 
     const handleDocumentsUpdate = (newDocuments) => {
+        // Prepare documents for localStorage storage
+        const documentsToStore = newDocuments.map(doc => ({
+            id: doc.id,
+            type: doc.type,
+            name: doc.name,
+            imageData: doc.image, // Store image data for preview
+            uploadedAt: doc.uploadedAt,
+            documentCategory: doc.documentCategory,
+            isValid: doc.isValid,
+            extractedInfo: doc.extractedInfo
+        }));
+
         // Save documents to state and localStorage
         setDocuments(newDocuments);
-
-        // DAOExtraction();
-        localStorage.setItem('applicationDocuments', newDocuments);
-        console.log('Updated documents:', newDocuments);
+        localStorage.setItem('applicationDocuments', JSON.stringify(documentsToStore));
     };
 
     const handleSubmit = async () => {
-
         if (documents.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -46,38 +67,47 @@ function P3({ onNext, onBack, formData, updateFormData }) {
         const formDataObj = new FormData();
         formDataObj.append('application_id', storedId);
 
+        // Filter out documents that don't have files (like those loaded from localStorage)
         const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
 
         if (documentsWithFiles.length === 0) {
-            throw new Error('No valid documents to upload');
+            Swal.fire({
+                icon: 'error',
+                title: 'No Valid Documents',
+                text: 'Please re-upload your documents before submitting.',
+            });
+            setIsLoading(false);
+            return;
         }
 
         documentsWithFiles.forEach((doc) => {
             formDataObj.append('files[]', doc.file);
-            formDataObj.append('document_types[]', doc.name);
+            formDataObj.append('document_types[]', doc.type || doc.name);
         });
 
-
         try {
-            const respone = daoApi.post(applicationDocumentService.upload(formDataObj))
-            // Clear localStorage after successful upload
-            localStorage.removeItem('applicationDocuments');
+            const response = await daoApi.post(applicationDocumentService.upload(formDataObj));
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Documents uploaded successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
+            if (response.data.success) {
+                // Clear localStorage after successful upload
+                localStorage.removeItem('applicationDocuments');
 
-            // Update form data if needed
-            updateFormData({
-                ...formData,
-                documents: documents.map(doc => ({ name: doc.name })) // Save document names without files
-            });
-            onNext();
+                // Update form data
+                updateFormData({
+                    ...formData,
+                    documents: documents.map(doc => ({
+                        type: doc.type,
+                        name: doc.name,
+                        isValid: doc.isValid
+                    }))
+                });
 
+                onNext();
+            } else {
+                throw new Error(response.data.message || 'Upload failed');
+            }
         } catch (error) {
+            console.error('Upload error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Upload Failed',
@@ -85,9 +115,9 @@ function P3({ onNext, onBack, formData, updateFormData }) {
             });
         } finally {
             setIsLoading(false);
-            // }
         }
-    }
+    };
+
     return (
         <DocumentProvider>
             <div className="form-container">
@@ -118,4 +148,133 @@ function P3({ onNext, onBack, formData, updateFormData }) {
     );
 }
 
-export default P3; 
+export default P3;
+
+
+
+
+
+
+
+
+
+
+// import React from 'react';
+// import DocumentUpload from './3A';
+// import CommonButton from '../../components/CommonButton';
+// import { DocumentProvider } from './DocumentContext';
+// import { daoApi } from '../../utils/storage';
+// import { API_ENDPOINTS } from '../../services/api';
+// import Swal from 'sweetalert2';
+// // import DAOExtraction from './3B_DAOExtraction';
+// import { applicationDocumentService } from '../../services/apiServices';
+// function P3({ onNext, onBack, formData, updateFormData }) {
+//     const [documents, setDocuments] = React.useState([]);
+//     const [isLoading, setIsLoading] = React.useState(false);
+//     const storedId = localStorage.getItem('application_id');
+//     // Load saved documents from localStorage on component mount
+//     React.useEffect(() => {
+//         const savedDocuments = localStorage.getItem('applicationDocuments');
+//         if (savedDocuments) {
+//             setDocuments(JSON.parse(savedDocuments));
+//         }
+//     }, []);
+
+//     const handleDocumentsUpdate = (newDocuments) => {
+//         // Save documents to state and localStorage
+//         setDocuments(newDocuments);
+
+//         // DAOExtraction();
+//         localStorage.setItem('applicationDocuments', newDocuments);
+//         console.log('Updated documents:', newDocuments);
+//     };
+
+//     const handleSubmit = async () => {
+
+//         if (documents.length === 0) {
+//             Swal.fire({
+//                 icon: 'warning',
+//                 title: 'No Documents',
+//                 text: 'Please upload at least one document before proceeding.',
+//             });
+//             return;
+//         }
+
+//         setIsLoading(true);
+
+//         const formDataObj = new FormData();
+//         formDataObj.append('application_id', storedId);
+
+//         const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
+
+//         if (documentsWithFiles.length === 0) {
+//             throw new Error('No valid documents to upload');
+//         }
+
+//         documentsWithFiles.forEach((doc) => {
+//             formDataObj.append('files[]', doc.file);
+//             formDataObj.append('document_types[]', doc.name);
+//         });
+
+
+//         try {
+//             const respone = daoApi.post(applicationDocumentService.upload(formDataObj))
+//             // Clear localStorage after successful upload
+//             localStorage.removeItem('applicationDocuments');
+
+//             // Swal.fire({
+//             //     icon: 'success',
+//             //     title: 'Documents uploaded successfully.',
+//             //     showConfirmButton: false,
+//             //     timer: 1500
+//             // });
+
+//             // Update form data if needed
+//             updateFormData({
+//                 ...formData,
+//                 documents: documents.map(doc => ({ name: doc.name })) // Save document names without files
+//             });
+//             onNext();
+
+//         } catch (error) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Upload Failed',
+//                 text: error.message || 'Failed to upload documents. Please try again.',
+//             });
+//         } finally {
+//             setIsLoading(false);
+//             // }
+//         }
+//     }
+//     return (
+//         <DocumentProvider>
+//             <div className="form-container">
+//                 <DocumentUpload
+//                     onDocumentsUpdate={handleDocumentsUpdate}
+//                     initialDocuments={documents}
+//                 />
+//                 <div className="next-back-btns mt-6">
+//                     <CommonButton className="btn-back" onClick={onBack}>
+//                         <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+//                     </CommonButton>
+//                     <CommonButton
+//                         className="btn-next"
+//                         onClick={handleSubmit}
+//                         disabled={isLoading}
+//                     >
+//                         {isLoading ? (
+//                             'Uploading...'
+//                         ) : (
+//                             <>
+//                                 Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+//                             </>
+//                         )}
+//                     </CommonButton>
+//                 </div>
+//             </div>
+//         </DocumentProvider>
+//     );
+// }
+
+// export default P3; 
