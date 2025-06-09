@@ -1,6 +1,6 @@
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
-  BASE_URL_LOGIN: "http://127.0.0.1:8000", // For login only
+  BASE_URL_LOGIN: "http://172.16.1.224:8084", // For login only
   BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
   AUTH: {
@@ -46,6 +46,52 @@ export const API_ENDPOINTS = {
     CREATE: '/api/agent/service-to-customer',
   },
 
+  AGENT_LIVE_PHOTO: {
+    CREATE: '/api/agent/agent-live-photo',
+  },
+
+  ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
+
+  RECENT_PENDING_APPLICATIONS: {
+    GET_LIST: '/api/admin/pendingApplication',
+  },
+
+  PENDING_ACCOUNT: {
+    GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
+    GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,
+    GET_DATAILS_S2B: (id) => `/api/admin/fetchApplicationAddressDetails/${id}`,
+    GET_DATAILS_S2C: (id) => `/api/admin/fetchApplicantLivePhotosDetails/${id}`,
+
+    GET_DATAILS_S3: (id) => `/api/admin/fetchApplicationDocuments/${id}`,
+
+    GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
+    GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
+    GET_DATAILS_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
+    GET_DATAILS_S6B: (id) => `/api/admin/fetchAgentLivePhotos/${id}`,
+  },
+  PENDING_ACCOUNT_STATUS_UPDATE: {
+    UPDATE_S1: (id) => `/api/admin/updateCustomerApplicationDetails/${id}`,
+    UPDATE_S2A: (id) => `/api/admin/updateApplicationPersonalDetails/${id}`,
+    UPDATE_S2B: (id) => `/api/admin/updateApplicationAddressDetails/${id}`,
+    UPDATE_S2C: (id) => `/api/admin/updateApplicantLivePhotos/${id}`,
+
+    UPDATE_S3: (id) => `/api/admin/updateApplicationDocuments/${id}`,
+
+    UPDATE_S5A: (id) => `/api/admin/updateAccountPersonalDetails/${id}`,
+    UPDATE_S5B: (id) => `/api/admin/updateAccountNominees/${id}`,
+    UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
+
+  }
+
+  ,
+
+
+
+
+
+
+  // om data below
   ADMIN: {
     GET_ALL_APPLICATIONS: '/api/admin/applications',
     GET_ALL_PENDING_APPLICATIONS: '/api/admin/applications/pending',
@@ -60,6 +106,21 @@ export const API_ENDPOINTS = {
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
   },
+
+
+
+  // om data above
+
+
+
+
+
+
+
+
+
+
+
 
   BANK: {
     CREATE: "/auth/banks",

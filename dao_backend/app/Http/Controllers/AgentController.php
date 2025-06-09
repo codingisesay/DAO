@@ -10,10 +10,11 @@ use App\Models\ApplicantLivePhoto;
 use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
+use App\Models\AgentLivePhoto;
 use App\Models\CustomerApplicationStatus;
 
 use App\Models\ServiceToCustomer;
-use App\Models\AgentLivePhoto;
+
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -204,7 +205,7 @@ public function saveLivePhoto(Request $request)
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
-        'status' => 'nullable|in:APPROVED,REJECT',
+        'status' => 'nullable',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
@@ -323,13 +324,11 @@ public function saveApplicationDocument(Request $request)
 
         $documents[] = $doc;
     }
-
-    DB::table('document_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
         
-       
-    ]);
+        DB::table('document_approved_status')->updateOrInsert(
+            ['application_id' => $validated['application_id']],
+            ['status' => 'Pending']
+        );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',
@@ -436,11 +435,10 @@ public function saveAccountNominee(Request $request)
         );
         $savedNominees[] = $nominee;
     }
-
-    DB::table('nominee_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
-    ]);
+DB::table('nominee_approved_status')->updateOrInsert(
+    ['application_id' => $validated['application_id']],
+    ['status' => 'Pending']
+);
 
     return response()->json([
         'message' => 'Account nominees saved successfully.',
@@ -586,6 +584,31 @@ public function getBankingServices()
     return response()->json([
         'message' => 'Banking services fetched successfully.',
         'data' => $bankingServices,
+    ]);
+}
+
+public function getApplicationStatusByAgents($agent_id)
+{
+    $statuses = ['Pending', 'Approved', 'Reject', 'Review'];
+
+    $applications = DB::table('customer_application_details')
+        ->join('customer_appliction_status', 'customer_application_details.id', '=', 'customer_appliction_status.application_id')
+        ->where('customer_application_details.agent_id', $agent_id)
+        ->whereIn('customer_appliction_status.status', $statuses)
+        ->select(
+            'customer_application_details.*',
+            'customer_appliction_status.status as application_status',
+            
+        )
+        ->get();
+
+    if ($applications->isEmpty()) {
+        return response()->json(['message' => 'No applications found for this agent.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Application statuses fetched successfully.',
+        'data' => $applications,
     ]);
 }
 }

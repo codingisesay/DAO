@@ -22,6 +22,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     });
 
     const [localFormData, setLocalFormData] = useState({
+        per_complex_name: formData.per_complex_name || '',
+        per_flat_no: formData.per_flat_no || '',
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
         per_area: formData.area || '',
@@ -31,8 +33,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         per_city: formData.city || '',
         per_district: formData.district || '',
         per_state: formData.state || '',
-        cor_complex_name: formData.cor_complex_name || '',
-        cor_flat_no: formData.cor_flat_no || '',
+        cor_complex_name: formData.cor_complex_name || (formData.correspondenceAddressSame ? formData.per_complex_name : ''),
+        cor_flat_no: formData.cor_flat_no || (formData.correspondenceAddressSame ? formData.per_flat_no : ''),
         cor_area: formData.cor_area || '',
         cor_landmark: formData.cor_landmark || '',
         cor_country: formData.cor_country || '',
@@ -43,39 +45,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         status: 'Pending'
     });
 
-    // const submitaddress = async () => {
-    //     const payload = {
-    //         application_id: formData.application_id,
-    //         ...localFormData,
-    //         ...extraInputData,
-    //         status: formData.status,
-    //     };
 
-    //     try {
-    //         const response = await daoApi.post(addressDetailsService.create(payload))
-    //         console.log('ADDRESS CHECK :', payload)
-
-    //         updateFormData({
-    //             ...localFormData,
-    //             ...extraInputData,
-    //             correspondenceAddressSame: sameAsAbove
-    //         });
-
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Address details saved successfully.',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         });
-    //         onNext();
-    //     } catch (error) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: 'fail fail'
-    //         });
-    //     }
-    // }
     const submitaddress = async () => {
         const payload = {
             application_id: formData.application_id,
@@ -95,6 +65,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                     correspondenceAddressSame: sameAsAbove
                 });
 
+                console.log('before to send address : ', formData);
                 Swal.fire({
                     icon: 'success',
                     title: response.data.message || 'Address details saved successfully.',
@@ -111,7 +82,14 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             //     title: 'Error',
             //     text: error.message || 'Failed to save address details'
             // });
+            updateFormData({
+                ...localFormData,
+                ...payload,
+                ...extraInputData,
+                correspondenceAddressSame: sameAsAbove
+            });
 
+            console.log('after to send : ', formData);
             Swal.fire({
                 icon: 'success',
                 title: 'Address details saved successfully.',
@@ -150,18 +128,20 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         const newValue = !sameAsAbove;
         setSameAsAbove(newValue);
 
-        if (newValue) {
-            setLocalFormData(prev => {
-                const updated = { ...prev };
-                Object.keys(prev).forEach(key => {
-                    if (key.startsWith('per_')) {
-                        const corKey = key.replace('per_', 'cor_');
-                        updated[corKey] = prev[key];
-                    }
-                });
-                return updated;
-            });
-        }
+        setLocalFormData(prev => {
+            if (newValue) {
+                // Copy permanent address to correspondence address
+                return {
+                    ...prev,
+                    ...Object.fromEntries(
+                        Object.entries(prev)
+                            .filter(([key]) => key.startsWith('per_'))
+                            .map(([key, value]) => [`cor_${key.slice(4)}`, value])
+                    )
+                };
+            }
+            return prev;
+        });
     };
 
     const handleClearCorrespondence = () => {

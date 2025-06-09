@@ -452,3 +452,9 @@ tr:hover {
 .document-upload-container .bi {
     color: #00A86B;
 }
+
+.no-borer,
+.no-borer td {
+    border: none !important;
+    border-bottom: none !important;
+}

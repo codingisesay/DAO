@@ -13,12 +13,13 @@ import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 // import Customercreation from './pages/Enrollment/3B_DAOExtraction';
-import AccountTbl from './pages/Adminpages/ApproveTbl';
+import ReviewTable from './pages/Adminpages/ReviewTable';
 import UserTable from './muitbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './pages/Enrollment/GetSignphoto'
+import DAOExtraction from './pages/Enrollment/GetSignphoto';
+import PrintApplication from './pages/Enrollment/PrintApplication';
 
 
 export const App = () => {
@@ -40,10 +41,12 @@ export const App = () => {
           <Route path="/enrollmentform" element={<Enrollmentform />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
-          {/*    <Route path="/approved" element={<AccountTbl />} />
+          {/*<Route path="/approved" element={<AccountTbl />} />
           <Route path="/pending" element={<AccountTbl />} /> */}
-          <Route path="/rejected" element={<AccountTbl />} />
-          <Route path="/varify-account/01" element={<Varificationform />} />
+          <Route path="/review" element={<ReviewTable />} />
+          <Route path="/varify-account/:id" element={<Varificationform />} />
+          // In your router configuration
+          <Route path="/print-application" element={<PrintApplication />} />
         </Routes>
       </Router>
       <ToastContainer />

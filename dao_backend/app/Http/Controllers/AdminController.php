@@ -382,6 +382,13 @@ public function updateAgentLivePhotos($application_id, Request $request)
             'status_comment' => $status_comment,
         ]);
 
+        $updatedFinalStatus = DB::table('customer_appliction_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            
+        ]);
+
     return response()->json([
         'success' => (bool)$updated,
         'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',

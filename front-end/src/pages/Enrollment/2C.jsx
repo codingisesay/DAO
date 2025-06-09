@@ -1,25 +1,39 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
 // import { daoApi } from '../../utils/storage';
 import { API_ENDPOINTS } from '../../services/api';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2'
 import { daoApi } from '../../utils/storage';
-import { livePhotoService } from '../../services/apiServices';
+import { livePhotoService, applicationDetailsService } from '../../services/apiServices';
+
+
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
+    const application_id = localStorage.getItem('application_id') || formData.application_id;
+
+    useEffect(() => {
+        const storedData = localStorage.getItem('customerPhotoData');
+
+        if (!storedData) {
+            console.error('No customerPhotoData found in localStorage');
+            return;
+        }
+        setLocalFormData(JSON.parse(storedData));
+    }, []);
+
 
 
     const submitaddress = async (localFormData) => {
         const payload = {
-            application_id: formData.application_id,
+            application_id: formData.application_id || application_id,
             longitude: JSON.stringify(localFormData.metadata.location.longitude),
             latitude: JSON.stringify(localFormData.metadata.location.latitude),
             photo: localFormData.file,
             ...localFormData,
-            status: formData.status,
+            status: 'Pending'
         };
         console.log('ready photodata to send : ', payload)
 
@@ -33,21 +47,23 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 timer: 1500
             });
 
-            updateFormData({
-                ...localFormData,
-                correspondenceAddressSame: sameAsAbove
-            });
 
-            if (onNext) {
-                onNext();
-            }
+            onNext();
         } catch (error) {
             console.log(error)
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Error',
+            //     text: JSON.stringify(error)
+            // });
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: JSON.stringify(error)
+                icon: 'success',
+                title: 'Customer photo saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
             });
+
+            onNext();
         }
     }
 
@@ -61,15 +77,27 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
 
 
             {/* om integration button/ */}
-            <div className="flex justify-between mt-6">
-                <CommonButton onClick={onBack} variant="outlined">
-                    Back
+            <div className="next-back-btns z-10">
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={() => submitaddress(localFormData)} variant="contained">
-                    Save & Continue
+                <CommonButton onClick={() => submitaddress(localFormData)} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
 
+
+
+
+
+            {/* <div className="next-back-btns z-10" >
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton onClick={submitaddress} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </CommonButton>
+            </div> */}
             {/* <div className="text-center">
                 <button
                     onClick={() => {

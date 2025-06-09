@@ -3,7 +3,7 @@ const labels = {
         label: "Username",
     },
     password: {
-        label: "password",
+        label: "Password",
     },
     captacha: {
         label: "Enter Captcha",

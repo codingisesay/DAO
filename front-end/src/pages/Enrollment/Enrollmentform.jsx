@@ -150,11 +150,19 @@ function Enrollmentform() {
                     formData={formData}
                 />;
             default:
-                return <Page1
-                    onNext={handleNext}
+                return <Page6
+                    onComplete={() => {
+                        setComplete(true);
+                        // console.log('Final form data:', formData);
+                    }}
+                    onBack={handleBack}
                     formData={formData}
-                    updateFormData={updateFormData}
                 />;
+            // <Page1
+            //     onNext={handleNext}
+            //     formData={formData}
+            //     updateFormData={updateFormData}
+            // />;
         }
     };
 
