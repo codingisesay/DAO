@@ -6,6 +6,8 @@ use App\Services\EurekaService;
 use App\Http\Controllers\Api\AuthProxyController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\kycAgentController;
+
 
 
 /*
@@ -97,6 +99,15 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
         Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
         Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
         //Admin routes
+
+        //This is for starting the KYC process by agent
+        Route::post('/agent/kyc/start', [kycAgentController::class, 'startKyc']);
+        Route::post('/agent/save-all-kyc-data', [kycAgentController::class, 'saveAllKycData']);
+
+        //This is for getting the application status by agent id
+        Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
+
+        
 
     // });
 

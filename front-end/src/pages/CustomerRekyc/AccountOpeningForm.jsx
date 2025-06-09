@@ -9,7 +9,7 @@ import Step6AccountSummary from "./Step6ccountSummary/Step6ASummary";
 import "./style.css";
 
 function CustomerForm() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(2);
 
     const [formData, setFormData] = useState({
         // Authentication Details

@@ -586,4 +586,29 @@ public function getBankingServices()
         'data' => $bankingServices,
     ]);
 }
+
+public function getApplicationStatusByAgents($agent_id)
+{
+    $statuses = ['Pending', 'Approved', 'Reject', 'Review'];
+
+    $applications = DB::table('customer_application_details')
+        ->join('customer_appliction_status', 'customer_application_details.id', '=', 'customer_appliction_status.application_id')
+        ->where('customer_application_details.agent_id', $agent_id)
+        ->whereIn('customer_appliction_status.status', $statuses)
+        ->select(
+            'customer_application_details.*',
+            'customer_appliction_status.status as application_status',
+            
+        )
+        ->get();
+
+    if ($applications->isEmpty()) {
+        return response()->json(['message' => 'No applications found for this agent.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Application statuses fetched successfully.',
+        'data' => $applications,
+    ]);
+}
 }

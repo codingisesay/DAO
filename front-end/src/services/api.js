@@ -56,6 +56,11 @@ export const API_ENDPOINTS = {
     GET_LIST: '/api/admin/pendingApplication',
   },
 
+  KYC: {
+    SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
+  },
+
+
   PENDING_ACCOUNT: {
     GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
     GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,

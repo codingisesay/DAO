@@ -151,7 +151,10 @@ export const adminService = {
 // om data above
 
 
-
+export const kycService = {
+  saveAllKycData: (data) =>
+    daoApi.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
+};
 
 
 
