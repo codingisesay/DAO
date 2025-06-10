@@ -110,7 +110,7 @@ const CommanInput = ({
 
             {error && touched && (
                 <p className="mt-1 text-xs text-red-500">
-                    {label} : {errorMessage || error}
+                    {label}  {errorMessage || error}
                 </p>
             )}
         </div>

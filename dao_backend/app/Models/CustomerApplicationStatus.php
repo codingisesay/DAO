@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceToCustomer extends Model
+class CustomerApplicationStatus extends Model
 {
     use HasFactory;
-
-    
-    protected $table = 'service_to_customers';
-
-    protected $fillable = [
+     protected $table = 'customer_appliction_status';
+      protected $fillable = [
         'application_id',
-        'banking_services_facilities_id',
+        'status',
+        
     ];
 }

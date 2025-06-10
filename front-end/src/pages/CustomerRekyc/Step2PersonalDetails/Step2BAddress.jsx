@@ -127,7 +127,7 @@ function AddressForm({ formData, handleChange, nextStep, prevStep }) {
   return (
     <div className="address-form">
       <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
         <CommanInput
           label={labels.complexname.label}
           name="complex_name"
@@ -211,7 +211,7 @@ function AddressForm({ formData, handleChange, nextStep, prevStep }) {
       </div>
 
       <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
         <CommanInput
           label={labels.complexname.label}
           name="cor_complex"

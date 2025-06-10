@@ -2,292 +2,401 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
+use App\Models\CustomerApplicationDetail;
+use App\Models\ApplicationPersonalDetails; 
+use App\Models\ApplicationAddressDetails;
+use App\Models\ApplicantLivePhoto;
+use App\Models\ApplicationDocument;
+use App\Models\AccountPersonalDetail;
+use App\Models\AccountNominee;
+use App\Models\CustomerApplicationStatus;
+
+use App\Models\ServiceToCustomer;
+use App\Models\AgentLivePhoto;
+
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function getAllApplications()
-    {
-        // Fetch all applications where status is 'APPROVED' in customer_application_details
-        $applications = DB::table('customer_application_details')
-            // ->where('status', 'APPROVED')
-            ->get();
-
-        $result = [];
-        foreach ($applications as $app) {
-            $app->personal_details = DB::table('application_personal_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->first();
-
-            $app->documents = DB::table('application_documents')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->get();
-
-            $app->addresses = DB::table('application_address_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->get();
-
-            $app->live_photos = DB::table('applicant_live_photos')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->get();
-
-            $app->account_personal_details = DB::table('account_personal_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->first();
-
-            $app->nominees = DB::table('account_nominees')
-                ->where('application_id', $app->id)
-                ->where('status', 'APPROVED')
-                ->get();
-
-            $result[] = $app;
-        }
-
-        return response()->json([
-            'message' => 'All approved applications fetched successfully.',
-            'data' => $result
-        ]);
-    }
-
-
-       public function getAllApplicationsPending()
-    {
-        // Fetch all applications where status is 'PENDING' in customer_application_details
-        $applications = DB::table('customer_application_details')
-            // ->where('status', 'PENDING')
-            ->get();
-
-        $result = [];
-        foreach ($applications as $app) {
-            $app->personal_details = DB::table('application_personal_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->first();
-
-            $app->documents = DB::table('application_documents')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->get();
-
-            $app->addresses = DB::table('application_address_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->get();
-
-            $app->live_photos = DB::table('applicant_live_photos')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->get();
-
-            $app->account_personal_details = DB::table('account_personal_details')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->first();
-
-            $app->nominees = DB::table('account_nominees')
-                ->where('application_id', $app->id)
-                ->where('status', 'PENDING')
-                ->get();
-
-            $result[] = $app;
-        }
-
-        return response()->json([
-            'message' => 'All pending applications fetched successfully.',
-            'data' => $result
-        ]);
-    }
-
-    public function getAllApplicationsRejected()
+   public function getAccountStatus()
 {
-    // Fetch all applications where status is 'REJECT' in customer_application_details
-    $applications = DB::table('customer_application_details')
-        // ->where('status', 'REJECT')
-        ->get();
-
-    $result = [];
-    foreach ($applications as $app) {
-        $app->personal_details = DB::table('application_personal_details')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->first();
-
-        $app->documents = DB::table('application_documents')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->get();
-
-        $app->addresses = DB::table('application_address_details')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->get();
-
-        $app->live_photos = DB::table('applicant_live_photos')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->get();
-
-        $app->account_personal_details = DB::table('account_personal_details')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->first();
-
-        $app->nominees = DB::table('account_nominees')
-            ->where('application_id', $app->id)
-            ->where('status', 'REJECT')
-            ->get();
-
-        $result[] = $app;
-    }
+    $statuses = CustomerApplicationStatus::all();
 
     return response()->json([
-        'message' => 'All rejected applications fetched successfully.',
-        'data' => $result
-    ]);
+        'data' => $statuses
+    ],200);
 }
 
-public function updateApplicationStatus(Request $request)
+public function getPendingApplications()
 {
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('customer_application_details')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Application status updated successfully.']);
-}
-
-public function updatePersonalDetailsStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('application_personal_details')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Personal details status updated successfully.']);
-}
-
-public function updateDocumentsStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('application_documents')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Document status updated successfully.']);
-}
-
-public function updateAddressDetailsStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('application_address_details')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Address details status updated successfully.']);
-}
-
-public function updateLivePhotosStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('applicant_live_photos')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Live photo status updated successfully.']);
-}
-
-public function updateAccountPersonalDetailsStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('account_personal_details')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Account personal details status updated successfully.']);
-}
-
-public function updateNomineesStatus(Request $request)
-{
-    $request->validate([
-        'id' => 'required|integer',
-        'status' => 'required|string'
-    ]);
-
-    DB::table('account_nominees')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return response()->json(['message' => 'Nominee status updated successfully.']);
-}
-
-// Fetch full application details including all related data after clicking on view button in admin panel
-public function getFullApplicationDetails($id)
-{
-    // Fetch main application
-    $app = DB::table('customer_application_details')->where('id', $id)->first();
-
-    if (!$app) {
-        return response()->json(['message' => 'Application not found.'], 404);
-    }
-
-    // Fetch related data
-    $app->personal_details = DB::table('application_personal_details')
-        ->where('application_id', $id)
-        ->first();
-
-    $app->documents = DB::table('application_documents')
-        ->where('application_id', $id)
-        ->get();
-
-    $app->addresses = DB::table('application_address_details')
-        ->where('application_id', $id)
-        ->get();
-
-    $app->live_photos = DB::table('applicant_live_photos')
-        ->where('application_id', $id)
-        ->get();
-
-    $app->account_personal_details = DB::table('account_personal_details')
-        ->where('application_id', $id)
-        ->first();
-
-    $app->nominees = DB::table('account_nominees')
-        ->where('application_id', $id)
+    $pendingApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no',
+            //need to join user table to get the agent name
+            
+        )
+        ->where('customer_appliction_status.status', 'pending')
         ->get();
 
     return response()->json([
-        'message' => 'Application details fetched successfully.',
-        'data' => $app
-    ]);
+        'data' => $pendingApplications
+    ], 200);
+
 }
+public function getPendingApplicationsAgentCount(){
+
+    
+$agentCounts = DB::table('customer_appliction_status')
+    ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+    ->select(
+        'customer_application_details.agent_id',
+        DB::raw('COUNT(*) as pending_count')
+    )
+    ->where('customer_appliction_status.status', 'pending')
+    ->groupBy('customer_application_details.agent_id')
+    ->get();
+
+    return response()->json([
+    'data' => $agentCounts
+], 200);
+
+}
+
+
+public function getPendingApplicationsDetailsAgentById($agentId)
+{
+    $pendingApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'pending')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'agent_id' => $agentId,
+        'pending_applications' => $pendingApplications
+    ], 200);
+}
+
+public function getDetailsForCustomerDetails($application_id)
+{
+    $details = DB::table('customer_application_details')
+        ->leftJoin('application_personal_details', 'customer_application_details.id', '=', 'application_personal_details.application_id')
+        ->leftJoin('applicant_live_photos', 'customer_application_details.id', '=', 'applicant_live_photos.application_id')
+        ->select(
+            'customer_application_details.*',
+            'application_personal_details.*',
+            'applicant_live_photos.name as live_photo_name',
+            'applicant_live_photos.path as live_photo_path'
+        )
+        ->where('customer_application_details.id', $application_id)
+        ->first();
+
+    return response()->json([
+        'details' => $details
+    ], 200);
+}
+
+
+
+
+public function getApplicationPersonalDetails($application_id)
+{
+    $details = DB::table('application_personal_details')
+        ->join('customer_application_details', 'application_personal_details.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'application_personal_details.*',
+            'customer_application_details.*'
+            // Add more fields from customer_application_details if needed
+        )
+        ->where('application_personal_details.application_id', $application_id)
+        ->first();
+
+    return response()->json([
+        'details' => $details,
+    ], 200);
+}
+
+public function getApplicationAddressDetails($application_id)
+{
+    $details = DB::table('application_address_details')
+        ->join('customer_application_details', 'application_address_details.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'application_address_details.*',
+            'customer_application_details.*'
+            // Add more fields from customer_application_details if needed
+        )
+        ->where('application_address_details.application_id', $application_id)
+        ->first();
+
+    return response()->json([
+        'details' => $details,
+    ], 200);
+}
+
+public function getApplicantLivePhotosDetails($application_id)
+{
+    $photos = DB::table('applicant_live_photos')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'photos' => $photos,
+    ], 200);
+}
+
+public function getApplicationDocuments($application_id)
+{
+    $documents = DB::table('application_documents')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+public function getAccountPersonalDetails($application_id)
+{
+    $documents = DB::table('account_personal_details')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+public function getAccountNominees($application_id)
+{
+    $documents = DB::table('account_nominees')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'documents' => $documents,
+    ], 200);
+
+}
+
+function getServiceToCustomer($application_id)
+{
+    $services = DB::table('service_to_customers')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'services' => $services,
+    ], 200);
+
+}
+
+function fetchAgentLivePhotos($application_id)
+{
+    $services = DB::table('agent_live_photos')
+        ->where('application_id', $application_id)
+        ->get();
+
+    return response()->json([
+        'services' => $services,
+    ], 200);
+
+}
+
+
+
+
+//update status of application 
+public function updateCustomerApplicationDetails($application_id, Request $request)
+{
+    $admin_id = $request->input('admin_id');
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('customer_application_details')
+        ->where('id', $application_id)
+        ->update([
+            'admin_id' => $admin_id,
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicationPersonalDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_personal_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicationAddressDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_address_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicantLivePhotos($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('applicant_live_photos')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateApplicationDocuments($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('document_approved_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAccountPersonalDetails($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('account_personal_details')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAccountNominees($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('nominee_approved_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateServiceToCustomer($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('application_service_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+public function updateAgentLivePhotos($application_id, Request $request)
+{
+    $status = $request->input('status');
+    $status_comment = $request->input('status_comment');
+
+    $updated = DB::table('agent_live_photos')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            'status_comment' => $status_comment,
+        ]);
+
+        $updatedFinalStatus = DB::table('customer_appliction_status')
+        ->where('application_id', $application_id)
+        ->update([
+            'status' => $status,
+            
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+
+
+
+
 
 }

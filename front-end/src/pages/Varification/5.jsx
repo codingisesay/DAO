@@ -1,11 +1,18 @@
-import React, { act, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import NominationForm from './5B';
 import PersonalDetailsForm from './5A';
 import BankFacility from './5C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
+import { pendingAccountStatusUpdate } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
+
+
 const p2 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
+    const { id } = useParams();
+    const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const [formData, setFormData] = useState({
         // Personal Details
@@ -48,18 +55,6 @@ const p2 = ({ onNext, onBack }) => {
         { label: 'Banking Facilities', icon: 'bi bi-bank', component: BankFacility }
     ];
 
-    const handleNext = () => {
-        if (activeStep < steps.length - 1) {
-            setActiveStep(activeStep + 1);
-        }
-    };
-
-    const handleBack = () => {
-        if (activeStep > 0) {
-            setActiveStep(activeStep - 1);
-        }
-    };
-
     const handleFormChange = (name, value) => {
         setFormData(prev => {
             // Handle nested objects (like addresses)
@@ -79,8 +74,294 @@ const p2 = ({ onNext, onBack }) => {
             };
         });
     };
-
     const CurrentStepComponent = steps[activeStep].component;
+
+    // 5A step
+
+    const rejpersonalDetails = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Personal Details Rejection Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            setActiveStep(activeStep + 1);
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const revpersonalDetails = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Review',
+            input: 'text',
+            inputLabel: 'Personal Details Review Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            setActiveStep(activeStep + 1);
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const apprvpersonalDetails = () => {
+        try {
+            const payload = {
+                applicaiton_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            pendingAccountStatusUpdate.updateS5A(id, payload);
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            Swal.fire({
+                icon: 'success',
+                title: 'Personal Details Approved Successfully',
+                timer: 2000,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            setActiveStep(activeStep + 1);
+        }
+        catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text:  error?.response?.data?.message,
+            });
+        }
+    }
+
+    // 5B step
+
+    const rejnomineeDetails = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Nominnie  Details Rejection Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5B(id, payload);
+            setActiveStep(activeStep + 1);
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const revnomineeDetails = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Review',
+            input: 'text',
+            inputLabel: 'Nominnie  Details Review Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5B(id, payload);
+            setActiveStep(activeStep + 1);
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+    };
+
+    const apprvnomineeDetails = () => {
+        try {
+            const payload = {
+                applicaiton_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            pendingAccountStatusUpdate.updateS5A(id, payload);
+            Swal.fire({
+                icon: 'success',
+                title: 'Nominnie  Details Approved Successfully',
+                timer: 2000,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            setActiveStep(activeStep + 1);
+        }
+        catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text:  error?.response?.data?.message,
+            });
+        }
+    }
+
+
+    // 5C Banking
+    const rejbankFacility = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Rejection',
+            input: 'text',
+            inputLabel: 'Banking Details Rejection Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5C(id, payload);
+            onNext();
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+
+    };
+
+    const revbankFacility = async () => {
+        const result = await Swal.fire({
+            title: 'Reason for Review',
+            input: 'text',
+            inputLabel: 'Bnaking Details Review Reason',
+            inputPlaceholder: 'Enter reason here...',
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            className: 'btn-login',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'You need to write a reason!';
+                }
+            },
+        });
+
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingAccountStatusUpdate.updateS5C(id, payload);
+            onNext();
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
+
+    };
+
+    const apprvbankFacility = () => {
+
+        try {
+            const payload = {
+                applicaiton_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            pendingAccountStatusUpdate.updateS5C(id, payload);
+            Swal.fire({
+                icon: 'success',
+                title: 'Banking Details Approved Successfully',
+                timer: 2000,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            onNext();
+        }
+        catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text:  error?.response?.data?.message,
+            });
+        }
+
+    };
+
 
     return (
         <div className="">
@@ -125,7 +406,7 @@ const p2 = ({ onNext, onBack }) => {
             </div>
 
 
-            <div className="next-back-btns">
+            {/* <div className="next-back-btns">
                 <CommonButton
                     className="btn-back"
                     onClick={activeStep === 0 ? onBack : handleBack}
@@ -141,12 +422,64 @@ const p2 = ({ onNext, onBack }) => {
                 >
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
+            </div> */}
+
+
+
+
+            <div className="next-back-btns">
+                <CommonButton
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                    // onClick={activeStep === 0 ? handleRejectClick : handelPhotoReject}
+                    onClick={() => {
+                        if (activeStep === 0) {
+                            rejpersonalDetails();
+                        } else if (activeStep === 1) {
+                            rejnomineeDetails();
+                        } else if (activeStep === 2) {
+                            rejbankFacility();
+                        }
+                    }}
+
+                >
+                    Reject & Continue
+                </CommonButton>
+
+                <CommonButton
+                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                    // onClick={activeStep === 0 ? handleReviewClick : handelPhotoReview}
+                    onClick={() => {
+                        if (activeStep === 0) {
+                            revpersonalDetails();
+                        } else if (activeStep === 1) {
+                            revnomineeDetails();
+                        } else if (activeStep === 2) {
+                            revbankFacility();
+                        }
+                    }}
+
+                >
+                    Review & Continue
+                </CommonButton>
+
+                <CommonButton
+                    className="btn-next "
+                    // onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}
+                    onClick={() => {
+                        if (activeStep === 0) {
+                            apprvpersonalDetails();
+                        } else if (activeStep === 1) {
+                            apprvnomineeDetails();
+                        } else if (activeStep === 2) {
+                            apprvbankFacility();
+                        }
+                    }}
+
+                // onClick={handleNextStep}
+                >
+                    Accept & Continue
+                </CommonButton>
             </div>
-
-
-
-
-
 
 
 

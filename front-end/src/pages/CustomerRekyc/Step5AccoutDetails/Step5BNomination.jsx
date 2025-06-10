@@ -105,7 +105,7 @@ function Step5BNominationForm({ formData, handleChange, nextStep, prevStep }) {
             )}
           </div>
 
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
             <CommanInput
               label={labels.nomineeSalutation.label}
               name="nomineeSalutation"
@@ -166,7 +166,7 @@ function Step5BNominationForm({ formData, handleChange, nextStep, prevStep }) {
           </div>
 
           <h2 className="text-xl font-bold mt-8 mb-4">Nominee {index + 1} Address</h2>
-          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
             <CommanInput
               label={labels.nomineeComplexName.label}
               name="nomineeComplexName"

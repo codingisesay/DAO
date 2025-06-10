@@ -12,6 +12,8 @@ import Stepper from './Stepper';
 function Enrollmentform() {
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
+    
+localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
     const [formData, setFormData] = useState({
@@ -150,11 +152,19 @@ function Enrollmentform() {
                     formData={formData}
                 />;
             default:
-                return <Page1
-                    onNext={handleNext}
+                return <Page6
+                    onComplete={() => {
+                        setComplete(true);
+                        // console.log('Final form data:', formData);
+                    }}
+                    onBack={handleBack}
                     formData={formData}
-                    updateFormData={updateFormData}
                 />;
+            // <Page1
+            //     onNext={handleNext}
+            //     formData={formData}
+            //     updateFormData={updateFormData}
+            // />;
         }
     };
 

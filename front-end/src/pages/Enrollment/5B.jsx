@@ -1,20 +1,19 @@
 
-
-import React, { useState } from 'react';
-import CommanInput from '../../components/CommanInput';
-import labels from '../../components/labels';
+import React, { useState, useEffect } from 'react';
+import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
 import { accountNomineeService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
-import CommanSelect from '../../components/CommanSelect';
 import { salutation, relation } from '../../data/data';
 
-function NominationForm({ formData, updateFormData, onBack, onNext }) {
-    const [nominees, setNominees] = useState(
-        formData.nominationDetails?.nominees || []
-    );
 
+function NominationForm({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
+
+      const savedData = loadFromLocalStorage(storedId);
+    const [nominees, setNominees] = useState(
+            savedData?.nominees || formData.nominationDetails?.nominees || []
+    );
 
     const [currentNominee, setCurrentNominee] = useState({
         details: {
@@ -23,7 +22,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             nomineeMiddleName: '',
             nomineeLastName: '',
             nomineeRelation: '',
-            nomineePercentage: '',
+            nomineePercentage: '100',
             nomineeDOB: '',
             nomineeAge: ''
         },
@@ -57,30 +56,72 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         return age.toString();
     };
 
+    const getRemainingPercentage = () => {
+        const totalUsed = nominees.reduce((sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage || 0), 0);
+        return 100 - totalUsed;
+    };
+
     const validateNominee = (nominee) => {
         const errors = {};
 
         // Details validation
-        if (!nominee.details.nomineeSalutation) errors.nomineeSalutation = 'Required';
-        if (!nominee.details.nomineeFirstName || nominee.details.nomineeFirstName.length > 50) errors.nomineeFirstName = 'Required, max 50 chars';
-        if (!nominee.details.nomineeLastName || nominee.details.nomineeLastName.length > 50) errors.nomineeLastName = 'Required, max 50 chars';
-        if (!nominee.details.nomineeRelation) errors.nomineeRelation = 'Required';
-        if (!nominee.details.nomineePercentage || isNaN(nominee.details.nomineePercentage) || nominee.details.nomineePercentage < 0 || nominee.details.nomineePercentage > 100) errors.nomineePercentage = 'Required, 0-100';
-        if (!nominee.details.nomineeDOB) errors.nomineeDOB = 'Required';
-        if (!nominee.details.nomineeAge || isNaN(nominee.details.nomineeAge) || nominee.details.nomineeAge < 0 || nominee.details.nomineeAge > 120) errors.nomineeAge = 'Required, 0-120';
+        if (nominee.details.nomineeFirstName && nominee.details.nomineeFirstName.length > 50) 
+            errors.nomineeFirstName = 'Max 50 chars';
+        if (nominee.details.nomineeLastName && nominee.details.nomineeLastName.length > 50) 
+            errors.nomineeLastName = 'Max 50 chars';
+
+        // Percentage validation
+        const percentage = parseFloat(nominee.details.nomineePercentage);
+        if (isNaN(percentage)) {
+            errors.nomineePercentage = 'Must be a number';
+        } else if (percentage < 0 || percentage > 100) {
+            errors.nomineePercentage = 'Must be between 0-100';
+        }
+
+        if (nominee.details.nomineeAge && 
+            (isNaN(nominee.details.nomineeAge)) || 
+            nominee.details.nomineeAge < 0 || 
+            nominee.details.nomineeAge > 120
+        ) {
+            errors.nomineeAge = 'Must be 0-120';
+        }
 
         // Address validation
-        if (!nominee.address.nomineeComplexName || nominee.address.nomineeComplexName.length > 50) errors.nomineeComplexName = 'Required, max 50 chars';
-        if (!nominee.address.nomineeBuildingName || nominee.address.nomineeBuildingName.length > 20) errors.nomineeBuildingName = 'Required, max 20 chars';
-        if (!nominee.address.nomineeArea || nominee.address.nomineeArea.length > 50) errors.nomineeArea = 'Required, max 50 chars';
-        if (!nominee.address.nomineeCountry || nominee.address.nomineeCountry.length > 30) errors.nomineeCountry = 'Required, max 30 chars';
-        if (!nominee.address.nomineePinCode || !/^\d{6}$/.test(nominee.address.nomineePinCode)) errors.nomineePinCode = 'Required, 6 digits';
+        if (nominee.address.nomineeComplexName && nominee.address.nomineeComplexName.length > 50) 
+            errors.nomineeComplexName = 'Max 50 chars';
+        if (nominee.address.nomineeBuildingName && nominee.address.nomineeBuildingName.length > 20) 
+            errors.nomineeBuildingName = 'Max 20 chars';
+        if (nominee.address.nomineeArea && nominee.address.nomineeArea.length > 50) 
+            errors.nomineeArea = 'Max 50 chars';
+        if (nominee.address.nomineeCountry && nominee.address.nomineeCountry.length > 30) 
+            errors.nomineeCountry = 'Max 30 chars';
+        if (nominee.address.nomineePinCode && !/^\d{6}$/.test(nominee.address.nomineePinCode)) 
+            errors.nomineePinCode = 'Must be 6 digits';
 
         return errors;
     };
 
     const handleChange = (section, e) => {
         const { name, value } = e.target;
+
+        // Special handling for percentage field
+        if (name === 'nomineePercentage') {
+            let processedValue = value;
+            // Ensure only numbers and limit to 3 digits
+            processedValue = processedValue.replace(/[^0-9]/g, '');
+            if (processedValue.length > 3) processedValue = processedValue.slice(0, 3);
+            // Ensure value doesn't exceed 100
+            if (parseFloat(processedValue) > 100) processedValue = '100';
+
+            setCurrentNominee(prev => ({
+                ...prev,
+                details: {
+                    ...prev.details,
+                    [name]: processedValue
+                }
+            }));
+            return;
+        }
 
         // If DOB is being changed, calculate age
         if (name === 'nomineeDOB') {
@@ -105,6 +146,31 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     };
 
     const addNominee = () => {
+        // First check if required fields are filled
+        const requiredFields = [
+            currentNominee.details.nomineeSalutation,
+            currentNominee.details.nomineeFirstName,
+            currentNominee.details.nomineeLastName,
+            currentNominee.details.nomineeRelation,
+            currentNominee.details.nomineePercentage,
+            currentNominee.details.nomineeDOB,
+            currentNominee.address.nomineeComplexName,
+            currentNominee.address.nomineeBuildingName,
+            currentNominee.address.nomineeArea,
+            currentNominee.address.nomineeCountry,
+            currentNominee.address.nomineePinCode
+        ];
+
+        if (requiredFields.some(field => !field)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Incomplete Form',
+                text: 'Please fill all required fields before adding nominee.'
+            });
+            return;
+        }
+
+        // Then check for validation errors
         const errors = validateNominee(currentNominee);
         setErrors(errors);
 
@@ -113,6 +179,27 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 icon: 'error',
                 title: 'Validation Error',
                 text: 'Please fix the errors in the form before adding nominee.'
+            });
+            return;
+        }
+
+        const remainingPercentage = getRemainingPercentage();
+        const currentPercentage = parseFloat(currentNominee.details.nomineePercentage);
+
+        if (remainingPercentage <= 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Percentage Exhausted',
+                text: 'All your percentage value (100%) has been used'
+            });
+            return;
+        }
+
+        if (currentPercentage > remainingPercentage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Percentage',
+                text: `You can only allocate up to ${remainingPercentage}% for this nominee`
             });
             return;
         }
@@ -131,6 +218,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     };
 
     const resetForm = () => {
+        const remainingPercentage = getRemainingPercentage();
         setCurrentNominee({
             details: {
                 nomineeSalutation: '',
@@ -138,7 +226,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 nomineeMiddleName: '',
                 nomineeLastName: '',
                 nomineeRelation: '',
-                nomineePercentage: '',
+                nomineePercentage: remainingPercentage > 0 ? Math.min(remainingPercentage, 100).toString() : '0',
                 nomineeDOB: '',
                 nomineeAge: ''
             },
@@ -157,13 +245,23 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         setErrors({});
     };
 
-    // Updated: Send all nominees in a single API call as an array
     const submitnomini = async () => {
         if (nominees.length === 0) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Please add at least one nominee'
+            });
+            return;
+        }
+
+        // Check if total percentage is exactly 100
+        const totalPercentage = nominees.reduce((sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage), 0);
+        if (totalPercentage !== 100) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Total Percentage',
+                text: `Total percentage must be exactly 100% (current: ${totalPercentage}%)`
             });
             return;
         }
@@ -197,6 +295,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 nominees: nomineesPayload
             });
 
+            // Clear saved data on successful submission
+            // clearLocalStorage();
+
             Swal.fire({
                 icon: 'success',
                 title: 'Nominee(s) saved successfully!',
@@ -215,14 +316,21 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
     };
 
+
+
+    useEffect(() => {
+        saveToLocalStorage({
+            nominees,
+            currentNominee
+        });
+    }, [nominees, currentNominee]);
     return (
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
-
             {/* Nominee Form */}
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mb-6">
-                <CommanSelect
-                    label={labels.nomineeSalutation.label}
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
+                <SelectField
+                    label="Salutation"
                     name="nomineeSalutation"
                     value={currentNominee.details.nomineeSalutation}
                     onChange={(e) => handleChange('details', e)}
@@ -230,37 +338,34 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     options={salutation}
                     error={errors.nomineeSalutation}
                 />
-                <CommanInput
-                    label={labels.nomineeFirstName.label}
+                <InputField
+                    label="First Name"
                     name="nomineeFirstName"
                     value={currentNominee.details.nomineeFirstName}
                     onChange={(e) => handleChange('details', e)}
                     required
                     max={50}
-                    validationType="TEXT_ONLY"
                     error={errors.nomineeFirstName}
                 />
-                <CommanInput
-                    label={labels.nomineeMiddleName.label}
+                <InputField
+                    label="Middle Name"
                     name="nomineeMiddleName"
                     value={currentNominee.details.nomineeMiddleName}
                     onChange={(e) => handleChange('details', e)}
                     max={50}
-                    validationType="TEXT_ONLY"
                     error={errors.nomineeMiddleName}
                 />
-                <CommanInput
-                    label={labels.nomineeLastName.label}
+                <InputField
+                    label="Last Name"
                     name="nomineeLastName"
                     value={currentNominee.details.nomineeLastName}
                     onChange={(e) => handleChange('details', e)}
                     required
                     max={50}
-                    validationType="TEXT_ONLY"
                     error={errors.nomineeLastName}
                 />
-                <CommanSelect
-                    label={labels.nomineeRelation.label}
+                <SelectField
+                    label="Relation"
                     name="nomineeRelation"
                     value={currentNominee.details.nomineeRelation}
                     onChange={(e) => handleChange('details', e)}
@@ -268,98 +373,89 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     options={relation}
                     error={errors.nomineeRelation}
                 />
-                <CommanInput
-                    label={labels.nomineePercentage.label}
+                <InputField
+                    label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
                     name="nomineePercentage"
                     value={currentNominee.details.nomineePercentage}
                     onChange={(e) => handleChange('details', e)}
                     required
                     max={3}
-                    validationType="NUMBER_ONLY"
                     error={errors.nomineePercentage}
                 />
-                <CommanInput
-                    label={labels.nomineeDOB.label}
+                <InputField
+                    label="Date of Birth"
                     name="nomineeDOB"
                     type="date"
                     value={currentNominee.details.nomineeDOB}
                     onChange={(e) => handleChange('details', e)}
                     required
-                    validationType="DATE"
                     error={errors.nomineeDOB}
                 />
-                <CommanInput
-                    label={labels.nomineeAge.label}
+                <InputField
+                    label="Age"
                     name="nomineeAge"
                     value={currentNominee.details.nomineeAge}
                     onChange={(e) => handleChange('details', e)}
                     required
                     max={3}
-                    validationType="NUMBER_ONLY"
                     error={errors.nomineeAge}
                     disabled={true}
                 />
             </div>
 
             <h2 className="text-xl font-bold mt-8 mb-4">Nominee Address</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mb-6">
-                <CommanInput
-                    label={labels.nomineeComplexName.label}
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
+                <InputField
+                    label="Complex Name"
                     name="nomineeComplexName"
                     value={currentNominee.address.nomineeComplexName}
                     onChange={(e) => handleChange('address', e)}
                     required
                     max={50}
-                    validationType="ALPHABETS_AND_SPACE"
                     error={errors.nomineeComplexName}
                 />
-                <CommanInput
-                    label={labels.nomineeBuildingName.label}
+                <InputField
+                    label="Building Name"
                     name="nomineeBuildingName"
                     value={currentNominee.address.nomineeBuildingName}
                     onChange={(e) => handleChange('address', e)}
                     required
                     max={20}
-                    validationType="ALPHANUMERIC"
                     error={errors.nomineeBuildingName}
                 />
-                <CommanInput
-                    label={labels.nomineeArea.label}
+                <InputField
+                    label="Area"
                     name="nomineeArea"
                     value={currentNominee.address.nomineeArea}
                     onChange={(e) => handleChange('address', e)}
                     required
                     max={50}
-                    validationType="ALPHABETS_AND_SPACE"
                     error={errors.nomineeArea}
                 />
-                <CommanInput
-                    label={labels.nomineeLandmark.label}
+                <InputField
+                    label="Landmark"
                     name="nomineeLandmark"
                     value={currentNominee.address.nomineeLandmark}
                     onChange={(e) => handleChange('address', e)}
                     max={50}
-                    validationType="EVERYTHING"
                     error={errors.nomineeLandmark}
                 />
-                <CommanInput
-                    label={labels.nomineeCountry.label}
+                <InputField
+                    label="Country"
                     name="nomineeCountry"
                     value={currentNominee.address.nomineeCountry}
                     onChange={(e) => handleChange('address', e)}
                     required
                     max={30}
-                    validationType="ALPHABETS_AND_SPACE"
                     error={errors.nomineeCountry}
                 />
-                <CommanInput
-                    label={labels.nomineePinCode.label}
+                <InputField
+                    label="Pin Code"
                     name="nomineePinCode"
                     value={currentNominee.address.nomineePinCode}
                     onChange={(e) => handleChange('address', e)}
                     required
                     max={6}
-                    validationType="NUMBER_ONLY"
                     error={errors.nomineePinCode}
                 />
             </div>
@@ -427,481 +523,213 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 </div>
             )}
 
-            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
-                <CommonButton onClick={onBack} variant="outlined">
-                    Back
+
+            <div className="next-back-btns z-10" >{/* z-10 */}
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={submitnomini} variant="contained">
-                    Save & Continue
+                <CommonButton onClick={submitnomini} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
+
+ 
         </div>
     );
 }
 
 export default NominationForm;
+ 
+// Add these helper functions at the top of your component file
+const STORAGE_KEY = 'nominationFormData';
+
+const saveToLocalStorage = (data) => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving to localStorage:', error);
+  }
+};
+
+const loadFromLocalStorage = (storedId) => {
+    
+    // const storedId = localStorage.getItem('application_id');
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    
+        // useEffect(() => {
+        //     if (!applicationId) return;
+        //     const fetchDetails = async () => {
+        //         try {
+        //             const response = await applicationDetailsService.getFullDetails(storedId);
+              
+                    
+        //         }
+        //         catch{
+
+        //         }
+        //     }
+        //  } ,[]})
+
+
+
+    return data ? JSON.parse(data) : null;
+
+
+
+  } catch (error) {
+    console.error('Error loading from localStorage:', error);
+    return null;
+  }
+};
+
+// const clearLocalStorage = () => {
+//   localStorage.removeItem(STORAGE_KEY);
+// };
+
+
+
+const InputField = ({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  required = false,
+  max,
+  error,
+  disabled = false,
+  validationType,
+  ...rest
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  const shouldFloat = isFocused || value;
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    setTouched(true);
+  };
+
+  return (
+    <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={handleBlur}
+        required={required}
+        className={clsx(
+          'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+          'transition-all',
+          {
+            'border-red-500': error && touched,
+          }
+        )}
+        placeholder={label}
+        maxLength={max}
+        disabled={disabled}
+        {...rest}
+      />
+      <label
+        htmlFor={name}
+        className={clsx(
+          'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+          {
+            'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+            'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+          }
+        )}
+      >
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+
+      {error && touched && (
+        <p className="mt-1 text-xs text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+};
+
+const SelectField = ({
+  label,
+  name,
+  value,
+  onChange,
+  required = false,
+  options,
+  error,
+  disabled = false,
+  ...rest
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [touched, setTouched] = useState(false);
+
+  const shouldFloat = isFocused || value;
+
+  const handleBlur = () => {
+    setIsFocused(false);
+    setTouched(true);
+  };
+
+  return (
+    <div className={clsx(' floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+      <select
+        id={name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={handleBlur}
+        required={required}
+        className={clsx(
+          'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+          'transition-all',
+          {
+            'border-red-500': error && touched,
+          }
+        )}
+        disabled={disabled}
+        {...rest}
+      >
+        <option value="">Select {label}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <label
+        htmlFor={name}
+        className={clsx(
+          'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+          {
+            'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+            'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+          }
+        )}
+      >
+        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+
+      {error && touched && (
+        <p className="mt-1 text-xs text-red-500">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+};
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from 'react';
-// import CommanInput from '../../components/CommanInput';
-// import labels from '../../components/labels';
-// import CommonButton from '../../components/CommonButton';
-// import { accountNomineeService } from '../../services/apiServices';
-// import Swal from 'sweetalert2';
-// import CommanSelect from '../../components/CommanSelect';
-// import { salutation, relation } from '../../data/data';
-
-// function NominationForm({ formData, updateFormData, onBack, onNext }) {
-//     const [nominees, setNominees] = useState(
-//         formData.nominationDetails?.nominees || []
-//     );
-
-//     const storedId = localStorage.getItem('application_id');
-
-//     const [currentNominee, setCurrentNominee] = useState({
-//         details: {
-//             nomineeSalutation: '',
-//             nomineeFirstName: '',
-//             nomineeMiddleName: '',
-//             nomineeLastName: '',
-//             nomineeRelation: '',
-//             nomineePercentage: '',
-//             nomineeDOB: '',
-//             nomineeAge: ''
-//         },
-//         address: {
-//             nomineeComplexName: '',
-//             nomineeBuildingName: '',
-//             nomineeArea: '',
-//             nomineeLandmark: '',
-//             nomineeCountry: '',
-//             nomineePinCode: '',
-//             nomineeCity: '',
-//             nomineeDistrict: '',
-//             nomineeState: ''
-//         }
-//     });
-
-//     const [errors, setErrors] = useState({});
-
-//     const calculateAge = (dob) => {
-//         if (!dob) return '';
-
-//         const birthDate = new Date(dob);
-//         const today = new Date();
-//         let age = today.getFullYear() - birthDate.getFullYear();
-//         const monthDiff = today.getMonth() - birthDate.getMonth();
-
-//         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-//             age--;
-//         }
-
-//         return age.toString();
-//     };
-
-//     const validateNominee = (nominee) => {
-//         const errors = {};
-
-//         // Details validation
-//         if (!nominee.details.nomineeSalutation) errors.nomineeSalutation = 'Required';
-//         if (!nominee.details.nomineeFirstName || nominee.details.nomineeFirstName.length > 50) errors.nomineeFirstName = 'Required, max 50 chars';
-//         if (!nominee.details.nomineeLastName || nominee.details.nomineeLastName.length > 50) errors.nomineeLastName = 'Required, max 50 chars';
-//         if (!nominee.details.nomineeRelation) errors.nomineeRelation = 'Required';
-//         if (!nominee.details.nomineePercentage || isNaN(nominee.details.nomineePercentage) || nominee.details.nomineePercentage < 0 || nominee.details.nomineePercentage > 100) errors.nomineePercentage = 'Required, 0-100';
-//         if (!nominee.details.nomineeDOB) errors.nomineeDOB = 'Required';
-//         if (!nominee.details.nomineeAge || isNaN(nominee.details.nomineeAge) || nominee.details.nomineeAge < 0 || nominee.details.nomineeAge > 120) errors.nomineeAge = 'Required, 0-120';
-
-//         // Address validation
-//         if (!nominee.address.nomineeComplexName || nominee.address.nomineeComplexName.length > 50) errors.nomineeComplexName = 'Required, max 50 chars';
-//         if (!nominee.address.nomineeBuildingName || nominee.address.nomineeBuildingName.length > 20) errors.nomineeBuildingName = 'Required, max 20 chars';
-//         if (!nominee.address.nomineeArea || nominee.address.nomineeArea.length > 50) errors.nomineeArea = 'Required, max 50 chars';
-//         if (!nominee.address.nomineeCountry || nominee.address.nomineeCountry.length > 30) errors.nomineeCountry = 'Required, max 30 chars';
-//         if (!nominee.address.nomineePinCode || !/^\d{6}$/.test(nominee.address.nomineePinCode)) errors.nomineePinCode = 'Required, 6 digits';
-
-//         return errors;
-//     };
-
-//     const handleChange = (section, e) => {
-//         const { name, value } = e.target;
-
-//         // If DOB is being changed, calculate age
-//         if (name === 'nomineeDOB') {
-//             const age = calculateAge(value);
-//             setCurrentNominee(prev => ({
-//                 ...prev,
-//                 details: {
-//                     ...prev.details,
-//                     [name]: value,
-//                     nomineeAge: age
-//                 }
-//             }));
-//         } else {
-//             setCurrentNominee(prev => ({
-//                 ...prev,
-//                 [section]: {
-//                     ...prev[section],
-//                     [name]: value
-//                 }
-//             }));
-//         }
-//     };
-
-//     const addNominee = () => {
-//         const errors = validateNominee(currentNominee);
-//         setErrors(errors);
-
-//         if (Object.keys(errors).length > 0) {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Validation Error',
-//                 text: 'Please fix the errors in the form before adding nominee.'
-//             });
-//             return;
-//         }
-
-//         const newNominee = {
-//             id: nominees.length > 0 ? Math.max(...nominees.map(n => n.id)) + 1 : 1,
-//             ...currentNominee
-//         };
-
-//         setNominees(prev => [...prev, newNominee]);
-//         resetForm();
-//     };
-
-//     const removeNominee = (id) => {
-//         setNominees(prev => prev.filter(nominee => nominee.id !== id));
-//     };
-
-//     const resetForm = () => {
-//         setCurrentNominee({
-//             details: {
-//                 nomineeSalutation: '',
-//                 nomineeFirstName: '',
-//                 nomineeMiddleName: '',
-//                 nomineeLastName: '',
-//                 nomineeRelation: '',
-//                 nomineePercentage: '',
-//                 nomineeDOB: '',
-//                 nomineeAge: ''
-//             },
-//             address: {
-//                 nomineeComplexName: '',
-//                 nomineeBuildingName: '',
-//                 nomineeArea: '',
-//                 nomineeLandmark: '',
-//                 nomineeCountry: '',
-//                 nomineePinCode: '',
-//                 nomineeCity: '',
-//                 nomineeDistrict: '',
-//                 nomineeState: ''
-//             }
-//         });
-//         setErrors({});
-//     };
-
-//     const submitnomini = async () => {
-//         if (nominees.length === 0) {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Error',
-//                 text: 'Please add at least one nominee'
-//             });
-//             return;
-//         }
-
-//         try {
-//             for (const nominee of nominees) {
-//                 const payload = {
-//                     application_id: storedId,
-//                     salutation: nominee.details.nomineeSalutation,
-//                     first_name: nominee.details.nomineeFirstName,
-//                     middle_name: nominee.details.nomineeMiddleName,
-//                     last_name: nominee.details.nomineeLastName,
-//                     relationship: nominee.details.nomineeRelation,
-//                     percentage: nominee.details.nomineePercentage,
-//                     dob: nominee.details.nomineeDOB,
-//                     age: nominee.details.nomineeAge,
-//                     nom_complex_name: nominee.address.nomineeComplexName,
-//                     nom_flat_no: nominee.address.nomineeBuildingName,
-//                     nom_area: nominee.address.nomineeArea,
-//                     nom_landmark: nominee.address.nomineeLandmark,
-//                     nom_country: nominee.address.nomineeCountry,
-//                     nom_pincode: nominee.address.nomineePinCode,
-//                     nom_city: nominee.address.nomineeCity,
-//                     nom_district: nominee.address.nomineeDistrict,
-//                     nom_state: nominee.address.nomineeState,
-//                     status: "APPROVED"
-//                 };
-//                 console.log('send :', payload)
-//                 await accountNomineeService.create(payload);
-//             }
-
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Nominee(s) saved successfully!',
-//                 showConfirmButton: false,
-//                 timer: 1500
-//             });
-
-//             if (onNext) onNext();
-
-//         } catch (error) {
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Error',
-//                 text: error?.response?.data?.message || 'Failed to save nominee(s)'
-//             });
-//         }
-//     };
-
-//     return (
-//         <div className="max-w-screen-xl mx-auto">
-//             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
-
-//             {/* Nominee Form */}
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mb-6">
-//                 <CommanSelect
-//                     label={labels.nomineeSalutation.label}
-//                     name="nomineeSalutation"
-//                     value={currentNominee.details.nomineeSalutation}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     options={salutation}
-//                     error={errors.nomineeSalutation}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeFirstName.label}
-//                     name="nomineeFirstName"
-//                     value={currentNominee.details.nomineeFirstName}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     max={50}
-//                     validationType="TEXT_ONLY"
-//                     error={errors.nomineeFirstName}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeMiddleName.label}
-//                     name="nomineeMiddleName"
-//                     value={currentNominee.details.nomineeMiddleName}
-//                     onChange={(e) => handleChange('details', e)}
-//                     max={50}
-//                     validationType="TEXT_ONLY"
-//                     error={errors.nomineeMiddleName}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeLastName.label}
-//                     name="nomineeLastName"
-//                     value={currentNominee.details.nomineeLastName}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     max={50}
-//                     validationType="TEXT_ONLY"
-//                     error={errors.nomineeLastName}
-//                 />
-//                 <CommanSelect
-//                     label={labels.nomineeRelation.label}
-//                     name="nomineeRelation"
-//                     value={currentNominee.details.nomineeRelation}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     options={relation}
-//                     error={errors.nomineeRelation}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineePercentage.label}
-//                     name="nomineePercentage"
-//                     value={currentNominee.details.nomineePercentage}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     max={3}
-//                     validationType="NUMBER_ONLY"
-//                     error={errors.nomineePercentage}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeDOB.label}
-//                     name="nomineeDOB"
-//                     type="date"
-//                     value={currentNominee.details.nomineeDOB}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     validationType="DATE"
-//                     error={errors.nomineeDOB}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeAge.label}
-//                     name="nomineeAge"
-//                     value={currentNominee.details.nomineeAge}
-//                     onChange={(e) => handleChange('details', e)}
-//                     required
-//                     max={3}
-//                     validationType="NUMBER_ONLY"
-//                     error={errors.nomineeAge}
-//                     disabled={true}  // Age field is now disabled
-//                 />
-//             </div>
-
-//             <h2 className="text-xl font-bold mt-8 mb-4">Nominee Address</h2>
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mb-6">
-//                 <CommanInput
-//                     label={labels.nomineeComplexName.label}
-//                     name="nomineeComplexName"
-//                     value={currentNominee.address.nomineeComplexName}
-//                     onChange={(e) => handleChange('address', e)}
-//                     required
-//                     max={50}
-//                     validationType="ALPHABETS_AND_SPACE"
-//                     error={errors.nomineeComplexName}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeBuildingName.label}
-//                     name="nomineeBuildingName"
-//                     value={currentNominee.address.nomineeBuildingName}
-//                     onChange={(e) => handleChange('address', e)}
-//                     required
-//                     max={20}
-//                     validationType="ALPHANUMERIC"
-//                     error={errors.nomineeBuildingName}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeArea.label}
-//                     name="nomineeArea"
-//                     value={currentNominee.address.nomineeArea}
-//                     onChange={(e) => handleChange('address', e)}
-//                     required
-//                     max={50}
-//                     validationType="ALPHABETS_AND_SPACE"
-//                     error={errors.nomineeArea}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeLandmark.label}
-//                     name="nomineeLandmark"
-//                     value={currentNominee.address.nomineeLandmark}
-//                     onChange={(e) => handleChange('address', e)}
-//                     max={50}
-//                     validationType="EVERYTHING"
-//                     error={errors.nomineeLandmark}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineeCountry.label}
-//                     name="nomineeCountry"
-//                     value={currentNominee.address.nomineeCountry}
-//                     onChange={(e) => handleChange('address', e)}
-//                     required
-//                     max={30}
-//                     validationType="ALPHABETS_AND_SPACE"
-//                     error={errors.nomineeCountry}
-//                 />
-//                 <CommanInput
-//                     label={labels.nomineePinCode.label}
-//                     name="nomineePinCode"
-//                     value={currentNominee.address.nomineePinCode}
-//                     onChange={(e) => handleChange('address', e)}
-//                     required
-//                     max={6}
-//                     validationType="NUMBER_ONLY"
-//                     error={errors.nomineePinCode}
-//                 />
-//             </div>
-
-//             <div className="flex justify-end mb-6">
-//                 <CommonButton
-//                     onClick={addNominee}
-//                     className="px-4 py-2 bg-blue-500 text-white rounded"
-//                 >
-//                     Add to Table
-//                 </CommonButton>
-//             </div>
-
-//             {/* Nominees Table */}
-//             {nominees.length > 0 && (
-//                 <div className="mb-8">
-//                     <h2 className="text-2xl font-bold mb-4">Nominees List</h2>
-//                     <div className="overflow-x-auto">
-//                         <table className="min-w-full bg-white border border-gray-200">
-//                             <thead className="bg-gray-100">
-//                                 <tr>
-//                                     <th className="py-2 px-4 border-b">Name of the Nominee</th>
-//                                     <th className="py-2 px-4 border-b">Address</th>
-//                                     <th className="py-2 px-4 border-b">Relationship</th>
-//                                     <th className="py-2 px-4 border-b">Date of Birth</th>
-//                                     <th className="py-2 px-4 border-b">Age</th>
-//                                     <th className="py-2 px-4 border-b">Percentage</th>
-//                                     <th className="py-2 px-4 border-b">Action</th>
-//                                 </tr>
-//                             </thead>
-//                             <tbody>
-//                                 {nominees.map((nominee) => (
-//                                     <tr key={nominee.id} className="hover:bg-gray-50">
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.details.nomineeSalutation} {nominee.details.nomineeFirstName} {nominee.details.nomineeLastName}
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.address.nomineeComplexName}, {nominee.address.nomineeBuildingName}, {nominee.address.nomineeArea}
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.details.nomineeRelation}
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.details.nomineeDOB}
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.details.nomineeAge}
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             {nominee.details.nomineePercentage}%
-//                                         </td>
-//                                         <td className="py-2 px-4 border-b">
-//                                             <button
-//                                                 onClick={() => removeNominee(nominee.id)}
-//                                                 className="text-red-500 hover:text-red-700"
-//                                             >
-//                                                 Remove
-//                                             </button>
-//                                         </td>
-//                                     </tr>
-//                                 ))}
-//                             </tbody>
-//                         </table>
-//                     </div>
-//                 </div>
-//             )}
-
-//             <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
-//                 <CommonButton onClick={onBack} variant="outlined">
-//                     Back
-//                 </CommonButton>
-//                 <CommonButton onClick={submitnomini} variant="contained">
-//                     Save & Continue
-//                 </CommonButton>
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default NominationForm;
-
+ 

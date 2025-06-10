@@ -84,7 +84,7 @@ const Step5CBankDetails = ({
   return (
     <div className="mx-auto">
       <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
         <CommanCheckbox
           label={labels.atmCard.label}
           name="atmCard"
@@ -112,7 +112,7 @@ const Step5CBankDetails = ({
       </div>
       <br />
       <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+      <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
         <CommanCheckbox
           label={labels.consumerLoan.label}
           name="consumerLoan"

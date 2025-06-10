@@ -78,15 +78,27 @@ const relation = [
     { value: 'OTHER', label: 'Other' },
 ];
 const salaryrange = [
-    { value: 'BELOW_1L', label: 'Below ₹1,00,000' },
-    { value: '1L_3L', label: '₹1,00,000 – ₹3,00,000' },
-    { value: '3L_5L', label: '₹3,00,000 – ₹5,00,000' },
-    { value: '5L_10L', label: '₹5,00,000 – ₹10,00,000' },
-    { value: '10L_15L', label: '₹10,00,000 – ₹15,00,000' },
-    { value: '15L_25L', label: '₹15,00,000 – ₹25,00,000' },
-    { value: '25L_PLUS', label: 'Above ₹25,00,000' }
+    { value: 'Below ₹1,00,000', label: 'Below ₹1,00,000' },
+    { value: '₹1,00,000 – ₹3,00,000', label: '₹1,00,000 – ₹3,00,000' },
+    { value: '₹3,00,000 – ₹5,00,000', label: '₹3,00,000 – ₹5,00,000' },
+    { value: '₹5,00,000 – ₹10,00,000', label: '₹5,00,000 – ₹10,00,000' },
+    { value: '10₹10,00,000 – ₹15,00,000L_15L', label: '₹10,00,000 – ₹15,00,000' },
+    { value: '₹15,00,000 – ₹25,00,000', label: '₹15,00,000 – ₹25,00,000' },
+    { value: 'Above ₹25,00,000', label: 'Above ₹25,00,000' }
 ];
 
+
+const RESIDENTIAL_STATUS = [
+    { label: 'RESIDENT', value: 'RESIDENT' },
+    { label: 'NON RESIDENT (NRI)', value: 'NON_RESIDENT' },
+];
+
+const RESIDENCE_DOCS = [
+    { label: 'Aadhar Card', value: 'AADHAR' },
+    { label: 'Ration Card', value: 'RATION' },
+    { label: 'Voter ID', value: 'VOTER_ID' },
+    { label: 'Utility Bill', value: 'UTILITY_BILL' },
+];
 
 const userdummydata = {
     aadhardetails: {
@@ -113,4 +125,4 @@ const userdummydata = {
 }
 
 
-export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange, daodocbase };
+export { userdummydata, maritalStatusOptions, regionOptions, branchOptions, occupationTypeOptions, gender, salutation, religion, caste, YN, relation, salaryrange, daodocbase, RESIDENCE_DOCS, RESIDENTIAL_STATUS };

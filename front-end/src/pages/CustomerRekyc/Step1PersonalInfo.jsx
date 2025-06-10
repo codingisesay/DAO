@@ -75,17 +75,7 @@ const Step1PersonalInfo = ({ formData, handleChange, onAadharDataFetched }) => {
                   />
                   Aadhar Number
                 </label>
-                <label className="flex me-4">
-                  <input
-                    className="me-2"
-                    type="radio"
-                    name="auth_type"
-                    value="Pan Card"
-                    checked={selectedOption === 'Pan Card'}
-                    onChange={handleRadioChange}
-                  />
-                  Pan Number
-                </label>
+
                 <label className="flex me-4">
                   <input
                     className="me-2"
