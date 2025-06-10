@@ -222,5 +222,48 @@ public function kycSaveApplicationDocument(Request $request)
     ], 201);
 }
 
+public function updateKycDocumentStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_document_approved_status')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            'status_comment' => $validated['status_comment'] ?? null,
+            
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC document status updated successfully.',
+    ], 200);
+}
+
+public function updateKycAfterVsCbsStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC After VS CBS status updated successfully.',
+    ], 200);
+}
+
 
 }

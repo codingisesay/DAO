@@ -13,7 +13,9 @@ import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 // import Customercreation from './pages/Enrollment/3B_DAOExtraction';
+import PendingTable from './pages/Adminpages/PendingTable';
 import ReviewTable from './pages/Adminpages/ReviewTable';
+import ApprovedTable from './pages/Adminpages/ApprovedTable';
 import UserTable from './muitbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
@@ -41,8 +43,8 @@ export const App = () => {
           <Route path="/enrollmentform" element={<Enrollmentform />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
-          {/*<Route path="/approved" element={<AccountTbl />} />
-          <Route path="/pending" element={<AccountTbl />} /> */}
+          <Route path="/approved" element={<ApprovedTable />} />
+          <Route path="/pending" element={<PendingTable />} />
           <Route path="/review" element={<ReviewTable />} />
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration

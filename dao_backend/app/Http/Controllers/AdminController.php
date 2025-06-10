@@ -93,6 +93,132 @@ public function getPendingApplicationsDetailsAgentById($agentId)
     ], 200);
 }
 
+// Get all approved applications
+public function getApprovedApplications()
+{
+    $approvedApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+            // You can join user table here if needed for agent name
+        )
+        ->where('customer_appliction_status.status', 'approved')
+        ->get();
+
+    return response()->json([
+        'data' => $approvedApplications
+    ], 200);
+}
+
+// Get approved applications count per agent
+public function getApprovedApplicationsAgentCount()
+{
+    $agentCounts = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_application_details.agent_id',
+            DB::raw('COUNT(*) as approved_count')
+        )
+        ->where('customer_appliction_status.status', 'approved')
+        ->groupBy('customer_application_details.agent_id')
+        ->get();
+
+    return response()->json([
+        'data' => $agentCounts
+    ], 200);
+}
+
+// Get approved applications for a specific agent
+public function getApprovedApplicationsDetailsAgentById($agentId)
+{
+    $approvedApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'approved')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'agent_id' => $agentId,
+        'approved_applications' => $approvedApplications
+    ], 200);
+}
+
+// review
+public function getReviewApplications()
+{
+    $reviewApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'review')
+        ->get();
+
+    return response()->json([
+        'data' => $reviewApplications
+    ], 200);
+}
+
+//review count
+public function getReviewApplicationsAgentCount()
+{
+    $agentCounts = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_application_details.agent_id',
+            DB::raw('COUNT(*) as review_count')
+        )
+        ->where('customer_appliction_status.status', 'review')
+        ->groupBy('customer_application_details.agent_id')
+        ->get();
+
+    return response()->json([
+        'data' => $agentCounts
+    ], 200);
+}
+
+public function getReviewApplicationsDetailsAgentById($agentId)
+{
+    $reviewApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'review')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'agent_id' => $agentId,
+        'review_applications' => $reviewApplications
+    ], 200);
+}
+
+
+
 public function getDetailsForCustomerDetails($application_id)
 {
     $details = DB::table('customer_application_details')
