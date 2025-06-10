@@ -47,7 +47,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data; 
-                    console.log('address to show : ', response.data.data.application_addresss)
+                    // console.log('address to show : ', response.data.data.application_addresss)
                 const addressFromDB = application_addresss[0]; // get first item safely
 
                 const resetFormData = {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\kycApplication;
+use App\Models\kycApplicationDocument;
 use Illuminate\Support\Facades\DB;
 
 class kycAgentController extends Controller
@@ -193,23 +194,25 @@ public function kycSaveApplicationDocument(Request $request)
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('kyc_application_documents', $filename, 'public');
 
-        $doc = ApplicationDocument::updateOrCreate(
+        $doc = kycApplicationDocument::updateOrCreate(
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
+                'kyc_document_type' => $documentType,
             ],
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
-                'file_name' => $filename,
-                'file_path' => $path,
+                'kyc_document_type' => $documentType,
+                'kyc_file_name' => $filename,
+                'kyc_file_path' => $path,
+                 'updated_at' => now(),
+                 'created_at' => now(),
             ]
         );
 
         $documents[] = $doc;
     }
 
-    DB::table('kyc_customer_document')->insert([
+    DB::table('kyc_document_approved_status')->insert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
         

@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(6);
     const [complete, setComplete] = useState(false);
     
 localStorage.setItem('vcall', JSON.stringify(false));
@@ -21,7 +21,7 @@ localStorage.setItem('vcall', JSON.stringify(false));
         applicationType: '',
         salutation: '',
         verificationOption: '',
-        verificationNumber: '',
+        verificationNumber: '',email:'',
         correspondenceAddressSame: false,
         personalDetails: {
             firstName: '',
@@ -38,7 +38,7 @@ localStorage.setItem('vcall', JSON.stringify(false));
             pincode: '',
             city: '',
             district: '',
-            state: ''
+            state: '',email:'',
         },
         permanentAddress: {},
         correspondenceAddress: {},
