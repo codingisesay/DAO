@@ -9,11 +9,11 @@ import { salutation, relation } from '../../data/data';
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
-
-      const savedData = loadFromLocalStorage(storedId);
+    const savedData = loadFromLocalStorage(storedId);
     const [nominees, setNominees] = useState(
             savedData?.nominees || formData.nominationDetails?.nominees || []
     );
+
 
     const [currentNominee, setCurrentNominee] = useState({
         details: {
@@ -539,7 +539,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 }
 
 export default NominationForm;
- 
+
+
+
+
 // Add these helper functions at the top of your component file
 const STORAGE_KEY = 'nominationFormData';
 
@@ -552,31 +555,31 @@ const saveToLocalStorage = (data) => {
 };
 
 const loadFromLocalStorage = (storedId) => {
-    
-    // const storedId = localStorage.getItem('application_id');
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    
-        // useEffect(() => {
-        //     if (!applicationId) return;
-        //     const fetchDetails = async () => {
-        //         try {
-        //             const response = await applicationDetailsService.getFullDetails(storedId);
-              
-                    
-        //         }
-        //         catch{
 
-        //         }
-        //     }
-        //  } ,[]})
+    
+    //     useEffect(() => {
+    //         if (!applicationId) return;
+    //         const fetchDetails = async () => {
+    //             try {
+    //                 const response = await applicationDetailsService.getFullDetails(applicationId);
+    //                 console.log('DATA  NOM :: ', response.data.data)
+    //             } catch (error) {
+    //             console.log(error)
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Error',
+    //                 text:  error?.response?.data?.message
+    //             });
+    //         }
+    //     };
+    //     fetchDetails();
+    // }, [storedId]);
 
 
 
     return data ? JSON.parse(data) : null;
-
-
-
   } catch (error) {
     console.error('Error loading from localStorage:', error);
     return null;

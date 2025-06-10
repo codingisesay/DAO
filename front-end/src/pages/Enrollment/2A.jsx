@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommanSelect from '../../components/CommanSelect';
@@ -8,7 +8,7 @@ import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
 import Swal from 'sweetalert2';
-
+import {applicationDetailsService}  from '../../services/apiServices'
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
 
@@ -29,9 +29,9 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             (verificationMethod === 'Aadhar Card' ? formData.auth_code : ''),
         pannumber: formData.personalDetails.pannumber || formData.pannumber ||
             (verificationMethod === 'Pan Card' ? formData.auth_code : ''),
-        drivinglicence: formData.personalDetails.drivinglicence || formData.drivinglicence || '',
+        driving_license: formData.personalDetails.driving_license || formData.driving_license || '',
         voterid: formData.personalDetails.voterid || formData.voterid || '',
-        passportno: formData.personalDetails.passportno || formData.passportno || '',
+        passport: formData.personalDetails.passport || formData.passport || '',
         complex_name: formData.personalDetails.complex_name || formData.complex_name || '',
         flat_no: formData.personalDetails.flat_no || formData.flat_no || '',
         area: formData.personalDetails.area || formData.area || '',
@@ -44,21 +44,70 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         status: 'Pending'
     });
 
+//   useEffect(() => {
+//     //this page is for address data after coming backword to the page
+//     if (!formData.application_id) return;
+//     const fetchDetails = async () => {
+//       try {
+//         const response = await applicationDetailsService.getFullDetails(
+//           formData.application_id
+//         );
+//         if (response.data) {
+//           const {
+//             application,
+//             personal_details,
+//             account_personal_details,
+//             application_addresss,
+//             customerdoc,
+//             customerpic,
+//           } = response.data.data;
+        
+
+//           const resetFormData = {
+//             salutation: personal_details.salutation || "", 
+//             religion: personal_details.religion || "",
+//             caste: personal_details.caste || "",
+//             maritalStatus: personal_details.marital_status || "", 
+//             alt_mob_no: personal_details.alt_mob_no || "",
+//             email: personal_details.email || "",
+//             adhar_card:
+//               personal_details.adhar_card ||
+//               (verificationMethod === "Aadhar Card" ? formData.auth_code : ""),
+//             pannumber:
+//               personal_details.pan_card ||
+//               (verificationMethod === "Pan Card" ? formData.auth_code : ""),
+//             driving_license: personal_details.driving_license || "",
+//             voterid: personal_details.voter_id || "",
+//             passport: personal_details.passport || "",
+//             driving_license:personal_details.driving_license || '',
+//             status: "Pending",
+//           };
+
+//          setLocalFormData(prevData => ({
+//   ...prevData,
+//   ...resetFormData
+// }));
+
+//         }
+//       } catch (error) {
+//         console.log(error);
+//         Swal.fire({
+//           icon: "error",
+//           title: "Error",
+//           text: error?.response?.data?.message,
+//         });
+//       }
+//     };
+//     fetchDetails();
+//   }, [formData.application_id]);
+
+
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedLocalFormData = { ...localFormData, [name]: value };
-
-        // if (name === 'mobile' || name === 'alt_mob_no') {
-        //     if (localFormData.mobile === localFormData.alt_mob_no) {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Error',
-        //             text: 'Mobile numbers must be different',
-        //         })
-        //     }
-        // }
-
-
+ 
         setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
@@ -196,7 +245,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="text"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
-                        onBlure={comapremobileno()}
+                        onBlure={comapremobileno}
                         required
                         max={10}
                         validationType="PHONE"
@@ -248,8 +297,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         onChange={handleChange}
                         label={labels.passportno.label}
                         type="text"
-                        name="passportno"
-                        value={localFormData.passportno}
+                        name="passport"
+                        value={localFormData.passport}
                         max={8}
                         validationType="ALPHANUMERIC"
                     />
@@ -270,10 +319,10 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         onChange={handleChange}
                         label={labels.drivinglicence.label}
                         type="text"
-                        name="drivinglicence"
-                        value={localFormData.drivinglicence}
+                        name="driving_license"
+                        value={localFormData.driving_license}
                         max={16}
-                        validationType="DRIVINGLICENCE"
+                        validationType="driving_license"
                     />
 
 

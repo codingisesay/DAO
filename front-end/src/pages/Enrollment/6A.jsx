@@ -23,12 +23,13 @@ const ViewApplicationForm = () => {
         if (!applicationId) return;
         const fetchDetails = async () => {
             try {
+                // alert('run')
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data;
-                    // const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
+                    const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     
-                    // console.log('photo :', customerpic[0].path);
+                    console.log('toshoe :', response);
                  setFormData({
                     application_id: applicationId,
                     // Authentication
@@ -64,24 +65,24 @@ const ViewApplicationForm = () => {
                     state: application.state,
 
                     // Correspondence Address (from application_addresss array - using first item)
-                    per_complex_name: application_addresss[0]?.per_complex_name || '',
-                    per_flat_no: application_addresss[0]?.per_flat_no || '',
-                    per_area: application_addresss[0]?.per_area || '',
-                    per_landmark: application_addresss[0]?.per_landmark || '',
-                    per_country: application_addresss[0]?.per_country || '',
-                    per_pincode: application_addresss[0]?.per_pincode || '',
-                    per_city: application_addresss[0]?.per_city || '',
-                    per_district: application_addresss[0]?.per_district || '',
-                    per_state: application_addresss[0]?.per_state || '',
-                    cor_complex_name: application_addresss[0]?.cor_complex_name || '',
-                    cor_flat_no: application_addresss[0]?.cor_flat_no || '',
-                    cor_area: application_addresss[0]?.cor_area || '',
-                    cor_landmark: application_addresss[0]?.cor_landmark || '',
-                    cor_country: application_addresss[0]?.cor_country || '',
-                    cor_pincode: application_addresss[0]?.cor_pincode || '',
-                    cor_city: application_addresss[0]?.cor_city || '',
-                    cor_district: application_addresss[0]?.cor_district || '',
-                    cor_state: application_addresss[0]?.cor_state || '',
+                    per_complex_name: address.per_complex_name || '',
+                    per_flat_no: address?.per_flat_no || '',
+                    per_area: address.per_area || '',
+                    per_landmark:address.per_landmark || '',
+                    per_country:address.per_country || '',
+                    per_pincode:address.per_pincode || '',
+                    per_city:address.per_city || '',
+                    per_district:address.per_district || '',
+                    per_state:address.per_state || '',
+                    cor_complex_name:address.cor_complex_name || '',
+                    cor_flat_no:address.cor_flat_no || '',
+                    cor_area:address.cor_area || '',
+                    cor_landmark:address.cor_landmark || '',
+                    cor_country:address.cor_country || '',
+                    cor_pincode:address.cor_pincode || '',
+                    cor_city:address.cor_city || '',
+                    cor_district:address.cor_district || '',
+                    cor_state:address.cor_state || '',
                             
 
                     // Identity Documents
@@ -317,141 +318,73 @@ const ViewApplicationForm = () => {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <InputField
+                        <CommanInput
                             label="Complex Name"
                             name="per_complex_name"
-                            value={application_addresss[0]?.per_complex_name || ''}
+                            value={formData.per_complex_name || ''}
                             readOnly
                             max={30}
                         />
-                        <InputField
+                        <CommanInput
                             label="Flat No"
                             name="per_flat_no"
-                            value={application_addresss[0]?.per_flat_no || ''}
+                            value={formData.per_flat_no || ''}
                             readOnly
                             max={20}
                         />
-                        <InputField
+                        <CommanInput
                             label="Area"
                             name="per_area"
-                            value={application_addresss[0]?.per_area || ''}
+                            value={formData.per_area || ''}
                             readOnly
                             max={50}
                         />
-                        <InputField
+                        <CommanInput
                             label="Landmark"
                             name="per_landmark"
-                            value={application_addresss[0]?.per_landmark || ''}
+                            value={formData.per_landmark || ''}
                             readOnly
                             max={50}
                         />
-                        <InputField
+                        <CommanInput
                             label="Country"
                             name="per_country"
-                            value={application_addresss[0]?.per_country || ''}
+                            value={formData.per_country || ''}
                             readOnly
                             max={30}
                         />
-                        <InputField
+                        <CommanInput
                             label="Pincode"
                             name="per_pincode"
-                            value={application_addresss[0]?.per_pincode || ''}
+                            value={formData.per_pincode || ''}
                             readOnly
                             max={6}
                         />
-                        <InputField
+                        <CommanInput
                             label="City"
                             name="per_city"
-                            value={application_addresss[0]?.per_city || ''}
+                            value={formData.per_city || ''}
                             readOnly
                             max={30}
                         />
-                        <InputField
+                        <CommanInput
                             label="District"
                             name="per_district"
-                            value={application_addresss[0]?.per_district || ''}
+                            value={formData.per_district || ''}
                             readOnly
                             max={30}
                         />
-                        <InputField
+                        <CommanInput
                             label="State"
                             name="per_state"
-                            value={application_addresss[0]?.per_state || ''}
+                            value={formData.per_state || ''}
                             readOnly
                             max={30}
                         />
                         </div>
                     </div>
-
-                {/* Correspondence Address Section */}
-                    <div>
-                        <h3 className="text-lg font-semibold mb-4">Correspondence Address</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <InputField
-                            label="Complex Name"
-                            name="cor_complex_name"
-                            value={application_addresss[0]?.cor_complex_name || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <InputField
-                            label="Flat No"
-                            name="cor_flat_no"
-                            value={application_addresss[0]?.cor_flat_no || ''}
-                            readOnly
-                            max={20}
-                        />
-                        <InputField
-                            label="Area"
-                            name="cor_area"
-                            value={application_addresss[0]?.cor_area || ''}
-                            readOnly
-                            max={50}
-                        />
-                        <InputField
-                            label="Landmark"
-                            name="cor_landmark"
-                            value={application_addresss[0]?.cor_landmark || ''}
-                            readOnly
-                            max={50}
-                        />
-                        <InputField
-                            label="Country"
-                            name="cor_country"
-                            value={application_addresss[0]?.cor_country || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <InputField
-                            label="Pincode"
-                            name="cor_pincode"
-                            value={application_addresss[0]?.cor_pincode || ''}
-                            readOnly
-                            max={6}
-                        />
-                        <InputField
-                            label="City"
-                            name="cor_city"
-                            value={application_addresss[0]?.cor_city || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <InputField
-                            label="District"
-                            name="cor_district"
-                            value={application_addresss[0]?.cor_district || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <InputField
-                            label="State"
-                            name="cor_state"
-                            value={application_addresss[0]?.cor_state || ''}
-                            readOnly
-                            max={30}
-                        />
-                        </div>
-                    </div>
+ 
+                   
                 </div>
 
                 {/* Correspondence Address */}
