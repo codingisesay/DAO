@@ -169,7 +169,7 @@ const p2 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
     }
@@ -261,7 +261,7 @@ const p2 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
     }
@@ -356,7 +356,7 @@ const p2 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
 

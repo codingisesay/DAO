@@ -48,15 +48,15 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         const { name, value } = e.target;
         const updatedLocalFormData = { ...localFormData, [name]: value };
 
-        if (name === 'mobile' || name === 'alt_mob_no') {
-            if (localFormData.mobile === localFormData.alt_mob_no) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Mobile numbers must be different',
-                })
-            }
-        }
+        // if (name === 'mobile' || name === 'alt_mob_no') {
+        //     if (localFormData.mobile === localFormData.alt_mob_no) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Error',
+        //             text: 'Mobile numbers must be different',
+        //         })
+        //     }
+        // }
 
 
         setLocalFormData(updatedLocalFormData);
@@ -65,6 +65,16 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             personalDetails: updatedLocalFormData
         });
     };
+
+    const comapremobileno=()=>{     if (localFormData.mobile === localFormData.alt_mob_no) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Mobile numbers must be different',
+                })
+            }
+
+    }
 
     return (
         <div className="personal-details-form">
@@ -186,6 +196,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="text"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
+                        onBlure={comapremobileno()}
                         required
                         max={10}
                         validationType="PHONE"

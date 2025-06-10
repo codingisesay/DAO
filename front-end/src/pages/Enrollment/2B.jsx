@@ -8,40 +8,7 @@ import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data'
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
-    const applicationId = localStorage.getItem('application_id');
-    const [sameAsAbove, setSameAsAbove] = useState(
-        formData.correspondenceAddressSame || false
-    );
-    useEffect(() => {
-        //this page is for address data after coming backword to the page
-        if (!applicationId) return;
-        const fetchDetails = async () => {
-            try {
-                const response = await applicationDetailsService.getFullDetails(applicationId);
-                if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data;
-                    const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    console.log('address to show : ', response.data.data)
-                }
-            } catch (error) {
-                console.log(error)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: JSON.stringify(error)
-                });
-            }
-        };
-        fetchDetails();
-    }, [applicationId]);
-
-
-    const [extraInputData, setExtraInputData] = useState({
-        per_resident: formData.per_resident || '',
-        per_residence_status: formData.per_residence_status || '',
-        resi_doc: formData.resi_doc || ''
-    });
-
+    const applicationId = localStorage.getItem('application_id');    
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
@@ -63,6 +30,72 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         cor_state: formData.cor_state || '',
         status: 'Pending'
     });
+    const [extraInputData, setExtraInputData] = useState({
+        per_resident: formData.per_resident || '',
+        per_residence_status: formData.per_residence_status || '',
+        resi_doc: formData.resi_doc || ''
+    });
+
+    const [sameAsAbove, setSameAsAbove] = useState(
+        formData.correspondenceAddressSame || false
+    );
+    useEffect(() => {
+        //this page is for address data after coming backword to the page
+        if (!applicationId) return;
+        const fetchDetails = async () => {
+            try {
+                const response = await applicationDetailsService.getFullDetails(applicationId);
+                if (response.data) {
+                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data; 
+                    console.log('address to show : ', response.data.data.application_addresss)
+                const addressFromDB = application_addresss[0]; // get first item safely
+
+                const resetFormData = {
+                per_complex_name: addressFromDB?.per_complex_name || '',
+                per_flat_no: addressFromDB?.per_flat_no || '',
+                per_area: addressFromDB?.per_area || '',
+                per_landmark: addressFromDB?.per_landmark || '',
+                per_country: addressFromDB?.per_country || '',
+                per_pincode: addressFromDB?.per_pincode || '',
+                per_city: addressFromDB?.per_city || '',
+                per_district: addressFromDB?.per_district || '',
+                per_state: addressFromDB?.per_state || '',
+                cor_complex_name: addressFromDB?.cor_complex_name || '',
+                cor_flat_no: addressFromDB?.cor_flat_no || '',
+                cor_area: addressFromDB?.cor_area || '',
+                cor_landmark: addressFromDB?.cor_landmark || '',
+                cor_country: addressFromDB?.cor_country || '',
+                cor_pincode: addressFromDB?.cor_pincode || '',
+                cor_city: addressFromDB?.cor_city || '',
+                cor_district: addressFromDB?.cor_district || '',
+                cor_state: addressFromDB?.cor_state || '',
+                status: addressFromDB?.status || 'Pending'
+                };
+
+                setLocalFormData(resetFormData);
+
+const resetExtraInputData = {
+  per_resident: addressFromDB?.per_resident || '',
+  per_residence_status: addressFromDB?.per_residence_status || '',
+  resi_doc: addressFromDB?.resi_doc || ''
+};
+
+setExtraInputData(resetExtraInputData);
+
+                }
+            } catch (error) {
+                console.log(error)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text:  error?.response?.data?.message
+                });
+            }
+        };
+        fetchDetails();
+    }, [applicationId]);
+
+
 
     const [errors, setErrors] = useState({});
 

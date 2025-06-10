@@ -151,14 +151,14 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 });
                 localStorage.setItem('application_id', response.data.application_id);
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Your data has been saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                onNext();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Your data has been saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            onNext();
             }
         } catch (error) {
             Swal.fire({
@@ -691,7 +691,7 @@ export default P1;
 //             Swal.fire({
 //                 icon: 'error',
 //                 title: 'Error!',
-//                 text: JSON.stringify(error),
+//                 text:  error?.response?.data?.message,
 //             });
 //         }
 //     };

@@ -115,7 +115,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
     }
@@ -177,7 +177,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
 

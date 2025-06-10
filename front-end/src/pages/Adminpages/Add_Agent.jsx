@@ -172,7 +172,7 @@ const AgentRegisterForm = () => {
                     {/* Personal Information Section */}
                     <div>
                         <h2 className="text-lg   mb-2">Personal Information</h2>
-                        <div className="grid  md:grid-cols-5 gap-3">
+                        <div className="grid  md:grid-cols-5 gap-5">
                             <CommanInput
                                 label="User Code"
                                 name="userCode"
@@ -206,7 +206,7 @@ const AgentRegisterForm = () => {
                     {/* Employee Details Section */}
                     <div>
                         {/* <h2 className="text-lg   mb-2">Employee Details</h2> */}
-                        <div className="grid  md:grid-cols-5 gap-3">
+                        <div className="grid  md:grid-cols-5 gap-5">
                             <CommanInput
                                 label="Employee Code"
                                 name="employeeCode"
@@ -236,7 +236,7 @@ const AgentRegisterForm = () => {
                     {/* Access Control Section */}
                     <div>
                         <h2 className="text-lg   mb-2">Access Control</h2>
-                        <div className="grid  md:grid-cols-5 gap-3">
+                        <div className="grid  md:grid-cols-5 gap-5">
                             <CommanSelect
                                 label="Multi Branch Access"
                                 name="multiBranchAccessYN"
@@ -283,7 +283,7 @@ const AgentRegisterForm = () => {
                     {/* Security Settings Section */}
                     <div>
                         <h2 className="text-lg   mb-2">Security Settings</h2>
-                        <div className="grid  md:grid-cols-5 gap-3">
+                        <div className="grid  md:grid-cols-5 gap-5">
                             <CommanSelect
                                 label="Force Password Change"
                                 name="passwordChangeForcedYN"
@@ -336,7 +336,7 @@ const AgentRegisterForm = () => {
                     {/* Password Section */}
                     <div>
                         <h2 className="text-lg   mb-2">Set Password</h2>
-                        <div className="grid  md:grid-cols-5 gap-3">
+                        <div className="grid  md:grid-cols-5 gap-5">
                             <div className="relative">
                                 <CommanInput
                                     label="Password"
@@ -516,7 +516,7 @@ export default AgentRegisterForm;
 //                     {/* User Details */}
 //                     <div>
 //                         <h2 className="text-lg   mb-2">Agent Details</h2>
-//                         <div className="grid  md:grid-cols-5 gap-3">
+//                         <div className="grid  md:grid-cols-5 gap-5">
 //                             <CommanInput
 //                                 label={labels.userId?.label || "User ID"}
 //                                 name="userId"
@@ -569,7 +569,7 @@ export default AgentRegisterForm;
 //                     {/* Password Details */}
 //                     <div>
 //                         <h2 className="text-lg   mb-2">Password Details</h2>
-//                         <div className="grid  md:grid-cols-5 gap-3">
+//                         <div className="grid  md:grid-cols-5 gap-5">
 //                             <CommanInput
 //                                 label={labels.password?.label || "Password"}
 //                                 name="password"
@@ -592,7 +592,7 @@ export default AgentRegisterForm;
 //                     {/* Bank Details */}
 //                     <div>
 //                         <h2 className="text-lg   mb-2">Bank Details</h2>
-//                         <div className="grid  md:grid-cols-5 gap-3">
+//                         <div className="grid  md:grid-cols-5 gap-5">
 //                             <CommanInput
 //                                 label="Account Holder Name"
 //                                 name="accountHolder"

@@ -1,3 +1,5 @@
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
@@ -191,13 +193,13 @@ const PhotoCapture = ({
         const blob = dataURLtoBlob(imageSrc);
         const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
         const previewUrl = URL.createObjectURL(file);
-        // const previewUrl = await fileToBase64(file);
-
+        const toshow = await fileToBase64(file);
 
         const capturedData = {
             file: file,
             previewUrl: previewUrl,
             timestamp: new Date().toISOString(),
+            toshow: toshow,
             metadata: {
                 location: location || null,
                 locationError: locationError || null,
@@ -212,6 +214,7 @@ const PhotoCapture = ({
             file: file,
             previewUrl: previewUrl,
             timestamp: capturedData.timestamp,
+            toshow: toshow,
             metadata: capturedData.metadata
         };
         localStorage.setItem(storageKey, JSON.stringify(storageData));
@@ -239,9 +242,11 @@ const PhotoCapture = ({
     }, [photoData]);
 
     // Get the current image URL for display
-    const getImageUrl = () => {
+    const getImageData = () => {
         if (!photoData) return null;
-        // If we have a previewUrl (from localStorage or fresh capture), use that
+        // First try to use the base64 data
+        if (photoData.toshow) return photoData.toshow;
+        // Fall back to previewUrl if base64 isn't available
         if (photoData.previewUrl) return photoData.previewUrl;
         // If we have a file object (fresh capture), create URL for it
         if (photoData.file) return URL.createObjectURL(photoData.file);
@@ -281,7 +286,7 @@ const PhotoCapture = ({
         }] : [])
     ];
 
-    const imageUrl = getImageUrl();
+    const imageData = getImageData();
 
     return (
         <div className="max-w-4xl mx-auto  bg-white rounded-lg ">
@@ -330,9 +335,9 @@ const PhotoCapture = ({
                             )
                         ) : (
                             <div className="relative" style={{ aspectRatio: '4/3' }}>
-                                {imageUrl && (
+                                {imageData && (
                                     <img
-                                        src={imageUrl}
+                                        src={imageData}
                                         alt={`Captured ${photoType}`}
                                         className="w-full h-full object-cover"
                                     />
@@ -394,3 +399,18 @@ const PhotoCapture = ({
 };
 
 export default PhotoCapture;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
