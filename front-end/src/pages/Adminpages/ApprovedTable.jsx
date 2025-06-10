@@ -9,10 +9,9 @@ import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
 import CommanTbl from './CommanTbl';
-// import { recentPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
 import { adminService } from '../../services/apiServices';
 
-function ReviewTable() {
+function ApprovedTable() {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const [tbldata, setTbldata] = React.useState([]);
@@ -20,7 +19,7 @@ function ReviewTable() {
     const navigate = useNavigate();
 
     const handleRedireact = () => {
-        navigate('/add_agent'); // Change to your route
+        navigate('/add_agent');
     };
     const handleLogout = () => {
         logout();
@@ -31,18 +30,17 @@ function ReviewTable() {
         // Call the approved applications API
         const fetchData = async () => {
             try {
-                const response = await adminService.getAllReviewApplications();
+                const response = await adminService.getAllApprovedApplications();
                 setTbldata(response.data.data || []);
-                // console.log("Table Data:", response);
             } catch (error) {
                 console.error("Failed to fetch approved applications:", error);
             }
         };
         fetchData();
     }, []);
+
     return (
         <>
-
             <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
                 <div className='flex justify-between'>
                     <div >
@@ -73,8 +71,8 @@ function ReviewTable() {
                     </div>
                 </div>
             </div>
-
-        </>);
+        </>
+    );
 }
 
-export default ReviewTable;
+export default ApprovedTable;

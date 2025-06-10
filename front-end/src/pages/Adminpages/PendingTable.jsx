@@ -9,10 +9,10 @@ import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
 import CommanTbl from './CommanTbl';
-// import { recentPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
-import { adminService } from '../../services/apiServices';
+import { recentPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
 
-function ReviewTable() {
+
+function PendingTable() {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const [tbldata, setTbldata] = React.useState([]);
@@ -31,7 +31,7 @@ function ReviewTable() {
         // Call the approved applications API
         const fetchData = async () => {
             try {
-                const response = await adminService.getAllReviewApplications();
+                const response = await recentPendingApplicationsService.getList();
                 setTbldata(response.data.data || []);
                 // console.log("Table Data:", response);
             } catch (error) {
@@ -77,4 +77,4 @@ function ReviewTable() {
         </>);
 }
 
-export default ReviewTable;
+export default PendingTable;
