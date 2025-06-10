@@ -164,7 +164,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: 'Failed to submit data. Please try again.',
+                // text: 'Failed to submit data. Please try again.',
+                text: JSON.stringify(error) ,
             });
         } finally {
             setIsSubmitting(false);
