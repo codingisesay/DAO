@@ -96,7 +96,7 @@ function BankFacility() {
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {eBankingFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -112,7 +112,7 @@ function BankFacility() {
             </div>
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {creditFacilitiesList.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -188,7 +188,7 @@ export default BankFacility;
 //     return (
 //         <div className="mx-auto">
 //             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
 //                 <CommanCheckbox
 //                     label={labels.atmCard.label}
 //                     name="atmCard"
@@ -216,7 +216,7 @@ export default BankFacility;
 //             </div>
 //             <br />
 //             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
 //                 <CommanCheckbox
 //                     label={labels.consumerLoan.label}
 //                     name="consumerLoan"

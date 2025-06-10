@@ -102,6 +102,9 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 
         //This is for starting the KYC process by agent
         Route::post('/agent/kyc/start', [kycAgentController::class, 'startKyc']);
+        Route::post('/agent/save-all-kyc-data', [kycAgentController::class, 'saveAllKycData']);
+        // applications for the agent
+        Route::get('/agent/full-applications/{agent_id}', [AgentController::class, 'getFullApplicationsByAgent']);
 
         //This is for getting the application status by agent id
         Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);

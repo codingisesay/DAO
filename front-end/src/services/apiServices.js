@@ -4,7 +4,10 @@ import { API_ENDPOINTS } from "./api";
 
 export const agentService = {
   agentEnroll: (data) =>
-    daoApi.post(API_ENDPOINTS.AGENT.AGENTENROLL, data)
+    daoApi.post(API_ENDPOINTS.AGENT.AGENTENROLL, data),
+  // applications for the agent
+  getFullApplicationsByAgent: (agentId) =>
+    daoApi.get(API_ENDPOINTS.AGENT.GET_FULL_APPLICATIONS_BY_AGENT(agentId)),
 }
 
 export const personalDetailsService = {
@@ -151,7 +154,10 @@ export const adminService = {
 // om data above
 
 
-
+export const kycService = {
+  saveAllKycData: (data) =>
+    daoApi.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
+};
 
 
 

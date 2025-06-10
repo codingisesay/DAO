@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\kycApplication;
+use Illuminate\Support\Facades\DB;
 
 class kycAgentController extends Controller
 {
@@ -51,6 +52,55 @@ class kycAgentController extends Controller
 }
 
 
+public function saveAllKycData(Request $request)
+{
+    // Hardcode kyc_application_id for testing
+    // $request->merge(['kyc_application_id' => 1]);
+
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        // Add other fields as per your table structure for each table
+        // 'after_vs_cbs_field1' => 'nullable|string',
+        // 'from_verify_cbs_field1' => 'nullable|string',
+        // 'from_verify_sources_field1' => 'nullable|string',
+    ]);
+
+    // Prepare data for each table (replace with your actual fields)
+    $afterVsCbsData = [
+        'kyc_application_id' => $validated['kyc_application_id'],
+        
+    ];
+
+    $fromVerifyCbsData = [
+        'kyc_application_id' => $validated['kyc_application_id'],
+       
+    ];
+
+    $fromVerifySourcesData = [
+        'kyc_application_id' => $validated['kyc_application_id'],
+       
+    ];
+
+    // Insert or update in all three tables
+    DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        $afterVsCbsData
+    );
+
+    DB::table('kyc_data_from_verify_cbs')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        $fromVerifyCbsData
+    );
+
+    DB::table('kyc_data_from_verify_sources')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        $fromVerifySourcesData
+    );
+
+    return response()->json([
+        'message' => 'All KYC data saved successfully.',
+    ], 201);
+}
 
 
 

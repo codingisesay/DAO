@@ -151,7 +151,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {eBankingFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -167,7 +167,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             </div>
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {creditFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -192,14 +192,38 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                     );
                 })}
             </div>
-            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
+
+
+
+
+
+            <div className="next-back-btns z-10" >{/* z-10 */}
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton onClick={submitServiceToCustomer} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </CommonButton>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+            {/* <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
                 </CommonButton>
                 <CommonButton onClick={submitServiceToCustomer} variant="contained">
                     Save & Continue
                 </CommonButton>
-            </div>
+            </div> */}
         </div>
     );
 }

@@ -204,7 +204,7 @@ function P1({ onNext, onBack, updateFormData }) {
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
-                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-3">
+                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}

@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from 'react';
+
+
+import React, { useState } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
-import { use } from 'react';
+import Swal from 'sweetalert2';
 
-function PersonalDetailsForm({ formData, updateFormData }) {
+function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
+    const verificationMethod = formData.verificationOption || '';
 
-    // const applicationId = localStorage.getItem('application_id');
-    // useEffect(async() => {
-
-    //     const response = await applicationDetailsService.getFullDetails(applicationId);
-    //     console.log(response.data);
-
-
-
-    // }
-    // )
     const [localFormData, setLocalFormData] = useState({
         salutation: formData.personalDetails.salutation || formData.salutation || '',
         first_name: formData.personalDetails.first_name || formData.first_name || '',
@@ -32,8 +25,10 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         mobile: formData.personalDetails.mobile || formData.mobile || '',
         alt_mob_no: formData.personalDetails.alt_mob_no || formData.alt_mob_no || '',
         email: formData.personalDetails.email || formData.email || '',
-        adhar_card: formData.personalDetails.adhar_card || formData.adhar_card || '',
-        pannumber: formData.personalDetails.pannumber || formData.pannumber || '',
+        adhar_card: formData.personalDetails.adhar_card || formData.adhar_card ||
+            (verificationMethod === 'Aadhar Card' ? formData.auth_code : ''),
+        pannumber: formData.personalDetails.pannumber || formData.pannumber ||
+            (verificationMethod === 'Pan Card' ? formData.auth_code : ''),
         drivinglicence: formData.personalDetails.drivinglicence || formData.drivinglicence || '',
         voterid: formData.personalDetails.voterid || formData.voterid || '',
         passportno: formData.personalDetails.passportno || formData.passportno || '',
@@ -47,29 +42,46 @@ function PersonalDetailsForm({ formData, updateFormData }) {
         district: formData.personalDetails.district || formData.district || '',
         state: formData.personalDetails.state || formData.state || '',
         status: 'Pending'
-    }
-    );
+    });
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // First, compute the updated local form data
         const updatedLocalFormData = { ...localFormData, [name]: value };
 
-        // Update local state
-        setLocalFormData(updatedLocalFormData);
+        // if (name === 'mobile' || name === 'alt_mob_no') {
+        //     if (localFormData.mobile === localFormData.alt_mob_no) {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Error',
+        //             text: 'Mobile numbers must be different',
+        //         })
+        //     }
+        // }
 
-        // Immediately sync it with the parent
+
+        setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
             personalDetails: updatedLocalFormData
         });
     };
 
+    const comapremobileno=()=>{     if (localFormData.mobile === localFormData.alt_mob_no) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Mobile numbers must be different',
+                })
+            }
+
+    }
+
     return (
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
             <div className='block sm:flex'>
                 <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-4">
+
                     {/* Salutation - Select field */}
                     <CommanSelect
                         onChange={handleChange}
@@ -184,12 +196,12 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                         type="text"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
+                        onBlure={comapremobileno()}
                         required
                         max={10}
                         validationType="PHONE"
-
                     />
-                    {/* {localFormData.mobile === localFormData.alt_mob_no && alert('numbers can not be same')} */}
+
                     {/* Email - Email validation */}
                     <CommanInput
                         onChange={handleChange}
@@ -201,50 +213,34 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                         validationType="EMAIL"
                     />
 
-                    {/* Aadhar Number - 12 digit number */}
+
                     <CommanInput
                         onChange={handleChange}
                         label={labels.adhar_card.label}
                         type="text"
                         name="adhar_card"
                         value={localFormData.adhar_card}
-                        required
+                        required={verificationMethod === 'Aadhar Card'} // Required if this was verification method
                         max={12}
                         validationType="NUMBER_ONLY"
+                        disabled={verificationMethod === 'Aadhar Card'} // Disable if this was verification method
                     />
 
-                    {/* PAN Number - PAN validation */}
+                    {/* Always show PAN field */}
                     <CommanInput
                         onChange={handleChange}
                         label={labels.pannumber.label}
                         type="text"
                         name="pannumber"
                         value={localFormData.pannumber}
-                        required
+                        required={true}
+                        // required={verificationMethod === 'Pan Card'}
                         max={10}
                         validationType="PAN"
-                    />
-
-                    {/* Driving License - Alphanumeric with special chars */}
-                    <CommanInput
-                        onChange={handleChange}
-                        label={labels.drivinglicence.label}
-                        type="text"
-                        name="drivinglicence"
-                        value={localFormData.drivinglicence}
-                        max={16}
-                        validationType="DRIVINGLICENCE"
-                    />
-
-                    {/* Voter ID - Alphanumeric with special chars */}
-                    <CommanInput
-                        onChange={handleChange}
-                        label={labels.voterid.label}
-                        type="text"
-                        name="voterid"
-                        value={localFormData.voterid}
-                        max={10}
-                        validationType="ALPHANUMERIC"
+                        disabled={verificationMethod === 'Pan Card'} // Disable if this was verification method
+                        onInput={(e) => {
+                            e.target.value = e.target.value.toUpperCase();
+                        }}
                     />
 
                     {/* Passport Number - Alphanumeric */}
@@ -258,9 +254,31 @@ function PersonalDetailsForm({ formData, updateFormData }) {
                         validationType="ALPHANUMERIC"
                     />
 
+                    {/* Voter ID - Alphanumeric with special chars */}
+                    <CommanInput
+                        onChange={handleChange}
+                        label={labels.voterid.label}
+                        type="text"
+                        name="voterid"
+                        value={localFormData.voterid}
+                        max={10}
+                        validationType="ALPHANUMERIC"
+                    />
+
+                    {/* Driving License - Alphanumeric with special chars */}
+                    <CommanInput
+                        onChange={handleChange}
+                        label={labels.drivinglicence.label}
+                        type="text"
+                        name="drivinglicence"
+                        value={localFormData.drivinglicence}
+                        max={16}
+                        validationType="DRIVINGLICENCE"
+                    />
+
+
                 </div>
                 <img src={workingman} width={'400px'} alt="workingman" className='m-auto' />
-
             </div>
         </div>
     );

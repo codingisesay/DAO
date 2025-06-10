@@ -114,7 +114,7 @@ const ViewApplicationForm = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: JSON.stringify(error)
+                    text:  error?.response?.data?.message
                 });
             }
         };

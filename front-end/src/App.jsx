@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import React, { useState } from "react";
-// import useLocalStorage from "use-local-storage";
-// import ThemeToggle from "./components/Toggle";
+import React, { useState } from "react"; 
 import "./assets/css/theme.css";
 import "./assets/css/form.css";
 import './App.css'
@@ -18,7 +16,7 @@ import UserTable from './muitbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './pages/Enrollment/RND_DND_GetSignphoto';
+import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
 
 

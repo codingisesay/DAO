@@ -12,6 +12,8 @@ import Stepper from './Stepper';
 function Enrollmentform() {
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
+    
+localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
     const [formData, setFormData] = useState({
