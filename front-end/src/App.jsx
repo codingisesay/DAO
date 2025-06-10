@@ -18,7 +18,7 @@ import UserTable from './muitbl';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './pages/Enrollment/GetSignphoto';
+import DAOExtraction from './pages/Enrollment/RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
 
 
