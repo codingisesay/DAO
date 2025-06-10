@@ -125,38 +125,56 @@ export const pendingAccountStatusUpdate = {
 
 // om data below
 export const adminService = {
-  getAllApplications: () =>
-    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
-  getAllApplicationsPending: () =>
-    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
-  getAllApllicationsRejected: () =>
-    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
+  // getAllApplications: () =>
+  //   daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS),
+  // getAllApplicationsPending: () =>
+  //   daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_PENDING_APPLICATIONS),
+  // getAllApllicationsRejected: () =>
+  //   daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
 
-  updateApplicationStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
-  updatePersonalDetailsStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
-  updateDocumentsStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
-  updateAddressDetailsStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
-  updateLivePhotosStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
-  updateAccountPersonalDetailsStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
-  updateNomineesStatus: (id, status) =>
-    daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
-  // Clicking on the view button in the admin dashboard
-  getFullApplicationDetails: (id) =>
-    daoApi.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
-
+  // updateApplicationStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
+  // updatePersonalDetailsStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_PERSONAL_DETAILS_STATUS, { id, status }),
+  // updateDocumentsStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_DOCUMENTS_STATUS, { id, status }),
+  // updateAddressDetailsStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ADDRESS_DETAILS_STATUS, { id, status }),
+  // updateLivePhotosStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_LIVE_PHOTOS_STATUS, { id, status }),
+  // updateAccountPersonalDetailsStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
+  // updateNomineesStatus: (id, status) =>
+  //   daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
+  // // Clicking on the view button in the admin dashboard
+  // getFullApplicationDetails: (id) =>
+  //   daoApi.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+  // Add these for approved applications
+  getAllApprovedApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPROVED_APPLICATIONS),
+  getApprovedApplicationsAgentCount: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_APPROVED_APPLICATIONS_AGENT_COUNT),
+  getApprovedApplicationsDetailsByAgent: (agentId) =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+  getAllReviewApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_REVIEW_APPLICATIONS),
+  getReviewApplicationsAgentCount: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_AGENT_COUNT),
+  getReviewApplicationsDetailsByAgent: (agentId) =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
 };
 // om data above
 
 
 export const kycService = {
+  startkyc:(data)=>
+    daoApi.post(API_ENDPOINTS.KYC.START_KYC, data),
   saveAllKycData: (data) =>
     daoApi.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
+  updateKycDocumentStatus: (data) =>
+    daoApi.post(API_ENDPOINTS.KYC.UPDATE_KYC_DOCUMENT_STATUS, data),
+  updateKycAfterVsCbsStatus: (data) =>
+    daoApi.post(API_ENDPOINTS.KYC.UPDATE_KYC_AFTER_VS_CBS_STATUS, data),
 };
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\kycApplication;
+use App\Models\kycApplicationDocument;
 use Illuminate\Support\Facades\DB;
 
 class kycAgentController extends Controller
@@ -193,23 +194,25 @@ public function kycSaveApplicationDocument(Request $request)
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('kyc_application_documents', $filename, 'public');
 
-        $doc = ApplicationDocument::updateOrCreate(
+        $doc = kycApplicationDocument::updateOrCreate(
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
+                'kyc_document_type' => $documentType,
             ],
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
-                'file_name' => $filename,
-                'file_path' => $path,
+                'kyc_document_type' => $documentType,
+                'kyc_file_name' => $filename,
+                'kyc_file_path' => $path,
+                 'updated_at' => now(),
+                 'created_at' => now(),
             ]
         );
 
         $documents[] = $doc;
     }
 
-    DB::table('kyc_customer_document')->insert([
+    DB::table('kyc_document_approved_status')->insert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
         
@@ -220,6 +223,49 @@ public function kycSaveApplicationDocument(Request $request)
         'message' => 'Documents uploaded successfully.',
         'data' => $documents,
     ], 201);
+}
+
+public function updateKycDocumentStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_document_approved_status')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            'status_comment' => $validated['status_comment'] ?? null,
+            
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC document status updated successfully.',
+    ], 200);
+}
+
+public function updateKycAfterVsCbsStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC After VS CBS status updated successfully.',
+    ], 200);
 }
 
 

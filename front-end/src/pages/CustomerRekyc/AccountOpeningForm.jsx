@@ -241,7 +241,7 @@ function CustomerForm() {
 
     const prevStep = () => {
         if (currentStep === 2) {
-            // Step 2 back navigation is handled within the Step2JobDetails component
+                setProgress({ ...progress, 12: "inprogress", 2: "pending" });
         } else if (currentStep === 3) {
             setProgress({ ...progress, 2: "inprogress", 3: "pending" });
             setCurrentStep(2);
@@ -315,6 +315,7 @@ function CustomerForm() {
 
                 </div>
                 <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
+                {/* {currentStep} */}
                     <div className='work-area dark:bg-gray-900'>
                         <div className="form-container">
                             <form onSubmit={handleSubmit}>

@@ -9,7 +9,7 @@ import { personalDetailsService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const steps = [
@@ -40,16 +40,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
         try {
             if (activeStep === 0) {
+                console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};
-                if (!pd.email || !pd.alt_mob_no) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Required Fields Values Are Missing',
-                        // text: 'Email and Alternate Mobile Number are required.',
-                    });
-                    setIsSubmitting(false);
-                    return;
-                }
+             
                 const payload = {
                     application_id: formData.application_id,
                     salutation: pd.salutation,
@@ -60,12 +53,12 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     email: pd.email,
                     adhar_card: pd.adhar_card,
                     pan_card: pd.pannumber,
-                    passport: pd.passportno,
-                    driving_license: pd.drivinglicence,
+                    passport: pd.passport,
+                    driving_license: pd.driving_license,
                     voter_id: pd.voterid,
                     status: 'Pending'
                 };
-
+                console.log(payload)
                 try {
                     let response = await personalDetailsService.create(payload);
                     if (response && (response.status === 200 || response.status === 201)) {
