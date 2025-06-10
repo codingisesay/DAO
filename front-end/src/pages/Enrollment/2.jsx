@@ -9,7 +9,7 @@ import { personalDetailsService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
-    const [activeStep, setActiveStep] = useState(2);
+    const [activeStep, setActiveStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const steps = [
