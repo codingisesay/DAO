@@ -10,7 +10,7 @@ import { salutation, relation } from '../../data/data';
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
 
-      const savedData = loadFromLocalStoragestoredId();
+      const savedData = loadFromLocalStorage(storedId);
     const [nominees, setNominees] = useState(
             savedData?.nominees || formData.nominationDetails?.nominees || []
     );
@@ -551,25 +551,25 @@ const saveToLocalStorage = (data) => {
   }
 };
 
-const loadFromLocalStorage = () => {
+const loadFromLocalStorage = (storedId) => {
     
-    const storedId = localStorage.getItem('application_id');
+    // const storedId = localStorage.getItem('application_id');
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     
-        useEffect(() => {
-            if (!applicationId) return;
-            const fetchDetails = async () => {
-                try {
-                    const response = await applicationDetailsService.getFullDetails(applicationId);
+        // useEffect(() => {
+        //     if (!applicationId) return;
+        //     const fetchDetails = async () => {
+        //         try {
+        //             const response = await applicationDetailsService.getFullDetails(storedId);
               
                     
-                }
-                catch{
+        //         }
+        //         catch{
 
-                }
-            }
-        ,[]})
+        //         }
+        //     }
+        //  } ,[]})
 
 
 
