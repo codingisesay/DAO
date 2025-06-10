@@ -480,3 +480,85 @@ tr:hover {
     opacity: 0.7;
     cursor: not-allowed;
 }
+
+/* kyc below */
+/* App.css */
+.customer-details-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  padding: 10px;
+  /* background-color: #f8fafc; */
+}
+
+.customer-details-container h1 {
+  color: #1e293b;
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.details-sections {
+  display: flex;
+  gap: 20px;
+}
+
+.details-section {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.details-section h2 {
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+  margin-top: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.section-content {
+  margin-top: 15px;
+}
+
+.section-content h3 {
+  color: #475569;
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.aadhaar-section {
+  /* border-left: 4px solid #3b82f6; */
+}
+
+.cbs-section {
+  /* border-left: 4px solid #10b981; */
+}
+
+/* Floating Input Styles */
+.peer:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.peer:focus ~ label {
+  color: #3b82f6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .details-sections {
+    flex-direction: column;
+  }
+
+  .details-section {
+    width: 100%;
+  }
+}

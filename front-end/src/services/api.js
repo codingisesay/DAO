@@ -60,6 +60,7 @@ export const API_ENDPOINTS = {
   KYC: {
     START_KYC: '/api/agent/kyc/start',
     SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
+    KYC_DOCUMET_UPLOAD:'/agent/kycDocumentUpload'
   },
 
   PENDING_ACCOUNT: {
