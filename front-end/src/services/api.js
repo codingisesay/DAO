@@ -1,8 +1,10 @@
+// import  
+
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
-  BASE_URL_LOGIN: "http://172.16.1.224:8084", // For login only
-  BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
+  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN,
+BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   AUTH: {
     LOGIN: "/auth/api/login",
     FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
