@@ -159,6 +159,7 @@ export const kycService = {
     daoApi.post(API_ENDPOINTS.KYC.START_KYC, data),
   saveAllKycData: (data) =>
     daoApi.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
+  // document upload kyc
    kycDocumentUpload: (formData) =>
     daoApi.post('/api/agent/kycDocumentUpload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

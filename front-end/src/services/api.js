@@ -1,8 +1,10 @@
+ 
+
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
-  BASE_URL_LOGIN: "http://172.16.1.224:8084", // For login only
-  BASE_URL_DAO: "http://127.0.0.1:8000",  // For everything else
 
+  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN,
+BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   AUTH: {
     LOGIN: "/auth/api/login",
     FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
@@ -60,7 +62,8 @@ export const API_ENDPOINTS = {
   KYC: {
     START_KYC: '/api/agent/kyc/start',
     SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
-    KYC_DOCUMET_UPLOAD:'/agent/kycDocumentUpload'
+    UPDATE_KYC_DOCUMENT_STATUS: '/api/agent/update-kyc-document-status',
+    UPDATE_KYC_AFTER_VS_CBS_STATUS: '/api/agent/update-kyc-after-vs-cbs-status',
   },
 
   PENDING_ACCOUNT: {
@@ -112,6 +115,13 @@ export const API_ENDPOINTS = {
     UPDATE_NOMINEES_STATUS: '/api/admin/nominees/update-status',
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
+    // Add these for approved applications
+    GET_ALL_APPROVED_APPLICATIONS: '/api/admin/approvedApplication',
+    GET_APPROVED_APPLICATIONS_AGENT_COUNT: '/api/admin/approvedApplicationCount',
+    GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/approvedApplicationDetails/${agentId}`,
+    GET_ALL_REVIEW_APPLICATIONS: '/api/admin/reviewApplication',
+    GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/api/admin/reviewApplicationCount',
+    GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
   },
 
 
