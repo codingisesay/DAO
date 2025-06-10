@@ -8,12 +8,12 @@ import { salutation, relation } from '../../data/data';
 
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
-      const savedData = loadFromLocalStorage();
+    const storedId = localStorage.getItem('application_id');
+
+      const savedData = loadFromLocalStoragestoredId();
     const [nominees, setNominees] = useState(
             savedData?.nominees || formData.nominationDetails?.nominees || []
     );
-
-    const storedId = localStorage.getItem('application_id');
 
     const [currentNominee, setCurrentNominee] = useState({
         details: {
@@ -296,7 +296,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
 
             // Clear saved data on successful submission
-            clearLocalStorage();
+            // clearLocalStorage();
 
             Swal.fire({
                 icon: 'success',
@@ -539,10 +539,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 }
 
 export default NominationForm;
-
-
-
-
+ 
 // Add these helper functions at the top of your component file
 const STORAGE_KEY = 'nominationFormData';
 
@@ -555,18 +552,40 @@ const saveToLocalStorage = (data) => {
 };
 
 const loadFromLocalStorage = () => {
+    
+    const storedId = localStorage.getItem('application_id');
   try {
     const data = localStorage.getItem(STORAGE_KEY);
+    
+        useEffect(() => {
+            if (!applicationId) return;
+            const fetchDetails = async () => {
+                try {
+                    const response = await applicationDetailsService.getFullDetails(applicationId);
+              
+                    
+                }
+                catch{
+
+                }
+            }
+        ,[]})
+
+
+
     return data ? JSON.parse(data) : null;
+
+
+
   } catch (error) {
     console.error('Error loading from localStorage:', error);
     return null;
   }
 };
 
-const clearLocalStorage = () => {
-  localStorage.removeItem(STORAGE_KEY);
-};
+// const clearLocalStorage = () => {
+//   localStorage.removeItem(STORAGE_KEY);
+// };
 
 
 

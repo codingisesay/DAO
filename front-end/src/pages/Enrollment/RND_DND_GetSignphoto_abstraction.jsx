@@ -184,12 +184,16 @@ const renderExtractionResult = (items, title) => {
                         </Box>
                     )}
 
-                    {error && (
+               { !isLoading &&  error ? (
                         <Box sx={{ color: 'error.main', p: 2, border: '1px solid', borderColor: 'error.main', borderRadius: 1 }}>
-                            Err:   <Typography variant="body1">{error}</Typography>
+                            Document Varifyed
+                             <Typography variant="body1">{error}</Typography>
                         </Box>
+                    ):(
+                        
+                        <><Box   sx={{ color: 'success.main',textAlign:'center',fontSize:'20px',  p: 2 }} >Document Varifyed!</Box></>
                     )}
-
+                     
                     {renderExtractionResult(signatures, 'Extracted Signatures')}
                     {renderExtractionResult(photographs, 'Extracted Photographs')}
                 </Box>

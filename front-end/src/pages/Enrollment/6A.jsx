@@ -26,102 +26,99 @@ const ViewApplicationForm = () => {
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data;
-                    const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    const signatureDoc = customerdoc.find(doc =>
-                        doc.document_type.toLowerCase().includes('signature')
-                    );
+                    // const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
+                    
                     // console.log('photo :', customerpic[0].path);
-
                  setFormData({
-    application_id: applicationId,
-    // Authentication
-    auth_type: application.auth_type,
-    auth_code: application.auth_code,
-    status: application.auth_status,
+                    application_id: applicationId,
+                    // Authentication
+                    auth_type: application.auth_type,
+                    auth_code: application.auth_code,
+                    status: application.auth_status,
 
-    // Personal Info
-    salutation: personal_details?.salutation,
-    first_name: application.first_name,
-    middle_name: application.middle_name,
-    last_name: application.last_name,
-    DOB: application.DOB,
-    gender: application.gender,
-    religion: personal_details?.religion,
-    caste: personal_details?.caste,
-    marital_status: personal_details?.marital_status,
+                    // Personal Info
+                    salutation: personal_details?.salutation,
+                    first_name: application.first_name,
+                    middle_name: application.middle_name,
+                    last_name: application.last_name,
+                    DOB: application.DOB,
+                    gender: application.gender,
+                    religion: personal_details?.religion,
+                    caste: personal_details?.caste,
+                    marital_status: personal_details?.marital_status,
 
-    // Contact
-    mobile: application.mobile,
-    alt_mob_no: personal_details?.alt_mob_no,
-    email: personal_details?.email,
+                    // Contact
+                    mobile: application.mobile,
+                    alt_mob_no: personal_details?.alt_mob_no,
+                    email: personal_details?.email,
 
-    // Permanent Address (from application object)
-    complex_name: application.complex_name,
-    flat_no: application.flat_no,
-    area: application.area,
-    landmark: application.landmark, // Fixed typo from 'lankmark' to 'landmark'
-    country: application.country,
-    pincode: application.pincode,
-    city: application.city,
-    district: application.district,
-    state: application.state,
+                    // Permanent Address (from application object)
+                    complex_name: application.complex_name,
+                    flat_no: application.flat_no,
+                    area: application.area,
+                    landmark: application.landmark, // Fixed typo from 'lankmark' to 'landmark'
+                    country: application.country,
+                    pincode: application.pincode,
+                    city: application.city,
+                    district: application.district,
+                    state: application.state,
 
-    // Correspondence Address (from application_addresss array - using first item)
-        per_complex_name: application_addresss[0]?.per_complex_name || '',
-        per_flat_no: application_addresss[0]?.per_flat_no || '',
-        per_area: application_addresss[0]?.per_area || '',
-        per_landmark: application_addresss[0]?.per_landmark || '',
-        per_country: application_addresss[0]?.per_country || '',
-        per_pincode: application_addresss[0]?.per_pincode || '',
-        per_city: application_addresss[0]?.per_city || '',
-        per_district: application_addresss[0]?.per_district || '',
-        per_state: application_addresss[0]?.per_state || '',
-        cor_complex_name: application_addresss[0]?.cor_complex_name || '',
-        cor_flat_no: application_addresss[0]?.cor_flat_no || '',
-        cor_area: application_addresss[0]?.cor_area || '',
-        cor_landmark: application_addresss[0]?.cor_landmark || '',
-        cor_country: application_addresss[0]?.cor_country || '',
-        cor_pincode: application_addresss[0]?.cor_pincode || '',
-        cor_city: application_addresss[0]?.cor_city || '',
-        cor_district: application_addresss[0]?.cor_district || '',
-        cor_state: application_addresss[0]?.cor_state || '',
-                 
+                    // Correspondence Address (from application_addresss array - using first item)
+                    per_complex_name: application_addresss[0]?.per_complex_name || '',
+                    per_flat_no: application_addresss[0]?.per_flat_no || '',
+                    per_area: application_addresss[0]?.per_area || '',
+                    per_landmark: application_addresss[0]?.per_landmark || '',
+                    per_country: application_addresss[0]?.per_country || '',
+                    per_pincode: application_addresss[0]?.per_pincode || '',
+                    per_city: application_addresss[0]?.per_city || '',
+                    per_district: application_addresss[0]?.per_district || '',
+                    per_state: application_addresss[0]?.per_state || '',
+                    cor_complex_name: application_addresss[0]?.cor_complex_name || '',
+                    cor_flat_no: application_addresss[0]?.cor_flat_no || '',
+                    cor_area: application_addresss[0]?.cor_area || '',
+                    cor_landmark: application_addresss[0]?.cor_landmark || '',
+                    cor_country: application_addresss[0]?.cor_country || '',
+                    cor_pincode: application_addresss[0]?.cor_pincode || '',
+                    cor_city: application_addresss[0]?.cor_city || '',
+                    cor_district: application_addresss[0]?.cor_district || '',
+                    cor_state: application_addresss[0]?.cor_state || '',
+                            
 
-    // Identity Documents
-    adhar_card: personal_details?.adhar_card,
-    pan_card: personal_details?.pan_card,
-    passport: personal_details?.passport,
-    driving_license: personal_details?.driving_license,
-    voter_id: personal_details?.voter_id,
+                    // Identity Documents
+                    adhar_card: personal_details?.adhar_card,
+                    pan_card: personal_details?.pan_card,
+                    passport: personal_details?.passport,
+                    driving_license: personal_details?.driving_license,
+                    voter_id: personal_details?.voter_id,
 
-    // Family Details
-    father_prefix_name: account_personal_details?.father_prefix_name,
-    father_first_name: account_personal_details?.father_first_name,
-    father_middle_name: account_personal_details?.father_middle_name,
-    father_last_name: account_personal_details?.father_last_name,
-    mother_prefix_name: account_personal_details?.mother_prefix_name,
-    mother_first_name: account_personal_details?.mother_first_name,
-    mother_middle_name: account_personal_details?.mother_middle_name,
-    mother_last_name: account_personal_details?.mother_last_name,
-    birth_place: account_personal_details?.birth_place,
-    birth_country: account_personal_details?.birth_country,
+                    // Family Details
+                    father_prefix_name: account_personal_details?.father_prefix_name,
+                    father_first_name: account_personal_details?.father_first_name,
+                    father_middle_name: account_personal_details?.father_middle_name,
+                    father_last_name: account_personal_details?.father_last_name,
+                    mother_prefix_name: account_personal_details?.mother_prefix_name,
+                    mother_first_name: account_personal_details?.mother_first_name,
+                    mother_middle_name: account_personal_details?.mother_middle_name,
+                    mother_last_name: account_personal_details?.mother_last_name,
+                    birth_place: account_personal_details?.birth_place,
+                    birth_country: account_personal_details?.birth_country,
 
-    // Occupation Details
-    occoupation_type: account_personal_details?.occoupation_type,
-    occupation_name: account_personal_details?.occupation_name,
-    if_salaryed: account_personal_details?.if_salaryed,
-    designation: account_personal_details?.designation,
-    nature_of_occoupation: account_personal_details?.nature_of_occoupation,
-    qualification: account_personal_details?.qualification,
-    anual_income: account_personal_details?.anual_income,
-    remark: account_personal_details?.remark,
+                    // Occupation Details
+                    occoupation_type: account_personal_details?.occoupation_type,
+                    occupation_name: account_personal_details?.occupation_name,
+                    if_salaryed: account_personal_details?.if_salaryed,
+                    designation: account_personal_details?.designation,
+                    nature_of_occoupation: account_personal_details?.nature_of_occoupation,
+                    qualification: account_personal_details?.qualification,
+                    anual_income: account_personal_details?.anual_income,
+                    remark: account_personal_details?.remark,
 
-    // Documents
-    signature: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE')) 
-               ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path 
-               : null,
-    photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : null,
-});
+                    // Documents
+                    signature: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE')) 
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path 
+                            : null,
+                    photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : null,
+                });
                 }
             } catch (error) {
                 console.log(error)
@@ -316,146 +313,146 @@ const ViewApplicationForm = () => {
 
                 {/* Permanent Address */}
              <div className="space-y-8">
-  {/* Permanent Address Section */}
-  <div>
-    <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <InputField
-        label="Complex Name"
-        name="per_complex_name"
-        value={application_addresss[0]?.per_complex_name || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="Flat No"
-        name="per_flat_no"
-        value={application_addresss[0]?.per_flat_no || ''}
-        readOnly
-        max={20}
-      />
-      <InputField
-        label="Area"
-        name="per_area"
-        value={application_addresss[0]?.per_area || ''}
-        readOnly
-        max={50}
-      />
-      <InputField
-        label="Landmark"
-        name="per_landmark"
-        value={application_addresss[0]?.per_landmark || ''}
-        readOnly
-        max={50}
-      />
-      <InputField
-        label="Country"
-        name="per_country"
-        value={application_addresss[0]?.per_country || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="Pincode"
-        name="per_pincode"
-        value={application_addresss[0]?.per_pincode || ''}
-        readOnly
-        max={6}
-      />
-      <InputField
-        label="City"
-        name="per_city"
-        value={application_addresss[0]?.per_city || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="District"
-        name="per_district"
-        value={application_addresss[0]?.per_district || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="State"
-        name="per_state"
-        value={application_addresss[0]?.per_state || ''}
-        readOnly
-        max={30}
-      />
-    </div>
-  </div>
+                    {/* Permanent Address Section */}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <InputField
+                            label="Complex Name"
+                            name="per_complex_name"
+                            value={application_addresss[0]?.per_complex_name || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="Flat No"
+                            name="per_flat_no"
+                            value={application_addresss[0]?.per_flat_no || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <InputField
+                            label="Area"
+                            name="per_area"
+                            value={application_addresss[0]?.per_area || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <InputField
+                            label="Landmark"
+                            name="per_landmark"
+                            value={application_addresss[0]?.per_landmark || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <InputField
+                            label="Country"
+                            name="per_country"
+                            value={application_addresss[0]?.per_country || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="Pincode"
+                            name="per_pincode"
+                            value={application_addresss[0]?.per_pincode || ''}
+                            readOnly
+                            max={6}
+                        />
+                        <InputField
+                            label="City"
+                            name="per_city"
+                            value={application_addresss[0]?.per_city || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="District"
+                            name="per_district"
+                            value={application_addresss[0]?.per_district || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="State"
+                            name="per_state"
+                            value={application_addresss[0]?.per_state || ''}
+                            readOnly
+                            max={30}
+                        />
+                        </div>
+                    </div>
 
-  {/* Correspondence Address Section */}
-  <div>
-    <h3 className="text-lg font-semibold mb-4">Correspondence Address</h3>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <InputField
-        label="Complex Name"
-        name="cor_complex_name"
-        value={application_addresss[0]?.cor_complex_name || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="Flat No"
-        name="cor_flat_no"
-        value={application_addresss[0]?.cor_flat_no || ''}
-        readOnly
-        max={20}
-      />
-      <InputField
-        label="Area"
-        name="cor_area"
-        value={application_addresss[0]?.cor_area || ''}
-        readOnly
-        max={50}
-      />
-      <InputField
-        label="Landmark"
-        name="cor_landmark"
-        value={application_addresss[0]?.cor_landmark || ''}
-        readOnly
-        max={50}
-      />
-      <InputField
-        label="Country"
-        name="cor_country"
-        value={application_addresss[0]?.cor_country || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="Pincode"
-        name="cor_pincode"
-        value={application_addresss[0]?.cor_pincode || ''}
-        readOnly
-        max={6}
-      />
-      <InputField
-        label="City"
-        name="cor_city"
-        value={application_addresss[0]?.cor_city || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="District"
-        name="cor_district"
-        value={application_addresss[0]?.cor_district || ''}
-        readOnly
-        max={30}
-      />
-      <InputField
-        label="State"
-        name="cor_state"
-        value={application_addresss[0]?.cor_state || ''}
-        readOnly
-        max={30}
-      />
-    </div>
-  </div>
-</div>
+                {/* Correspondence Address Section */}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Correspondence Address</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <InputField
+                            label="Complex Name"
+                            name="cor_complex_name"
+                            value={application_addresss[0]?.cor_complex_name || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="Flat No"
+                            name="cor_flat_no"
+                            value={application_addresss[0]?.cor_flat_no || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <InputField
+                            label="Area"
+                            name="cor_area"
+                            value={application_addresss[0]?.cor_area || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <InputField
+                            label="Landmark"
+                            name="cor_landmark"
+                            value={application_addresss[0]?.cor_landmark || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <InputField
+                            label="Country"
+                            name="cor_country"
+                            value={application_addresss[0]?.cor_country || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="Pincode"
+                            name="cor_pincode"
+                            value={application_addresss[0]?.cor_pincode || ''}
+                            readOnly
+                            max={6}
+                        />
+                        <InputField
+                            label="City"
+                            name="cor_city"
+                            value={application_addresss[0]?.cor_city || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="District"
+                            name="cor_district"
+                            value={application_addresss[0]?.cor_district || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <InputField
+                            label="State"
+                            name="cor_state"
+                            value={application_addresss[0]?.cor_state || ''}
+                            readOnly
+                            max={30}
+                        />
+                        </div>
+                    </div>
+                </div>
 
                 {/* Correspondence Address */}
                 {formData.correspondenceAddressSame !== "YES" && (
