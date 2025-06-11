@@ -70,6 +70,11 @@ export const accountsStatusListService = {
     daoApi.get(API_ENDPOINTS.ACCOUNTS_STATUS_LIST.GET_LIST),
 };
 
+export const kycaccountsStatusListService = {
+  getList: () =>
+    daoApi.get(API_ENDPOINTS.KYC_ACCOUNTS_STATUS_LIST.GET_LIST),
+};
+
 export const recentPendingApplicationsService = {
   getList: () =>
     daoApi.get(API_ENDPOINTS.RECENT_PENDING_APPLICATIONS.GET_LIST),
@@ -132,6 +137,23 @@ export const adminService = {
   getAllApllicationsRejected: () =>
     daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPLICATIONS_REJECTED),
 
+  // Add these for approved applications
+  getAllApprovedApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_APPROVED_APPLICATIONS),
+  getApprovedApplicationsAgentCount: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_APPROVED_APPLICATIONS_AGENT_COUNT),
+  getApprovedApplicationsDetailsByAgent: (agentId) =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+  // Add these for review applications
+  getAllReviewApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_REVIEW_APPLICATIONS),
+  getReviewApplicationsAgentCount: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_AGENT_COUNT),
+  getReviewApplicationsDetailsByAgent: (agentId) =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+  /// working above 
+
+
   updateApplicationStatus: (id, status) =>
     daoApi.post(API_ENDPOINTS.ADMIN.UPDATE_APPLICATION_STATUS, { id, status }),
   updatePersonalDetailsStatus: (id, status) =>
@@ -155,12 +177,12 @@ export const adminService = {
 
 
 export const kycService = {
-  startkyc:(data)=>
+  startkyc: (data) =>
     daoApi.post(API_ENDPOINTS.KYC.START_KYC, data),
   saveAllKycData: (data) =>
     daoApi.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
   // document upload kyc
-   kycDocumentUpload: (formData) =>
+  kycDocumentUpload: (formData) =>
     daoApi.post('/api/agent/kycDocumentUpload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),

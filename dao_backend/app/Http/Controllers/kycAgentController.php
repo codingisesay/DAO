@@ -212,11 +212,15 @@ public function kycSaveApplicationDocument(Request $request)
         $documents[] = $doc;
     }
 
-    DB::table('kyc_document_approved_status')->insert([
+    DB::table('kyc_document_approved_status')->updateOrInsert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
-        
-       
+    ]);
+
+     // Insert into the kyc_application_status table
+    DB::table('kyc_application_status')->updateOrInsert([
+        'kyc_application_id' => $validated['kyc_application_id'],
+        'status' => 'Pending', // You can set the status as per your requirement
     ]);
 
     return response()->json([
@@ -268,5 +272,43 @@ public function updateKycAfterVsCbsStatus(Request $request)
     ], 200);
 }
 
+
+public function getKycDocumentReviewApplications()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_pplication_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.first_name',
+            'kyc_application.middle_name',
+            'kyc_application.last_name',
+            'kyc_application.application_no',
+            'kyc_application.created_at'
+        )
+        ->where('kyc_application_status.status', 'review')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+public function getReviewApplications()
+{
+    $reviewApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'review')
+        ->get();
+
+    return response()->json([
+        'data' => $reviewApplications
+    ], 200);
+}
 
 }
