@@ -531,14 +531,7 @@ tr:hover {
   font-weight: 500;
   margin-bottom: 1.5rem;
 }
-
-.aadhaar-section {
-  /* border-left: 4px solid #3b82f6; */
-}
-
-.cbs-section {
-  /* border-left: 4px solid #10b981; */
-}
+ 
 
 /* Floating Input Styles */
 .peer:focus {
