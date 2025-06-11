@@ -226,7 +226,11 @@ function StatusDashboard1() {
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
                         Rejected: counts.Rejected || 0,
+<<<<<<< HEAD
                         Review: counts.Review || 0
+=======
+                      Review: counts.Review || 0
+>>>>>>> 7d190d2403eb0ed3b85168525a6a0747894350ba
                     });
                 }
             } catch (error) {
@@ -248,6 +252,7 @@ function StatusDashboard1() {
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
                         <span className="dashboard-card-count">{statusCounts.Review}</span>
+<<<<<<< HEAD
                         <small>Review</small>
                     </div>
                 </div>
@@ -330,6 +335,8 @@ function StatusDashboard2() {
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
                         <span className="dashboard-card-count">{statusCounts.Review}</span>
+=======
+>>>>>>> 7d190d2403eb0ed3b85168525a6a0747894350ba
                         <small>Review</small>
                     </div>
                 </div>

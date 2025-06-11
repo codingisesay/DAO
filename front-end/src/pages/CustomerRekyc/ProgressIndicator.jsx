@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
-
+     const navigate = useNavigate();
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -16,7 +16,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
     <div className='stepper-container max-w-md mx-auto p-5 relative'>
       <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
 
-      <ul className='max-w-md mx-auto my-3'>
+      <ul className='max-w-md mx-auto my-3'  onClick={() => navigate(-1)}>
         <li>
           <i className="bi bi-columns-gap"></i> &nbsp;
           Back To Dashboard

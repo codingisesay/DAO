@@ -308,27 +308,48 @@ setExtraInputData(resetExtraInputData);
                 errors={errors}
                 handleExtraInputChange={handleExtraInputChange}
             />
+    <br />
 
-            <div className="flex items-center mt-6 mb-2">
-                <input
-                    type="checkbox"
-                    checked={sameAsAbove}
-                    onChange={handleSameAsAboveToggle}
-                    className="mr-2"
-                />
-                <label className="font-semibold">Same As Above</label>
+                <div className='flex  items-center mb-2'>
 
-                {!sameAsAbove && (
-                    <CommonButton
-                        onClick={handleClearCorrespondence}
-                        className="ml-auto text-green-600 font-medium flex items-center"
-                    >
-                        <i className="bi bi-arrow-clockwise mr-1"></i> Clear
-                    </CommonButton>
-                )}
-            </div>
+                    <h2 className="text-xl font-bold m-2">Correspondence Address</h2>
 
-            <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>
+                    <div className="flex items-center  m-2">
+                        <input
+                            type="checkbox"
+                            checked={sameAsAbove}
+                            onChange={handleSameAsAboveToggle}
+                            className="mr-2"
+                        />
+                        <label className="font-light">Same As Above</label>
+
+                    </div>
+
+                    {!sameAsAbove && (
+                        <CommonButton
+                            onClick={handleClearCorrespondence}
+                            className="ml-auto text-green-600 font-medium flex items-center"
+                        >
+                            <i className="bi bi-arrow-clockwise mr-1"></i> Clear
+                        </CommonButton>
+                    )}
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <AddressSection
                 formData={localFormData}
                 handleChange={handleCorrespondenceChange}
