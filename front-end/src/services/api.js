@@ -127,6 +127,9 @@ export const API_ENDPOINTS = {
     GET_ALL_REVIEW_APPLICATIONS: '/api/admin/reviewApplication',
     GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/api/admin/reviewApplicationCount',
     GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
+    // Add these for kyc review applications
+    GET_ALL_KYC_REVIEW_APPLICATIONS: '/api/admin/kycReviewApplication',
+
   },
 
 

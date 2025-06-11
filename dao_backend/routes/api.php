@@ -59,6 +59,11 @@ Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountSt
      Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
     Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
+    //kyc review 
+Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
+
+     
+     
 
 //    Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
    
