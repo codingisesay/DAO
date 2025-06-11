@@ -1,10 +1,10 @@
- 
+
 
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
 
   BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN,
-BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
+  BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   AUTH: {
     LOGIN: "/auth/api/login",
     FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
@@ -54,6 +54,10 @@ BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   },
 
   ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
+
+  KYC_ACCOUNTS_STATUS_LIST: {
+    GET_LIST: '/api/admin/kycaccountsStatus',  // Updated endpoint path
+  },
 
   RECENT_PENDING_APPLICATIONS: {
     GET_LIST: '/api/admin/pendingApplication',
@@ -119,9 +123,10 @@ BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
     GET_ALL_APPROVED_APPLICATIONS: '/api/admin/approvedApplication',
     GET_APPROVED_APPLICATIONS_AGENT_COUNT: '/api/admin/approvedApplicationCount',
     GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/approvedApplicationDetails/${agentId}`,
+    // Add these for Reviews applications
     GET_ALL_REVIEW_APPLICATIONS: '/api/admin/reviewApplication',
     GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/api/admin/reviewApplicationCount',
-    GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
+    GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
   },
 
 

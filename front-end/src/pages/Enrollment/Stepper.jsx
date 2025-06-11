@@ -28,7 +28,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
         <div className='stepper-container max-w-md mx-auto p-5 relative' data-theme={isDark ? "dark" : "light"}>
             <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
 
-            <ul className='max-w-md mx-auto my-3'>
+            <ul className='max-w-md mx-auto my-3'  onClick={() => navigate(-1)}>
                 <li>
                     <i className="bi bi-columns-gap"></i> &nbsp;
                     Back To Dashboard

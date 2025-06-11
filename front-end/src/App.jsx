@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import "./assets/css/theme.css";
 import "./assets/css/form.css";
 import './App.css'
@@ -12,6 +12,7 @@ import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 // import Customercreation from './pages/Enrollment/3B_DAOExtraction';
 import PendingTable from './pages/Adminpages/PendingTable';
+import PendingTableKyc from './pages/Adminpages/PendingTableKyc';
 import ReviewTable from './pages/Adminpages/ReviewTable';
 import ApprovedTable from './pages/Adminpages/ApprovedTable';
 import UserTable from './muitbl';
@@ -20,6 +21,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
+import KycVarification from './pages/KycVarification/Enrollmentform';
+
 
 
 export const App = () => {
@@ -43,10 +46,12 @@ export const App = () => {
           <Route path="/add_agent" element={<AgentRegisterForm />} />
           <Route path="/approved" element={<ApprovedTable />} />
           <Route path="/pending" element={<PendingTable />} />
+          <Route path="/pending-kyc" element={<PendingTableKyc />} />
           <Route path="/review" element={<ReviewTable />} />
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />
+          <Route path="/kyc-varification/01" element={<KycVarification />} />
         </Routes>
       </Router>
       <ToastContainer />

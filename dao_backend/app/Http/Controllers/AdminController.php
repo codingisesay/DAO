@@ -11,6 +11,7 @@ use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
 use App\Models\CustomerApplicationStatus;
+use App\Models\KycApplicationStatus; 
 
 use App\Models\ServiceToCustomer;
 use App\Models\AgentLivePhoto;
@@ -28,6 +29,16 @@ class AdminController extends Controller
         'data' => $statuses
     ],200);
 }
+
+  public function getKYCAccountStatus()
+    {
+        $statuses = KycApplicationStatus::all();  // Use the correct model here
+
+        return response()->json([
+            'data' => $statuses
+        ], 200);
+    }
+
 
 public function getPendingApplications()
 {
