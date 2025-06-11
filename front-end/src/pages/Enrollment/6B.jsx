@@ -68,7 +68,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 onCapture={(data) => { setLocalFormData(data); console.log('After capture : ', data); }}
             />
 
-            <div className="next-back-btns z-10">
+            {/* <div className="next-back-btns z-10">
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
@@ -79,7 +79,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 >
                     Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
-            </div>
+            </div> */}
         </div>
     );
 };
