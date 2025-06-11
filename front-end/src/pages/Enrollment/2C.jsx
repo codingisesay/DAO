@@ -63,7 +63,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
             });
 
             // Only call onNext after successful submission
-            // onNext();
+            onNext();
         } catch (error) {
             console.error('Photo submission error:', error);
             Swal.fire({
