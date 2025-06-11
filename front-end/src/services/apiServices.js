@@ -151,7 +151,7 @@ export const adminService = {
     daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_AGENT_COUNT),
   getReviewApplicationsDetailsByAgent: (agentId) =>
     daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
-
+  /// working above 
 
 
   updateApplicationStatus: (id, status) =>

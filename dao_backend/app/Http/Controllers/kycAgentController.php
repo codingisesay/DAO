@@ -279,11 +279,11 @@ public function getKycDocumentReviewApplications()
         ->join('kyc_application', 'kyc_application_status.kyc_pplication_id', '=', 'kyc_application.id')
         ->select(
             'kyc_application_status.*',
-            'customer_application_details.first_name',
-            'customer_application_details.middle_name',
-            'customer_application_details.last_name',
-            'customer_application_details.application_no',
-            'customer_application_details.created_at'
+            'kyc_application.first_name',
+            'kyc_application.middle_name',
+            'kyc_application.last_name',
+            'kyc_application.application_no',
+            'kyc_application.created_at'
         )
         ->where('kyc_application_status.status', 'review')
         ->get();
