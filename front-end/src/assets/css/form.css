@@ -493,8 +493,7 @@ tr:hover {
 
 .customer-details-container h1 {
   color: #1e293b;
-  text-align: center;
-  margin-bottom: 30px;
+  text-align: center; 
   font-weight: 600;
 }
 
@@ -505,10 +504,10 @@ tr:hover {
 
 .details-section {
   flex: 1;
-  border: 1px solid #e2e8f0;
+  /* border: 1px solid #e2e8f0; */
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
   background-color: white;
 }
 

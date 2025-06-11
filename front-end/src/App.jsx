@@ -20,6 +20,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
+import KycVarification from './pages/KycVarification/Enrollmentform';
 
 
 export const App = () => {
@@ -47,6 +48,7 @@ export const App = () => {
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />
+          <Route path="/kyc-varification/01" element={<KycVarification />} />
         </Routes>
       </Router>
       <ToastContainer />
