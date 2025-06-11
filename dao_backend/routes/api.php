@@ -46,6 +46,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     // Route::middleware('role:admin')->group(function () {
    
    Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
+Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
    Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
    Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
    Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
