@@ -168,7 +168,7 @@ public function getApprovedApplicationsDetailsAgentById($agentId)
     ], 200);
 }
 
-// review
+// Get all Review applications
 public function getReviewApplications()
 {
     $reviewApplications = DB::table('customer_appliction_status')
@@ -189,7 +189,7 @@ public function getReviewApplications()
     ], 200);
 }
 
-//review count
+	// Get Review  applications count per agent
 public function getReviewApplicationsAgentCount()
 {
     $agentCounts = DB::table('customer_appliction_status')
@@ -206,7 +206,7 @@ public function getReviewApplicationsAgentCount()
         'data' => $agentCounts
     ], 200);
 }
-
+	// Get all Review applications
 public function getReviewApplicationsDetailsAgentById($agentId)
 {
     $reviewApplications = DB::table('customer_appliction_status')
@@ -228,6 +228,67 @@ public function getReviewApplicationsDetailsAgentById($agentId)
         'review_applications' => $reviewApplications
     ], 200);
 }
+
+// Get all Rejected applications
+public function getRejectedApplications()
+{
+    $rejectedApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'rejected')
+        ->get();
+
+    return response()->json([
+        'data' => $rejectedApplications
+    ], 200);
+}
+	// Get Rejected  applications count per agent
+public function getRejectedApplicationsAgentCount()
+{
+    $agentCounts = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_application_details.agent_id',
+            DB::raw('COUNT(*) as rejected_count')
+        )
+        ->where('customer_appliction_status.status', 'rejected')
+        ->groupBy('customer_application_details.agent_id')
+        ->get();
+
+    return response()->json([
+        'data' => $agentCounts
+    ], 200);
+}
+// Get Rejected applications for a specific agent
+public function getRejectedApplicationsDetailsAgentById($agentId)
+{
+    $rejectedApplications = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->select(
+            'customer_appliction_status.*',
+            'customer_application_details.first_name as first_name',
+            'customer_application_details.middle_name as middle_name',
+            'customer_application_details.last_name as last_name',
+            'customer_application_details.created_at as created_at',
+            'customer_application_details.application_no as application_no'
+        )
+        ->where('customer_appliction_status.status', 'rejected')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'agent_id' => $agentId,
+        'rejected_applications' => $rejectedApplications
+    ], 200);
+}
+
 
 
 
@@ -691,7 +752,7 @@ public function getMonthlyAuthTypeCounts()
         ->orderBy('month')
         ->get();
 
-    $authTypes = ['PAN CARD', 'AADHAR CARD', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
     $months = range(1, 12);
 
     $data = [];
@@ -734,7 +795,7 @@ public function getWeeklyAuthTypeCounts()
         ->orderBy('week')
         ->get();
 
-    $authTypes = ['PAN CARD', 'AADHAR CARD', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
     $weeks = range(1, 53); // ISO weeks
 
     $data = [];
@@ -763,6 +824,26 @@ public function getWeeklyAuthTypeCounts()
     return response()->json($response);
 }
 
+public function getKycStatusCountsForCurrentYear()
+{
+    $currentYear = now()->year;
+
+    $statusCounts = DB::table('kyc_application_status')
+        ->whereYear('created_at', $currentYear)
+        ->select('status', DB::raw('COUNT(*) as count'))
+        ->whereIn('status', ['Pending', 'Approved', 'Reject']) // UPPERCASE
+        ->groupBy('status')
+        ->pluck('count', 'status');
+
+    // Fill missing with 0
+    $data = [
+        'Approved' => $statusCounts['Approved'] ?? 0,
+        'Reject'   => $statusCounts['Reject'] ?? 0,
+        'Pending'  => $statusCounts['Pending'] ?? 0,
+    ];
+
+    return response()->json($data);
+}
 
 
 }

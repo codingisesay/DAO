@@ -64,6 +64,10 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
     Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
+    //rejected
+    Route::get('admin/applications/rejected', [AdminController::class, 'getRejectedApplications']);
+    Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
+    Route::get('admin/applications/rejected/agent/{agentId}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
     //kyc review 
     Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
     // kyc approved table 
@@ -80,6 +84,9 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('admin/applications/approved/monthly-auth', [AdminController::class, 'getMonthlyAuthTypeCounts']);
     // Validation pan aadhar digi  weekly  count
     Route::get('admin/applications/approved/weekly-auth', [AdminController::class, 'getWeeklyAuthTypeCounts']);
+    // KYC Verification Status count yearly of approved , rejected , pending 
+    Route::get('admin/kyc-applications/status-summary', [AdminController::class, 'getKycStatusCountsForCurrentYear']);
+
 
 
 
