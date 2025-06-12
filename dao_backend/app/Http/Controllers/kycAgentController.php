@@ -52,35 +52,40 @@ class kycAgentController extends Controller
 
 }
 
-
 public function saveAllKycData(Request $request)
 {
-    // Hardcode kyc_application_id for testing
-    // $request->merge(['kyc_application_id' => 1]);
-
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
-        // Add other fields as per your table structure for each table
-        // 'after_vs_cbs_field1' => 'nullable|string',
-        // 'from_verify_cbs_field1' => 'nullable|string',
-        // 'from_verify_sources_field1' => 'nullable|string',
+        'from_verify_sources' => 'nullable|array',
+        'from_verify_cbs' => 'nullable|array',
+        'after_vs_cbs' => 'nullable|array',
     ]);
 
-    // Prepare data for each table (replace with your actual fields)
+    // Prepare data for each table
     $afterVsCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-        
     ];
-
+    
     $fromVerifyCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
-
+    
     $fromVerifySourcesData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
+
+    // Merge the nested data if it exists
+    if (!empty($validated['after_vs_cbs'])) {
+        $afterVsCbsData = array_merge($afterVsCbsData, $validated['after_vs_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_cbs'])) {
+        $fromVerifyCbsData = array_merge($fromVerifyCbsData, $validated['from_verify_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_sources'])) {
+        $fromVerifySourcesData = array_merge($fromVerifySourcesData, $validated['from_verify_sources']);
+    }
 
     // Insert or update in all three tables
     DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
@@ -100,6 +105,11 @@ public function saveAllKycData(Request $request)
 
     return response()->json([
         'message' => 'All KYC data saved successfully.',
+        'data' => [
+            'after_vs_cbs' => $afterVsCbsData,
+            'from_verify_cbs' => $fromVerifyCbsData,
+            'from_verify_sources' => $fromVerifySourcesData,
+        ]
     ], 201);
 }
 
@@ -272,43 +282,26 @@ public function updateKycAfterVsCbsStatus(Request $request)
     ], 200);
 }
 
-
-public function getKycDocumentReviewApplications()
+public function updateKycApplicationStatus(Request $request)
 {
-    $data = DB::table('kyc_application_status')
-        ->join('kyc_application', 'kyc_application_status.kyc_pplication_id', '=', 'kyc_application.id')
-        ->select(
-            'kyc_application_status.*',
-            'kyc_application.first_name',
-            'kyc_application.middle_name',
-            'kyc_application.last_name',
-            'kyc_application.application_no',
-            'kyc_application.created_at'
-        )
-        ->where('kyc_application_status.status', 'review')
-        ->get();
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        // 'status_comment' => 'nullable|string|max:500',
+    ]);
 
-    return response()->json(['data' => $data], 200);
-}
-
-public function getReviewApplications()
-{
-    $reviewApplications = DB::table('customer_appliction_status')
-        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
-        ->select(
-            'customer_appliction_status.*',
-            'customer_application_details.first_name as first_name',
-            'customer_application_details.middle_name as middle_name',
-            'customer_application_details.last_name as last_name',
-            'customer_application_details.created_at as created_at',
-            'customer_application_details.application_no as application_no'
-        )
-        ->where('customer_appliction_status.status', 'review')
-        ->get();
+    DB::table('kyc_application_status')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            // 'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
 
     return response()->json([
-        'data' => $reviewApplications
+        'message' => 'KYC Application status updated successfully.',
     ], 200);
 }
+
 
 }

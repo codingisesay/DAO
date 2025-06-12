@@ -28,13 +28,13 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         if (e) e.preventDefault();
         
         console.log('submitPhoto called');
-        if (!localFormData) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please capture a photo before submitting'
-            });
-            return;
+        if (!localFormData) {   onNext();
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Error',
+            //     text: 'Please capture a photo before submitting'
+            // });
+            // return;
         }
 
         setLocalIsSubmitting(true);
@@ -47,33 +47,33 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         submitFormData.append('photo', localFormData.file);
         submitFormData.append('status', 'Pending');
 
-        try {
-            const response = await livePhotoService.upload(submitFormData);
+        // try {
+        //     const response = await livePhotoService.upload(submitFormData);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Photo saved successfully',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        //     Swal.fire({
+        //         icon: 'success',
+        //         title: response.data.message || 'Photo saved successfully',
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     });
 
-            updateFormData({
-                ...formData,
-                photoData: localFormData
-            });
+        //     updateFormData({
+        //         ...formData,
+        //         photoData: localFormData
+        //     });
 
-            // Only call onNext after successful submission
-            onNext();
-        } catch (error) {
-            console.error('Photo submission error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.response?.data?.message || 'Failed to save photo. Please try again.'
-            });
-        } finally {
-            setLocalIsSubmitting(false);
-        }
+        //     // Only call onNext after successful submission
+        //     onNext();
+        // } catch (error) {
+        //     console.error('Photo submission error:', error);
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: error.response?.data?.message || 'Failed to save photo. Please try again.'
+        //     });
+        // } finally {
+        //     setLocalIsSubmitting(false);
+        // }
     };
 
     return (
@@ -111,7 +111,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                     }}
                     variant="contained"
                     className="btn-next z-10"
-                    disabled={!localFormData || isSubmitting || localIsSubmitting}
+                    disabled={ isSubmitting || localIsSubmitting}
                     type="button" // Important: Set type to button to prevent form submission
                 >
                     {(isSubmitting || localIsSubmitting) ? (

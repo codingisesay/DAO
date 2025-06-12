@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.80.0",
     "@mui/icons-material": "^7.1.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
