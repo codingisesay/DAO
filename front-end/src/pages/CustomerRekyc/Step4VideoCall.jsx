@@ -24,6 +24,9 @@ const Step4VideoCall = ({
   };
   const handleCombinedSubmit = (e) => {
     e.preventDefault();
+    localStorage.removeItem('nominationFormData');
+    localStorage.removeItem('documentData');
+    localStorage.removeItem('application_id');
 
     // First show main submission message
     Swal.fire({

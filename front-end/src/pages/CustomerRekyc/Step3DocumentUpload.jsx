@@ -8,7 +8,7 @@ import CommonButton from '../../components/CommonButton'
 
 
 
-const P3 = ({ onNext, onBack }) => {
+const P3 = ({ nextStep, onBack }) => {
 //  console.log('P3 component rendered');
     // In the main component
     const [isLoading, setIsLoading] = React.useState(false);
@@ -64,8 +64,7 @@ const P3 = ({ onNext, onBack }) => {
     };
 
     
-    const handleSubmit = async () => {
-      alert('ji')
+    const handleSubmit = async () => { 
         if (documents.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -89,9 +88,9 @@ const P3 = ({ onNext, onBack }) => {
             }
 
             documentsWithFiles.forEach((doc) => {
-           formDataObj.append('kyc_application_id', storedId);
-formDataObj.append('files[]', doc.file);
-formDataObj.append('document_types[]', doc.type || doc.name);
+            formDataObj.append('kyc_application_id', storedId);
+            formDataObj.append('files[]', doc.file);
+            formDataObj.append('document_types[]', doc.type || doc.name);
             });
             var response =''
             // Ensure the API endpoint is properly formatted
@@ -110,7 +109,7 @@ formDataObj.append('document_types[]', doc.type || doc.name);
                     showConfirmButton: false,
                     timer: 1500
                 }) 
-                    // onNext();
+                    nextStep();
               
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);

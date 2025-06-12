@@ -52,35 +52,40 @@ class kycAgentController extends Controller
 
 }
 
-
 public function saveAllKycData(Request $request)
 {
-    // Hardcode kyc_application_id for testing
-    // $request->merge(['kyc_application_id' => 1]);
-
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
-        // Add other fields as per your table structure for each table
-        // 'after_vs_cbs_field1' => 'nullable|string',
-        // 'from_verify_cbs_field1' => 'nullable|string',
-        // 'from_verify_sources_field1' => 'nullable|string',
+        'from_verify_sources' => 'nullable|array',
+        'from_verify_cbs' => 'nullable|array',
+        'after_vs_cbs' => 'nullable|array',
     ]);
 
-    // Prepare data for each table (replace with your actual fields)
+    // Prepare data for each table
     $afterVsCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-        
     ];
-
+    
     $fromVerifyCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
-
+    
     $fromVerifySourcesData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
+
+    // Merge the nested data if it exists
+    if (!empty($validated['after_vs_cbs'])) {
+        $afterVsCbsData = array_merge($afterVsCbsData, $validated['after_vs_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_cbs'])) {
+        $fromVerifyCbsData = array_merge($fromVerifyCbsData, $validated['from_verify_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_sources'])) {
+        $fromVerifySourcesData = array_merge($fromVerifySourcesData, $validated['from_verify_sources']);
+    }
 
     // Insert or update in all three tables
     DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
@@ -100,6 +105,11 @@ public function saveAllKycData(Request $request)
 
     return response()->json([
         'message' => 'All KYC data saved successfully.',
+        'data' => [
+            'after_vs_cbs' => $afterVsCbsData,
+            'from_verify_cbs' => $fromVerifyCbsData,
+            'from_verify_sources' => $fromVerifySourcesData,
+        ]
     ], 201);
 }
 
