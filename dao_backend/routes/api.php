@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\AuthProxyController;
 use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\kycAgentController;
+use App\Http\Controllers\VideoKycController;
 
 
 
@@ -39,7 +40,10 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     return $eureka->deregister()->status();
 });
 
+//Video Kyc
 
+Route::post('/video-kyc/create/{id}', [VideoKycController::class, 'create']);
+Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
 // Route::middleware(['jwt.auth'])->group(function () {
 

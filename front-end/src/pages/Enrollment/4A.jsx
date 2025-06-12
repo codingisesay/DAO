@@ -3,12 +3,14 @@ import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import CommonButton from "../../components/CommonButton";
 import Swal from 'sweetalert2'
 
+import { useNavigate, Link } from 'react-router-dom';
 
 const VideoKYCInstructions = ({onNext}) => {
     const [termsAccepted, setTermsAccepted] = useState({
         guidelines: false,
         technical: false
     });
+      const navigate = useNavigate();
     const [showOptions, setShowOptions] = useState(false);
 
     const handleCheckboxChange = (type) => {
@@ -18,7 +20,12 @@ const VideoKYCInstructions = ({onNext}) => {
         }));
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async() => {
+
+        // const responce = await post('/api/v1/kyc/terms', {
+        //     guidelines: termsAccepted.guidelines,})
+
+
         setShowOptions(true);
     };
 
@@ -38,15 +45,8 @@ const VideoKYCInstructions = ({onNext}) => {
     }
     const assistKyc=()=>{
           localStorage.setItem('vcall', JSON.stringify(true));
-        Swal.fire({
-            icon: 'info',
-            title: 'VKYC Completed',
-            text: 'Your KYC Is Completed.',
-            confirmButtonText: 'Continue'
-            }).then(() => {
-            // This runs after the user clicks "Continue"
-            onNext();
-            }); 
+        
+               navigate('/startCkyc');
     }
 
 

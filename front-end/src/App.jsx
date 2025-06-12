@@ -22,7 +22,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
 import KycVarification from './pages/KycVarification/Enrollmentform';
-
+import StartKyc from './pages/Enrollment/4B'; 
+import CreateMeeting from './pages/Enrollment/CreateMeeting';
+// import VideoKYC from './pages/VideoKYC';
 
 
 export const App = () => {
@@ -36,6 +38,7 @@ export const App = () => {
 
       <Router>
         <Routes>
+          <Route path="/create-meeting" element={<CreateMeeting />} />
           <Route path="/" element={<DAOExtraction />} />
           <Route path="/rekyc" element={<Rekyc />} />
           <Route path="/login" element={<Login />} />
@@ -51,7 +54,8 @@ export const App = () => {
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />
-          <Route path="/kyc-varification/edit/:id" element={<KycVarification />} />
+          <Route path="/kyc-varification/edit/:id" element={<KycVarification />} /> 
+          <Route path="/startCkyc" element={<StartKyc />} />
         </Routes>
       </Router>
       <ToastContainer />
