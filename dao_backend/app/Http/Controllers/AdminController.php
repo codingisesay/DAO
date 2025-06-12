@@ -63,6 +63,7 @@ public function getPendingApplications()
     ], 200);
 
 }
+
 public function getPendingApplicationsAgentCount(){
 
     
@@ -594,7 +595,7 @@ public function updateAgentLivePhotos($application_id, Request $request)
     ], 200);
 }
 
-
+// Get allRejected  kycReview applications
 public function getKycReviewApplications()
 {
     $data = DB::table('kyc_application_status')
@@ -613,6 +614,43 @@ public function getKycReviewApplications()
     return response()->json(['data' => $data], 200);
 }
 
+public function getKycReviewApplicationsAgentCount()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application.kyc_agent_id',
+            DB::raw('COUNT(*) as review_count')
+        )
+        ->where('kyc_application_status.status', 'review')
+        ->groupBy('kyc_application.kyc_agent_id')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+public function getKycReviewApplicationsByAgentId($agentId)
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'review')
+        ->where('kyc_application.kyc_agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'kyc_agent_id' => $agentId,
+        'review_applications' => $data
+    ], 200);
+}
+
+
+// Get all Approved applications
 public function getKycApprovedApplications()
 {
     $data = DB::table('kyc_application_status')
@@ -628,8 +666,45 @@ public function getKycApprovedApplications()
 
     return response()->json(['data' => $data], 200);
 }
+// Get Approved  kycapplications count per agent
+public function getKycApprovedApplicationsAgentCount()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application.kyc_agent_id',
+            DB::raw('COUNT(*) as approved_count')
+        )
+        ->where('kyc_application_status.status', 'approved')
+        ->groupBy('kyc_application.kyc_agent_id')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+// Get Approved   kycapplications for a specific agent
+public function getKycApprovedApplicationsByAgentId($agentId)
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'approved')
+        ->where('kyc_application.kyc_agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'kyc_agent_id' => $agentId,
+        'approved_applications' => $data
+    ], 200);
+}
 
 
+
+// Get all Rejected  applications
 public function getKycRejectedApplications()
 {
     $data = DB::table('kyc_application_status')
@@ -646,6 +721,42 @@ public function getKycRejectedApplications()
     return response()->json(['data' => $data], 200);
 }
 
+// Get Rejected  kycapplications count per agent
+public function getKycRejectedApplicationsAgentCount()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application.kyc_agent_id',
+            DB::raw('COUNT(*) as rejected_count')
+        )
+        ->where('kyc_application_status.status', 'rejected')
+        ->groupBy('kyc_application.kyc_agent_id')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+// Get Rejected  kycapplications for a specific agent
+public function getKycRejectedApplicationsByAgentId($agentId)
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'rejected')
+        ->where('kyc_application.kyc_agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'kyc_agent_id' => $agentId,
+        'rejected_applications' => $data
+    ], 200);
+}
+// Get all Pending   applications
 public function getKycPendingApplications()
 {
     $data = DB::table('kyc_application_status')
@@ -660,6 +771,43 @@ public function getKycPendingApplications()
         ->get();
 
     return response()->json(['data' => $data], 200);
+}
+	// Get Pending  kycapplications count per agent
+
+public function getKycPendingApplicationsAgentCount()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application.kyc_agent_id',
+            DB::raw('COUNT(*) as pending_count')
+        )
+        ->where('kyc_application_status.status', 'pending')
+        ->groupBy('kyc_application.kyc_agent_id')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+// Get Pending   kycapplications for a specific agent
+public function getKycPendingApplicationsByAgentId($agentId)
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'pending')
+        ->where('kyc_application.kyc_agent_id', $agentId)
+        ->get();
+
+    return response()->json([
+        'kyc_agent_id' => $agentId,
+        'pending_applications' => $data
+    ], 200);
 }
 
 
