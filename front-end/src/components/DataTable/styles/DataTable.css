@@ -1,0 +1,271 @@
+.custom-table-container {
+  background: #ffffff;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin: 0 20px 20px 20px;
+}
+
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.entries-selector {
+  display: flex;
+  align-items: center;
+  border-radius: 1px;
+  gap: 10px;
+}
+
+.entries-selector select {
+  padding: 0px;
+  border-radius: 5px;
+  border: 1px solid #dde2e5;
+}
+
+.action-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 25px;
+  /* margin: 15px 0; */
+}
+
+.custom-table thead tr {
+  background: var(--primary-color);
+  border-radius: 20px 20px 0 0;
+}
+
+.custom-table th {
+  color: white !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 0px 10px;
+  text-align: left;
+  border: 1px solid black !important;
+  color: #595959;
+}
+
+.custom-table th {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.custom-table td {
+  font-size: 14px;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.pagination_controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination-info {
+  font-weight: 400;
+  font-size: 12px;
+  color: #59595999;
+  margin: 0;
+}
+
+.action-cell {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.action-link {
+  text-decoration: none;
+  margin: 0 5px;
+  font-size: 16px;
+}
+
+.action-link:hover {
+  opacity: 0.8;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.column-dropdown {
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.column-dropdown option {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.column-dropdown option:hover {
+  background-color: #f0f0f0;
+}
+
+.css-1howxi1-MuiTableCell-root {
+  font-family: "Montserrat" !important;
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  height: 25px !important;
+}
+
+.css-dsuxgy-MuiTableCell-root {
+  padding: 0px;
+}
+
+.branch-master {
+  margin-top: -10px !important;
+  overflow: auto;
+}
+
+.custom-table-container table a {
+  padding: 1px 7px 1px 7px !important;
+  margin-left: 4px;
+}
+
+.custom-table-container {
+  margin-top: -15px !important;
+}
+
+.custom-table-container th button {
+  padding: 0 !important;
+  display: block !important;
+  text-align: left !important;
+}
+
+.custom-table-container {
+  padding: 0 !important;
+  border: none !important;
+}
+
+.custom-table-container th {
+  padding: 0 7px !important;
+  background-color: #2B4646;
+}
+
+.custom-table-container td {
+  padding: 0 7px !important;
+}
+
+.action-cell {
+  text-align: start !important;
+}
+
+.css-apqrd9-MuiTableBody-root {
+  overflow-y: auto;
+}
+
+table td {
+  border: 1px solid lightgray !important;
+}
+
+.unapproved-container table tbody td:last-child,
+.unapproved-container table thead th:last-child div,
+.unapproved-container table thead th:last-child,
+.custom-table-container table thead th:last-child,
+.custom-table-container table tbody td:last-child,
+.branch-master table thead th:last-child,
+.branch-master table tbody td:last-child {
+  text-align: center !important;
+  text-align-last: center;
+  justify-items: center;
+  /* Center the text in the last column */
+}
+
+.branch-master table thead th:last-child,
+.unapproved-container table thead th:last-child div,
+.unapproved-container table thead th:last-child,
+.custom-table-container table thead th:last-child,
+.unapproved-container table thead th:last-child div,
+.unapproved-container table thead th:last-child,
+.branch-master table thead th:last-child,
+.custom-table-container table thead th:last-child {
+  background-color: #2D4949 !important;
+  background: #2B4646;
+  color: white;
+}
+
+.branch-master thead th:last-child button {
+  margin: auto !important;
+  justify-items: center;
+  display: flex;
+  justify-content: center !important;
+}
+
+.custom-table tfoot td {
+  padding: 20px 10px !important;
+  font-weight: bold;
+}
+
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:hover {
+  text-decoration: underline;
+}
+
+/* Force all sort icons to be white */
+.MuiTableSortLabel-icon {
+  color: white !important;
+}
+
+/* Optionally, if you need to target the active state explicitly */
+.MuiTableSortLabel-active .MuiTableSortLabel-icon {
+  color: white !important;
+}
+
+/* Apply green background for rows with authFlag 'A' */
+.row-green {
+  background-color: #0080001c !important;
+  background: #0080001c !important;
+  color: white;
+  /* Adjust text color for better visibility */
+}
+
+/* Apply red background for rows with cancelFlag 'C' */
+.row-red {
+  background-color: #ff000021 !important;
+  background: #ff000021 !important;
+  color: white;
+  /* Adjust text color for better visibility */
+}

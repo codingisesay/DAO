@@ -533,7 +533,23 @@ public function updateAgentLivePhotos($application_id, Request $request)
 }
 
 
+public function getKycReviewApplications()
+{
+    $data = DB::table('kyc_application_status')
+       ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
 
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details',
+           
+        )
+        ->where('kyc_application_status.status', 'review')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
 
 
 }

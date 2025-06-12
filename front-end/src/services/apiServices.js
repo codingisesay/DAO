@@ -151,6 +151,9 @@ export const adminService = {
     daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_AGENT_COUNT),
   getReviewApplicationsDetailsByAgent: (agentId) =>
     daoApi.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+  //  Add these for kycreview applicationss
+  getAllKycReviewApplications: () =>
+    daoApi.get(API_ENDPOINTS.ADMIN.GET_ALL_KYC_REVIEW_APPLICATIONS),
   /// working above 
 
 

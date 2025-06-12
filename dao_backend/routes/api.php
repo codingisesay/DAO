@@ -46,7 +46,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     // Route::middleware('role:admin')->group(function () {
    
    Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
-Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
+    Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
    Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
    Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
    Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
@@ -59,8 +59,13 @@ Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountSt
      Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
     Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
+    //kyc review table data
+    Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
 
-//    Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
+     
+     
+
+    // Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
    
       Route::get('/admin/fetchApplicationPersonalDetails/{application_id}', [AdminController::class, 'getApplicationPersonalDetails']);
       Route::get('/admin/fetchApplicationAddressDetails/{application_id}', [AdminController::class, 'getApplicationAddressDetails']);
