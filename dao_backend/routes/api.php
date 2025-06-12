@@ -42,7 +42,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 
 //Video Kyc
 
-Route::post('/video-kyc/create/{id}', [VideoKycController::class, 'create']);
+Route::post('/video-kyc/create/{application_id}', [VideoKycController::class, 'create']);
 Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
 // Route::middleware(['jwt.auth'])->group(function () {

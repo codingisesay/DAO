@@ -55,6 +55,9 @@ export const API_ENDPOINTS = {
 
   ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
 
+  KYC_PENDING_APPLICATIONS: {
+    GET_LIST: '/api/admin/kyc-applications/pending',  // Updated endpoint path ]
+  },
   KYC_ACCOUNTS_STATUS_LIST: {
     GET_LIST: '/api/admin/kycaccountsStatus',  // Updated endpoint path
   },
@@ -109,8 +112,8 @@ export const API_ENDPOINTS = {
     update_KYC3: `/api/admin/kyc-application-status/update`
   },
 
-
-
+// /video-kyc/create/{id}
+  VKYC_CREATE_MEETING: (id) => `/api/video-kyc/create/${id}`,
 
 
 

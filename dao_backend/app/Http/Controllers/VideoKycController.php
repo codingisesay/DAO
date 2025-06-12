@@ -11,23 +11,28 @@ class VideoKycController extends Controller
 {
     public function create(Request $request,$application_id)
 {
-    $request->validate([
-        'application_id' => 'required|string',
-        'client_email' => 'required|email',
-    ]);
+    // $request->validate([
+    //     'application_id' => 'required',
+    //     // 'client_email' => 'required|email',
+    // ]);
 
-    $token = strtoupper(Str::random(6));
+    // $token = strtoupper(Str::random(6));
 
-    $session = VideoKycSession::create([
-        'application_id' => $request->application_id,
-        'client_email' => $request->client_email,
-        'token' => $token,
-        'expires_at' => now()->addMinutes(30),
-    ]);
+    // $session = VideoKycSession::create([
+    //     'application_id' => $request->application_id,
+    //     'client_email' => $request->client_email,
+    //     'token' => $token,
+    //     'expires_at' => now()->addMinutes(30),
+    // ]);
 
-    return response()->json([
-        'token' => $token,
-        'join_url' => config('app.frontend_url') . "/video-kyc?token={$token}"
+    // return response()->json([
+    //     'token' => $token,
+    //     'join_url' => config('app.frontend_url') . "/video-kyc?token={$token}"
+    // ]);
+
+     return response()->json([
+        'success' => $application_id,
+        
     ]);
 }
 

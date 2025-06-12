@@ -75,6 +75,10 @@ export const kycaccountsStatusListService = {
     daoApi.get(API_ENDPOINTS.KYC_ACCOUNTS_STATUS_LIST.GET_LIST),
 };
 
+export const kycPendingApplicationsService = {
+  getList: () =>
+    daoApi.get(API_ENDPOINTS.KYC_PENDING_APPLICATIONS.GET_LIST),
+};
 export const recentPendingApplicationsService = {
   getList: () =>
     daoApi.get(API_ENDPOINTS.RECENT_PENDING_APPLICATIONS.GET_LIST),
@@ -210,6 +214,10 @@ export const pendingKycStusUpdate = {
 };
 
 
+export const videoKycServie = {
+  createMeeting: (id) =>
+    daoApi.post(API_ENDPOINTS.VKYC_CREATE_MEETING(id)),
+}
 
 
 

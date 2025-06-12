@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import CommonButton from "../../components/CommonButton";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import {videoKycServie} from '../../services/apiServices'; // Adjust the import path as necessary
 
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ const VideoKYCInstructions = ({onNext}) => {
     });
       const navigate = useNavigate();
     const [showOptions, setShowOptions] = useState(false);
+    const [assistKycCall, setAssistKycCall] = useState(false);
 
     const handleCheckboxChange = (type) => {
         setTermsAccepted(prev => ({
@@ -19,13 +21,10 @@ const VideoKYCInstructions = ({onNext}) => {
             [type]: !prev[type]
         }));
     };
-
-    const handleConfirm = async() => {
-
-        // const responce = await post('/api/v1/kyc/terms', {
-        //     guidelines: termsAccepted.guidelines,})
-
-
+   
+    const handleConfirm = () => {  
+        //  const responce = await videoKycServie.createMeeting(5);
+        // console.log(response);
         setShowOptions(true);
     };
 
@@ -43,15 +42,23 @@ const VideoKYCInstructions = ({onNext}) => {
             onNext();
             }); 
     }
-    const assistKyc=()=>{
+    const assistKyc= async()=>{
           localStorage.setItem('vcall', JSON.stringify(true));
-        
-               navigate('/startCkyc');
+         
+        const responce = await videoKycServie.createMeeting(5);
+        console.log(responce);
+        setAssistKycCall(true);
+            //    navigate('/startCkyc');
     }
 
 
     return (
         <>
+
+            {assistKycCall === false 
+                ?
+                (<>
+                
             <div className="flex flex-col md:flex-row gap-5 justify-center items-start">
                 {/* Guidelines Box */}
                 <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
@@ -145,6 +152,30 @@ const VideoKYCInstructions = ({onNext}) => {
                     </div>
                 </div>
             )}
+
+                </>) 
+                
+                : (<>
+                    <h1>
+                        VKYC TOKEN
+                    </h1>
+                    <input className="m-4 p-2 border-2 border-gray-500 rounded" type="text" name="" id="" />
+
+                    <button className="btn-login my-3 w-[200px]">
+                        Join V-KYC
+                    </button>
+                </>
+                ) 
+            }
+
+
+
+
+
+
+
+
+
         </>
     );
 };
