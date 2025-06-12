@@ -272,4 +272,26 @@ public function updateKycAfterVsCbsStatus(Request $request)
     ], 200);
 }
 
+public function updateKycApplicationStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        // 'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_application_status')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            // 'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC Application status updated successfully.',
+    ], 200);
+}
+
+
 }
