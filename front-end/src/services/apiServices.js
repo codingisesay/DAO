@@ -192,6 +192,13 @@ export const kycService = {
 };
 
 
+export const pendingKycStusUpdate = {
+  updateKyc1: ( data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_KYC.GET_DATAILS_KYC2, data),
+  updateKyc2: ( data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_KYC.GET_DATAILS_KYC2, data), 
+};
+
 
 
 

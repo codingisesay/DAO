@@ -44,5 +44,14 @@ export const COLUMN_DEFINITIONS = {
     sortable: true,
     filterable: true,
   },
-  
+  created_at: {
+    header: "Created At",
+    sortable: true,
+    filterable: true,
+  },
+  kyc_application_id: {
+    header: "KYC Application ID",
+    sortable: true,
+    filterable: true,
+  },
 };

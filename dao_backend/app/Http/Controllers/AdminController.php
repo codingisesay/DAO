@@ -551,5 +551,90 @@ public function getKycReviewApplications()
     return response()->json(['data' => $data], 200);
 }
 
+public function getKycApprovedApplications()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'approved')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+
+public function getKycRejectedApplications()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'rejected')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+public function getKycPendingApplications()
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details'
+        )
+        ->where('kyc_application_status.status', 'pending')
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
+
+
+
+public function getAllKycDetails($id)
+{
+    $kycData = DB::table('kyc_application as ka')
+        ->leftJoin('kyc_application_status as kas', 'ka.id', '=', 'kas.kyc_application_id')
+        ->leftJoin('kyc_customer_document as kcd', 'ka.id', '=', 'kcd.kyc_application_id')
+        ->leftJoin('kyc_data_after_vs_cbs as kda', 'ka.id', '=', 'kda.kyc_application_id')
+        ->leftJoin('kyc_data_from_verify_cbs as kdvcbs', 'ka.id', '=', 'kdvcbs.kyc_application_id')
+        ->leftJoin('kyc_data_from_verify_sources as kdvs', 'ka.id', '=', 'kdvs.kyc_application_id')
+        ->leftJoin('kyc_document_approved_status as kdas', 'ka.id', '=', 'kdas.kyc_application_id')
+        ->where('ka.id', $id)
+        ->select(
+            'ka.*',
+            'kas.*',
+            'kcd.*',
+            'kda.*',
+            'kdvcbs.*',
+            'kdvs.*',
+            'kdas.*'
+        )
+        ->get(); // Use ->first() if expecting only one record
+
+    if ($kycData->isEmpty()) {
+        return response()->json([
+            'message' => 'No KYC data found for this application ID.',
+            'data' => null
+        ], 404);
+    }
+
+    return response()->json([
+        'message' => 'KYC details fetched successfully',
+        'data' => $kycData
+    ]);
+}
+
 
 }

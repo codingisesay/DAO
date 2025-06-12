@@ -98,11 +98,14 @@ export const API_ENDPOINTS = {
 
   },
   
-  KYC_APPROVAL: {
-    START_KYC: '/api/agent/kyc/start',
-    SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
-    UPDATE_KYC_DOCUMENT_STATUS: '/api/agent/update-kyc-document-status',
-    UPDATE_KYC_AFTER_VS_CBS_STATUS: '/api/agent/update-kyc-after-vs-cbs-status',
+  PENDING_KYC: {
+    GET_DATAILS_KYC1: '/api/admin/kyc/details/5',
+    GET_DATAILS_KYC2: 'api/admin/kyc/details/5', 
+  },
+
+  PENDING_KYC_UPDATE: {
+    UPDATE_KYC1: '/api/agent/update-kyc-after-vs-cbs-status/5',
+    UPDATE_KYC2: 'api/admin/kyc/details/5', 
   },
 
 

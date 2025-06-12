@@ -8,7 +8,7 @@ import AccountBarChart from './AdminDashboard_validationBarGraph';
 import DemographicsBarChart from './AdminDashobard_KYCdounut';
 import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
 import CommonButton from '../../components/CommonButton';
-import CommanTbl from './CommanTbl';
+// import CommanTbl from './CommanTbl';
 // import { recentPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
 import { adminService } from '../../services/apiServices';
 
@@ -69,7 +69,7 @@ function ReviewTable() {
                 <div className="container mx-auto">
                     <div className='work-area'>
                         {/* Pass tbldata to your table component */}
-                        <CommanTbl tbldata={tbldata} />
+                        {/* <CommanTbl tbldata={tbldata} /> */}
                     </div>
                 </div>
             </div>

@@ -46,7 +46,8 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
     // Route::middleware('role:admin')->group(function () {
    
    Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
-    Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
+Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
+//pending 
    Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
    Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
    Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
@@ -59,8 +60,16 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
      Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
     Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
-    //kyc review table data
-    Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
+    //kyc review 
+   Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
+   // kyc approved table 
+   Route::get('/kyc-applications/approved', [YourController::class, 'getKycApprovedApplications']);
+   // kyc rejected table 
+   Route::get('/kyc-applications/rejected', [YourController::class, 'getKycRejectedApplications']);
+   // kyc pending table
+   Route::get('/kyc-applications/pending', [YourController::class, 'getKycPendingApplications']);
+   // kyc all application fetch route 
+   Route::get('admin/kyc/details/{id}', [AdminController::class, 'getAllKycDetails']);
 
      
      

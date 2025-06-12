@@ -145,7 +145,7 @@ const [cbsData, setCbsData] = useState({
 
   // After VS CBS data - will store modified CBS data
   const [afterVsCbsData, setAfterVsCbsData] = useState({
-    ...cbsData,
+    // ...cbsData,
     
         kyc_vscbs_salutation: "Mrs",
         kyc_vscbs_middle_name: "Subhash",
@@ -223,6 +223,7 @@ const [cbsData, setCbsData] = useState({
       from_verify_cbs: cbsData,             // Original CBS data goes to kyc_data_from_verify_cbs
       after_vs_cbs: afterVsCbsData,         // Modified data (including toggled fields) goes to kyc_data_after_vs_cbs
     };
+    console
     
     try {
       const response = await kycService.saveAllKycData(payload);

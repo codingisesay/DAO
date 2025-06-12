@@ -272,8 +272,4 @@ public function updateKycAfterVsCbsStatus(Request $request)
     ], 200);
 }
 
-
-
-
-
 }

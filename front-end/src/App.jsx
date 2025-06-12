@@ -46,12 +46,12 @@ export const App = () => {
           <Route path="/add_agent" element={<AgentRegisterForm />} />
           <Route path="/approved" element={<ApprovedTable />} />
           <Route path="/pending" element={<PendingTable />} />
-          <Route path="/pending-kyc" element={<PendingTableKyc />} />
+          <Route path="/pending_kyc" element={<PendingTableKyc />} />
           <Route path="/review" element={<ReviewTable />} />
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />
-          <Route path="/kyc-varification/01" element={<KycVarification />} />
+          <Route path="/kyc-varification/:id" element={<KycVarification />} />
         </Routes>
       </Router>
       <ToastContainer />
