@@ -105,7 +105,8 @@ export const API_ENDPOINTS = {
 
   PENDING_KYC_UPDATE: {
     UPDATE_KYC1: `/api/agent/update-kyc-after-vs-cbs-status`,
-    UPDATE_KYC2: `api/agent/update-kyc-document-status`, 
+    UPDATE_KYC2: `/api/agent/update-kyc-document-status`, 
+    update_KYC3: `/api/admin/kyc-application-status/update`
   },
 
 

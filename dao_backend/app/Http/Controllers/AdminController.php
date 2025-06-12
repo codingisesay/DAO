@@ -18,6 +18,7 @@ use App\Models\AgentLivePhoto;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -635,6 +636,133 @@ public function getAllKycDetails($id)
         'data' => $kycData
     ]);
 }
+
+
+
+
+public function getMonthlyApprovedApplications()
+{
+    $currentYear = Carbon::now()->year;
+
+    $monthlyData = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->where('customer_appliction_status.status', 'approved')
+        ->whereYear('customer_appliction_status.created_at', $currentYear)
+        ->selectRaw('MONTH(customer_appliction_status.created_at) as month, COUNT(*) as count')
+        ->groupBy(DB::raw('MONTH(customer_appliction_status.created_at)'))
+        ->orderBy('month')
+        ->get();
+
+    // Initialize all months with 0
+    $allMonths = collect(range(1, 12))->mapWithKeys(function ($month) {
+        return [$month => 0];
+    });
+
+    // Merge real data
+    foreach ($monthlyData as $item) {
+        $allMonths[$item->month] = $item->count;
+    }
+
+    // Prepare output for chart
+    $labels = [];
+    $data = [];
+
+    foreach ($allMonths as $month => $count) {
+        $labels[] = Carbon::create()->month($month)->format('F'); // Jan, Feb, etc.
+        $data[] = $count;
+    }
+
+    return response()->json([
+        'labels' => $labels,
+        'data' => $data
+    ]);
+}
+
+public function getMonthlyAuthTypeCounts()
+{
+    $currentYear = now()->year;
+
+    $rawData = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->where('customer_appliction_status.status', 'approved')
+        ->whereYear('customer_appliction_status.created_at', $currentYear)
+        ->selectRaw('MONTH(customer_appliction_status.created_at) as month, customer_application_details.auth_type, COUNT(*) as count')
+        ->groupBy('month', 'customer_application_details.auth_type')
+        ->orderBy('month')
+        ->get();
+
+    $authTypes = ['PAN CARD', 'AADHAR CARD', 'DIGILOCKER'];
+    $months = range(1, 12);
+
+    $data = [];
+    foreach ($authTypes as $auth) {
+        foreach ($months as $month) {
+            $data[$auth][$month] = 0;
+        }
+    }
+
+    foreach ($rawData as $row) {
+        $data[$row->auth_type][$row->month] = $row->count;
+    }
+
+    $response = [
+        'labels' => array_map(fn($m) => \Carbon\Carbon::create()->month($m)->format('F'), $months),
+        'data' => []
+    ];
+
+    foreach ($authTypes as $auth) {
+        $response['data'][] = [
+            'label' => $auth,
+            'data' => array_values($data[$auth])
+        ];
+    }
+
+    return response()->json($response);
+}
+
+
+public function getWeeklyAuthTypeCounts()
+{
+    $currentYear = now()->year;
+
+    $rawData = DB::table('customer_appliction_status')
+        ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->where('customer_appliction_status.status', 'approved')
+        ->whereYear('customer_appliction_status.created_at', $currentYear)
+        ->selectRaw('WEEK(customer_appliction_status.created_at, 1) as week, customer_application_details.auth_type, COUNT(*) as count')
+        ->groupBy('week', 'customer_application_details.auth_type')
+        ->orderBy('week')
+        ->get();
+
+    $authTypes = ['PAN CARD', 'AADHAR CARD', 'DIGILOCKER'];
+    $weeks = range(1, 53); // ISO weeks
+
+    $data = [];
+    foreach ($authTypes as $auth) {
+        foreach ($weeks as $week) {
+            $data[$auth][$week] = 0;
+        }
+    }
+
+    foreach ($rawData as $row) {
+        $data[$row->auth_type][$row->week] = $row->count;
+    }
+
+    $response = [
+        'labels' => array_map(fn($w) => "Week $w", $weeks),
+        'data' => []
+    ];
+
+    foreach ($authTypes as $auth) {
+        $response['data'][] = [
+            'label' => $auth,
+            'data' => array_values($data[$auth])
+        ];
+    }
+
+    return response()->json($response);
+}
+
 
 
 }

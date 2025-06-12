@@ -216,7 +216,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                 {docs.map((doc) => (
                                     <tr key={doc.id}>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
-                                        <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+                                        <td className="py-2 px-4 border-b border-gray-200">{doc.kyc_file_name}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
                                             <a href={daodocbase + `/${doc.kyc_file_path}`} target="_blank" rel="noopener noreferrer">
                                                 <img

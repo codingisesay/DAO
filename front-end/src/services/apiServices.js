@@ -205,6 +205,8 @@ export const pendingKycStusUpdate = {
     daoApi.post(API_ENDPOINTS.PENDING_KYC_UPDATE.UPDATE_KYC1, data),
   updateKyc2: ( data) =>
     daoApi.post(API_ENDPOINTS.PENDING_KYC_UPDATE.UPDATE_KYC2, data), 
+  updateKyc3: ( data) =>
+    daoApi.post(API_ENDPOINTS.PENDING_KYC_UPDATE.update_KYC3, data), 
 };
 
 
