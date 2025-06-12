@@ -96,9 +96,15 @@ export const API_ENDPOINTS = {
     UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
     UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
 
-  }
+  },
+  
+  KYC_APPROVAL: {
+    START_KYC: '/api/agent/kyc/start',
+    SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
+    UPDATE_KYC_DOCUMENT_STATUS: '/api/agent/update-kyc-document-status',
+    UPDATE_KYC_AFTER_VS_CBS_STATUS: '/api/agent/update-kyc-after-vs-cbs-status',
+  },
 
-  ,
 
 
 
