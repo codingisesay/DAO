@@ -164,7 +164,7 @@ function StatusDashboard1() {
     const [statusCounts, setStatusCounts] = useState({
         Pending: 0,
         Approved: 0,
-        Rejected: 0,
+        Reject: 0,
         // Review: 0/
     });
 
@@ -182,7 +182,7 @@ function StatusDashboard1() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
+                        Reject: counts.Reject || 0,
                         Review: counts.Review || 0
                     });
                 }
@@ -231,7 +231,7 @@ function StatusDashboard1() {
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
                         <small>Rejected</small>
                     </div>
                 </div>
@@ -246,7 +246,7 @@ function StatusDashboard2() {
     const [statusCounts, setStatusCounts] = useState({
         Pending: 0,
         Approved: 0,
-        Rejected: 0,
+        Reject: 0,
         // Review: 0/
     });
 
@@ -264,7 +264,7 @@ function StatusDashboard2() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
+                        Reject: counts.Reject || 0,
                         Review: counts.Review || 0
                     });
                 }
@@ -313,7 +313,7 @@ function StatusDashboard2() {
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
                         <small>Rejected</small>
                     </div>
                 </div>
