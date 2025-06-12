@@ -77,8 +77,9 @@ const fetchData = async () => {
         <>
  
         <div className="container mx-auto">
-                <br />
+                <br />  <br />
                 <h1>Pending Application</h1>
+                  <br />  <br />
             <div
                     className="Usermaster-main-div"
                     style={{
