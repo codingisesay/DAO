@@ -102,7 +102,7 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varificatio"
+                        basePath="/kyc-varification"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}

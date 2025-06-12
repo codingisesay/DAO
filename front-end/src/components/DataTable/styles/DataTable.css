@@ -178,8 +178,9 @@
 }
 
 .custom-table-container th {
+  color: white !important;
   padding: 0 7px !important;
-  background-color: #2B4646;
+  background-color: #00A86B;
 }
 
 .custom-table-container td {
@@ -219,9 +220,9 @@ table td {
 .unapproved-container table thead th:last-child,
 .branch-master table thead th:last-child,
 .custom-table-container table thead th:last-child {
-  background-color: #2D4949 !important;
-  background: #2B4646;
-  color: white;
+  background-color: #00A86B !important;
+  background: #00A86B;
+  color: white !important;
 }
 
 .branch-master thead th:last-child button {

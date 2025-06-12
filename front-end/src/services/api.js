@@ -99,13 +99,13 @@ export const API_ENDPOINTS = {
   },
   
   PENDING_KYC: {
-    GET_DATAILS_KYC1: '/api/admin/kyc/details/5',
-    GET_DATAILS_KYC2: 'api/admin/kyc/details/5', 
+    GET_DATAILS_KYC1:(id)=> `/api/admin/kyc/details/${id}`,
+    GET_DATAILS_KYC2:(id)=> `api/admin/kyc/details/${id}`, // Updated endpoint path
   },
 
   PENDING_KYC_UPDATE: {
-    UPDATE_KYC1: '/api/agent/update-kyc-after-vs-cbs-status/5',
-    UPDATE_KYC2: 'api/admin/kyc/details/5', 
+    UPDATE_KYC1: `/api/agent/update-kyc-after-vs-cbs-status`,
+    UPDATE_KYC2: `api/agent/update-kyc-document-status`, 
   },
 
 

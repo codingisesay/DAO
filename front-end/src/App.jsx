@@ -51,7 +51,7 @@ export const App = () => {
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />
-          <Route path="/kyc-varification/:id" element={<KycVarification />} />
+          <Route path="/kyc-varification/edit/:id" element={<KycVarification />} />
         </Routes>
       </Router>
       <ToastContainer />

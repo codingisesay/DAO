@@ -40,7 +40,7 @@ const Step4VideoCall = ({
         skipStep();  // This shows the skipped KYC message
 
         // Navigate after showing both messages
-        navigate('/admindashboard');
+        navigate('/agentDashboard');
       }
     });
   };
