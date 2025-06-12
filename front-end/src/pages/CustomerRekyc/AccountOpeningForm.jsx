@@ -3,9 +3,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import Step1PersonalInfo from "./Step1PersonalInfo";
 import Step2JobDetails from "./Step2PersonalD";
 import Step3Nomination from "./Step3DocumentUpload";
-import Step4VideoCall from "./Step4VideoCall";
-import Step5AccountDetails from "./Step5AccoutDetails";
-import Step6AccountSummary from "./Step6ccountSummary/Step6ASummary";
+import Step4VideoCall from "./Step4VideoCall"; 
 import "./style.css";
 
 function CustomerForm() {
@@ -358,29 +356,7 @@ function CustomerForm() {
                                     />
                                 )}
 
-                                {/* {currentStep === 5 && (
-                                    <Step5AccountDetails
-                                        formData={formData}
-                                        handleChange={handleChange}
-                                        updateProgress={updateStep2Progress}
-                                        subProgress={subProgress}
-                                        completeStep={completeStep5}
-                                        prevStep={() => {
-                                            setProgress({ ...progress, 5: "inprogress", 6: "pending" });
-                                            setCurrentStep(4);
-                                        }}
-                                    />
-                                )}
-                                {currentStep === 6 && (
-                                    <Step6AccountSummary
-                                        formData={formData}
-                                        prevStep={() => {
-                                            setProgress({ ...progress, 5: "inprogress", 6: "pending" });
-                                            setCurrentStep(5);
-                                        }}
-                                        handleSubmit={handleSubmit}
-                                    />
-                                )} */}
+                  
                             </form>
                         </div>
                     </div>

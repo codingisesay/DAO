@@ -55,6 +55,9 @@ export const API_ENDPOINTS = {
 
   ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
 
+  KYC_PENDING_APPLICATIONS: {
+    GET_LIST: '/api/admin/kyc-applications/pending',  // Updated endpoint path ]
+  },
   KYC_ACCOUNTS_STATUS_LIST: {
     GET_LIST: '/api/admin/kycaccountsStatus',  // Updated endpoint path
   },
@@ -96,11 +99,21 @@ export const API_ENDPOINTS = {
     UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
     UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
 
-  }
+  },
+  
+  PENDING_KYC: {
+    GET_DATAILS_KYC1:(id)=> `/api/admin/kyc/details/${id}`,
+    GET_DATAILS_KYC2:(id)=> `api/admin/kyc/details/${id}`, // Updated endpoint path
+  },
 
-  ,
+  PENDING_KYC_UPDATE: {
+    UPDATE_KYC1: `/api/agent/update-kyc-after-vs-cbs-status`,
+    UPDATE_KYC2: `/api/agent/update-kyc-document-status`, 
+    update_KYC3: `/api/admin/kyc-application-status/update`
+  },
 
-
+// /video-kyc/create/{id}
+  VKYC_CREATE_MEETING: (id) => `/api/video-kyc/create/${id}`,
 
 
 

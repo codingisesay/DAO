@@ -165,7 +165,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 icon: 'error',
                 title: 'Error!',
                 // text: 'Failed to submit data. Please try again.',
-                text: JSON.stringify(error) ,
+                text:  error.response?.data?.message || 'Server error' ,
             });
         } finally {
             setIsSubmitting(false);

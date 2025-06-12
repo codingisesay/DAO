@@ -161,7 +161,7 @@ function P1({ onNext, onBack, updateFormData }) {
         // alert('called')
         try {
             const payload = {
-                applicaiton_id: Number(id),
+                application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
                 admin_id: 1
