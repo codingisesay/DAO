@@ -143,13 +143,14 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         try {
             const response = await createAccountService.enrollment_s1(payload);
-            if (response && JSON.stringify(response).includes('201')) {
+            console.log("Response from server:", response);
+            
                 updateFormData(1, {
                     ...updatedData,
-                    application_no: response.data.application_no,
-                    application_id: response.data.application_id,
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                localStorage.setItem('application_id', response.data.application_id);
+                localStorage.setItem('application_id', response.application_id);
 
             Swal.fire({
                 icon: 'success',
@@ -159,7 +160,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 timer: 1500
             });
             onNext();
-            }
+            
         } catch (error) {
             Swal.fire({
                 icon: 'error',

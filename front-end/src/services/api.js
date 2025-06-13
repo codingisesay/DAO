@@ -25,6 +25,7 @@ export const API_ENDPOINTS = {
     ACCOUNT_NOMINEE_S5B: '/dao/api/agent/account-nominee',
     SERVICE_TO_CUSTOMER_S5C: '/dao/api/agent/service-to-customer',
     AGENT_LIVE_PHOTO_S6B: '/dao/api/agent/agent-live-photo',
+    GET_BANKING_FACILITIES_SERVICE : '/dao/api/agent/bankingServices',
   },
 
   AGENT: {
@@ -152,6 +153,7 @@ export const API_ENDPOINTS = {
 
     // /// By ankitka
     APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
+    GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
   },
 
 

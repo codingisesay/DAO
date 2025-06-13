@@ -66,10 +66,10 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.response?.data?.message || 'Failed to save photo. Please try again.'
+                text: error?.data?.message +` Retake and Save Photo` || 'Failed to save photo. Please try again.'
             });
         } finally {
-            setLocalIsSubmitting(false);
+            setLocalIsSubmitting(false); 
         }
     };
 

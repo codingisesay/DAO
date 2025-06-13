@@ -26,7 +26,7 @@ const ViewApplicationForm = () => {
                 // alert('run')
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data;
+                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     
                     console.log('toshoe :', response);
@@ -728,13 +728,16 @@ const ViewApplicationForm = () => {
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
-                            <label className="block text-gray-700 font-bold mb-2">Photo</label>
+                            <label  className="block text-gray-700 font-bold mb-2">Photo</label>
                             {formData.photo ? (
+                                <>
                                 <img
                                     src={typeof formData.photo === 'string' ? formData.photo : URL.createObjectURL(formData.photo)}
                                     alt="Photo"
                                     className="w-30 h-auto  "
                                 />
+                              <img    src="{{ asset('formData.photo') }}" />
+                              </>
                             ) : (
                                 <span>No photo uploaded</span>
                             )}

@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(6);
     const [complete, setComplete] = useState(false);
 
     localStorage.setItem('vcall', JSON.stringify(false));
@@ -90,7 +90,7 @@ function Enrollmentform() {
 
 
     const handleNext = () => {
-        console.log('Final form data:', formData);
+        // console.log('Final form data:', formData);
         if (currentStep === 6) {
             setComplete(true);
             // On final submission

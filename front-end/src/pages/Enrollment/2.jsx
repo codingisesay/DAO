@@ -40,7 +40,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
         try {
             if (activeStep === 0) {
-                console.log('2A formadta : ', formData)
+                // console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};
              
                 const payload = {
@@ -61,7 +61,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 console.log(payload)
                 try {
                     let response = await createAccountService.personalDetails_s2a(payload);
-                    if (response && (response.status === 200 || response.status === 201)) {
+                   
                         Swal.fire({
                             icon: 'success',
                             title: response.data.message || 'Personal details saved successfully.',
@@ -69,7 +69,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                             timer: 1500
                         });
                         handleNext();
-                    }
+                  
                 } catch (error) {
                     console.error("Error saving personal details:", error);
                     Swal.fire({
