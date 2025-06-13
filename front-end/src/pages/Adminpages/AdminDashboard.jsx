@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
+import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
-import AccountBarChart from './AdminDashboard_validationBarGraph';
-import DemographicsBarChart from './AdminDashobard_KYCdounut';
-import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
+import AccountBarChart from './AdminDashboardMonthlyBarChart';
+import DemographicsBarChart from './AdminDashobardKycDoughnutChart';
+import MonthlyAccountTrends from './AdminDashboardLineChart';
 import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
@@ -200,7 +200,7 @@ function StatusDashboard1() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/review" className="md:w-1/4">
+            <Link to="/enrollment_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -209,7 +209,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/approved" className="md:w-1/4">
+            <Link to="/enrollment_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -218,7 +218,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/pending" className="md:w-1/4">
+            <Link to="/enrollment_pending" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -227,7 +227,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/rejected" className="md:w-1/4">
+            <Link to="/enrollment__rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -282,7 +282,7 @@ function StatusDashboard2() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/review" className="md:w-1/4">
+            <Link to="/kyc_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -291,7 +291,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/approved" className="md:w-1/4">
+            <Link to="/kyc_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -300,7 +300,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/pending_kyc" className="md:w-1/4">
+            <Link to="/kyc_pending_kyc" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -309,7 +309,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/rejected" className="md:w-1/4">
+            <Link to="/kyc_rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">

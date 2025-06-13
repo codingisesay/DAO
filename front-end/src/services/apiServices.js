@@ -2,6 +2,31 @@ import { daoApi } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
 
+
+export const createAccountService = {
+  enrollment_s1: (data) => daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.ENROLLMENT_S1, data),
+  personalDetails_s2a: (data) => daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.PERSONAL_DETAILS_S2A, data),
+  addressDetails_s2b: (data) => daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.ADDRESS_DETAILS_S2B, data),
+  livePhoto_s2c: (formData) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.LIVE_PHOTO_S2C, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  applicationDocument_s3: (formData) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.APPLICATION_DOCUMENT_S3, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+  accountPersonalDetails_s5a: (data) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.ACCOUNT_PERSONAL_DETAILS_S5A, data),
+  accountNominee_s5b: (data) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.ACCOUNT_NOMINEE_S5B, data),
+  serviceToCustomer_s5c: (data) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.SERVICE_TO_CUSTOMER_S5C, data),
+  agentLivePhoto_s6b: (formData) =>
+    daoApi.post(API_ENDPOINTS.CREATE_ACCOUNT.AGENT_LIVE_PHOTO_S6B, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+}
+
 export const agentService = {
   agentEnroll: (data) =>
     daoApi.post(API_ENDPOINTS.AGENT.AGENTENROLL, data),

@@ -7,8 +7,7 @@ import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
-import Swal from 'sweetalert2';
-import {applicationDetailsService}  from '../../services/apiServices'
+import Swal from 'sweetalert2'; 
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
 

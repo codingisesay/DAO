@@ -11,11 +11,10 @@ import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 // import Customercreation from './pages/Enrollment/3B_DAOExtraction';
-import PendingTable from './pages/Adminpages/PendingTable';
-import PendingTableKyc from './pages/Adminpages/PendingTableKyc';
-import ReviewTable from './pages/Adminpages/ReviewTable';
-import ApprovedTable from './pages/Adminpages/ApprovedTable';
-import UserTable from './muitbl';
+import Enrollment_PendingTable from './pages/Adminpages/Enrollment_PendingTable';
+import Kyc_PendingTable from './pages/Adminpages/Kyc_PendingTable';
+import Enrollment_ReviewTable from './pages/Adminpages/Enrollment_Review';
+import Enrollment_ApprovedTable from './pages/Adminpages/Enrollment_ApprovedTable'; 
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -47,10 +46,10 @@ export const App = () => {
           <Route path="/enrollmentform" element={<Enrollmentform />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
-          <Route path="/approved" element={<ApprovedTable />} />
-          <Route path="/pending" element={<PendingTable />} />
-          <Route path="/pending_kyc" element={<PendingTableKyc />} />
-          <Route path="/review" element={<ReviewTable />} />
+          <Route path="/enrollment_approved" element={<Enrollment_ApprovedTable />} />
+          <Route path="/enrollment_pending" element={<Enrollment_PendingTable />} />
+          <Route path="/kyc_pending" element={<Kyc_PendingTable />} />
+          <Route path="/nrollment__review" element={<Enrollment_ReviewTable />} />
           <Route path="/varify-account/:id" element={<Varificationform />} />
           // In your router configuration
           <Route path="/print-application" element={<PrintApplication />} />

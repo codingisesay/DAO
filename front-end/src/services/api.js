@@ -15,8 +15,19 @@ export const API_ENDPOINTS = {
     LOGOUT: "/auth/api/logout",
   },
 
+  CREATE_ACCOUNT:{
+    ENROLLMENT_S1: '/api/agent/enrollment', 
+    PERSONAL_DETAILS_S2A: '/api/agent/personal-details',
+    ADDRESS_DETAILS_S2B: '/api/agent/address-details',
+    LIVE_PHOTO_S2C: '/api/agent/live-photo',
+    APPLICATION_DOCUMENT_S3: '/api/agent/application-document',
+    ACCOUNT_PERSONAL_DETAILS_S5A: '/api/agent/account-personal-details',
+    ACCOUNT_NOMINEE_S5B: '/api/agent/account-nominee',
+    SERVICE_TO_CUSTOMER_S5C: '/api/agent/service-to-customer',
+    AGENT_LIVE_PHOTO_S6B: '/api/agent/agent-live-photo',
+  },
+
   AGENT: {
-    AGENTENROLL: '/api/agent/enrollment',
     GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/api/agent/full-applications/${agentId}`,
   },
 
@@ -25,8 +36,7 @@ export const API_ENDPOINTS = {
   },
 
   ADDRESS_DETAILS: {
-    CREATE: '/api/agent/address-details',
-    // ...
+    CREATE: '/api/agent/address-details', 
   },
 
   LIVE_PHOTO: {
