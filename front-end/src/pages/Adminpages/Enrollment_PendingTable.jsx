@@ -34,9 +34,10 @@ const fetchData = async () => {
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
     });
+    console.log("Response from API:", response); // Debugging line to check the response structure
     // Set both states correctly
-    setTbldata(response?.data?.data || []);
-    setData({ content: response?.data?.data || [] }); // This is what DataTable expects
+    setTbldata(response.data || []);
+    setData({ content: response.data || [] }); // This is what DataTable expects
   } catch (error) {
     console.error("Failed to fetch pending applications:", error);
   } finally {
@@ -101,12 +102,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/varify-account"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["application_id"]} 
                     />
                     </div>
             </div>

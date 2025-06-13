@@ -101,7 +101,7 @@ const P3 = ({ nextStep, onBack }) => {
            response = await kycService.kycDocumentUpload(formDataObj);
 
             // Check response status directly
-            if (response && JSON.stringify(response).includes('201')) {
+             
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -111,16 +111,14 @@ const P3 = ({ nextStep, onBack }) => {
                 }) 
                     nextStep();
               
-            } else {
-                throw new Error(response || 'Upload failed with status: ' + response);
-            }
+          
         } catch (error) {
             console.error('Upload error:', error);
             // Check response status directly
          Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: error.message || 'An error occurred while uploading documents.',
+                text: JSON.stringify( error ) || 'An error occurred while uploading documents.',
             });
             // Optionally, you can log the error to an external service or console
             console.error('Upload error details:', error);

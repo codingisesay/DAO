@@ -101,7 +101,7 @@ const FloatingInput = ({
   );
 };
 
-const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgress, nextStep, prevStep, kycApplicationId }) => {
+const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, prevStep, kycApplicationId }) => {
   const application_id = localStorage.getItem('application_id');
   
  const [aadhaarData] = useState({

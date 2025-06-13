@@ -22,8 +22,8 @@ const ImageWithDetails = () => {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS6B(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('got data 6b :', response.data.services);
-                    const application = response.data.services[0] || {};
+                    console.log('got data 6b :', response.services);
+                    const application = response.services[0] || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setLocalFormData({
