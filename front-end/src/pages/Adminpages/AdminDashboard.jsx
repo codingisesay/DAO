@@ -227,7 +227,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/enrollment__rejected" className="md:w-1/4">
+            <Link to="/enrollment_rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">

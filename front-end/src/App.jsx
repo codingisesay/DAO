@@ -15,6 +15,7 @@ import Enrollment_PendingTable from './pages/Adminpages/Enrollment_PendingTable'
 import Kyc_PendingTable from './pages/Adminpages/Kyc_PendingTable';
 import Enrollment_ReviewTable from './pages/Adminpages/Enrollment_Review';
 import Enrollment_ApprovedTable from './pages/Adminpages/Enrollment_ApprovedTable'; 
+import Enrollment_Reject from './pages/Adminpages/Enrollment_Reject'; 
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -37,24 +38,33 @@ export const App = () => {
 
       <Router>
         <Routes>
-          <Route path="/create-meeting" element={<CreateMeeting />} />
-          <Route path="/" element={<DAOExtraction />} />
-          <Route path="/rekyc" element={<Rekyc />} />
-          <Route path="/login" element={<Login />} />
-          {/* <Route path="/dashboard" element={<Dashboard />} /> */}
-          <Route path="/agentdashboard" element={<AgentDashboard />} />
-          <Route path="/enrollmentform" element={<Enrollmentform />} />
+          <Route path="/create-meeting" element={<CreateMeeting />} /> 
+
+          {/* User Access */}
+          <Route path="/login" element={<Login />} /> 
+
+          {/* Admin URL Below */}
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
+          <Route path="/enrollment_review" element={<Enrollment_ReviewTable />} />
           <Route path="/enrollment_approved" element={<Enrollment_ApprovedTable />} />
           <Route path="/enrollment_pending" element={<Enrollment_PendingTable />} />
+          <Route path="/enrollment_rejected" element={<Enrollment_Reject />} />
           <Route path="/kyc_pending" element={<Kyc_PendingTable />} />
-          <Route path="/nrollment__review" element={<Enrollment_ReviewTable />} />
           <Route path="/varify-account/:id" element={<Varificationform />} />
-          // In your router configuration
-          <Route path="/print-application" element={<PrintApplication />} />
           <Route path="/kyc-varification/edit/:id" element={<KycVarification />} /> 
-          <Route path="/startCkyc" element={<StartKyc />} /> 
+
+
+          {/* Agent URL Below */}
+          <Route path="/agentdashboard" element={<AgentDashboard />} />
+          <Route path="/enrollmentform" element={<Enrollmentform />} />
+          <Route path="/start_rekyc" element={<Rekyc />} /> 
+          <Route path="/print-application" element={<PrintApplication />} />
+          <Route path="/startVkyc" element={<StartKyc />} /> 
+
+
+        <Route path="/dao_extraction" element={<DAOExtraction />} />
+          
         </Routes>
       </Router>
       <ToastContainer />

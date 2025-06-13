@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 const styles = `
   .signature-display { 
     height: auto;
-    width: 10px;
+    width: 100px;
     border-radius:4px
   }
   .thumbnail {

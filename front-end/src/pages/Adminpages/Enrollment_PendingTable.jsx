@@ -1,6 +1,6 @@
  
 import { useAuth } from '../../auth/AuthContext';  
-import { kycPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
+import { adminService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
@@ -29,7 +29,7 @@ function PendingTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await kycPendingApplicationsService.getList({
+    const response = await adminService.getAllApplicationsPending({
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,

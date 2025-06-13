@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { daoApi } from '../../utils/storage'
+import { apiService } from '../../utils/storage'
 import { applicationDocumentService ,createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
@@ -96,7 +96,7 @@ const P3 = ({ onNext, onBack }) => {
                 ? createAccountService.applicationDocument_s3(formDataObj)
                 : createAccountService.applicationDocument_s3;
 
-            response = await daoApi.post(endpoint, formDataObj );
+            response = await apiService.post(endpoint, formDataObj );
 
             // Check response status directly
             if (response && JSON.stringify(response).includes('201')) {

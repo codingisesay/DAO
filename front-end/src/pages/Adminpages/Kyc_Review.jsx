@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
  
 
 
-function PendingTable() {
+function KycRviewTable() {
    
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
@@ -117,7 +117,7 @@ const fetchData = async () => {
         </>);
 }
 
-export default PendingTable;
+export default KycRviewTable;
 
 
  

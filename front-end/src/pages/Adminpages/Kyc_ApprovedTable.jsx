@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
  
 
 
-function ApprovedTable() {
+function KycApprovedTable() {
    
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
@@ -117,6 +117,6 @@ const fetchData = async () => {
         </>);
 }
  
-export default ApprovedTable;
+export default KycApprovedTable;
 
  
