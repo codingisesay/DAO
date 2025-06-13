@@ -7,9 +7,9 @@ export const API_ENDPOINTS = {
   BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   AUTH: {
     LOGIN: "/auth/api/login",
-    FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
+    FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
     OTPVERIFY: (id, id1) =>
-      `/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
+      `/dao/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
     SETPASS: (id, id1) =>
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",
@@ -29,7 +29,7 @@ export const API_ENDPOINTS = {
   },
 
   AGENT: {
-    GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/api/agent/full-applications/${agentId}`,
+    GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/dao/api/agent/full-applications/${agentId}`,
   },
 
   PERSONAL_DETAILS: {
@@ -85,46 +85,46 @@ export const API_ENDPOINTS = {
   },
 
   PENDING_ACCOUNT: {
-    GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
-    GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,
-    GET_DATAILS_S2B: (id) => `/api/admin/fetchApplicationAddressDetails/${id}`,
-    GET_DATAILS_S2C: (id) => `/api/admin/fetchApplicantLivePhotosDetails/${id}`,
+    GET_DATAILS_S1: (id) => `/dao/api/admin/pendingApplicationDetailsByID/${id}`,
+    GET_DATAILS_S2A: (id) => `/dao/api/admin/fetchApplicationPersonalDetails/${id}`,
+    GET_DATAILS_S2B: (id) => `/dao/api/admin/fetchApplicationAddressDetails/${id}`,
+    GET_DATAILS_S2C: (id) => `/dao/api/admin/fetchApplicantLivePhotosDetails/${id}`,
 
-    GET_DATAILS_S3: (id) => `/api/admin/fetchApplicationDocuments/${id}`,
+    GET_DATAILS_S3: (id) => `/dao/api/admin/fetchApplicationDocuments/${id}`,
 
-    GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
-    GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
-    GET_DATAILS_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
-    GET_DATAILS_S6B: (id) => `/api/admin/fetchAgentLivePhotos/${id}`,
+    GET_DATAILS_S5A: (id) => `/dao/api/admin/fetchAccountPersonalDetails/${id}`,
+    GET_DATAILS_S5B: (id) => `/dao/api/admin/fetchAccountNominees/${id}`,
+    GET_DATAILS_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    GET_DATAILS_S6B: (id) => `/dao/api/admin/fetchAgentLivePhotos/${id}`,
   },
   PENDING_ACCOUNT_STATUS_UPDATE: {
-    UPDATE_S1: (id) => `/api/admin/updateCustomerApplicationDetails/${id}`,
-    UPDATE_S2A: (id) => `/api/admin/updateApplicationPersonalDetails/${id}`,
-    UPDATE_S2B: (id) => `/api/admin/updateApplicationAddressDetails/${id}`,
-    UPDATE_S2C: (id) => `/api/admin/updateApplicantLivePhotos/${id}`,
+    UPDATE_S1: (id) => `/dao/api/admin/updateCustomerApplicationDetails/${id}`,
+    UPDATE_S2A: (id) => `/dao/api/admin/updateApplicationPersonalDetails/${id}`,
+    UPDATE_S2B: (id) => `/dao/api/admin/updateApplicationAddressDetails/${id}`,
+    UPDATE_S2C: (id) => `/dao/api/admin/updateApplicantLivePhotos/${id}`,
 
-    UPDATE_S3: (id) => `/api/admin/updateApplicationDocuments/${id}`,
+    UPDATE_S3: (id) => `/dao/api/admin/updateApplicationDocuments/${id}`,
 
-    UPDATE_S5A: (id) => `/api/admin/updateAccountPersonalDetails/${id}`,
-    UPDATE_S5B: (id) => `/api/admin/updateAccountNominees/${id}`,
-    UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
-    UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
+    UPDATE_S5A: (id) => `/dao/api/admin/updateAccountPersonalDetails/${id}`,
+    UPDATE_S5B: (id) => `/dao/api/admin/updateAccountNominees/${id}`,
+    UPDATE_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },
   
   PENDING_KYC: {
-    GET_DATAILS_KYC1:(id)=> `/api/admin/kyc/details/${id}`,
+    GET_DATAILS_KYC1:(id)=> `/dao/api/admin/kyc/details/${id}`,
     GET_DATAILS_KYC2:(id)=> `api/admin/kyc/details/${id}`, // Updated endpoint path
   },
 
   PENDING_KYC_UPDATE: {
-    UPDATE_KYC1: `/api/agent/update-kyc-after-vs-cbs-status`,
-    UPDATE_KYC2: `/api/agent/update-kyc-document-status`, 
-    update_KYC3: `/api/admin/kyc-application-status/update`
+    UPDATE_KYC1: `/dao/api/agent/update-kyc-after-vs-cbs-status`,
+    UPDATE_KYC2: `/dao/api/agent/update-kyc-document-status`, 
+    update_KYC3: `/dao/api/admin/kyc-application-status/update`
   },
 
 // /video-kyc/create/{id}
-  VKYC_CREATE_MEETING: (id) => `/api/video-kyc/create/${id}`,
+  VKYC_CREATE_MEETING: (id) => `/dao/api/video-kyc/create/${id}`,
 
 
 
@@ -147,7 +147,7 @@ export const API_ENDPOINTS = {
     // Add these for Reviews applications
     GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/reviewApplication',
     GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/dao/api/admin/reviewApplicationCount',
-    GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
+    GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/reviewApplicationDetails/${agentId}`,
     // Add these for kyc review applications
     GET_ALL_KYC_REVIEW_APPLICATIONS: '/dao/api/admin/kycReviewApplication',
 

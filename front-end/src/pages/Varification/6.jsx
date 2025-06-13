@@ -167,7 +167,7 @@ const p6 = ({ onNext, onBack }) => {
             await pendingAccountStatusUpdate.updateS6B(id, payload);
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            localStorage.getItem('approveStatusArray'.remove())
+            localStorage.getItem('approveStatusArray').remove()
             // console.log('Payload:', payload);
             navigate('/admindashboard');  // pass the payload forward
         } else if (result.isDismissed) {

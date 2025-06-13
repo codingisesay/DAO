@@ -165,16 +165,17 @@ function StatusDashboard1() {
         Pending: 0,
         Approved: 0,
         Reject: 0,
-        // Review: 0/
+        Review: 0
     });
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
                 const response = await accountsStatusListService.getList();
+                // console.log(response)
                 if (response && response.data) {
                     // Count the statuses
-                    const counts = response.data.data.reduce((acc, item) => {
+                    const counts = response.data.reduce((acc, item) => {
                         acc[item.status] = (acc[item.status] || 0) + 1;
                         return acc;
                     }, {});
@@ -256,7 +257,7 @@ function StatusDashboard2() {
                 const response = await kycaccountsStatusListService.getList();
                 if (response && response.data) {
                     // Count the statuses
-                    const counts = response.data.data.reduce((acc, item) => {
+                    const counts = response.data.reduce((acc, item) => {
                         acc[item.status] = (acc[item.status] || 0) + 1;
                         return acc;
                     }, {});
@@ -300,7 +301,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/kyc_pending_kyc" className="md:w-1/4">
+            <Link to="/kyc_pending" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">

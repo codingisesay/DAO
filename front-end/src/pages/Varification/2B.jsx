@@ -43,7 +43,7 @@ const AddressInputs = () => {
                     const response = await pendingAccountData.getDetailsS2B(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     // console.log('got data addr:', response.data.details);
-                    const application = response.data.details || {};
+                    const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setFormData({

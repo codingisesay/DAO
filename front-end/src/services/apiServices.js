@@ -217,7 +217,7 @@ export const kycService = {
     apiService.post(API_ENDPOINTS.KYC.SAVE_ALL_KYC_DATA, data),
   // document upload kyc
   kycDocumentUpload: (formData) =>
-    apiService.post('/api/agent/kycDocumentUpload', formData, {
+    apiService.post('/dao/api/agent/kycDocumentUpload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
 };

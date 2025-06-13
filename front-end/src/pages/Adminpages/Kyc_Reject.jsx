@@ -35,8 +35,8 @@ const fetchData = async () => {
       ...filters,
     });
     // Set both states correctly
-    setTbldata(response?.data?.data || []);
-    setData({ content: response?.data?.data || [] }); // This is what DataTable expects
+    setTbldata(response.data || []);
+    setData({ content: response.data || [] }); // This is what DataTable expects
   } catch (error) {
     console.error("Failed to fetch pending applications:", error);
   } finally {

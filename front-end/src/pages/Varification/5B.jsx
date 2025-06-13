@@ -15,10 +15,10 @@ const NominationDetailsTable = () => {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS5B(id);
 
-                    console.log('nominees:', response.data.documents);
+                    console.log('nominees:', response.documents);
 
                     // Assuming `documents` is an array of nominees
-                    const nominees = response.data.documents || [];
+                    const nominees = response.documents || [];
 
                     setFormData(nominees); // Set as array directly
                 }

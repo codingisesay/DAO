@@ -51,7 +51,7 @@ export const App = () => {
           <Route path="/enrollment_pending" element={<Enrollment_PendingTable />} />
           <Route path="/enrollment_rejected" element={<Enrollment_Reject />} />
           <Route path="/kyc_pending" element={<Kyc_PendingTable />} />
-          <Route path="/varify-account/:id" element={<Varificationform />} />
+          <Route path="/varify-account/edit/:id" element={<Varificationform />} />
           <Route path="/kyc-varification/edit/:id" element={<KycVarification />} /> 
 
 
