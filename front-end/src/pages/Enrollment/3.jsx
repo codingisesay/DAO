@@ -113,9 +113,9 @@ const P3 = ({ onNext, onBack }) => {
                 throw new Error(response || 'Upload failed with status: ' + response);
             }
         } catch (error) {
-            console.error('Upload error:', error);
+            console.error('Upload error:', response);
             // Check response status directly
-        
+            
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',

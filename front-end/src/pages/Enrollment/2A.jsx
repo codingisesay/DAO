@@ -244,7 +244,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="text"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
-                        onBlure={comapremobileno}
+                        onBlur={comapremobileno}
                         required
                         max={10}
                         validationType="PHONE"

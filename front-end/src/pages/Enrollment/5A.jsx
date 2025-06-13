@@ -58,8 +58,8 @@ useEffect(() => {
     const fetchDetails = async () => {
         try {
             const response = await applicationDetailsService.getFullDetails(applicationId);
-            if (response.data && response.data.data) {
-                const { personal_details, account_personal_details } = response.data.data;
+            if (response && response.data) {
+                const { personal_details, account_personal_details } = response.data;
                 
                 setLocalFormData(prev => ({
                     ...prev,

@@ -25,6 +25,8 @@ export const createAccountService = {
     apiService.post(API_ENDPOINTS.CREATE_ACCOUNT.AGENT_LIVE_PHOTO_S6B, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+  getBankingFacilitiesService: () =>
+    apiService.get(API_ENDPOINTS.CREATE_ACCOUNT.GET_BANKING_FACILITIES_SERVICE),
 }
 
 export const agentService = {
@@ -81,7 +83,7 @@ export const serviceToCustomerService = {
 
 export const applicationDetailsService = {
   getFullDetails: (id) =>
-    apiService.get(`/api/agent/full-application-details/${id}`),
+    apiService.get(API_ENDPOINTS.ADMIN.GET_DETAILS_BY_APPLICATION_ID(id)),
 };
 
 export const applicationDetailsServices = {

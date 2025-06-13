@@ -1,6 +1,7 @@
 
 // Define form fields
-const daodocbase = 'http://127.0.0.1:8000/storage/';
+
+const daodocbase = import.meta.env.VITE_BASE_URL_LOGIN + '/dao/api/storage/app/public/';
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
