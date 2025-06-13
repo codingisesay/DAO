@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
-import { accountNomineeService } from '../../services/apiServices';
+import { accountNomineeService , createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { salutation, relation } from '../../data/data';
 
@@ -290,7 +290,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             }));
 
             // Send all nominees in one request
-            await accountNomineeService.create({
+            await createAccountService.accountNominee_s5b({
                 application_id: storedId,
                 nominees: nomineesPayload
             });

@@ -1,10 +1,10 @@
-import { authApi } from "../utils/storage";
+import  api  from "../utils/storage";
 import { API_ENDPOINTS } from "../services/api";
 import { setAuthData } from "../services/authService";
 
 export const loginUser = async (userCode, password, loginBranchId) => {
   try {
-    const response = await authApi.post(API_ENDPOINTS.AUTH.LOGIN, {
+    const response = await api.post(API_ENDPOINTS.AUTH.LOGIN, {
       userCode,
       password,
       loginBranchId,

@@ -48,7 +48,7 @@ const VideoKYCInstructions = ({onNext}) => {
         const responce = await videoKycServie.createMeeting(5);
         console.log(responce);
         setAssistKycCall(true);
-            //    navigate('/startCkyc');
+            //    navigate('/startVkyc');
     }
 
 

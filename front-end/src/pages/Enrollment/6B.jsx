@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { daoApi } from '../../utils/storage';
-import { agentlivephotoSave } from '../../services/apiServices';
+import { apiService } from '../../utils/storage';
+import { agentlivephotoSave  ,createAccountService} from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
@@ -32,7 +32,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
         console.log('ready photodata to send : ', payload)
 
         try {
-            const response = await daoApi.post(agentlivephotoSave.upload(payload));
+            const response = await apiService.post(createAccountService.agentLivePhoto_s6b(payload));
             Swal.fire({
                 title: 'Account Created Successfully!',
                 text: 'Your account has been created successfully.',
@@ -68,7 +68,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                 onCapture={(data) => { setLocalFormData(data); console.log('After capture : ', data); }}
             />
 
-            {/* <div className="next-back-btns z-10">
+            <div className="next-back-btns z-10">
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
@@ -77,9 +77,12 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     variant="contained"
                     className="btn-next"
                 >
-                    Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Submit 
                 </CommonButton>
-            </div> */}
+            </div>
+
+
+
         </div>
     );
 };

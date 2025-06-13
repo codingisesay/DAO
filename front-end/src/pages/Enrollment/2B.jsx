@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { addressDetailsService, applicationDetailsService } from '../../services/apiServices';
+import { addressDetailsService, applicationDetailsService , createAccountService} from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data'
 
@@ -158,7 +158,7 @@ setExtraInputData(resetExtraInputData);
         };
 
         try {
-            const response = await addressDetailsService.create(payload);
+            const response = await createAccountService.addressDetails_s2b(payload);
             console.log('ADDRESS CHECK :', payload);
 
             if (response && JSON.stringify(response).includes('201')) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { daoApi } from '../../utils/storage'
+import { apiService } from '../../utils/storage'
 import { kycService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'

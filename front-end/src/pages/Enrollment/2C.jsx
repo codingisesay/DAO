@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
-import CommonButton from '../../components/CommonButton';
+import CommonButton from '../../components/CommonButton'; 
 import Swal from 'sweetalert2';
-import { livePhotoService } from '../../services/apiServices';
+import { createAccountService } from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
     const [localFormData, setLocalFormData] = useState();
@@ -19,22 +19,19 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         setLocalFormData(JSON.parse(storedData));
     }, []);
 
-// const submitPhoto = async () => {
-//     alert('submitPhoto called');
-// }
+ 
 
     const submitPhoto = async (e) => {
         // Prevent default form submission if this is in a form
-        if (e) e.preventDefault();
         
-        console.log('submitPhoto called');
-        if (!localFormData) {   onNext();
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Error',
-            //     text: 'Please capture a photo before submitting'
-            // });
-            // return;
+
+        if (!localFormData) {  
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please capture a photo before submitting'
+            });
+            return;
         }
 
         setLocalIsSubmitting(true);
@@ -46,34 +43,34 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         submitFormData.append('latitude', localFormData.metadata?.location?.latitude ?? '');
         submitFormData.append('photo', localFormData.file);
         submitFormData.append('status', 'Pending');
+        
+        try {
+            const response = await createAccountService.livePhoto_s2c(submitFormData);
 
-        // try {
-        //     const response = await livePhotoService.upload(submitFormData);
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Photo saved successfully',
+                showConfirmButton: false,
+                timer: 1500
+            });
 
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: response.data.message || 'Photo saved successfully',
-        //         showConfirmButton: false,
-        //         timer: 1500
-        //     });
+            updateFormData({
+                ...formData,
+                photoData: localFormData
+            });
 
-        //     updateFormData({
-        //         ...formData,
-        //         photoData: localFormData
-        //     });
-
-        //     // Only call onNext after successful submission
-        //     onNext();
-        // } catch (error) {
-        //     console.error('Photo submission error:', error);
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Error',
-        //         text: error.response?.data?.message || 'Failed to save photo. Please try again.'
-        //     });
-        // } finally {
-        //     setLocalIsSubmitting(false);
-        // }
+            // Only call onNext after successful submission
+            onNext();
+        } catch (error) {
+            console.error('Photo submission error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.response?.data?.message || 'Failed to save photo. Please try again.'
+            });
+        } finally {
+            setLocalIsSubmitting(false);
+        }
     };
 
     return (

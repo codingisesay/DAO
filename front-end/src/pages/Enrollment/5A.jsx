@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { accountPersonalDetailsService, applicationDetailsService } from '../../services/apiServices';
+import { accountPersonalDetailsService, applicationDetailsService ,createAccountService} from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
@@ -153,7 +153,7 @@ useEffect(() => {
                 status: "Pending",
             };
             console.log('nominie :', payload)
-            const response = await accountPersonalDetailsService.create(payload);
+            const response = await createAccountService.accountPersonalDetails_s5a(payload);
 
             Swal.fire({
                 icon: 'success',

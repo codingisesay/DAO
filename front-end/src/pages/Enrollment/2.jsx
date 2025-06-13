@@ -5,7 +5,7 @@ import PersonalDetailsForm from './2A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
-import { personalDetailsService } from '../../services/apiServices';
+import { createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
@@ -60,7 +60,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 };
                 console.log(payload)
                 try {
-                    let response = await personalDetailsService.create(payload);
+                    let response = await createAccountService.personalDetails_s2a(payload);
                     if (response && (response.status === 200 || response.status === 201)) {
                         Swal.fire({
                             icon: 'success',

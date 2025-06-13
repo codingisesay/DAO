@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { serviceToCustomerService } from '../../services/apiServices';
+import { serviceToCustomerService , createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
@@ -120,7 +120,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 banking_services_facilities_id: selectedFacilityIds
             };
 
-            const response = await serviceToCustomerService.create(payload);
+            const response = await createAccountService.serviceToCustomer_s5c(payload);
 
             Swal.fire({
                 icon: 'success',
