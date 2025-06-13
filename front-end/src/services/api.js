@@ -114,7 +114,7 @@ export const API_ENDPOINTS = {
   
   PENDING_KYC: {
     GET_DATAILS_KYC1:(id)=> `/dao/api/admin/kyc/details/${id}`,
-    GET_DATAILS_KYC2:(id)=> `api/admin/kyc/details/${id}`, // Updated endpoint path
+    GET_DATAILS_KYC2:(id)=> `/dao/api/admin/kyc/details/${id}`, // Updated endpoint path
   },
 
   PENDING_KYC_UPDATE: {

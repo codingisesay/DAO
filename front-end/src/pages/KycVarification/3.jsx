@@ -19,9 +19,9 @@ function p3({ onNext, onBack }) {
                 // alert('called')
                 if (id) {
                     const response = await pendingKyc.pendingKyc2(id);
-                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('documants :', response.data.data);
-                    const application = response.data.data || {};
+                    localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    console.log('documants :', response.data);
+                    const application = response.data || {};
                     setLocalFormData(application);
 
 
