@@ -132,7 +132,6 @@ export const API_ENDPOINTS = {
   // om data below
   ADMIN: {
     GET_ALL_APPLICATIONS: '/dao/api/admin/applications',
-
     GET_ALL_PENDING_APPLICATIONS: '/dao/api/admin/pendingApplication', 
     GET_ALL_APPLICATIONS_REJECTED: '/dao/api/admin/applications/rejected',
     UPDATE_APPLICATION_STATUS: '/dao/api/admin/application/update-status',
@@ -154,6 +153,11 @@ export const API_ENDPOINTS = {
     // /// By ankitka
     APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
     GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
+
+
+    //////////For DAshboard Admin
+    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly'
+
   },
 
 

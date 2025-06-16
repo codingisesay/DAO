@@ -87,10 +87,11 @@ const P3 = ({ onNext, onBack }) => {
             }
 
             documentsWithFiles.forEach((doc) => {
-                formDataObj.append('files[]', doc.file);
+                formDataObj.append('files[]',  doc.file);
                 formDataObj.append('document_types[]', doc.type || doc.name);
             });
             var response =''
+            console.log(documents)
             // Ensure the API endpoint is properly formatted
             const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
                 ? createAccountService.applicationDocument_s3(formDataObj)
@@ -106,25 +107,16 @@ const P3 = ({ onNext, onBack }) => {
                     text: 'Documents saved successfully.',
                     showConfirmButton: false,
                     timer: 1500
-                }).then(() => {
-                    onNext();
-                });
+                })
+                    // onNext();
+                 
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);
             }
         } catch (error) {
             console.error('Upload error:', response);
             // Check response status directly
-            
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Documents saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    onNext();
-                });
+        //    onNext();
         
         
         } finally {

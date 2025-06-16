@@ -178,7 +178,8 @@ const PhotoCapture = ({
     const capturePhoto = () => {
         const imageSrc = webcamRef.current.getScreenshot();
         const blob = dataURLtoBlob(imageSrc);
-        const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const file = blob;
+        // const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
         const previewUrl = URL.createObjectURL(file);
 
         const capturedData = {
