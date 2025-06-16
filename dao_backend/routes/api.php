@@ -145,8 +145,7 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::post('/agent/account-personal-details', [AgentController::class, 'saveAccountPersonalDetails']);
         Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
         Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
-        Route::get('/agent/full-application-details/{id}', [AgentController::class, 'getFullApplicationDetails']);
-        Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
+        
         //rekyc
         Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
         Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
@@ -157,8 +156,7 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::post('/agent/save-all-kyc-data', [kycAgentController::class, 'saveAllKycData']);
         Route::post('/agent/kycDocumentUpload', [kycAgentController::class, 'kycSaveApplicationDocument']);
         
-        // applications for the agent
-        Route::get('/agent/full-applications/{agent_id}', [AgentController::class, 'getFullApplicationsByAgent']);
+       
         // kyc update for the application
         Route::post('/agent/update-kyc-document-status', [kycAgentController::class, 'updateKycDocumentStatus']);
         Route::post('/agent/update-kyc-after-vs-cbs-status', [kycAgentController::class, 'updateKycAfterVsCbsStatus']);
@@ -167,6 +165,33 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
         //This is for getting the application status by agent id
         Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
+
+
+        // dashboard agent routes 
+        // all applications for the agent
+        Route::get('agent/applications/by-agent/{agentId}', [AgentController::class, 'getApplicationsByAgent']);
+        // Approved applications for the agent table 
+        Route::get('/applications/approved/{agentId}', [AgentController::class, 'getApprovedApplicationsByAgent']);
+        // pending application for the agent  table 
+        Route::get('/applications/pending/{agentId}', [AgentController::class, 'getPendingApplicationsByAgent']);
+        // review application for the agent table 
+        Route::get('/applications/review/{agentId}', [AgentController::class, 'getReviewApplicationsByAgent']);
+        // rejected application for the agent table 
+        Route::get('/applications/rejected/{agentId}', [AgentController::class, 'getRejectedApplicationsByAgent']);
+         // applications for the agent
+        Route::get('/agent/full-applications/{agent_id}', [AgentController::class, 'getFullApplicationsByAgent']);
+        // full details of application by id 
+        Route::get('/agent/full-application-details/{id}', [AgentController::class, 'getFullApplicationDetails']);
+        // basic  details of application by id
+        Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
+        // KYC Application Status count yearly of approved , rejected , pending
+        Route::get('/kyc-applications/trends', [AgentController::class, 'getKycApplicationTrends']);
+
+
+
+
+
+
 
         
 
