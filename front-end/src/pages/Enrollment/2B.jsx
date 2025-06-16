@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { addressDetailsService, applicationDetailsService } from '../../services/apiServices';
+import { addressDetailsService, applicationDetailsService , createAccountService} from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data'
 
@@ -46,8 +46,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
             try {
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data; 
-                    // console.log('address to show : ', response.data.data.application_addresss)
+                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data; 
+                    // console.log('address to show : ', response)
                 const addressFromDB = application_addresss[0]; // get first item safely
 
                 const resetFormData = {
@@ -74,13 +74,13 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
                 setLocalFormData(resetFormData);
 
-const resetExtraInputData = {
-  per_resident: addressFromDB?.per_resident || '',
-  per_residence_status: addressFromDB?.per_residence_status || '',
-  resi_doc: addressFromDB?.resi_doc || ''
-};
+                const resetExtraInputData = {
+                per_resident: addressFromDB?.per_resident || '',
+                per_residence_status: addressFromDB?.per_residence_status || '',
+                resi_doc: addressFromDB?.resi_doc || ''
+                };
 
-setExtraInputData(resetExtraInputData);
+                setExtraInputData(resetExtraInputData);
 
                 }
             } catch (error) {
@@ -158,10 +158,9 @@ setExtraInputData(resetExtraInputData);
         };
 
         try {
-            const response = await addressDetailsService.create(payload);
+            const response = await createAccountService.addressDetails_s2b(payload);
             console.log('ADDRESS CHECK :', payload);
-
-            if (response && JSON.stringify(response).includes('201')) {
+ 
                 updateFormData({
                     ...localFormData,
                     ...extraInputData,
@@ -175,9 +174,7 @@ setExtraInputData(resetExtraInputData);
                     timer: 1500
                 });
                 onNext();
-            } else {
-                throw new Error(response.data.message || 'Failed to save address details');
-            }
+            
         } catch (error) {
             Swal.fire({
                 icon: 'error',

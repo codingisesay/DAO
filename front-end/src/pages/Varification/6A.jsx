@@ -23,8 +23,8 @@ const ViewApplicationForm = () => {
         const fetchDetails = async () => {
             try {
                 const response = await applicationDetailsService.getFullDetails(applicationId);
-                if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data.data;
+                if (response) {
+                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     const signatureDoc = customerdoc.find(doc =>
                         doc.document_type.toLowerCase().includes('signature')

@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import CommonButton from '../../components/CommonButton';
-
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices'; // <-- Import your service
+import   { pendingKycStusUpdate, pendingKyc } from '../../services/apiServices'; // <-- Import your service
 import { daodocbase } from '../../data/data';
 
 
@@ -19,11 +18,13 @@ function p3({ onNext, onBack }) {
             try {
                 // alert('called')
                 if (id) {
-                    const response = await pendingAccountData.getDetailsS3(id);
-                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('documants :', response.data.documents);
-                    const application = response.data.documents || {};
+                    const response = await pendingKyc.pendingKyc2(id);
+                    localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    console.log('documants :', response.data);
+                    const application = response.data || {};
                     setLocalFormData(application);
+
+
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -53,16 +54,16 @@ function p3({ onNext, onBack }) {
 
         if (result.isConfirmed && result.value) {
             const payload = {
-                application_id: Number(id),
+                kyc_application_id: Number(id),
                 status: 'Reject',
                 status_comment: result.value,
                 admin_id: 1
             };
-            await pendingAccountStatusUpdate.updateS3(id, payload);
+            await pendingKycStusUpdate.updateKyc2( payload);
             applicationStatus.push('Reject');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
-            onNext(); // pass the payload forward
+            onNext() // pass the payload forward
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
         }
@@ -87,16 +88,16 @@ function p3({ onNext, onBack }) {
 
         if (result.isConfirmed && result.value) {
             const payload = {
-                application_id: Number(id),
+                kyc_application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
                 admin_id: 1
             };
-            await pendingAccountStatusUpdate.updateS3(id, payload);
+            await pendingKycStusUpdate.updateKyc2( payload);
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             console.log('Payload:', payload);
-            onNext(); // pass the payload forward
+            onNext() // pass the payload forward
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
         }
@@ -106,12 +107,12 @@ function p3({ onNext, onBack }) {
         // alert('called')
         try {
             const payload = {
-                applicaiton_id: Number(id),
+                kyc_application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
                 admin_id: 1
             }
-            const response = pendingAccountStatusUpdate.updateS3(id, payload);
+            const response = pendingKycStusUpdate.updateKyc2( payload);
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
@@ -125,7 +126,7 @@ function p3({ onNext, onBack }) {
                     Swal.showLoading();   // optional: show loading spinner
                 },
                 willClose: () => {
-                    onNext(); // proceed after alert closes
+                    onNext() // proceed after alert closes
                 }
             });
         }
@@ -215,11 +216,11 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                 {docs.map((doc) => (
                                     <tr key={doc.id}>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
-                                        <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+                                        <td className="py-2 px-4 border-b border-gray-200">{doc.kyc_file_name}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                            <a href={daodocbase + `/${doc.file_path}`} target="_blank" rel="noopener noreferrer">
+                                            <a href={daodocbase + `/${doc.kyc_file_path}`} target="_blank" rel="noopener noreferrer">
                                                 <img
-                                                    src={daodocbase + `/${doc.file_path}`}
+                                                    src={daodocbase + `/${doc.kyc_file_path}`}
                                                     alt="document"
                                                     className="h-auto w-20 object-contain border rounded"
                                                 />

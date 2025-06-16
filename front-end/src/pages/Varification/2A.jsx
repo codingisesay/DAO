@@ -36,7 +36,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     const response = await pendingAccountData.getDetailsS2A(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     // console.log('got data :', response.data.details);
-                    const application = response.data.details || {};
+                    const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setLocalFormData({

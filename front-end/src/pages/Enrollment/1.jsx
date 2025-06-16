@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import { agentService } from '../../services/apiServices';
+import {  createAccountService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
@@ -142,14 +142,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         };
 
         try {
-            const response = await agentService.agentEnroll(payload);
-            if (response && JSON.stringify(response).includes('201')) {
+            const response = await createAccountService.enrollment_s1(payload);
+            console.log("Response from server:", response);
+            
                 updateFormData(1, {
                     ...updatedData,
-                    application_no: response.data.application_no,
-                    application_id: response.data.application_id,
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                localStorage.setItem('application_id', response.data.application_id);
+                localStorage.setItem('application_id', response.application_id);
 
             Swal.fire({
                 icon: 'success',
@@ -159,13 +160,13 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 timer: 1500
             });
             onNext();
-            }
+            
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
                 // text: 'Failed to submit data. Please try again.',
-                text:  error.response?.data?.message || 'Server error' ,
+                text: error.data.message || 'Server error' ,
             });
         } finally {
             setIsSubmitting(false);

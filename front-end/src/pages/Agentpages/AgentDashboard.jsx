@@ -26,7 +26,7 @@ const Dashboard = () => {
         navigate('/enrollmentform'); // Change to your route
     };
     const handlekyc = () => {
-        navigate('/rekyc'); // Change to your route
+        navigate('/start_rekyc'); // Change to your route
     };
     const handleLogout = () => {
         logout();

@@ -1,13 +1,15 @@
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, Helvetica, sans-serif;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   --background-color: #fff;
@@ -20,6 +22,7 @@
   --payvance-color: #00A86B;
   --payvance-hover-color: #007c4f;
   --payvance-danger: #E4002B;
+  --sidebar-backgound: linear-gradient(0deg, rgba(255, 255, 255, 1) 21%, rgba(183, 239, 219, 1) 100%);
   --payvance-bodybg: linear-gradient(147deg, rgba(183, 239, 219, 1) 50%, rgba(255, 255, 255, 1) 80%, rgba(183, 239, 219, 1) 88%);
 }
 
@@ -34,5 +37,6 @@
   --payvance-color: #00A86B;
   --payvance-hover-color: #007c4f;
   --payvance-danger: #E4002B;
+  --sidebar-backgound:black;
   --payvance-bodybg: linear-gradient(135deg, #b9e9d9 0%, #3b403e 100%);
 }

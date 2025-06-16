@@ -1,5 +1,3 @@
-
-
 import React, { useState, useRef, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
@@ -176,30 +174,18 @@ const PhotoCapture = ({
         return new Blob([u8arr], { type: mime });
     };
 
-    function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-
-            reader.readAsDataURL(file);
-        });
-    }
-
     // Capture photo with metadata
-    const capturePhoto = async () => {
+    const capturePhoto = () => {
         const imageSrc = webcamRef.current.getScreenshot();
         const blob = dataURLtoBlob(imageSrc);
-        const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const file = blob;
+        // const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
         const previewUrl = URL.createObjectURL(file);
-        const toshow = await fileToBase64(file);
 
         const capturedData = {
             file: file,
             previewUrl: previewUrl,
             timestamp: new Date().toISOString(),
-            toshow: toshow,
             metadata: {
                 location: location || null,
                 locationError: locationError || null,
@@ -211,10 +197,8 @@ const PhotoCapture = ({
 
         // For localStorage, store the minimal data needed to recreate the preview
         const storageData = {
-            file: file,
             previewUrl: previewUrl,
             timestamp: capturedData.timestamp,
-            toshow: toshow,
             metadata: capturedData.metadata
         };
         localStorage.setItem(storageKey, JSON.stringify(storageData));
@@ -242,11 +226,9 @@ const PhotoCapture = ({
     }, [photoData]);
 
     // Get the current image URL for display
-    const getImageData = () => {
+    const getImageUrl = () => {
         if (!photoData) return null;
-        // First try to use the base64 data
-        if (photoData.toshow) return photoData.toshow;
-        // Fall back to previewUrl if base64 isn't available
+        // If we have a previewUrl (from localStorage or fresh capture), use that
         if (photoData.previewUrl) return photoData.previewUrl;
         // If we have a file object (fresh capture), create URL for it
         if (photoData.file) return URL.createObjectURL(photoData.file);
@@ -286,7 +268,7 @@ const PhotoCapture = ({
         }] : [])
     ];
 
-    const imageData = getImageData();
+    const imageUrl = getImageUrl();
 
     return (
         <div className="max-w-4xl mx-auto  bg-white rounded-lg ">
@@ -335,9 +317,9 @@ const PhotoCapture = ({
                             )
                         ) : (
                             <div className="relative" style={{ aspectRatio: '4/3' }}>
-                                {imageData && (
+                                {imageUrl && (
                                     <img
-                                        src={imageData}
+                                        src={imageUrl}
                                         alt={`Captured ${photoType}`}
                                         className="w-full h-full object-cover"
                                     />
@@ -399,17 +381,3 @@ const PhotoCapture = ({
 };
 
 export default PhotoCapture;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

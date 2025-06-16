@@ -36,10 +36,10 @@ const Step1PersonalInfo = ({ formData, handleChange, onAadharDataFetched }) => {
     try {
       const response = await kycService.startkyc(payload);  
       console.log('1st stp : ', response)
-      if (response.data && response.data.data) {
-        onAadharDataFetched(response.data.data); // Pass data to parent to go to next step
+      if (response && response.data) {
+        onAadharDataFetched(response.data); // Pass data to parent to go to next step
   
-        localStorage.setItem('application_id', response.data.kyc_application_id);
+        localStorage.setItem('application_id', response.kyc_application_id);
       } else {
         setError('No data found for this Aadhaar number.');
       }

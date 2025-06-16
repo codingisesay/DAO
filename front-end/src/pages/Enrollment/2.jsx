@@ -5,7 +5,7 @@ import PersonalDetailsForm from './2A';
 import CameraCapture from './2C';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
-import { personalDetailsService } from '../../services/apiServices';
+import { createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
@@ -40,7 +40,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
         try {
             if (activeStep === 0) {
-                console.log('2A formadta : ', formData)
+                // console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};
              
                 const payload = {
@@ -60,8 +60,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 };
                 console.log(payload)
                 try {
-                    let response = await personalDetailsService.create(payload);
-                    if (response && (response.status === 200 || response.status === 201)) {
+                    let response = await createAccountService.personalDetails_s2a(payload);
+                   
                         Swal.fire({
                             icon: 'success',
                             title: response.data.message || 'Personal details saved successfully.',
@@ -69,7 +69,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                             timer: 1500
                         });
                         handleNext();
-                    }
+                  
                 } catch (error) {
                     console.error("Error saving personal details:", error);
                     Swal.fire({

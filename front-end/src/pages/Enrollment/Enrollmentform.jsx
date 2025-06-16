@@ -10,10 +10,10 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(4);
+    const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
-    
-localStorage.setItem('vcall', JSON.stringify(false));
+
+    localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
     const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ localStorage.setItem('vcall', JSON.stringify(false));
         applicationType: '',
         salutation: '',
         verificationOption: '',
-        verificationNumber: '',email:'',
+        verificationNumber: '', email: '',
         correspondenceAddressSame: false,
         personalDetails: {
             firstName: '',
@@ -38,7 +38,7 @@ localStorage.setItem('vcall', JSON.stringify(false));
             pincode: '',
             city: '',
             district: '',
-            state: '',email:'',
+            state: '', email: '',
         },
         permanentAddress: {},
         correspondenceAddress: {},
@@ -90,7 +90,7 @@ localStorage.setItem('vcall', JSON.stringify(false));
 
 
     const handleNext = () => {
-        console.log('Final form data:', formData);
+        // console.log('Final form data:', formData);
         if (currentStep === 6) {
             setComplete(true);
             // On final submission

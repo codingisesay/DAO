@@ -25,10 +25,10 @@ const Stepper = ({ currentStep, complete, steps }) => {
     };
 
     return (
-        <div className='stepper-container max-w-md mx-auto p-5 relative' data-theme={isDark ? "dark" : "light"}>
+        <div className=' stepper-container max-w-md mx-auto p-5 relative ' >
             <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
 
-            <ul className='max-w-md mx-auto my-3'  onClick={() => navigate(-1)}>
+            <ul className='max-w-md mx-auto my-3 dark:text-white'  onClick={() => navigate(-1)}>
                 <li>
                     <i className="bi bi-columns-gap"></i> &nbsp;
                     Back To Dashboard
@@ -60,7 +60,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
             </div>
 
             <div className="stepper-footer">
-                <div className="flex bg-green-100 p-2 rounded-md items-center">
+                <div className="flex bg-green-100 dark:bg-green-900 p-2 rounded-md items-center">
                     <img height='40px' width='40px'
                         src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
                         alt="profile"

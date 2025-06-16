@@ -1,11 +1,12 @@
 
-import React, { useState } from "react";
-import clsx from "clsx";
+import React, { useEffect, useState } from "react";
+import clsx from "clsx";import Swal from 'sweetalert2';
 import CommanInput from '../../components/CommanInput';
 import CommonButton from '../../components/CommonButton';
 import labels from '../../components/labels';
 import { pre } from 'framer-motion/client';
-import { kycService } from '../../services/apiServices';
+import { pendingKycStusUpdate, pendingKyc } from '../../services/apiServices';
+import { useParams } from "react-router-dom";
 
 const FloatingInput = ({
   name,
@@ -102,119 +103,29 @@ const FloatingInput = ({
 };
 
 const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgress, onNext, onBack, kycApplicationId }) => {
-  const application_id = localStorage.getItem('application_id');
-  
- const [aadhaarData] = useState({
-  kyc_vs_salutation: "Mrs",
-  kyc_vs_middle_name: "Subhash",
-  kyc_vs_first_name: "Sushant",
-  kyc_vs_last_name: "Nikam",
-  kyc_vs_date_of_birth: "29/01/1992",
-  kyc_vs_mobile_no: "8433843848",
-  kyc_vs_flat_no: "Kalpgreen G4/106/01",
-  kyc_vs_lankmark: "Kattap Pada, Kulgoan",
-  kyc_vs_pincode: "42IS03",
-  kyc_vs_district: "Thane",
-  kyc_vs_gender: "Male",
-  kyc_vs_complex_name: "Kalpcity Phase 2",
-  kyc_vs_area: "Near Old Petrol Pump",
-  kyc_vs_country: "India",
-  kyc_vs_city: "Badlapur",
-  kyc_vs_state: "Maharashtra",
-});
+ 
+  const { id } = useParams();
+  const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
+  const [localFormData, setLocalFormData] = useState({})
+  useEffect(() => { 
+      const fetchAndStoreDetails = async (id) => {
+            try {
+                // alert('called')
+                if (id) {
+                    const response = await pendingKyc.pedingKyc1(id);
+                    
+                    setLocalFormData(response.data[0]);
+                    console.log('to show : ', localFormData)
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+        
+        fetchAndStoreDetails(id);
+  }, [id]);
 
-// CBS data (right side) - editable
-const [cbsData, setCbsData] = useState({
-  kyc_cbs_salutation: "Mrs",
-  kyc_cbs_middle_name: "Subhash",
-  kyc_cbs_first_name: "Sushant",
-  kyc_cbs_last_name: "Nikam",
-  kyc_cbs_date_of_birth: "29/01/1992",
-  kyc_cbs_mobile_no: "8433843848",
-  kyc_cbs_flat_no: "Kalpgreen G4/106/01",
-  kyc_cbs_lankmark: "Kattap Pada, Kulgoan",
-  kyc_cbs_pincode: "42IS03",
-  kyc_cbs_district: "Thane",
-  kyc_cbs_gender: "Male",
-  kyc_cbs_complex_name: "Kalpcity Phase 2",
-  kyc_cbs_area: "Near Old Petrol Pump",
-  kyc_cbs_country: "India",
-  kyc_cbs_city: "Badlapur",
-  kyc_cbs_state: "Maharashtra",
-});
-
-  // After VS CBS data - will store modified CBS data
-  const [afterVsCbsData, setAfterVsCbsData] = useState({
-    ...cbsData,
-    
-        kyc_vscbs_salutation: "Mrs",
-        kyc_vscbs_middle_name: "Subhash",
-        kyc_vscbs_first_name: "Sushant",
-        kyc_vscbs_last_name: "Nikam",
-        kyc_vscbs_date_of_birth: "1995-12-12",
-        kyc_vscbs_mobile_no: "8433843848",
-        kyc_vscbs_flat_no: "Kalpgreen G4/106/01",
-        kyc_vscbs_lankmark: "Kattap Pada, Kulgoan",
-        kyc_vscbs_pincode: "42IS03",
-        kyc_vscbs_district: "Thane",
-        kyc_vscbs_gender: "Male",
-        kyc_vscbs_complex_name: "Kalpcity Phase 2",
-        kyc_vscbs_area: "Near Old Petrol Pump",
-        kyc_vscbs_country: "India",
-        kyc_vscbs_city: "Badlapur",
-        kyc_vscbs_state: "Maharashtra",
-        status:"Pending"
-  });
-
-  // Fields that can be toggled between Aadhaar and CBS values
-  const [useAadhaarValues, setUseAadhaarValues] = useState({
-    flatNo: false,
-    area: false,
-    landmark: false,
-    city: false,
-  });
-
-  // Toggle between Aadhaar and CBS values for a specific field
-  const toggleFieldValue = (field) => {
-    setUseAadhaarValues((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-    
-    // Update the afterVsCbsData when toggling
-    setAfterVsCbsData(prev => ({
-      ...prev,
-      [field]: useAadhaarValues[field] ? cbsData[field] : aadhaarData[field]
-    }));
-  };
-
-  // Get the displayed value for a field (either from Aadhaar or CBS)
-  const getDisplayedValue = (field) => {
-    return useAadhaarValues[field] ? aadhaarData[field] : cbsData[field];
-  };
-
-  // Check if a field's Aadhaar and CBS values match
-  const valuesMatch = (field) => {
-    return aadhaarData[field] === cbsData[field];
-  };
-
-  // Handle changes to CBS data
-  const handleCbsChange = (field, value) => {
-    const newCbsData = {
-      ...cbsData,
-      [field]: value
-    };
-    
-    setCbsData(newCbsData);
-    
-    // Update afterVsCbsData if the field is not toggled to use Aadhaar value
-    if (!useAadhaarValues[field]) {
-      setAfterVsCbsData(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
-  };
+ 
 
 
     const handleRejectClick = async () => {
@@ -233,23 +144,23 @@ const [cbsData, setCbsData] = useState({
                 }
             },
         });
-        onNext()
-        // if (result.isConfirmed && result.value) {
-        //     const payload = {
-        //         application_id: Number(id),
-        //         status: 'Reject',
-        //         status_comment: result.value,
-        //         admin_id: 1
-        //     };
-        //     await pendingAccountStatusUpdate.updateS1(id, payload);
+     onNext()
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                kyc_application_id: Number(id),
+                status: 'Reject',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await pendingKycStusUpdate.updateKyc1( payload);
 
-        //     applicationStatus.push('Reject');
-        //     localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-        //     console.log('Payload:', payload);
-        //     onNext?.(payload); // pass the payload forward
-        // } else if (result.isDismissed) {
-        //     console.log('Rejection canceled');
-        // }
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            console.log('Payload:', payload);
+            onNext?.(payload); // pass the payload forward
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
     };
 
     const handleReviewClick = async () => {
@@ -268,61 +179,61 @@ const [cbsData, setCbsData] = useState({
                 }
             },
         });
-        onNext()
+     onNext()
 
-        // if (result.isConfirmed && result.value) {
-        //     const payload = {
-        //         application_id: Number(id),
-        //         status: 'Review',
-        //         status_comment: result.value,
-        //         admin_id: 1
-        //     };
-        //     await pendingAccountStatusUpdate.updateS1(id, payload);
-        //     applicationStatus.push('Review');
-        //     localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-        //     console.log('Payload:', payload);
-        //     onNext?.(payload); // pass the payload forward
-        // } else if (result.isDismissed) {
-        //     console.log('Rejection canceled');
-        // }
+        if (result.isConfirmed && result.value) {
+            const payload = {
+                kyc_application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: 1
+            };
+            await  pendingKycStusUpdate.updateKyc1( payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            console.log('Payload:', payload);
+            onNext?.(payload); // pass the payload forward
+        } else if (result.isDismissed) {
+            console.log('Rejection canceled');
+        }
     };
 
     const handleNextStep = async () => {
-      onNext();
-        // try {
-        //     const payload = {
-        //         applicaiton_id: Number(id),
-        //         status: 'Approved',
-        //         status_comment: '',
-        //         admin_id: 1
-        //     }
-        //     await pendingAccountStatusUpdate.updateS1(id, payload);
+    
+        try {
+            const payload = {
+                kyc_application_id: Number(id),
+                status: 'Approved',
+                status_comment: '',
+                admin_id: 1
+            }
+            await  pendingKycStusUpdate.updateKyc1( payload);
 
-        //     applicationStatus.push('Approved');
-        //     localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: 'Enrollment Details Approved Successfully',
-        //         timer: 2000,               // alert stays for 2 seconds
-        //         showConfirmButton: false,  // no "OK" button
-        //         allowOutsideClick: false,  // optional: prevent closing by clicking outside
-        //         allowEscapeKey: false,     // optional: prevent closing with Escape key
-        //         didOpen: () => {
-        //             Swal.showLoading();   // optional: show loading spinner
-        //         },
-        //         willClose: () => {
-        //             onNext(); // proceed after alert closes
-        //         }
-        //     });
-        // }
-        // catch (error) {
-        //     // console.error('Error updating status:', error);
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Oops...',
-        //         text: 'Something went wrong while updating the status!',
-        //     });
-        // }
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            Swal.fire({
+                icon: 'success',
+                title: 'Enrollment Details Approved Successfully',
+                timer: 2000,               // alert stays for 2 seconds
+                showConfirmButton: false,  // no "OK" button
+                allowOutsideClick: false,  // optional: prevent closing by clicking outside
+                allowEscapeKey: false,     // optional: prevent closing with Escape key
+                didOpen: () => {
+                    Swal.showLoading();   // optional: show loading spinner
+                },
+                willClose: () => {
+                 onNext(); // proceed after alert closes
+                }
+            });
+        }
+        catch (error) {
+            // console.error('Error updating status:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong while updating the status!',
+            });
+        }
     }
 
 
@@ -331,429 +242,363 @@ const [cbsData, setCbsData] = useState({
       <h1 className="text-2xl font-bold flex justify-between text-gray-800 mb-0">
         Pending application 
       </h1>
-<div className="details-sections">
-  {/* Aadhaar Details Section - Uneditable */}
-  <div className="details-section aadhaar-section">
-    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-      Aadhaar Details
-    </h2>
-    <img
-      src=""
-      width={'100px'}
-      height={'100px'}
-      alt="Customer Photo"
-      className=" border-2 rounded-lg mb-5"
-    />
-    <div className="section-content grid grid-cols-2 gap-2">
-      <FloatingInput
-        name="aadhaar-salutation"
-        label="Salutation*"
-        value={aadhaarData.kyc_vs_salutation}
-        disabled
-        className="mb-4"
-      />
+      <div className="details-sections">
+        {/* Aadhaar Details Section - Uneditable */}
+        <div className="details-section aadhaar-section">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            Aadhaar Details
+          </h2>
+          <img
+            src=""
+            width={'100px'}
+            height={'100px'}
+            alt="Customer Photo"
+            className=" border-2 rounded-lg mb-5"
+          />
+          <div className="section-content grid grid-cols-2 gap-2">
+            <FloatingInput
+              name="aadhaar-salutation"
+              label="Salutation*"
+              value={localFormData.kyc_vs_salutation}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-middleName"
-        label="Middle Name"
-        value={aadhaarData.kyc_vs_middle_name}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-middleName"
+              label="Middle Name"
+              value={localFormData.kyc_vs_middle_name}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-firstName"
-        label="First Name*"
-        value={aadhaarData.kyc_vs_first_name}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-firstName"
+              label="First Name*"
+              value={localFormData.kyc_vs_first_name}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-lastName"
-        label="Last Name*"
-        value={aadhaarData.kyc_vs_last_name}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-lastName"
+              label="Last Name*"
+              value={localFormData.kyc_vs_last_name}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-dob"
-        label="DOB*"
-        value={aadhaarData.kyc_vs_date_of_birth}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-dob"
+              label="DOB*"
+              value={localFormData.kyc_vs_date_of_birth}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-gender"
-        label="Gender*"
-        value={aadhaarData.kyc_vs_gender}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-gender"
+              label="Gender*"
+              value={localFormData.kyc_vs_gender}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-mobileNo"
-        label="Mobile No*"
-        value={aadhaarData.kyc_vs_mobile_no}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-mobileNo"
+              label="Mobile No*"
+              value={localFormData.kyc_vs_mobile_no}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-flatNo"
-        label="Flat No./Bldg Name*"
-        value={aadhaarData.kyc_vs_flat_no}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-flatNo"
+              label="Flat No./Bldg Name*"
+              value={localFormData.kyc_vs_flat_no}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-complexName"
-        label="Complex Name*"
-        value={aadhaarData.kyc_vs_complex_name}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-complexName"
+              label="Complex Name*"
+              value={localFormData.kyc_vs_complex_name}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-landmark"
-        label="Nearby Landmark*"
-        value={aadhaarData.kyc_vs_lankmark}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-landmark"
+              label="Nearby Landmark*"
+              value={localFormData.kyc_vs_lankmark}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-area"
-        label="Area*"
-        value={aadhaarData.kyc_vs_area}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-area"
+              label="Area*"
+              value={localFormData.kyc_vs_area}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-pinCode"
-        label="Pin Code*"
-        value={aadhaarData.kyc_vs_pincode}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-pinCode"
+              label="Pin Code*"
+              value={localFormData.kyc_vs_pincode}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-district"
-        label="District*"
-        value={aadhaarData.kyc_vs_district}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-district"
+              label="District*"
+              value={localFormData.kyc_vs_district}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-country"
-        label="Country*"
-        value={aadhaarData.kyc_vs_country}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-country"
+              label="Country*"
+              value={localFormData.kyc_vs_country}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-city"
-        label="City*"
-        value={aadhaarData.kyc_vs_city}
-        disabled
-        className="mb-4"
-      />
+            <FloatingInput
+              name="aadhaar-city"
+              label="City*"
+              value={localFormData.kyc_vs_city}
+              disabled
+              className="mb-4"
+            />
 
-      <FloatingInput
-        name="aadhaar-state"
-        label="State*"
-        value={aadhaarData.kyc_vs_state}
-        disabled
-        className="mb-4"
-      />
-    </div>
-  </div>
-
-  {/* CBS Details Section - Editable */}
-  <div className="details-section cbs-section">
-    <h2 className="text-xl font-semibold text-gray-700 mb-4">
-      CBS Details
-    </h2>
-    <img
-      src=""
-      width={'100px'}
-      height={'100px'}
-      alt="Customer Photo"
-      className=" border-2 rounded-lg mb-5"
-    />
-    <div className="section-content grid grid-cols-2 gap-2">
-      {/* Editable fields for CBS */}
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-salutation"
-          label="Salutation*"
-          value={cbsData.kyc_cbs_salutation}
-          onChange={(value) => handleCbsChange("kyc_vscbs_salutation", value)}
-          required
-        />
-        {valuesMatch("salutation") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-middleName"
-          label="Middle Name"
-          value={cbsData.kyc_cbs_middle_name}
-          onChange={(value) => handleCbsChange("kyc_vscbs_middle_name", value)}
-        />
-        {valuesMatch("middleName") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-firstName"
-          label="First Name*"
-          value={cbsData.kyc_cbs_first_name}
-          onChange={(value) => handleCbsChange("kyc_vscbs_first_name", value)}
-          required
-        />
-        {valuesMatch("firstName") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-lastName"
-          label="Last Name*"
-          value={cbsData.kyc_cbs_last_name}
-          onChange={(value) => handleCbsChange("kyc_vscbs_last_name", value)}
-          required
-        />
-        {valuesMatch("lastName") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-dob"
-          label="DOB*"
-          value={cbsData.kyc_cbs_date_of_birth}
-          onChange={(value) => handleCbsChange("kyc_vscbs_date_of_birth", value)}
-          required
-        />
-        {valuesMatch("dob") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-gender"
-          label="Gender*"
-          value={cbsData.kyc_cbs_gender}
-          onChange={(value) => handleCbsChange("kyc_vscbs_gender", value)}
-          required
-        />
-        {valuesMatch("gender") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-mobileNo"
-          label="Mobile No*"
-          value={cbsData.kyc_cbs_mobile_no}
-          onChange={(value) => handleCbsChange("kyc_vscbs_mobile_no", value)}
-          required
-        />
-        {valuesMatch("mobileNo") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-flatNo"
-          label="Flat No./Bldg Name*"
-          value={cbsData.kyc_cbs_flat_no}
-          onChange={(value) => handleCbsChange("kyc_vscbs_flat_no", value)}
-          required
-        />
-        {valuesMatch("flatNo") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-complexName"
-          label="Complex Name*"
-          value={cbsData.kyc_cbs_complex_name}
-          onChange={(value) => handleCbsChange("kyc_vscbs_complex_name", value)}
-          required
-        />
-        {valuesMatch("complexName") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-landmark"
-          label="Nearby Landmark*"
-          value={cbsData.kyc_cbs_lankmark}
-          onChange={(value) => handleCbsChange("kyc_vscbs_lankmark", value)}
-          required
-        />
-        {valuesMatch("landmark") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-area"
-          label="Area*"
-          value={cbsData.kyc_cbs_area}
-          onChange={(value) => handleCbsChange("kyc_vscbs_area", value)}
-          required
-        />
-        {valuesMatch("area") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-pinCode"
-          label="Pin Code*"
-          value={cbsData.kyc_cbs_pincode}
-          onChange={(value) => handleCbsChange("kyc_vscbs_pincode", value)}
-          required
-        />
-        {valuesMatch("pincode") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-district"
-          label="District*"
-          value={cbsData.kyc_cbs_district}
-          onChange={(value) => handleCbsChange("kyc_vscbs_district", value)}
-          required
-        />
-        {valuesMatch("district") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-country"
-          label="Country*"
-          value={cbsData.kyc_cbs_country}
-          onChange={(value) => handleCbsChange("kyc_vscbs_country", value)}
-          required
-        />
-        {valuesMatch("country") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-city"
-          label="City*"
-          value={cbsData.kyc_cbs_city}
-          onChange={(value) => handleCbsChange("kyc_vscbs_city", value)}
-          required
-        />
-        {valuesMatch("city") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-
-      <div className="relative mb-4">
-        <FloatingInput
-          name="cbs-state"
-          label="State*"
-          value={cbsData.kyc_cbs_state}
-          onChange={(value) => handleCbsChange("kyc_vscbs_state", value)}
-          required
-        />
-        {valuesMatch("state") ? (
-          <span className="absolute right-2 top-3 text-green-500">✓</span>
-        ) : (
-          <span className="absolute right-2 top-3 text-red-500">✗</span>
-        )}
-      </div>
-    </div>
-  </div>
-
-  {/* Navigation Buttons */}
-  <div className="next-back-btns">
-            <CommonButton
-                className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                onClick={handleRejectClick}
-            >
-                Reject & Continue
-            </CommonButton>
-
-            <CommonButton
-                className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                onClick={handleReviewClick}
-            >
-                Review & Continue
-            </CommonButton>
-
-            <CommonButton
-                className="btn-next "
-                onClick={handleNextStep}
-            >
-                Accept & Continue
-            </CommonButton>
+            <FloatingInput
+              name="aadhaar-state"
+              label="State*"
+              value={localFormData.kyc_vs_state}
+              disabled
+              className="mb-4"
+            />
+          </div>
         </div>
-</div>
+
+        {/* CBS Details Section - Editable */}
+        <div className="details-section cbs-section">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            CBS Details
+          </h2>
+          <img
+            src=""
+            width={'100px'}
+            height={'100px'}
+            alt="Customer Photo"
+            className=" border-2 rounded-lg mb-5"
+          />
+          <div className="section-content grid grid-cols-2 gap-2">
+            {/* Editable fields for CBS */}
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-salutation"
+                label="Salutation*"
+                value={localFormData.kyc_cbs_salutation}
+                onChange={(value) => handleCbsChange("kyc_vscbs_salutation", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-middleName"
+                label="Middle Name"
+                value={localFormData.kyc_cbs_middle_name}
+                onChange={(value) => handleCbsChange("kyc_vscbs_middle_name", value)}
+              />
+          
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-firstName"
+                label="First Name*"
+                value={localFormData.kyc_cbs_first_name}
+                onChange={(value) => handleCbsChange("kyc_vscbs_first_name", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-lastName"
+                label="Last Name*"
+                value={localFormData.kyc_cbs_last_name}
+                onChange={(value) => handleCbsChange("kyc_vscbs_last_name", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-dob"
+                label="DOB*"
+                value={localFormData.kyc_cbs_date_of_birth}
+                onChange={(value) => handleCbsChange("kyc_vscbs_date_of_birth", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-gender"
+                label="Gender*"
+                value={localFormData.kyc_cbs_gender}
+                onChange={(value) => handleCbsChange("kyc_vscbs_gender", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-mobileNo"
+                label="Mobile No*"
+                value={localFormData.kyc_cbs_mobile_no}
+                onChange={(value) => handleCbsChange("kyc_vscbs_mobile_no", value)}
+                required
+          />
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-flatNo"
+                label="Flat No./Bldg Name*"
+                value={localFormData.kyc_cbs_flat_no}
+                onChange={(value) => handleCbsChange("kyc_vscbs_flat_no", value)}
+                required
+              />
+        
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-complexName"
+                label="Complex Name*"
+                value={localFormData.kyc_cbs_complex_name}
+                onChange={(value) => handleCbsChange("kyc_vscbs_complex_name", value)}
+                required
+        />
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-landmark"
+                label="Nearby Landmark*"
+                value={localFormData.kyc_cbs_lankmark}
+                onChange={(value) => handleCbsChange("kyc_vscbs_lankmark", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-area"
+                label="Area*"
+                value={localFormData.kyc_cbs_area}
+                onChange={(value) => handleCbsChange("kyc_vscbs_area", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-pinCode"
+                label="Pin Code*"
+                value={localFormData.kyc_cbs_pincode}
+                onChange={(value) => handleCbsChange("kyc_vscbs_pincode", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-district"
+                label="District*"
+                value={localFormData.kyc_cbs_district}
+                onChange={(value) => handleCbsChange("kyc_vscbs_district", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-country"
+                label="Country*"
+                value={localFormData.kyc_cbs_country}
+                onChange={(value) => handleCbsChange("kyc_vscbs_country", value)}
+                required
+              />
+            
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-city"
+                label="City*"
+                value={localFormData.kyc_cbs_city}
+                onChange={(value) => handleCbsChange("kyc_vscbs_city", value)}
+                required
+              />
+          
+            </div>
+
+            <div className="relative mb-4">
+              <FloatingInput
+                name="cbs-state"
+                label="State*"
+                value={localFormData.kyc_cbs_state}
+                onChange={(value) => handleCbsChange("kyc_vscbs_state", value)}
+                required
+              />
+            
+            </div>
+          </div>
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="next-back-btns">
+                  <CommonButton
+                      className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                      onClick={handleRejectClick}
+                  >
+                      Reject & Continue
+                  </CommonButton>
+
+                  <CommonButton
+                      className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                      onClick={handleReviewClick}
+                  >
+                      Review & Continue
+                  </CommonButton>
+
+                  <CommonButton
+                      className="btn-next "
+                      onClick={handleNextStep}
+                  >
+                      Accept & Continue
+                  </CommonButton>
+              </div>
+      </div>
 
 
     </div>
@@ -773,360 +618,4 @@ export default CustomerDetailsPage;
 
 
 
-
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import CommanInput from '../../components/CommanInput';
-// import CommanSelect from '../../components/CommanSelect';
-// import workingman from '../../assets/imgs/workingman1.png';
-// import labels from '../../components/labels';
-// import CommonButton from '../../components/CommonButton';
-// import { salutation, } from '../../data/data';
-// import Swal from 'sweetalert2';
-// import { useParams } from 'react-router-dom';
-// import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
-// import { daodocbase } from '../../data/data';
-// import { pendingAccountStatusUpdate } from '../../services/apiServices';
-
-// function P1({ onNext, onBack, updateFormData }) {
-//     const [localFormData, setLocalFormData] = useState({
-//         salutation: '',
-//         first_name: '',
-//         middle_name: '',
-//         last_name: '',
-//         DOB: '',
-//         gender: '',
-//         mobile: '',
-//         complex_name: '',
-//         flat_no: '',
-//         area: '',
-//         landmark: '',
-//         country: '',
-//         pincode: '',
-//         city: '',
-//         district: '',
-//         state: '',
-
-//     });
-//     const { id } = useParams();
-
-//     useEffect(() => {
-//         localStorage.setItem('application_id', id);
-//         const fetchAndStoreDetails = async () => {
-//             try {
-//                 // alert('called')
-//                 if (id) {
-//                     const response = await pendingAccountData.getDetailsS1(id);
-//                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-//                     // console.log('got data :', response.data.details);
-//                     const application = response.data.details || {};
-//                     // const personal = response?.data?.personal_details || {};
-
-//                     setLocalFormData({
-//                         salutation: application.salutation || '',
-//                         first_name: application.first_name || '',
-//                         middle_name: application.middle_name || '',
-//                         last_name: application.last_name || '',
-//                         DOB: application.DOB || '',
-//                         gender: application.gender || '',
-//                         mobile: application.mobile || '',
-//                         complex_name: application.complex_name || '',
-//                         flat_no: application.flat_no || '',
-//                         area: application.area || '',
-//                         landmark: application.landmark || '',
-//                         country: application.country || '',
-//                         pincode: application.pincode || '',
-//                         city: application.city || '',
-//                         district: application.district || '',
-//                         state: application.state || '',
-//                         photo: daodocbase + application.live_photo_path || '',
-
-//                     });
-//                     // alert(localFormData.photo);
-//                 }
-//             } catch (error) {
-//                 console.error('Failed to fetch application details:', error);
-//             }
-//         };
-
-//         fetchAndStoreDetails();
-//     }, [id]);
-//     if (!localStorage.getItem("approveStatusArray")) {
-//         localStorage.setItem("approveStatusArray", JSON.stringify([]));
-
-
-//     }
-
-//     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
-
-//     const handleChange = (e) => {
-//         const { name, value } = e.target;
-//         setLocalFormData(prev => ({ ...prev, [name]: value }));
-//     };
-
-//     const handleRejectClick = async () => {
-//         const result = await Swal.fire({
-//             title: 'Reason for Rejection',
-//             input: 'text',
-//             inputLabel: 'Please provide a reason',
-//             inputPlaceholder: 'Enter reason here...',
-//             showCancelButton: true,
-//             confirmButtonText: 'Submit',
-//             cancelButtonText: 'Cancel',
-//             className: 'btn-login',
-//             inputValidator: (value) => {
-//                 if (!value) {
-//                     return 'You need to write a reason!';
-//                 }
-//             },
-//         });
-
-//         if (result.isConfirmed && result.value) {
-//             const payload = {
-//                 application_id: Number(id),
-//                 status: 'Reject',
-//                 status_comment: result.value,
-//                 admin_id: 1
-//             };
-//             await pendingAccountStatusUpdate.updateS1(id, payload);
-
-//             applicationStatus.push('Reject');
-//             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-//             console.log('Payload:', payload);
-//             onNext?.(payload); // pass the payload forward
-//         } else if (result.isDismissed) {
-//             console.log('Rejection canceled');
-//         }
-//     };
-
-//     const handleReviewClick = async () => {
-//         const result = await Swal.fire({
-//             title: 'Reason for Review',
-//             input: 'text',
-//             inputLabel: 'Please provide a reason',
-//             inputPlaceholder: 'Enter reason here...',
-//             showCancelButton: true,
-//             confirmButtonText: 'Submit',
-//             cancelButtonText: 'Cancel',
-//             className: 'btn-login',
-//             inputValidator: (value) => {
-//                 if (!value) {
-//                     return 'You need to write a reason!';
-//                 }
-//             },
-//         });
-
-//         if (result.isConfirmed && result.value) {
-//             const payload = {
-//                 application_id: Number(id),
-//                 status: 'Review',
-//                 status_comment: result.value,
-//                 admin_id: 1
-//             };
-//             await pendingAccountStatusUpdate.updateS1(id, payload);
-//             applicationStatus.push('Review');
-//             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-//             console.log('Payload:', payload);
-//             onNext?.(payload); // pass the payload forward
-//         } else if (result.isDismissed) {
-//             console.log('Rejection canceled');
-//         }
-//     };
-
-//     const handleNextStep = async () => {
-//         // alert('called')
-//         try {
-//             const payload = {
-//                 applicaiton_id: Number(id),
-//                 status: 'Approved',
-//                 status_comment: '',
-//                 admin_id: 1
-//             }
-//             await pendingAccountStatusUpdate.updateS1(id, payload);
-
-//             applicationStatus.push('Approved');
-//             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Enrollment Details Approved Successfully',
-//                 timer: 2000,               // alert stays for 2 seconds
-//                 showConfirmButton: false,  // no "OK" button
-//                 allowOutsideClick: false,  // optional: prevent closing by clicking outside
-//                 allowEscapeKey: false,     // optional: prevent closing with Escape key
-//                 didOpen: () => {
-//                     Swal.showLoading();   // optional: show loading spinner
-//                 },
-//                 willClose: () => {
-//                     onNext(); // proceed after alert closes
-//                 }
-//             });
-//         }
-//         catch (error) {
-//             // console.error('Error updating status:', error);
-//             Swal.fire({
-//                 icon: 'error',
-//                 title: 'Oops...',
-//                 text: 'Something went wrong while updating the status!',
-//             });
-//         }
-//     }
-
-
-
-//     return (
-//         <>
-//             <div className='form-container'>
-//                 <h2 className="text-xl font-bold mb-2">Pending Application  {id}</h2>
-//                 <div className="flex flex-wrap items-top">
-//                     <div className="lg:w-3/4 md:full sm:w-full"><br />
-//                         <p>Customer Application Form Details</p> <br />
-//                         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label={labels.dob.label}
-//                                 type="date"
-//                                 name="dob"
-//                                 value={localFormData.DOB}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label={labels.gender.label}
-//                                 type="text"
-//                                 name="gender"
-//                                 value={localFormData.gender}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="First Name"
-//                                 name="first_name"
-//                                 value={localFormData.first_name}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Middle Name"
-//                                 name="middle_name"
-//                                 value={localFormData.middle_name}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Last Name"
-//                                 name="last_name"
-//                                 value={localFormData.last_name}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Mobile No."
-//                                 name="mobile"
-//                                 value={localFormData.mobile}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Area"
-//                                 name="area"
-//                                 value={localFormData.area}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Complex Name"
-//                                 name="complex_name"
-//                                 value={localFormData.complex_name}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Flat No./Bldg Name"
-//                                 name="flat_no"
-//                                 value={localFormData.flat_no}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Nearby Landmark"
-//                                 name="landmark"
-//                                 value={localFormData.landmark}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Country"
-//                                 name="country"
-//                                 value={localFormData.country}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="Pin Code"
-//                                 name="pincode"
-//                                 value={localFormData.pincode}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="City"
-//                                 name="city"
-//                                 value={localFormData.city}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="District"
-//                                 name="district"
-//                                 value={localFormData.district}
-//                                 readOnly={true}
-//                             />
-//                             <CommanInput
-//                                 onChange={handleChange}
-//                                 label="State"
-//                                 name="state"
-//                                 value={localFormData.state}
-//                                 readOnly={true}
-//                             />
-
-//                         </div>
-
-//                     </div>
-//                     <div className="lg:w-1/4 md:full sm:w-full text-center">
-//                         <img src={localFormData.photo} width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" />
-//                         {/* <img src='https://img.freepik.com/free-vector/user-blue-gradient_78370-4692.jpg?semt=ais_items_boosted&w=740' width={'200px'} className='m-auto mt-20 border rounded-md' alt="client photo" /> */}
-//                         <br />
-//                         <p>Customer Photo</p>
-//                     </div>
-//                     <div className="next-back-btns">
-//                         <CommonButton
-//                             className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-//                             onClick={handleRejectClick}
-//                         >
-//                             Reject & Continue
-//                         </CommonButton>
-
-//                         <CommonButton
-//                             className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-//                             onClick={handleReviewClick}
-//                         >
-//                             Review & Continue
-//                         </CommonButton>
-
-//                         <CommonButton
-//                             className="btn-next "
-//                             onClick={handleNextStep}
-//                         >
-//                             Accept & Continue
-//                         </CommonButton>
-//                     </div>
-//                 </div>
-//             </div>
-//         </>
-//     );
-// }
-
-// export default P1; 
+ 
