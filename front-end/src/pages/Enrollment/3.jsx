@@ -100,7 +100,7 @@ const P3 = ({ onNext, onBack }) => {
             response = await apiService.post(endpoint, formDataObj );
 
             // Check response status directly
-            if (response && JSON.stringify(response).includes('201')) {
+            if (response ) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -108,7 +108,7 @@ const P3 = ({ onNext, onBack }) => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                    // onNext();
+                    onNext();
                  
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);
