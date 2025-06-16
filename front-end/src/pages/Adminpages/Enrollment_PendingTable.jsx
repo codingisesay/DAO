@@ -102,7 +102,7 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/varify-account"
+                        basePath="/verify-account"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}

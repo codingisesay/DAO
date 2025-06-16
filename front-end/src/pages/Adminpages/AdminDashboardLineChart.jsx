@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { adminService } from '../../services/apiServices';
+import Swal from 'sweetalert2'
 
 const MonthlyAccountTrends = () => {
     const data = [
@@ -10,6 +12,36 @@ const MonthlyAccountTrends = () => {
         { month: 'Aug', accounts: 190 },
         { month: 'Oct', accounts: 230 }
     ];
+    
+    
+    // const [data, setData]=useState();
+   
+    // useEffect(() => {
+    //     const fetchDetails = async () => {
+    //         try {
+    //             const response = await adminService.monthlyLineChart;
+    //             console.log(response.data)
+    //             if (response && response.data) {
+    //                 // Count the statuses
+
+    //                 response.data.forEach(mnth => {
+    //                         console.log('mnth : ',mnth)
+    //                 });
+    //                 // setData(response[0],)
+    //             }
+    //         } catch (error) {
+    //             console.log(error);
+    //             Swal.fire({
+    //                 icon: 'error',
+    //                 title: 'Error',
+    //                 text: error?.response?.data?.message
+    //             });
+    //         }
+    //     };
+    //     fetchDetails();
+    // }, []);
+
+
 
     return (
         <div style={{ width: '100%', height: 340, fontFamily: 'Arial, sans-serif' }}>

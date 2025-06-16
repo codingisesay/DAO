@@ -206,6 +206,8 @@ export const adminService = {
   getFullApplicationDetails: (id) =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
 
+  /// dashobard charts
+  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART)
 };
 // om data above
 

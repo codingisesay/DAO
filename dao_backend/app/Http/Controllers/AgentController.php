@@ -287,29 +287,33 @@ public function saveAgentLivePhoto(Request $request)
 
 
 
-
-
- 
 public function saveApplicationDocument(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
         'files' => 'required|array|min:1',
-        'files.*' => 'file|max:10240',
+        'files.*' => 'required|string', // Expecting base64 string
     ]);
 
     $documents = [];
-    foreach ($validated['files'] as $index => $file) {
+    foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
-        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('application_documents', $filename, 'public');
 
-        $doc = ApplicationDocument::updateOrCreate(
+        // Extract file extension from base64 string (optional, for file_name)
+        if (preg_match('/^data:.*?\/(.*?);base64,/', $base64File, $match)) {
+            $extension = $match[1];
+            $base64File = preg_replace('/^data:.*?;base64,/', '', $base64File);
+        } else {
+            $extension = 'bin';
+        }
+
+        $filename = uniqid('doc_') . '.' . $extension;
+        $binaryData = base64_decode($base64File);
+
+        // Save to DB using Eloquent
+        $doc = \App\Models\ApplicationDocument::updateOrCreate(
             [
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
@@ -318,17 +322,17 @@ public function saveApplicationDocument(Request $request)
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
                 'file_name' => $filename,
-                'file_path' => $path,
+                'file_path' => $binaryData, // Save as BLOB
             ]
         );
 
         $documents[] = $doc;
     }
-        
-        DB::table('document_approved_status')->updateOrInsert(
-            ['application_id' => $validated['application_id']],
-            ['status' => 'Pending']
-        );
+
+    \DB::table('document_approved_status')->updateOrInsert(
+        ['application_id' => $validated['application_id']],
+        ['status' => 'Pending']
+    );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',
