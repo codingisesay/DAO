@@ -44,14 +44,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             if (activeStep === 0) {
                 // console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};  
-                 if(pd.first_name != formData.first_name || pd.middle_name!= formData.middle_name || pd.last_name!= formData.last_name){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error saving personal details',
-                        text: 'Only alphabets allowed',
-                    });
-                    return
-                }
+           if (
+                /\d/.test(pd.first_name) ||
+                /\d/.test(pd.middle_name) ||
+                /\d/.test(pd.last_name)
+            ) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
+                });
+                return;
+            }
+
                
                else  if ( pd.mobile.length != 10  ){
                         Swal.fire({

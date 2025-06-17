@@ -192,6 +192,17 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
             return;
         }
+         if (
+                /\d/.test(currentNominee.details.nomineeFirstName) ||
+                /\d/.test(currentNominee.details.nomineeMiddleName) ||
+                /\d/.test(currentNominee.details.nomineeLastName)
+            ) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Nominee name fields should contain only alphabets. Numbers are not allowed.',
+                });
+                return;
+            }
 
         // Then check for validation errors
         const errors = validateNominee(currentNominee);
@@ -288,7 +299,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
             return;
         }
-
+   
         try {
             // Prepare nominees array for API
             const nomineesPayload = nominees.map(nominee => ({

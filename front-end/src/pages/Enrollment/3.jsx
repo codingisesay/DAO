@@ -101,7 +101,7 @@ const P3 = ({ onNext, onBack }) => {
             response = await apiService.post(endpoint, formDataObj );
 
             // Check response status directly
-            if (response && JSON.stringify(response).includes('201')) {
+            if (response ) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',

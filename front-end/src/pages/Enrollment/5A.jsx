@@ -113,6 +113,42 @@ useEffect(() => {
 
 
     const submitpd = async () => {
+        const nameFields = {
+            maiden_prefix: localFormData.maidenPrefixName,
+            maiden_first_name: localFormData.maidenFirstName,
+            maiden_middle_name: localFormData.maidenMiddleName,
+            maiden_last_name: localFormData.maidenLastName,
+            father_prefix_name: localFormData.fatherSpousePrefixName,
+            father_first_name: localFormData.fatherSpouseFirstName,
+            father_middle_name: localFormData.fatherSpouseMiddleName,
+            father_last_name: localFormData.fatherSpouseLastName,
+            mother_prefix_name: localFormData.motherPrefixName,
+            mother_first_name: localFormData.motherFirstName,
+            mother_middle_name: localFormData.motherMiddleName,
+            mother_last_name: localFormData.motherLastName,
+            };
+    const errors = [];
+
+    Object.entries(nameFields).forEach(([key, value]) => {
+    if (/\d/.test(value)) {
+        // Format key to show friendly error
+        const fieldName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        errors.push(`${fieldName} should not contain numbers.`);
+    }
+    });
+
+    if (errors.length > 0) {
+        // alert(errors.join('\n'));
+            
+  Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errors.join('\n') || 'Failed to save details'
+            });
+
+
+        return; // Stop submission
+    }
         try {
             // Validate required fields before submission
             if ( 
