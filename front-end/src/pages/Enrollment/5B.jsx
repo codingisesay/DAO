@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
-import { accountNomineeService , createAccountService} from '../../services/apiServices';
+import { accountNomineeService , createAccountService,applicationDetailsService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { salutation, relation } from '../../data/data';
+import { add } from '@tensorflow/tfjs-core/dist/engine';
 
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
@@ -316,7 +317,33 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
     };
 
+    const sameAddress= async() =>{
+        
+        const response = await applicationDetailsService.getFullDetails(storedId);
+        if (response.data) {
+        const {  application_addresss} = response.data;
+        const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
+        console.log('to show : ', address);
+                setCurrentNominee(prev => ({
+            ...prev,
+            address: {
+                nomineeComplexName: address.per_complex_name,
+                nomineeBuildingName: address.per_flat_no,
+                nomineeArea: address.per_area,
+                nomineeLandmark: address.per_landmark,
+                nomineeCountry: address.per_country,
+                nomineePinCode: address.per_pincode,
+                nomineeCity: address.per_city,
+                nomineeDistrict: address.per_district,
+                nomineeState: address.per_state
+            }
+        }
+        ))
+    
+        } 
 
+                    
+    }
 
     useEffect(() => {
         saveToLocalStorage({
@@ -404,6 +431,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             </div>
 
             <h2 className="text-xl font-bold mt-8 mb-4">Nominee Address</h2>
+
+            <input type='checkbox' onClick={sameAddress} />Same as address
+            <br />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
                 <InputField
                     label="Complex Name"
@@ -457,6 +487,37 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     required
                     max={6}
                     error={errors.nomineePinCode}
+                />
+
+                
+                <InputField
+                    label="State"
+                    name="nomineeState"
+                    value={currentNominee.address.nomineeState}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
+                />
+                
+                <InputField
+                    label="City"
+                    name="nomineeCity"
+                    value={currentNominee.address.nomineeCity}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
+                />
+                
+                <InputField
+                    label="District"
+                    name="nomineeDistrict"
+                    value={currentNominee.address.nomineeDistrict}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
                 />
             </div>
 

@@ -4,31 +4,45 @@ import { adminService } from '../../services/apiServices';
 import Swal from 'sweetalert2'
 
 const MonthlyAccountTrends = () => {
-    const data = [
-        { month: 'Apr', accounts: 120 },
-        { month: 'May', accounts: 180 },
-        { month: 'Jun', accounts: 150 },
-        { month: 'Jul', accounts: 210 },
-        { month: 'Aug', accounts: 190 },
-        { month: 'Oct', accounts: 230 }
-    ];
+    // const data = [
+    //     { month: 'Apr', accounts: 120 },
+    //     { month: 'May', accounts: 180 },
+    //     { month: 'Jun', accounts: 150 },
+    //     { month: 'Jul', accounts: 210 },
+    //     { month: 'Aug', accounts: 190 },
+    //     { month: 'Oct', accounts: 230 }
+    // ];
     
     
-    // const [data, setData]=useState();
+    const [data, setData]=useState([]);
    
     // useEffect(() => {
     //     const fetchDetails = async () => {
     //         try {
     //             const response = await adminService.monthlyLineChart;
-    //             console.log(response.data)
-    //             if (response && response.data) {
+    //             console.log(response)
+    //             if (response ) {
     //                 // Count the statuses
+    //                 var i=0; 
+    //                 response.data.forEach(data => { 
+    //                     if(i===0)
+    //                     {i=i+1;
+    //                         // console.log(i)
+    //                     response.labels.forEach(month => { 
+    //                         // console.log("{mnth : '",month,"', accounts:",data, "}")
+    //                         let val="{month :"+month + " ,accounts:"+data+ "}"; 
+    //                         setData(prev => ({
+    //                         ...prev,
+    //                         val
+    //                         })); 
+    //                     });
+                      
+    //                     }
 
-    //                 response.data.forEach(mnth => {
-    //                         console.log('mnth : ',mnth)
     //                 });
-    //                 // setData(response[0],)
+                  
     //             }
+    //             // console.log(data)
     //         } catch (error) {
     //             console.log(error);
     //             Swal.fire({

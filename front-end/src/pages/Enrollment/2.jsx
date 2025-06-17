@@ -7,6 +7,7 @@ import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
+import { form } from 'framer-motion/client';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -41,8 +42,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         try {
             if (activeStep === 0) {
                 // console.log('2A formadta : ', formData)
-                const pd = formData.personalDetails || {};
-             
+                
+                const pd = formData.personalDetails || {}; 
                 const payload = {
                     application_id: formData.application_id,
                     salutation: pd.salutation,
@@ -58,7 +59,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     voter_id: pd.voterid,
                     status: 'Pending'
                 };
-                console.log(payload)
+                
                 try {
                     let response = await createAccountService.personalDetails_s2a(payload);
                    

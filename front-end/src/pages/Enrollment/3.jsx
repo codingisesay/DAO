@@ -5,6 +5,7 @@ import { apiService } from '../../utils/storage'
 import { applicationDocumentService ,createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 
 
@@ -108,15 +109,15 @@ const P3 = ({ onNext, onBack }) => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                    // onNext();
+                    onNext();
                  
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);
             }
         } catch (error) {
-            console.error('Upload error:', response);
-            // Check response status directly
-        //    onNext();
+            console.error('Upload error:', error);
+                    onNext();
+            Swal.fire('Error', error, 'error');
         
         
         } finally {
