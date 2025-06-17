@@ -109,7 +109,7 @@ const userdummydata = {
         first_name: "Kisan",
         middle_name: "Pandya",
         last_name: "Sharma",
-        DOB: '1985-07-11',
+        // DOB: '1985-07-11',
         gender: "Male",
         mobile: "9876543210",
         complex_name: "Sunshine Apartments",

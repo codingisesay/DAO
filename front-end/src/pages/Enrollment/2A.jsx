@@ -64,6 +64,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             }
 
     }
+const today = new Date().toISOString().split("T")[0];
 
     return (
         <div className="personal-details-form">
@@ -120,8 +121,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="date"
                         name="DOB"
                         value={localFormData.DOB}
-                        required
-                        validationType="DATE"
+                        min={  new Date().toISOString().split("T")[0] } 
+                        required 
                     />
 
                     {/* Gender - Select field */}
@@ -271,3 +272,6 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 }
 
 export default PersonalDetailsForm;
+
+
+ 
