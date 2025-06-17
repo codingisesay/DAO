@@ -207,7 +207,12 @@ export const adminService = {
     apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
 
   /// dashobard charts
-  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART)
+  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),
+  monthlyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_AUTH_BARCHART),
+  weeklyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.WEEKLY_AUTH_BARCHART),
+  kycstatusperyear: apiService.get(API_ENDPOINTS.ADMIN.KYC_STATUS_FOR_CURRENT_YEAR),
+   
+ 
 };
 // om data above
 

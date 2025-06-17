@@ -34,7 +34,7 @@ const fetchData = async () => {
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
     });
-    console.log("Response from API:", response); // Debugging line to check the response structure
+    console.log("Pending Table Err:", response); // Debugging line to check the response structure
     // Set both states correctly
     setTbldata(response.data || []);
     setData({ content: response.data || [] }); // This is what DataTable expects

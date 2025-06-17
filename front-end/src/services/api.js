@@ -156,8 +156,14 @@ export const API_ENDPOINTS = {
 
 
     //////////For DAshboard Admin
-    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly'
+    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly',
+    MONTHLY_AUTH_BARCHART:'dao/api/admin/applications/approved/monthly-auth',
+    WEEKLY_AUTH_BARCHART:'dao/api/admin/applications/approved/weekly-auth',
+    KYC_STATUS_FOR_CURRENT_YEAR:'dao/api/admin/kyc-applications/status-summary'
 
+
+
+ 
   },
 
 
@@ -205,67 +211,4 @@ export const API_ENDPOINTS = {
     },
   },
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  
-
-
-
-
-
-
-
-  
-
-  //   //approved
-  //   Route::get('/admin/approvedApplication', [AdminController::class, 'getApprovedApplications']);
-  //   Route::get('/admin/approvedApplicationCount', [AdminController::class, 'getApprovedApplicationsAgentCount']);
-  //   Route::get('/admin/approvedApplicationDetails/{agentId}', [AdminController::class, 'getApprovedApplicationsDetailsAgentById']);
-  //   //review
-  //   Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
-  //   Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
-  //   Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
-  //   //rejected
-  //   Route::get('admin/applications/rejected', [AdminController::class, 'getRejectedApplications']);
-  //   Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
-  //   Route::get('admin/applications/rejected/agent/{agentId}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
-  //   //kyc review 
-  //   Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
-  //   Route::get('/kyc/review/count-by-agent', [AdminController::class, 'getKycReviewApplicationsAgentCount']);
-  //  Route::get('/kyc/review/agent/{agentId}', [AdminController::class, 'getKycReviewApplicationsByAgentId']);
-  //   // kyc approved table 
-  //   Route::get('/admin/kyc-applications/approved', [AdminController::class, 'getKycApprovedApplications']);
-  //   Route::get('/kyc/approved/count-by-agent', [AdminController::class, 'getKycApprovedApplicationsAgentCount']);
-  //   Route::get('/kyc/approved/agent/{agentId}', [AdminController::class, 'getKycApprovedApplicationsByAgentId']);
