@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
+import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AccountBarChart';
