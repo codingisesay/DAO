@@ -10,7 +10,7 @@ import Page6 from './6';
 import Stepper from './Stepper';
 
 function Enrollmentform() {
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(4);
     const [complete, setComplete] = useState(false);
 
     localStorage.setItem('vcall', JSON.stringify(false));

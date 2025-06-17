@@ -41,7 +41,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 });
 
 //Video Kyc
-
+Route::post('/video-kyc/guidline/{application_id}',[VideoKycController::class,'acceptKycGuidline']);
 Route::post('/video-kyc/create/{application_id}', [VideoKycController::class, 'create']);
 Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
@@ -139,9 +139,13 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::post('/agent/enrollment', [AgentController::class, 'EnrollmentDetails'])->name('enrollment.details');
         Route::post('/agent/personal-details', [AgentController::class, 'savePersonalDetails']);
         Route::post('/agent/address-details', [AgentController::class, 'saveAddressDetails']);
+
+
         Route::post('/agent/live-photo', [AgentController::class, 'saveLivePhoto']);
-          Route::post('/agent/agent-live-photo', [AgentController::class, 'saveAgentLivePhoto']);
+        Route::post('/agent/agent-live-photo', [AgentController::class, 'saveAgentLivePhoto']);
         Route::post('/agent/application-document', [AgentController::class, 'saveApplicationDocument']);
+
+
         Route::post('/agent/account-personal-details', [AgentController::class, 'saveAccountPersonalDetails']);
         Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
         Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
