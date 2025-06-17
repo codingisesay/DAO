@@ -187,9 +187,6 @@ public function saveAllKycData(Request $request)
 
 public function kycSaveApplicationDocument(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'kyc_application_id' => 'required',
         'document_types' => 'required|array|min:1',
@@ -202,7 +199,7 @@ public function kycSaveApplicationDocument(Request $request)
     foreach ($validated['files'] as $index => $file) {
         $documentType = $validated['document_types'][$index] ?? null;
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('kyc_application_documents', $filename, 'public');
+        $binaryContent = file_get_contents($file->getRealPath());
 
         $doc = kycApplicationDocument::updateOrCreate(
             [
@@ -213,13 +210,13 @@ public function kycSaveApplicationDocument(Request $request)
                 'kyc_application_id' => $validated['kyc_application_id'],
                 'kyc_document_type' => $documentType,
                 'kyc_file_name' => $filename,
-                'kyc_file_path' => $path,
-                 'updated_at' => now(),
-                 'created_at' => now(),
+                'kyc_file_path' => $binaryContent, // Save as mediumblob
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
 
-        $documents[] = $doc;
+        $documents[] = $doc->makeHidden(['kyc_file_path']);
     }
 
     DB::table('kyc_document_approved_status')->updateOrInsert([
@@ -227,10 +224,9 @@ public function kycSaveApplicationDocument(Request $request)
         'status' => 'Pending',
     ]);
 
-     // Insert into the kyc_application_status table
     DB::table('kyc_application_status')->updateOrInsert([
         'kyc_application_id' => $validated['kyc_application_id'],
-        'status' => 'Pending', // You can set the status as per your requirement
+        'status' => 'Pending',
     ]);
 
     return response()->json([
