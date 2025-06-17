@@ -92,7 +92,7 @@ const P3 = ({ onNext, onBack }) => {
                 formDataObj.append('document_types[]', doc.type || doc.name);
             });
             var response =''
-            console.log(documents)
+            console.log(documents);
             // Ensure the API endpoint is properly formatted
             const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
                 ? createAccountService.applicationDocument_s3(formDataObj)
@@ -109,14 +109,14 @@ const P3 = ({ onNext, onBack }) => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                    onNext();
+                    // onNext();
                  
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);
             }
         } catch (error) {
             console.error('Upload error:', error);
-                    onNext();
+                    // onNext();
             Swal.fire('Error', error, 'error');
         
         
