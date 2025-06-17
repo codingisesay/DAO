@@ -5,6 +5,7 @@ import { apiService } from '../../utils/storage'
 import { applicationDocumentService ,createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 
 
@@ -64,64 +65,66 @@ const P3 = ({ onNext, onBack }) => {
 
     
     const handleSubmit = async () => {
-        if (documents.length === 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'No Documents',
-                text: 'Please upload at least one document before proceeding.',
-            });
-            return;
-        }
+        onNext();
 
-        setIsLoading(true);
+        // if (documents.length === 0) {
+        //     Swal.fire({
+        //         icon: 'warning',
+        //         title: 'No Documents',
+        //         text: 'Please upload at least one document before proceeding.',
+        //     });
+        //     return;
+        // }
 
-        try {
-            const formDataObj = new FormData();
-            formDataObj.append('application_id', storedId);
+        // setIsLoading(true);
 
-            // Filter out documents that don't have files (like those loaded from localStorage)
-            const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
+        // try {
+        //     const formDataObj = new FormData();
+        //     formDataObj.append('application_id', storedId);
 
-            if (documentsWithFiles.length === 0) {
-                throw new Error('No valid documents found. Please re-upload your documents.');
-            }
+        //     // Filter out documents that don't have files (like those loaded from localStorage)
+        //     const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
 
-            documentsWithFiles.forEach((doc) => {
-                formDataObj.append('files[]',  doc.file);
-                formDataObj.append('document_types[]', doc.type || doc.name);
-            });
-            var response =''
-            console.log(documents)
-            // Ensure the API endpoint is properly formatted
-            const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
-                ? createAccountService.applicationDocument_s3(formDataObj)
-                : createAccountService.applicationDocument_s3;
+        //     if (documentsWithFiles.length === 0) {
+        //         throw new Error('No valid documents found. Please re-upload your documents.');
+        //     }
 
-            response = await apiService.post(endpoint, formDataObj );
+        //     documentsWithFiles.forEach((doc) => {
+        //         formDataObj.append('files[]',  doc.file);
+        //         formDataObj.append('document_types[]', doc.type || doc.name);
+        //     });
+        //     var response =''
+        //     console.log(documents);
+        //     // Ensure the API endpoint is properly formatted
+        //     const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+        //         ? createAccountService.applicationDocument_s3(formDataObj)
+        //         : createAccountService.applicationDocument_s3;
 
-            // Check response status directly
-            if (response ) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Documents saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                    onNext();
+        //     response = await apiService.post(endpoint, formDataObj );
+
+        //     // Check response status directly
+        //     if (response ) {
+        //         Swal.fire({
+        //             icon: 'success',
+        //             title: 'Success!',
+        //             text: 'Documents saved successfully.',
+        //             showConfirmButton: false,
+        //             timer: 1500
+        //         })
+        //             onNext();
                  
-            } else {
-                throw new Error(response || 'Upload failed with status: ' + response);
-            }
-        } catch (error) {
-            console.error('Upload error:', response);
-            // Check response status directly
-        //    onNext();
+        //     } else {
+        //         throw new Error(response || 'Upload failed with status: ' + response);
+        //     }
+        // } catch (error) {
+        //     console.error('Upload error:', error);
+        //             // onNext();
+        //     Swal.fire('Error', error, 'error');
         
         
-        } finally {
-            setIsLoading(false);
-        }
+        // } finally {
+        //     setIsLoading(false);
+        // }
 
 
         

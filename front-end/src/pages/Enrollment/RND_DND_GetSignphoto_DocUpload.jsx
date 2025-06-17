@@ -194,7 +194,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             type: docType,
             name: documentValue.includes('AADHAAR') ?
                 `${documentValue.replace('_', ' ').toLowerCase()}` :
-                `${documentValue.toLowerCase()} document`,
+                `${documentValue.replace('_', ' ').toUpperCase()} `,
             image: imageData,
             file: file,
             uploadedAt: new Date().toLocaleString(),
@@ -390,10 +390,10 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                     {/* Identity Proof Section */}
                     <div className="document-section">
                         <div className="flex items-center relative">
-                            <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Identity Proof</span>
+                            <span className='absolute top-0 text-xs mx-2 bg-white px-1 dark:bg-gray-900 dark:text-white'>Identity Proof</span>
 
                             <select
-                                className="flex-1 p-2 border rounded mt-2"
+                                className="flex-1 p-2 border rounded mt-2  dark:bg-gray-900 dark:text-white"
                                 value={selectedIdentityProof}
                                 onChange={(e) => setSelectedIdentityProof(e.target.value)}
                             >
@@ -424,9 +424,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                     {/* Address Proof Section */}
                     <div className="document-section">
                         <div className="flex items-center relative">
-                            <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Address Proof</span>
+                            <span className='absolute top-0 text-xs mx-2 bg-white px-1 dark:bg-gray-900 dark:text-white'>Address Proof</span>
                             <select
-                                className="flex-1 p-2 border rounded mt-2"
+                                className="flex-1 p-2 border rounded mt-2 dark:bg-gray-900 dark:text-white"
                                 value={selectedAddressProof}
                                 onChange={(e) => setSelectedAddressProof(e.target.value)}
                             >
@@ -463,9 +463,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                     {/* Signature Proof Section */}
                     <div className="document-section">
                         <div className="flex items-center relative">
-                            <span className='absolute top-0 text-xs mx-2 bg-white px-1'>Signature</span>
+                            <span className='absolute top-0 text-xs mx-2 bg-white px-1  dark:bg-gray-900 dark:text-white' >Signature</span>
                             <select
-                                className="flex-1 p-2 border rounded mt-2"
+                                className="flex-1 p-2 border rounded mt-2 dark:bg-gray-900 dark:text-white"
                                 value={selectedSignatureProof}
                                 onChange={(e) => setSelectedSignatureProof(e.target.value)}
                             >

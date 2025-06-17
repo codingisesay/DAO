@@ -7,6 +7,8 @@ import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
+import { form } from 'framer-motion/client';
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -41,8 +43,42 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         try {
             if (activeStep === 0) {
                 // console.log('2A formadta : ', formData)
-                const pd = formData.personalDetails || {};
-             
+                const pd = formData.personalDetails || {};  
+           if (
+                /\d/.test(pd.first_name) ||
+                /\d/.test(pd.middle_name) ||
+                /\d/.test(pd.last_name)
+            ) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
+                });
+                return;
+            }
+
+               
+               else  if ( pd.mobile.length != 10  ){
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Mobile Number ',
+                    });return
+                }
+               else if (  pd.alt_mob_no.length != 10 ){
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Alternate Mobile Number ',
+                    });return
+                }
+               else if (  pd.pannumber.length != 10 ){
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: 'Invalid PAN Number',
+                    });return
+                }
+           
                 const payload = {
                     application_id: formData.application_id,
                     salutation: pd.salutation,
@@ -58,7 +94,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     voter_id: pd.voterid,
                     status: 'Pending'
                 };
-                console.log(payload)
+                
                 try {
                     let response = await createAccountService.personalDetails_s2a(payload);
                    

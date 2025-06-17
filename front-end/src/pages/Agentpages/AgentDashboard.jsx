@@ -1,7 +1,7 @@
-import React from 'react';
+import React , {useState, useEffect} from 'react';
 import { useAuth } from '../../auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
+import { useNavigate, Link } from 'react-router-dom'; 
+import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AccountBarChart';
@@ -10,6 +10,8 @@ import DemographicsBarChart from './DemographicsBarChart';
 import KYCpendingTbl from './KYCpendingTbl';
 import DateRangePicker from '../../components/DaterangePicker'
 import CommonButton from '../../components/CommonButton';
+import { agentService } from '../../services/apiServices';
+
 
 const Dashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -83,6 +85,7 @@ const Dashboard = () => {
                 <div className="mx-auto flex flex-wrap">
                     <div className="md:w-4/6 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
+                            <StatusDashboard1 />
                             <div className="dashboard-top-caard-collection flex my-1">
                                 <div className="md:w-1/4">
                                     <div className="approved-card">
@@ -121,9 +124,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-
+                        </div>  
                         <div className='md:w-2/3 sm:w-full p-1'>
                             <div className="bg-white w-full my-2 p-4 rounded-md">
                                 <AccountBarChart />
@@ -189,15 +190,7 @@ const Dashboard = () => {
                         </div>
                     </div>
 
-
-
-                    {/* 
-                    <div className='md:w-2/5 sm:w-full p-1'>
-                        <div className="bg-white w-full my-2 p-2 rounded-md">   Missing Documents <br /> Pie Chart</div>
-                        <p>.</p>
-                        <p>.</p>
-
-                    </div> */}
+ 
 
                     <div className='md:w-1/2 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4 rounded-md">
@@ -211,15 +204,100 @@ const Dashboard = () => {
                             <KYCpendingTbl />
                         </div>
                     </div>
-                </div >
-
-
-
+                </div > 
             </div >
 
 
         </>
     );
 };
+
+
+
+
+
+function StatusDashboard1() {
+    const storedId = localStorage.getItem('agent_id') || 1;
+    const [statusCounts, setStatusCounts] = useState({
+        Pending: 0,
+        Approved: 0,
+        Reject: 0,
+        Review: 0
+    });
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await agentService.applicationcountbyagent(storedId);
+                // console.log(response)
+                if (response && response.data) {
+                    // Count the statuses
+                    const counts = response.data.reduce((acc, item) => {
+                        acc[item.status] = (acc[item.status] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    setStatusCounts({
+                        Pending: counts.Pending || 0,
+                        Approved: counts.Approved || 0,
+                        Reject: counts.Reject || 0,
+                        Review: counts.Review || 0
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.response?.data?.message
+                });
+            }
+        };
+        fetchDetails();
+    }, []);
+
+    return (
+        <div className="dashboard-top-caard-collection flex my-1">
+            <Link to="/enrollment_review" className="md:w-1/4">
+                <div className="recent-applyed-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Review}</span>
+                        <small>Review</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/enrollment_approved" className="md:w-1/4">
+                <div className="approved-card">
+                    <i className="bi bi-clipboard2-check"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Approved}</span>
+                        <small>Approved</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/enrollment_pending" className="md:w-1/4">
+                <div className="pending-card">
+                    <i className="bi bi-clipboard2-minus"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Pending}</span>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/enrollment_rejected" className="md:w-1/4">
+                <div className="rejected-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
+                        <small>Rejected</small>
+                    </div>
+                </div>
+            </Link>
+        </div>
+    );
+}
+
+
 
 export default Dashboard;

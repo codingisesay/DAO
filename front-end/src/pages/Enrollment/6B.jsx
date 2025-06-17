@@ -23,9 +23,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const submitAgentPic = async (localFormData) => {
         const payload = {
             application_id: formData.application_id || application_id,
-            longitude: JSON.stringify(localFormData.metadata.location.longitude),
-            latitude: JSON.stringify(localFormData.metadata.location.latitude),
-            photo: localFormData.file,
+            // longitude: JSON.stringify(localFormData.metadata.location.longitude),
+            // latitude: JSON.stringify(localFormData.metadata.location.latitude),
+            // photo: localFormData.file || '', 
             ...localFormData,
             status: 'Pending'
         };

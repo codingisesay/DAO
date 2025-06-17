@@ -1,56 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { adminService } from '../../services/apiServices';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 const MonthlyAccountTrends = () => {
-    const data = [
-        { month: 'Apr', accounts: 120 },
-        { month: 'May', accounts: 180 },
-        { month: 'Jun', accounts: 150 },
-        { month: 'Jul', accounts: 210 },
-        { month: 'Aug', accounts: 190 },
-        { month: 'Oct', accounts: 230 }
-    ];
-    
-    
-    // const [data, setData]=useState();
+    const [data, setData] = useState([]);
    
-    // useEffect(() => {
-    //     const fetchDetails = async () => {
-    //         try {
-    //             const response = await adminService.monthlyLineChart;
-    //             console.log(response.data)
-    //             if (response && response.data) {
-    //                 // Count the statuses
-
-    //                 response.data.forEach(mnth => {
-    //                         console.log('mnth : ',mnth)
-    //                 });
-    //                 // setData(response[0],)
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: 'Error',
-    //                 text: error?.response?.data?.message
-    //             });
-    //         }
-    //     };
-    //     fetchDetails();
-    // }, []);
-
-
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await adminService.monthlyLineChart;
+                console.log('API Response:', response); // For debugging
+                
+                if (response && response.labels && response.data) {
+                    // Transform the API response into the format needed by the chart
+                    const chartData = response.labels.map((month, index) => ({
+                        month: month.substring(0, 3), // Use first 3 letters of month name
+                        accounts: response.data[index] || 0
+                    }));
+                    
+                    setData(chartData);
+                }
+            } catch (error) {
+                console.error('Error fetching Monthly Trends:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.response?.data?.message || 'Failed to load chart data'
+                });
+            }
+        };
+        fetchDetails();
+    }, []);
 
     return (
         <div style={{ width: '100%', height: 340, fontFamily: 'Arial, sans-serif' }}>
             <h2 className="text-xl font-bold mb-2">
                 Monthly Account Opening Trends
             </h2>
-            {/* <h2 className="text-xl font-bold mb-2">
-                Total Account Opening
-            </h2> */}
 
             <ResponsiveContainer width="100%" height="80%">
                 <AreaChart
@@ -105,3 +92,4 @@ const MonthlyAccountTrends = () => {
 };
 
 export default MonthlyAccountTrends;
+ 

@@ -42,71 +42,30 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         state: formData.personalDetails.state || formData.state || '',
         status: 'Pending'
     });
-
-//   useEffect(() => {
-//     //this page is for address data after coming backword to the page
-//     if (!formData.application_id) return;
-//     const fetchDetails = async () => {
-//       try {
-//         const response = await applicationDetailsService.getFullDetails(
-//           formData.application_id
-//         );
-//         if (response.data) {
-//           const {
-//             application,
-//             personal_details,
-//             account_personal_details,
-//             application_addresss,
-//             customerdoc,
-//             customerpic,
-//           } = response.data.data;
-        
-
-//           const resetFormData = {
-//             salutation: personal_details.salutation || "", 
-//             religion: personal_details.religion || "",
-//             caste: personal_details.caste || "",
-//             maritalStatus: personal_details.marital_status || "", 
-//             alt_mob_no: personal_details.alt_mob_no || "",
-//             email: personal_details.email || "",
-//             adhar_card:
-//               personal_details.adhar_card ||
-//               (verificationMethod === "Aadhar Card" ? formData.auth_code : ""),
-//             pannumber:
-//               personal_details.pan_card ||
-//               (verificationMethod === "Pan Card" ? formData.auth_code : ""),
-//             driving_license: personal_details.driving_license || "",
-//             voterid: personal_details.voter_id || "",
-//             passport: personal_details.passport || "",
-//             driving_license:personal_details.driving_license || '',
-//             status: "Pending",
-//           };
-
-//          setLocalFormData(prevData => ({
-//   ...prevData,
-//   ...resetFormData
-// }));
-
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         Swal.fire({
-//           icon: "error",
-//           title: "Error",
-//           text: error?.response?.data?.message,
-//         });
-//       }
-//     };
-//     fetchDetails();
-//   }, [formData.application_id]);
-
-
-
+ 
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedLocalFormData = { ...localFormData, [name]: value };
- 
+        // Check if the input is for the date of birth
+            if (name === "DOB") {
+                const selectedDate = new Date(value);
+                const today = new Date();
+
+                // Remove time portion for accurate comparison
+                selectedDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    // alert("Future dates are not allowed.");
+                    Swal.fire({
+                            icon: 'error',
+                            title: 'Future dates are not allowed.',
+                            // text: error.response?.data?.message || 'Required field contains invalid data.',
+                        });
+                    return; // prevent updating state with invalid date
+                }
+            }
         setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
@@ -123,6 +82,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             }
 
     }
+// const today = new Date().toISOString().split("T")[0];
 
     return (
         <div className="personal-details-form">
@@ -143,20 +103,18 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     {/* First Name - Text only, 50 char limit */}
                     <CommanInput
                         onChange={handleChange}
-                        label={labels.firstname.label}
-                        type="text"
+                        label={labels.firstname.label} 
                         name="first_name"
                         value={localFormData.first_name}
                         required
                         max={30}
-                        validationType="TEXT_ONLY"
+                        validationType="TEXT_ONLY" 
                     />
 
                     {/* Middle Name - Text only, 50 char limit */}
                     <CommanInput
                         onChange={handleChange}
-                        label={labels.middlename.label}
-                        type="text"
+                        label={labels.middlename.label} 
                         name="middle_name"
                         value={localFormData.middle_name}
                         max={30}
@@ -166,8 +124,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     {/* Last Name - Text only, 50 char limit */}
                     <CommanInput
                         onChange={handleChange}
-                        label={labels.lastname.label}
-                        type="text"
+                        label={labels.lastname.label} 
                         name="last_name"
                         value={localFormData.last_name}
                         required
@@ -182,8 +139,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="date"
                         name="DOB"
                         value={localFormData.DOB}
-                        required
-                        validationType="DATE"
+                        max={  new Date().toISOString().split("T")[0] } 
+                        required 
                     />
 
                     {/* Gender - Select field */}
@@ -229,11 +186,11 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     <CommanInput
                         onChange={handleChange}
                         label={labels.mobile.label}
-                        type="text"
+                        type="number"
                         name="mobile"
                         value={localFormData.mobile}
                         required
-                        max={10}
+                        max={10} min={10}
                         validationType="PHONE"
                     />
 
@@ -241,12 +198,12 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     <CommanInput
                         onChange={handleChange}
                         label={labels.alt_mob_no.label}
-                        type="text"
+                        type="number"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
                         onBlur={comapremobileno}
                         required
-                        max={10}
+                        max={10} min={10}
                         validationType="PHONE"
                     />
 
@@ -333,3 +290,6 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 }
 
 export default PersonalDetailsForm;
+
+
+ 
