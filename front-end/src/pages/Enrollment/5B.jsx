@@ -102,6 +102,28 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         return errors;
     };
 
+    // Function to fetch address details from PIN code API
+    const fetchAddressByPinCode = async (pincode, prefix) => {
+        try {
+            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+            const data = await response.json();
+            
+            if (data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
+                const postOffice = data[0].PostOffice[0];
+                return {
+                    [`nomineeState`]: postOffice.State,
+                    [`nomineeDistrict`]: postOffice.District,
+                    [`nomineeCity`]: postOffice.Name || postOffice.Block || postOffice.Division,
+                    [`nomineeCountry`]: 'India'
+                };
+ 
+            }
+            throw new Error('No address found for this PIN code');
+        } catch (error) {
+            console.error('Error fetching address by PIN code:', error);
+            throw error;
+        }
+    };
     const handleChange = (section, e) => {
         const { name, value } = e.target;
 
@@ -355,7 +377,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
             {/* Nominee Form */}
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
                 <SelectField
                     label="Salutation"
                     name="nomineeSalutation"
@@ -430,10 +452,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 />
             </div>
 
-            <h2 className="text-xl font-bold mt-8 mb-4">Nominee Address</h2>
-
-            <input type='checkbox' onClick={sameAddress} />Same as address
-            <br />
+            <div className='flex  items-center mb-2'>
+            <h2 className="text-xl font-bold m-0 ">Nominee Address</h2>    &emsp;
+            {/* <div className='flex items-center'> */}
+            <input type='checkbox' className='me-2' onClick={sameAddress} /> Same as permenant address
+            {/* </div> */}
+                
+            </div>
+ 
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
                 <InputField
                     label="Complex Name"

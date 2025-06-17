@@ -131,7 +131,6 @@ useEffect(() => {
                 maiden_first_name: localFormData.maidenFirstName,
                 maiden_middle_name: localFormData.maidenMiddleName,
                 maiden_last_name: localFormData.maidenLastName,
-
                 father_prefix_name: localFormData.fatherSpousePrefixName,
                 father_first_name: localFormData.fatherSpouseFirstName,
                 father_middle_name: localFormData.fatherSpouseMiddleName,
