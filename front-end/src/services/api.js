@@ -3,8 +3,7 @@
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
 
-  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN,
-  BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
+  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN, 
   AUTH: {
     LOGIN: "/auth/api/login",
     FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
@@ -30,6 +29,9 @@ export const API_ENDPOINTS = {
 
   AGENT: {
     GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/dao/api/agent/full-applications/${agentId}`,
+
+    ///for agent dashboard
+    GET_APPLICATION_COUNT:(id)=> `/dao/api/account-status-by-agent?agent_id=${id}`
   },
 
   PERSONAL_DETAILS: {

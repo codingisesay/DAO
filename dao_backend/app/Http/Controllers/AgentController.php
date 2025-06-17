@@ -33,6 +33,44 @@ class AgentController extends Controller
         ]);
     }
 
+
+public function getAccountStatusByAgent(Request $request)
+{
+    $agentId = $request->input('agent_id');
+
+    // Base query with join
+    $baseQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select(
+            'cas.*',
+            'cad.agent_id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name'
+        );
+
+    // Clone for reuse in both queries
+    $statusQuery = clone $baseQuery;
+    $countQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select('cas.status', DB::raw('COUNT(*) as total'))
+        ->groupBy('cas.status');
+
+    if (!empty($agentId)) {
+        $baseQuery->where('cad.agent_id', $agentId);
+        $countQuery->where('cad.agent_id', $agentId);
+    }
+
+    $statuses = $baseQuery->get();
+    $statusCounts = $countQuery->get();
+
+    return response()->json([
+        'data' => $statuses,
+        'summary' => $statusCounts
+    ], 200);
+}
+
+
  
 public function EnrollmentDetails(Request $request)
 {
@@ -674,5 +712,164 @@ public function getFullApplicationsByAgent($agent_id)
         'data' => $result,
     ]);
 }
+
+
+// dashboard Approved table 
+public function getApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// all Approved applications agnet
+public function getApprovedApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'approved') // Filter for approved status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Approved applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+// all pending applications agent
+public function getPendingApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'pending') // Filter for pending status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Pending applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+public function getReviewApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'review') // Filter for review status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Review applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+public function getRejectedApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'rejected') // Filter for rejected status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Rejected applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// KYC Application Status
+public function getKycApplicationTrends(Request $request)
+{
+    $kycAgentId = $request->input('kyc_agent_id');
+
+    // Safety check
+    if (!$kycAgentId) {
+        return response()->json(['message' => 'kyc_agent_id is required.'], 400);
+    }
+
+    $currentYear = date('Y');
+
+    // Base query for monthly
+    $monthly = DB::table('kyc_application_status as kas')
+        ->join('kyc_application as ka', 'kas.kyc_application_id', '=', 'ka.id')
+        ->where('ka.kyc_agent_id', $kycAgentId)
+        ->whereIn('kas.status', ['approved', 'pending'])
+        ->whereYear('kas.created_at', $currentYear)
+        ->select(
+            DB::raw("DATE_FORMAT(kas.created_at, '%Y-%m') as month"),
+            'kas.status',
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('month', 'kas.status')
+        ->get();
+
+    // Base query for weekly
+    $weekly = DB::table('kyc_application_status as kas')
+        ->join('kyc_application as ka', 'kas.kyc_application_id', '=', 'ka.id')
+        ->where('ka.kyc_agent_id', $kycAgentId)
+        ->whereIn('kas.status', ['approved', 'pending'])
+        ->whereYear('kas.created_at', $currentYear)
+        ->select(
+            DB::raw("DATE_FORMAT(kas.created_at, '%Y-%u') as week"),
+            'kas.status',
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('week', 'kas.status')
+        ->get();
+
+    return response()->json([
+        'message' => 'KYC application trends fetched successfully.',
+        'data' => [
+            'monthly' => $monthly,
+            'weekly' => $weekly
+        ]
+    ]);
+}
+
+
+
+
 
 }

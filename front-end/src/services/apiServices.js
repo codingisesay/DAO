@@ -35,6 +35,10 @@ export const agentService = {
   // applications for the agent
   getFullApplicationsByAgent: (agentId) =>
     apiService.get(API_ENDPOINTS.AGENT.GET_FULL_APPLICATIONS_BY_AGENT(agentId)),
+
+
+  applicationcountbyagent: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.GET_APPLICATION_COUNT(id)),
 }
 
 export const personalDetailsService = {
