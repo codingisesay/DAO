@@ -47,7 +47,25 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         const updatedLocalFormData = { ...localFormData, [name]: value };
- 
+        // Check if the input is for the date of birth
+            if (name === "DOB") {
+                const selectedDate = new Date(value);
+                const today = new Date();
+
+                // Remove time portion for accurate comparison
+                selectedDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    // alert("Future dates are not allowed.");
+                    Swal.fire({
+                            icon: 'error',
+                            title: 'Future dates are not allowed.',
+                            // text: error.response?.data?.message || 'Required field contains invalid data.',
+                        });
+                    return; // prevent updating state with invalid date
+                }
+            }
         setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
@@ -64,7 +82,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             }
 
     }
-const today = new Date().toISOString().split("T")[0];
+// const today = new Date().toISOString().split("T")[0];
 
     return (
         <div className="personal-details-form">
@@ -121,7 +139,7 @@ const today = new Date().toISOString().split("T")[0];
                         type="date"
                         name="DOB"
                         value={localFormData.DOB}
-                        min={  new Date().toISOString().split("T")[0] } 
+                        max={  new Date().toISOString().split("T")[0] } 
                         required 
                     />
 

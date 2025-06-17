@@ -146,6 +146,27 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             return;
         }
 
+          // Check if the input is for the date of birth
+            if (name === "nomineeDOB") {
+                const selectedDate = new Date(value);
+                const today = new Date();
+
+                // Remove time portion for accurate comparison
+                selectedDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                if (selectedDate > today) {
+                    // alert("Future dates are not allowed.");
+                    Swal.fire({
+                            icon: 'error',
+                            title: 'Future dates are not allowed.',
+                            // text: error.response?.data?.message || 'Required field contains invalid data.',
+                        });
+                    return; // prevent updating state with invalid date
+                }
+            }
+
+
         // If DOB is being changed, calculate age
         if (name === 'nomineeDOB') {
             const age = calculateAge(value);
