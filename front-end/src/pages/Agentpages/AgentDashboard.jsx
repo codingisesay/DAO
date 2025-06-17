@@ -86,44 +86,7 @@ const Dashboard = () => {
                     <div className="md:w-4/6 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
                             <StatusDashboard1 />
-                            <div className="dashboard-top-caard-collection flex my-1">
-                                <div className="md:w-1/4">
-                                    <div className="approved-card">
-                                        <i className="bi bi-clipboard2-check"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">100+</span>
-                                            <small>Approved</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="md:w-1/4">
-                                    <div className="pending-card">
-                                        <i className="bi bi-clipboard2-minus"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">200+</span>
-                                            <small>Pending</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="md:w-1/4">
-                                    <div className="rejected-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Rejected</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="md:w-1/4">
-                                    <div className="recent-applyed-card">
-                                        <i className="bi bi-clipboard2-plus"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">350+</span>
-                                            <small>Recent </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>  
                         <div className='md:w-2/3 sm:w-full p-1'>
                             <div className="bg-white w-full my-2 p-4 rounded-md">
@@ -258,7 +221,7 @@ function StatusDashboard1() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/enrollment_review" className="md:w-1/4">
+            <Link to="/enrollment_review_tbl" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -267,7 +230,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/enrollment_approved" className="md:w-1/4">
+            <Link to="/enrollment_approved_tbl" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -276,7 +239,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/enrollment_pending" className="md:w-1/4">
+            <Link to="/enrollment_pending_tbl" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -285,7 +248,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/enrollment_rejected" className="md:w-1/4">
+            <Link to="/enrollment_rejected_tbl" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
