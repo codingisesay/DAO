@@ -188,7 +188,10 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::get('/agent/applicationDetails/{id}', [AgentController::class, 'getApplicationDetails'])->name('enrollment.applicationDetails');
         // KYC Application Status count yearly of approved , rejected , pending
         Route::get('/kyc-applications/trends', [AgentController::class, 'getKycApplicationTrends']);
-
+        // Performance Metrics monthly 
+        Route::get('/agent-applications-grouped/{agentId}', [AgentController::class, 'getApplicationsByAgentWithDateGroup']);
+        // Performance Metrics yearly
+        Route::get('/agent-applications-yearly/{agentId}', [AgentController::class, 'getApplicationsByAgentYearly']);
 
 
 

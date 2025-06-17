@@ -868,7 +868,55 @@ public function getKycApplicationTrends(Request $request)
     ]);
 }
 
+// Performance Metrics monthly 
+public function getApplicationsByAgentWithDateGroup($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            DB::raw("DATE_FORMAT(cas.created_at, '%Y-%m') as month"), // e.g. 2025-06
+            DB::raw('YEAR(cas.created_at) as year'),
+            DB::raw('MONTH(cas.created_at) as month_number'),
+            DB::raw('COUNT(*) as total_applications'),
+            DB::raw("SUM(CASE WHEN cas.status = 'approved' THEN 1 ELSE 0 END) as approved"),
+            DB::raw("SUM(CASE WHEN cas.status = 'pending' THEN 1 ELSE 0 END) as pending"),
+            DB::raw("SUM(CASE WHEN cas.status = 'rejected' THEN 1 ELSE 0 END) as rejected"),
+            DB::raw("SUM(CASE WHEN cas.status = 'review' THEN 1 ELSE 0 END) as review")
+        )
+        ->groupBy('month', 'year', 'month_number')
+        ->orderBy('year', 'desc')
+        ->orderBy('month_number', 'desc')
+        ->get();
 
+    return response()->json([
+        'message' => 'Applications grouped by month and year fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// Performance Metrics yearly 
+public function getApplicationsByAgentYearly($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            DB::raw('YEAR(cas.created_at) as year'),
+            DB::raw('COUNT(*) as total_applications'),
+            DB::raw("SUM(CASE WHEN cas.status = 'approved' THEN 1 ELSE 0 END) as approved"),
+            DB::raw("SUM(CASE WHEN cas.status = 'pending' THEN 1 ELSE 0 END) as pending"),
+            DB::raw("SUM(CASE WHEN cas.status = 'rejected' THEN 1 ELSE 0 END) as rejected"),
+            DB::raw("SUM(CASE WHEN cas.status = 'review' THEN 1 ELSE 0 END) as review")
+        )
+        ->groupBy('year')
+        ->orderBy('year', 'desc')
+        ->get();
+
+    return response()->json([
+        'message' => 'Yearly applications summary fetched successfully.',
+        'data' => $applications
+    ]);
+}
 
 
 
