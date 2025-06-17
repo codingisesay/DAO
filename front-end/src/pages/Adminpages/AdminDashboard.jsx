@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
+import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
-import AccountBarChart from './AdminDashboard_validationBarGraph';
-import DemographicsBarChart from './AdminDashobard_KYCdounut';
-import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
+import AccountBarChart from './AdminDashboardMonthlyBarChart';
+import DemographicsBarChart from './AdminDashobardKycDoughnutChart';
+import MonthlyAccountTrends from './AdminDashboardLineChart';
 import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
@@ -164,17 +164,18 @@ function StatusDashboard1() {
     const [statusCounts, setStatusCounts] = useState({
         Pending: 0,
         Approved: 0,
-        Rejected: 0,
-        // Review: 0/
+        Reject: 0,
+        Review: 0
     });
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
                 const response = await accountsStatusListService.getList();
+                // console.log(response)
                 if (response && response.data) {
                     // Count the statuses
-                    const counts = response.data.data.reduce((acc, item) => {
+                    const counts = response.data.reduce((acc, item) => {
                         acc[item.status] = (acc[item.status] || 0) + 1;
                         return acc;
                     }, {});
@@ -182,7 +183,7 @@ function StatusDashboard1() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
+                        Reject: counts.Reject || 0,
                         Review: counts.Review || 0
                     });
                 }
@@ -200,7 +201,7 @@ function StatusDashboard1() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/review" className="md:w-1/4">
+            <Link to="/enrollment_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -209,7 +210,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/approved" className="md:w-1/4">
+            <Link to="/enrollment_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -218,7 +219,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/pending" className="md:w-1/4">
+            <Link to="/enrollment_pending" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -227,11 +228,11 @@ function StatusDashboard1() {
                     </div>
                 </div>
             </Link>
-            <Link to="/rejected" className="md:w-1/4">
+            <Link to="/enrollment_rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
                         <small>Rejected</small>
                     </div>
                 </div>
@@ -246,7 +247,7 @@ function StatusDashboard2() {
     const [statusCounts, setStatusCounts] = useState({
         Pending: 0,
         Approved: 0,
-        Rejected: 0,
+        Reject: 0,
         // Review: 0/
     });
 
@@ -256,7 +257,7 @@ function StatusDashboard2() {
                 const response = await kycaccountsStatusListService.getList();
                 if (response && response.data) {
                     // Count the statuses
-                    const counts = response.data.data.reduce((acc, item) => {
+                    const counts = response.data.reduce((acc, item) => {
                         acc[item.status] = (acc[item.status] || 0) + 1;
                         return acc;
                     }, {});
@@ -264,7 +265,7 @@ function StatusDashboard2() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
+                        Reject: counts.Reject || 0,
                         Review: counts.Review || 0
                     });
                 }
@@ -282,7 +283,7 @@ function StatusDashboard2() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/review" className="md:w-1/4">
+            <Link to="/kyc_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -291,7 +292,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/approved" className="md:w-1/4">
+            <Link to="/kyc_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -300,7 +301,7 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/pending_kyc" className="md:w-1/4">
+            <Link to="/kyc_pending" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -309,11 +310,11 @@ function StatusDashboard2() {
                     </div>
                 </div>
             </Link>
-            <Link to="/rejected" className="md:w-1/4">
+            <Link to="/kyc_rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
                         <small>Rejected</small>
                     </div>
                 </div>

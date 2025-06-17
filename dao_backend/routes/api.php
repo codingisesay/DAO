@@ -168,6 +168,8 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
 
         // dashboard agent routes 
+        // status count 
+        Route::get('/account-status-by-agent', [AgentController::class, 'getAccountStatusByAgent']);
         // all applications for the agent
         Route::get('agent/applications/by-agent/{agentId}', [AgentController::class, 'getApplicationsByAgent']);
         // Approved applications for the agent table 

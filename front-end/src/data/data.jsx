@@ -1,6 +1,7 @@
 
 // Define form fields
-const daodocbase = 'http://127.0.0.1:8000/storage/';
+
+const daodocbase = import.meta.env.VITE_BASE_URL_LOGIN + '/dao/storage/';
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
@@ -108,7 +109,7 @@ const userdummydata = {
         first_name: "Kisan",
         middle_name: "Pandya",
         last_name: "Sharma",
-        DOB: '1985-07-11',
+        // DOB: '1985-07-11',
         gender: "Male",
         mobile: "9876543210",
         complex_name: "Sunshine Apartments",

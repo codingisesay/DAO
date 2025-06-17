@@ -21,8 +21,8 @@ function p3({ onNext, onBack }) {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS3(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('documants :', response.data.documents);
-                    const application = response.data.documents || {};
+                    console.log('documants :', response.documents);
+                    const application = response.documents || {};
                     setLocalFormData(application);
                 }
             } catch (error) {

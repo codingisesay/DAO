@@ -15,7 +15,7 @@ body {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-
+.dark .stepper-container{background: #111827;border: 5px solid #3b4760f8;}
 .sidebar-stepper-container {
     height: calc(100% - 270px);
     overflow: auto;
@@ -169,6 +169,10 @@ body {
     background-color: white;
     border-top: 1px solid #e5e7eb;
 
+}
+.dark .stepper-footer{
+    background-color: #111827;
+    border-top: 1px solid #111827;
 }
 
 .footer-icon-collection i {

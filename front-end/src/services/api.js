@@ -7,141 +7,156 @@ export const API_ENDPOINTS = {
   BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
   AUTH: {
     LOGIN: "/auth/api/login",
-    FORGOTPASS: (id) => `/api/auth/api/forgot-password?identifier=${id}`,
+    FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
     OTPVERIFY: (id, id1) =>
-      `/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
+      `/dao/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
     SETPASS: (id, id1) =>
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",
   },
 
+  CREATE_ACCOUNT:{
+    ENROLLMENT_S1: '/dao/api/agent/enrollment', 
+    PERSONAL_DETAILS_S2A: '/dao/api/agent/personal-details',
+    ADDRESS_DETAILS_S2B: '/dao/api/agent/address-details',
+    LIVE_PHOTO_S2C: '/dao/api/agent/live-photo',
+    APPLICATION_DOCUMENT_S3: '/dao/api/agent/application-document',
+    ACCOUNT_PERSONAL_DETAILS_S5A: '/dao/api/agent/account-personal-details',
+    ACCOUNT_NOMINEE_S5B: '/dao/api/agent/account-nominee',
+    SERVICE_TO_CUSTOMER_S5C: '/dao/api/agent/service-to-customer',
+    AGENT_LIVE_PHOTO_S6B: '/dao/api/agent/agent-live-photo',
+    GET_BANKING_FACILITIES_SERVICE : '/dao/api/agent/bankingServices',
+  },
+
   AGENT: {
-    AGENTENROLL: '/api/agent/enrollment',
-    GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/api/agent/full-applications/${agentId}`,
+    GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/dao/api/agent/full-applications/${agentId}`,
   },
 
   PERSONAL_DETAILS: {
-    CREATE: '/api/agent/personal-details',
+    CREATE: '/dao/api/agent/personal-details',
   },
 
   ADDRESS_DETAILS: {
-    CREATE: '/api/agent/address-details',
-    // ...
+    CREATE: '/dao/api/agent/address-details', 
   },
 
   LIVE_PHOTO: {
-    CREATE: '/api/agent/live-photo',
+    CREATE: '/dao/api/agent/live-photo',
   },
 
   APPLICATION_DOCUMENT: {
-    CREATE: '/api/agent/application-document',
+    CREATE: '/dao/api/agent/application-document',
   },
 
   ACCOUNT_PERSONAL_DETAILS: {
-    CREATE: '/api/agent/account-personal-details',
+    CREATE: '/dao/api/agent/account-personal-details',
   },
 
   ACCOUNT_NOMINEE: {
-    CREATE: '/api/agent/account-nominee',
+    CREATE: '/dao/api/agent/account-nominee',
   },
 
   SERVICE_TO_CUSTOMER: {
-    CREATE: '/api/agent/service-to-customer',
+    CREATE: '/dao/api/agent/service-to-customer',
   },
 
   AGENT_LIVE_PHOTO: {
-    CREATE: '/api/agent/agent-live-photo',
+    CREATE: '/dao/api/agent/agent-live-photo',
   },
 
-  ACCOUNTS_STATUS_LIST: { GET_LIST: '/api/admin/accountSatus', },
+  ACCOUNTS_STATUS_LIST: { GET_LIST: '/dao/api/admin/accountSatus', },
 
   KYC_PENDING_APPLICATIONS: {
-    GET_LIST: '/api/admin/kyc-applications/pending',  // Updated endpoint path ]
+    GET_LIST: '/dao/api/admin/kyc-applications/pending',  // Updated endpoint path ]
   },
   KYC_ACCOUNTS_STATUS_LIST: {
-    GET_LIST: '/api/admin/kycaccountsStatus',  // Updated endpoint path
+    GET_LIST: '/dao/api/admin/kycaccountsStatus',  // Updated endpoint path
   },
 
   RECENT_PENDING_APPLICATIONS: {
-    GET_LIST: '/api/admin/pendingApplication',
+    GET_LIST: '/dao/api/admin/pendingApplication',
   },
 
   KYC: {
-    START_KYC: '/api/agent/kyc/start',
-    SAVE_ALL_KYC_DATA: '/api/agent/save-all-kyc-data',
-    UPDATE_KYC_DOCUMENT_STATUS: '/api/agent/update-kyc-document-status',
-    UPDATE_KYC_AFTER_VS_CBS_STATUS: '/api/agent/update-kyc-after-vs-cbs-status',
+    START_KYC: '/dao/api/agent/kyc/start',
+    SAVE_ALL_KYC_DATA: '/dao/api/agent/save-all-kyc-data',
+    UPDATE_KYC_DOCUMENT_STATUS: '/dao/api/agent/update-kyc-document-status',
+    UPDATE_KYC_AFTER_VS_CBS_STATUS: '/dao/api/agent/update-kyc-after-vs-cbs-status',
   },
 
   PENDING_ACCOUNT: {
-    GET_DATAILS_S1: (id) => `/api/admin/pendingApplicationDetailsByID/${id}`,
-    GET_DATAILS_S2A: (id) => `/api/admin/fetchApplicationPersonalDetails/${id}`,
-    GET_DATAILS_S2B: (id) => `/api/admin/fetchApplicationAddressDetails/${id}`,
-    GET_DATAILS_S2C: (id) => `/api/admin/fetchApplicantLivePhotosDetails/${id}`,
+    GET_DATAILS_S1: (id) => `/dao/api/admin/pendingApplicationDetailsByID/${id}`,
+    GET_DATAILS_S2A: (id) => `/dao/api/admin/fetchApplicationPersonalDetails/${id}`,
+    GET_DATAILS_S2B: (id) => `/dao/api/admin/fetchApplicationAddressDetails/${id}`,
+    GET_DATAILS_S2C: (id) => `/dao/api/admin/fetchApplicantLivePhotosDetails/${id}`,
 
-    GET_DATAILS_S3: (id) => `/api/admin/fetchApplicationDocuments/${id}`,
+    GET_DATAILS_S3: (id) => `/dao/api/admin/fetchApplicationDocuments/${id}`,
 
-    GET_DATAILS_S5A: (id) => `/api/admin/fetchAccountPersonalDetails/${id}`,
-    GET_DATAILS_S5B: (id) => `/api/admin/fetchAccountNominees/${id}`,
-    GET_DATAILS_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
-    GET_DATAILS_S6B: (id) => `/api/admin/fetchAgentLivePhotos/${id}`,
+    GET_DATAILS_S5A: (id) => `/dao/api/admin/fetchAccountPersonalDetails/${id}`,
+    GET_DATAILS_S5B: (id) => `/dao/api/admin/fetchAccountNominees/${id}`,
+    GET_DATAILS_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    GET_DATAILS_S6B: (id) => `/dao/api/admin/fetchAgentLivePhotos/${id}`,
   },
   PENDING_ACCOUNT_STATUS_UPDATE: {
-    UPDATE_S1: (id) => `/api/admin/updateCustomerApplicationDetails/${id}`,
-    UPDATE_S2A: (id) => `/api/admin/updateApplicationPersonalDetails/${id}`,
-    UPDATE_S2B: (id) => `/api/admin/updateApplicationAddressDetails/${id}`,
-    UPDATE_S2C: (id) => `/api/admin/updateApplicantLivePhotos/${id}`,
+    UPDATE_S1: (id) => `/dao/api/admin/updateCustomerApplicationDetails/${id}`,
+    UPDATE_S2A: (id) => `/dao/api/admin/updateApplicationPersonalDetails/${id}`,
+    UPDATE_S2B: (id) => `/dao/api/admin/updateApplicationAddressDetails/${id}`,
+    UPDATE_S2C: (id) => `/dao/api/admin/updateApplicantLivePhotos/${id}`,
 
-    UPDATE_S3: (id) => `/api/admin/updateApplicationDocuments/${id}`,
+    UPDATE_S3: (id) => `/dao/api/admin/updateApplicationDocuments/${id}`,
 
-    UPDATE_S5A: (id) => `/api/admin/updateAccountPersonalDetails/${id}`,
-    UPDATE_S5B: (id) => `/api/admin/updateAccountNominees/${id}`,
-    UPDATE_S5C: (id) => `/api/admin/fetchServiceToCustomer/${id}`,
-    UPDATE_S6B: (id) => `/api/admin/updateAgentLivePhotos/${id}`,
+    UPDATE_S5A: (id) => `/dao/api/admin/updateAccountPersonalDetails/${id}`,
+    UPDATE_S5B: (id) => `/dao/api/admin/updateAccountNominees/${id}`,
+    UPDATE_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },
   
   PENDING_KYC: {
-    GET_DATAILS_KYC1:(id)=> `/api/admin/kyc/details/${id}`,
-    GET_DATAILS_KYC2:(id)=> `api/admin/kyc/details/${id}`, // Updated endpoint path
+    GET_DATAILS_KYC1:(id)=> `/dao/api/admin/kyc/details/${id}`,
+    GET_DATAILS_KYC2:(id)=> `/dao/api/admin/kyc/details/${id}`, // Updated endpoint path
   },
 
   PENDING_KYC_UPDATE: {
-    UPDATE_KYC1: `/api/agent/update-kyc-after-vs-cbs-status`,
-    UPDATE_KYC2: `/api/agent/update-kyc-document-status`, 
-    update_KYC3: `/api/admin/kyc-application-status/update`
+    UPDATE_KYC1: `/dao/api/agent/update-kyc-after-vs-cbs-status`,
+    UPDATE_KYC2: `/dao/api/agent/update-kyc-document-status`, 
+    update_KYC3: `/dao/api/admin/kyc-application-status/update`
   },
 
 // /video-kyc/create/{id}
-  VKYC_CREATE_MEETING: (id) => `/api/video-kyc/create/${id}`,
+  VKYC_CREATE_MEETING: (id) => `/dao/api/video-kyc/create/${id}`,
 
 
 
 
   // om data below
   ADMIN: {
-    GET_ALL_APPLICATIONS: '/api/admin/applications',
-    GET_ALL_PENDING_APPLICATIONS: '/api/admin/applications/pending',
-    GET_ALL_APPLICATIONS_REJECTED: '/api/admin/applications/rejected',
-    UPDATE_APPLICATION_STATUS: '/api/admin/application/update-status',
-    UPDATE_PERSONAL_DETAILS_STATUS: '/api/admin/personal-details/update-status',
-    UPDATE_DOCUMENTS_STATUS: '/api/admin/documents/update-status',
-    UPDATE_ADDRESS_DETAILS_STATUS: '/api/admin/address-details/update-status',
-    UPDATE_LIVE_PHOTOS_STATUS: '/api/admin/live-photos/update-status',
-    UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS: '/api/admin/account-personal-details/update-status',
-    UPDATE_NOMINEES_STATUS: '/api/admin/nominees/update-status',
+    GET_ALL_APPLICATIONS: '/dao/api/admin/applications',
+    GET_ALL_PENDING_APPLICATIONS: '/dao/api/admin/pendingApplication', 
+    GET_ALL_APPLICATIONS_REJECTED: '/dao/api/admin/applications/rejected',
+    UPDATE_APPLICATION_STATUS: '/dao/api/admin/application/update-status',
+    UPDATE_PERSONAL_DETAILS_STATUS: '/dao/api/admin/personal-details/update-status',
+    UPDATE_DOCUMENTS_STATUS: '/dao/api/admin/documents/update-status',
+    UPDATE_ADDRESS_DETAILS_STATUS: '/dao/api/admin/address-details/update-status',
+    UPDATE_LIVE_PHOTOS_STATUS: '/dao/api/admin/live-photos/update-status',
+    UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS: '/dao/api/admin/account-personal-details/update-status',
+    UPDATE_NOMINEES_STATUS: '/dao/api/admin/nominees/update-status',
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
-    // Add these for approved applications
-    GET_ALL_APPROVED_APPLICATIONS: '/api/admin/approvedApplication',
-    GET_APPROVED_APPLICATIONS_AGENT_COUNT: '/api/admin/approvedApplicationCount',
-    GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/approvedApplicationDetails/${agentId}`,
     // Add these for Reviews applications
-    GET_ALL_REVIEW_APPLICATIONS: '/api/admin/reviewApplication',
-    GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/api/admin/reviewApplicationCount',
-    GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/api/admin/reviewApplicationDetails/${agentId}`,
+    GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/reviewApplication',
+    GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/dao/api/admin/reviewApplicationCount',
+    GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/reviewApplicationDetails/${agentId}`,
     // Add these for kyc review applications
-    GET_ALL_KYC_REVIEW_APPLICATIONS: '/api/admin/kycReviewApplication',
+    GET_ALL_KYC_REVIEW_APPLICATIONS: '/dao/api/admin/kycReviewApplication',
+
+    // /// By ankitka
+    APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
+    GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
+
+
+    //////////For DAshboard Admin
+    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly'
 
   },
 
@@ -150,15 +165,7 @@ export const API_ENDPOINTS = {
   // om data above
 
 
-
-
-
-
-
-
-
-
-
+ 
 
   BANK: {
     CREATE: "/auth/banks",
@@ -198,3 +205,67 @@ export const API_ENDPOINTS = {
     },
   },
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+  
+
+  //   //approved
+  //   Route::get('/admin/approvedApplication', [AdminController::class, 'getApprovedApplications']);
+  //   Route::get('/admin/approvedApplicationCount', [AdminController::class, 'getApprovedApplicationsAgentCount']);
+  //   Route::get('/admin/approvedApplicationDetails/{agentId}', [AdminController::class, 'getApprovedApplicationsDetailsAgentById']);
+  //   //review
+  //   Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
+  //   Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
+  //   Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
+  //   //rejected
+  //   Route::get('admin/applications/rejected', [AdminController::class, 'getRejectedApplications']);
+  //   Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
+  //   Route::get('admin/applications/rejected/agent/{agentId}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
+  //   //kyc review 
+  //   Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
+  //   Route::get('/kyc/review/count-by-agent', [AdminController::class, 'getKycReviewApplicationsAgentCount']);
+  //  Route::get('/kyc/review/agent/{agentId}', [AdminController::class, 'getKycReviewApplicationsByAgentId']);
+  //   // kyc approved table 
+  //   Route::get('/admin/kyc-applications/approved', [AdminController::class, 'getKycApprovedApplications']);
+  //   Route::get('/kyc/approved/count-by-agent', [AdminController::class, 'getKycApprovedApplicationsAgentCount']);
+  //   Route::get('/kyc/approved/agent/{agentId}', [AdminController::class, 'getKycApprovedApplicationsByAgentId']);

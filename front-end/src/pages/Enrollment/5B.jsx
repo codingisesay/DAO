@@ -2,9 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
-import { accountNomineeService } from '../../services/apiServices';
+import { accountNomineeService , createAccountService,applicationDetailsService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { salutation, relation } from '../../data/data';
+import { add } from '@tensorflow/tfjs-core/dist/engine';
 
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
@@ -101,6 +102,28 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         return errors;
     };
 
+    // Function to fetch address details from PIN code API
+    const fetchAddressByPinCode = async (pincode, prefix) => {
+        try {
+            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+            const data = await response.json();
+            
+            if (data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
+                const postOffice = data[0].PostOffice[0];
+                return {
+                    [`nomineeState`]: postOffice.State,
+                    [`nomineeDistrict`]: postOffice.District,
+                    [`nomineeCity`]: postOffice.Name || postOffice.Block || postOffice.Division,
+                    [`nomineeCountry`]: 'India'
+                };
+ 
+            }
+            throw new Error('No address found for this PIN code');
+        } catch (error) {
+            console.error('Error fetching address by PIN code:', error);
+            throw error;
+        }
+    };
     const handleChange = (section, e) => {
         const { name, value } = e.target;
 
@@ -169,6 +192,17 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
             return;
         }
+         if (
+                /\d/.test(currentNominee.details.nomineeFirstName) ||
+                /\d/.test(currentNominee.details.nomineeMiddleName) ||
+                /\d/.test(currentNominee.details.nomineeLastName)
+            ) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Nominee name fields should contain only alphabets. Numbers are not allowed.',
+                });
+                return;
+            }
 
         // Then check for validation errors
         const errors = validateNominee(currentNominee);
@@ -265,7 +299,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
             return;
         }
-
+   
         try {
             // Prepare nominees array for API
             const nomineesPayload = nominees.map(nominee => ({
@@ -290,7 +324,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             }));
 
             // Send all nominees in one request
-            await accountNomineeService.create({
+            await createAccountService.accountNominee_s5b({
                 application_id: storedId,
                 nominees: nomineesPayload
             });
@@ -316,7 +350,33 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
     };
 
+    const sameAddress= async() =>{
+        
+        const response = await applicationDetailsService.getFullDetails(storedId);
+        if (response.data) {
+        const {  application_addresss} = response.data;
+        const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
+        console.log('to show : ', address);
+                setCurrentNominee(prev => ({
+            ...prev,
+            address: {
+                nomineeComplexName: address.per_complex_name,
+                nomineeBuildingName: address.per_flat_no,
+                nomineeArea: address.per_area,
+                nomineeLandmark: address.per_landmark,
+                nomineeCountry: address.per_country,
+                nomineePinCode: address.per_pincode,
+                nomineeCity: address.per_city,
+                nomineeDistrict: address.per_district,
+                nomineeState: address.per_state
+            }
+        }
+        ))
+    
+        } 
 
+                    
+    }
 
     useEffect(() => {
         saveToLocalStorage({
@@ -328,7 +388,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
             {/* Nominee Form */}
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
                 <SelectField
                     label="Salutation"
                     name="nomineeSalutation"
@@ -403,7 +463,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 />
             </div>
 
-            <h2 className="text-xl font-bold mt-8 mb-4">Nominee Address</h2>
+            <div className='flex  items-center mb-2'>
+            <h2 className="text-xl font-bold m-0 ">Nominee Address</h2>    &emsp;
+            {/* <div className='flex items-center'> */}
+            <input type='checkbox' className='me-2' onClick={sameAddress} /> Same as permenant address
+            {/* </div> */}
+                
+            </div>
+ 
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
                 <InputField
                     label="Complex Name"
@@ -457,6 +524,37 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     required
                     max={6}
                     error={errors.nomineePinCode}
+                />
+
+                
+                <InputField
+                    label="State"
+                    name="nomineeState"
+                    value={currentNominee.address.nomineeState}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
+                />
+                
+                <InputField
+                    label="City"
+                    name="nomineeCity"
+                    value={currentNominee.address.nomineeCity}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
+                />
+                
+                <InputField
+                    label="District"
+                    name="nomineeDistrict"
+                    value={currentNominee.address.nomineeDistrict}
+                    onChange={(e) => handleChange('address', e)}
+                    required
+                    max={6}
+                    // error={errors.nomineePinCode}
                 />
             </div>
 

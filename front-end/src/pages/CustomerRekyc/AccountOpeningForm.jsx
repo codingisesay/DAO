@@ -239,7 +239,7 @@ function CustomerForm() {
 
     const prevStep = () => {
         if (currentStep === 2) {
-                setProgress({ ...progress, 12: "inprogress", 2: "pending" });
+                setProgress({ ...progress, 1: "inprogress", 2: "pending" }); setCurrentStep(1);
         } else if (currentStep === 3) {
             setProgress({ ...progress, 2: "inprogress", 3: "pending" });
             setCurrentStep(2);
@@ -268,19 +268,7 @@ function CustomerForm() {
         alert("Form submitted successfully!");
     };
 
-    const updateStep2Progress = (subStep, status) => {
-        setSubProgress(prev => ({
-            ...prev,
-            [subStep]: status
-        }));
-    };
-    const updateStep5Progress = (subStep, status) => {
-        setSubProgress(prev => ({
-            ...prev,
-            [subStep]: status
-        }));
-    };
-
+   
     const completeStep2 = () => {
         setProgress({ ...progress, 2: "completed", 3: "inprogress" });
         setCurrentStep(3);
@@ -328,8 +316,7 @@ function CustomerForm() {
                                 {currentStep === 2 && (
                                     <Step2JobDetails
                                         formData={formData}
-                                        handleChange={handleChange}
-                                        updateProgress={updateStep2Progress}
+                                        handleChange={handleChange} 
                                         subProgress={subProgress}
                                         completeStep={completeStep2}
                                         nextStep={nextStep}

@@ -3,9 +3,10 @@ import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { serviceToCustomerService } from '../../services/apiServices';
+import { serviceToCustomerService , createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { apiService } from '../../utils/storage';
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
@@ -21,14 +22,14 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     useEffect(() => {
         const fetchBankingServices = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/agent/bankingServices');
-                setBankingServices(response.data.data);
+                const response = await createAccountService.getBankingFacilitiesService();
+                setBankingServices(response.data);
 
                 // Initialize form data with all facilities as unchecked if not already set
                 const initialEBankingServices = {};
                 const initialCreditFacilities = {};
 
-                response.data.data.forEach(item => {
+                response.data.forEach(item => {
                     if (item.service_id === 1) { // E-Banking Services
                         const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
                         initialEBankingServices[facilityKey] = formData.bankFacility?.eBankingServices?.[facilityKey] || false;
@@ -120,7 +121,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 banking_services_facilities_id: selectedFacilityIds
             };
 
-            const response = await serviceToCustomerService.create(payload);
+            const response = await createAccountService.serviceToCustomer_s5c(payload);
 
             Swal.fire({
                 icon: 'success',

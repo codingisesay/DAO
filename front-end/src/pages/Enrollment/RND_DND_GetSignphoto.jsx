@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { daoApi } from './utils/storage';
+import { apiService } from './utils/storage';
 import { applicationDocumentService } from './services/apiServices';
 import Swal from 'sweetalert2'
 const MyComponent = () => {
@@ -94,7 +94,7 @@ useEffect(() => {
         });
 
         try {
-            const response = await daoApi.post(applicationDocumentService.upload(formDataObj));
+            const response = await apiService.post(applicationDocumentService.upload(formDataObj));
 
             if (response.data.success) {
               alert('done')

@@ -33,6 +33,44 @@ class AgentController extends Controller
         ]);
     }
 
+
+public function getAccountStatusByAgent(Request $request)
+{
+    $agentId = $request->input('agent_id');
+
+    // Base query with join
+    $baseQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select(
+            'cas.*',
+            'cad.agent_id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name'
+        );
+
+    // Clone for reuse in both queries
+    $statusQuery = clone $baseQuery;
+    $countQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select('cas.status', DB::raw('COUNT(*) as total'))
+        ->groupBy('cas.status');
+
+    if (!empty($agentId)) {
+        $baseQuery->where('cad.agent_id', $agentId);
+        $countQuery->where('cad.agent_id', $agentId);
+    }
+
+    $statuses = $baseQuery->get();
+    $statusCounts = $countQuery->get();
+
+    return response()->json([
+        'data' => $statuses,
+        'summary' => $statusCounts
+    ], 200);
+}
+
+
  
 public function EnrollmentDetails(Request $request)
 {
@@ -287,29 +325,33 @@ public function saveAgentLivePhoto(Request $request)
 
 
 
-
-
- 
 public function saveApplicationDocument(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
         'files' => 'required|array|min:1',
-        'files.*' => 'file|max:10240',
+        'files.*' => 'required|string', // Expecting base64 string
     ]);
 
     $documents = [];
-    foreach ($validated['files'] as $index => $file) {
+    foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
-        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('application_documents', $filename, 'public');
 
-        $doc = ApplicationDocument::updateOrCreate(
+        // Extract file extension from base64 string (optional, for file_name)
+        if (preg_match('/^data:.*?\/(.*?);base64,/', $base64File, $match)) {
+            $extension = $match[1];
+            $base64File = preg_replace('/^data:.*?;base64,/', '', $base64File);
+        } else {
+            $extension = 'bin';
+        }
+
+        $filename = uniqid('doc_') . '.' . $extension;
+        $binaryData = base64_decode($base64File);
+
+        // Save to DB using Eloquent
+        $doc = \App\Models\ApplicationDocument::updateOrCreate(
             [
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
@@ -318,17 +360,17 @@ public function saveApplicationDocument(Request $request)
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
                 'file_name' => $filename,
-                'file_path' => $path,
+                'file_path' => $binaryData, // Save as BLOB
             ]
         );
 
         $documents[] = $doc;
     }
-        
-        DB::table('document_approved_status')->updateOrInsert(
-            ['application_id' => $validated['application_id']],
-            ['status' => 'Pending']
-        );
+
+    \DB::table('document_approved_status')->updateOrInsert(
+        ['application_id' => $validated['application_id']],
+        ['status' => 'Pending']
+    );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { daoApi } from '../../utils/storage'
-import { applicationDocumentService } from '../../services/apiServices';
+import { apiService } from '../../utils/storage'
+import { applicationDocumentService ,createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 
 
@@ -87,44 +88,36 @@ const P3 = ({ onNext, onBack }) => {
             }
 
             documentsWithFiles.forEach((doc) => {
-                formDataObj.append('files[]', doc.file);
+                formDataObj.append('files[]',  doc.file);
                 formDataObj.append('document_types[]', doc.type || doc.name);
             });
             var response =''
+            console.log(documents)
             // Ensure the API endpoint is properly formatted
-            const endpoint = typeof applicationDocumentService.upload === 'function' 
-                ? applicationDocumentService.upload(formDataObj)
-                : applicationDocumentService.upload;
+            const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+                ? createAccountService.applicationDocument_s3(formDataObj)
+                : createAccountService.applicationDocument_s3;
 
-            response = await daoApi.post(endpoint, formDataObj );
+            response = await apiService.post(endpoint, formDataObj );
 
             // Check response status directly
-            if (response && JSON.stringify(response).includes('201')) {
+            if (response ) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
                     text: 'Documents saved successfully.',
                     showConfirmButton: false,
                     timer: 1500
-                }).then(() => {
+                })
                     onNext();
-                });
+                 
             } else {
                 throw new Error(response || 'Upload failed with status: ' + response);
             }
         } catch (error) {
             console.error('Upload error:', error);
-            // Check response status directly
-        
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Documents saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
                     onNext();
-                });
+            Swal.fire('Error', error, 'error');
         
         
         } finally {

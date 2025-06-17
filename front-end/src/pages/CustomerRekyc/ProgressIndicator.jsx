@@ -17,7 +17,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
       <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
 
       <ul className='max-w-md mx-auto my-3'  onClick={() => navigate(-1)}>
-        <li>
+        <li className="">
           <i className="bi bi-columns-gap"></i> &nbsp;
           Back To Dashboard
         </li>

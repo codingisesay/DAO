@@ -114,7 +114,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                 if (id) {
                     const response = await pendingKyc.pedingKyc1(id);
                     
-                    setLocalFormData(response.data.data[0]);
+                    setLocalFormData(response.data[0]);
                     console.log('to show : ', localFormData)
                 }
             } catch (error) {

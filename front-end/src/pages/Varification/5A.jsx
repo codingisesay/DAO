@@ -60,7 +60,7 @@ function PersonalOccupationForm() {
                     const response = await pendingAccountData.getDetailsS5A(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     // console.log('%A :', response.data.documents[0]);
-                    const application = response.data.documents[0] || {};
+                    const application = response.documents[0] || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setFormData({
