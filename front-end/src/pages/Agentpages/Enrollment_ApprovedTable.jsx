@@ -1,27 +1,28 @@
  
 import { useAuth } from '../../auth/AuthContext';  
-import { kycPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
+import { agentService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
+
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
  
 
 
-function KycRviewTable() {
-   
+function ApprovedTable() {
+    const storedId = localStorage.getItem('agent_id') || 1;
     const [tbldata, setTbldata] = React.useState([]);
-   
-    const [data, setData] = useState({ content: [] });
-    const [loading, setLoading] = useState(false);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
-    const [filters, setFilters] = useState({});
+    const { logout } = useAuth(); 
+   const [data, setData] = useState({ content: [] });
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
+  const [filters, setFilters] = useState({});
 
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_id, field: "application_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
+    { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
   ];
 
@@ -29,7 +30,7 @@ function KycRviewTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await kycPendingApplicationsService.getList({
+    const response = await agentService.approvedAccounts(storedId, {
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
@@ -76,9 +77,8 @@ const fetchData = async () => {
         <>
  
         <div className="container mx-auto">
-                <br />  <br />  
-                <h1>Pending Application</h1>
-                  <br />  <br />  
+                <br />    <br />
+                <h1>Approved Application</h1>    <br />    <br />
             <div
                     className="Usermaster-main-div"
                     style={{
@@ -101,12 +101,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/home/bankmaster"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["bankCode"]} 
                     />
                     </div>
             </div>
@@ -116,8 +116,7 @@ const fetchData = async () => {
 
         </>);
 }
-
-export default KycRviewTable;
-
+ 
+export default ApprovedTable;
 
  

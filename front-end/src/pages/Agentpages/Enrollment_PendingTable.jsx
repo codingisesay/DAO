@@ -1,16 +1,16 @@
  
 import { useAuth } from '../../auth/AuthContext';  
-import { kycPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
+import { agentService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
  
 
 
-function KycRviewTable() {
-   
+function PendingTable() {
+    const storedId = localStorage.getItem('agent_id') || 1;
     const [tbldata, setTbldata] = React.useState([]);
-   
+    const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
@@ -29,11 +29,12 @@ function KycRviewTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await kycPendingApplicationsService.getList({
+    const response = await agentService.pendingAccounts(storedId, {
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
     });
+    console.log("Pending Table Err:", response); // Debugging line to check the response structure
     // Set both states correctly
     setTbldata(response.data || []);
     setData({ content: response.data || [] }); // This is what DataTable expects
@@ -101,12 +102,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/verify-account"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["application_id"]} 
                     />
                     </div>
             </div>
@@ -117,7 +118,7 @@ const fetchData = async () => {
         </>);
 }
 
-export default KycRviewTable;
+export default PendingTable;
 
 
  

@@ -1,3 +1,5 @@
+
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from "react";
 import "./assets/css/theme.css";
@@ -12,10 +14,16 @@ import AdminDashboard from './pages/Adminpages/AdminDashboard';
 import AgentRegisterForm from './pages/Adminpages/Add_Agent';
 // import Customercreation from './pages/Enrollment/3B_DAOExtraction';
 import Enrollment_PendingTable from './pages/Adminpages/Enrollment_PendingTable';
-import Kyc_PendingTable from './pages/Adminpages/Kyc_PendingTable';
 import Enrollment_ReviewTable from './pages/Adminpages/Enrollment_Review';
 import Enrollment_ApprovedTable from './pages/Adminpages/Enrollment_ApprovedTable'; 
 import Enrollment_Reject from './pages/Adminpages/Enrollment_Reject'; 
+
+import Enrollment_PendingTable_Tbl from './pages/Agentpages/Enrollment_PendingTable';
+import Enrollment_ReviewTable_Tbl from './pages/Agentpages/Enrollment_Review';
+import Enrollment_ApprovedTable_Tbl from './pages/Agentpages/Enrollment_ApprovedTable'; 
+import Enrollment_Reject_Tbl from './pages/Agentpages/Enrollment_Reject'; 
+
+import Kyc_PendingTable from './pages/Adminpages/Kyc_PendingTable';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,6 +39,7 @@ export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
   const { user } = useAuth();
+  const isauth = localStorage.getItem('accessToken')
 
   return (
     <div className="App"  >
@@ -41,8 +50,13 @@ export const App = () => {
           <Route path="/create-meeting" element={<CreateMeeting />} /> 
 
           {/* User Access */}
+          {!isauth &&
           <Route path="/login" element={<Login />} /> 
+          }
 
+        {isauth ?  
+        <>
+        
           {/* Admin URL Below */}
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
@@ -61,6 +75,17 @@ export const App = () => {
           <Route path="/start_rekyc" element={<Rekyc />} /> 
           <Route path="/print-application" element={<PrintApplication />} />
           <Route path="/startVkyc" element={<StartKyc />} /> 
+          <Route path="/enrollment_review_tbl" element={<Enrollment_ReviewTable_Tbl />} />
+          <Route path="/enrollment_approved_tbl" element={<Enrollment_ApprovedTable_Tbl />} />
+          <Route path="/enrollment_pending_tbl" element={<Enrollment_PendingTable_Tbl />} />
+          <Route path="/enrollment_rejected_tbl" element={<Enrollment_Reject_Tbl />} />
+        </>   
+        :
+        <>
+           <Route path="/login" element={<Login />} /> 
+        </>
+          
+          }
 
 
         <Route path="/dao_extraction" element={<DAOExtraction />} />

@@ -31,7 +31,13 @@ export const API_ENDPOINTS = {
     GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/dao/api/agent/full-applications/${agentId}`,
 
     ///for agent dashboard
-    GET_APPLICATION_COUNT:(id)=> `/dao/api/account-status-by-agent?agent_id=${id}`
+    GET_APPLICATION_COUNT:(id)=> `/dao/api/account-status-by-agent?agent_id=${id}`, 
+    KYC_APPLICATION_STATUS : (id) => `/dao/api/kyc-applications/trends?kyc_agent_id=${id}`,
+    APPROVED_ACCOUNTS:(id) => `dao/api/agent/applications/approved/${id}`,
+    PENDING_ACCOUNTS:(id) => `dao/api/agent/applications/pending/${id}`,
+    REVIEW_ACCOUNTS:(id) => `dao/api/agent/applications/review/${id}`,
+    REJECT_ACCOUNTS:(id) => `dao/api/agent/applications/rejected/${id}`,
+  
   },
 
   PERSONAL_DETAILS: {

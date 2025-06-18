@@ -39,6 +39,18 @@ export const agentService = {
 
   applicationcountbyagent: (id) =>
     apiService.get(API_ENDPOINTS.AGENT.GET_APPLICATION_COUNT(id)),
+  kycapplicationstatus: (id) =>  
+    apiService.get(API_ENDPOINTS.AGENT.KYC_APPLICATION_STATUS(id)),
+  approvedAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.APPROVED_ACCOUNTS(id)),
+  pendingAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.PENDING_ACCOUNTS(id)),
+  reviewAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.REVIEW_ACCOUNTS(id)),
+  rejectAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
+  
+    
 }
 
 export const personalDetailsService = {
