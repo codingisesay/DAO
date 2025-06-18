@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
+import userphoto from '../../assets/imgs/user_avatar.jpg';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AdminDashboardMonthlyBarChart';
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
                             <i className="mx-2 bi  bi-globe2"></i>
                             <i className="mx-2 bi  bi-box-arrow-right md:w-right" onClick={handleLogout}></i>
                             <img height='40px' width='40px'
-                                src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                                src={userphoto}
                                 alt="profile"
                                 className="rounded-full object-cover mx-2"
                             />

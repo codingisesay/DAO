@@ -2,6 +2,7 @@ import React , {useState, useEffect} from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom'; 
 import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
+import userphoto from '../../assets/imgs/user_avatar.jpg';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AccountBarChart';
