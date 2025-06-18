@@ -1,6 +1,6 @@
  
 import { useAuth } from '../../auth/AuthContext';  
-import { adminService } from '../../services/apiServices'; // <-- Import your service
+import { agentService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 
 
 function PendingTable() {
-   
+    const storedId = localStorage.getItem('agent_id') || 1;
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
@@ -29,7 +29,7 @@ function PendingTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await adminService.getAllApplicationsPending({
+    const response = await agentService.pendingAccounts(storedId, {
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,

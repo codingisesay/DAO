@@ -1,4 +1,4 @@
-
+ 
 import axios from 'axios';
 import { API_ENDPOINTS } from '../services/api';
 import { AUTH_KEYS } from '../services/authService';
@@ -31,6 +31,7 @@ api.interceptors.request.use((config) => {
 });
 
 export const apiService = {
+  
     async get(url, config = {}) {
       try {
         const response = await api.get(url, config);
@@ -68,86 +69,4 @@ export const apiService = {
       // }
     };
 export default api;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // api.js
-// import axios from 'axios';
-// import { API_ENDPOINTS } from '../services/api';
-// import { AUTH_KEYS } from '../services/authService';
-// import { handleApiError } from '../utils/ApiError';
-
-// // Axios for LOGIN only (with headers)
-// const authApi = axios.create({
-//   baseURL: API_ENDPOINTS.BASE_URL_LOGIN,
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-
-// authApi.interceptors.request.use((config) => {
-//   const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
-//   const userCode = localStorage.getItem(AUTH_KEYS.USER_CODE);
-//   const branchCode = localStorage.getItem(AUTH_KEYS.BRANCH_CODE);
-//   const refreshToken = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
-//   const operationDate = localStorage.getItem(AUTH_KEYS.OPERATION_DATE);
-
-//   if (token) {
-//     config.headers['Authorization'] = `Bearer ${token}`;
-//     config.headers['X-Username'] = userCode;
-//     config.headers['X-BranchCode'] = branchCode;
-//     config.headers['Refresh-Token'] = refreshToken;
-//     config.headers['Operation-Date'] = operationDate;
-//   }
-//   return config;
-// });
-
-
-// // For DAO - NO AUTH HEADERS
-// const apiService = axios.create({
-//   baseURL: API_ENDPOINTS.BASE_URL_DAO,
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-// });
-  
-// apiService.interceptors.request.use((config) => {
-//   const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
-//   const userCode = localStorage.getItem(AUTH_KEYS.USER_CODE);
-//   const branchCode = localStorage.getItem(AUTH_KEYS.BRANCH_CODE);
-//   const refreshToken = localStorage.getItem(AUTH_KEYS.REFRESH_TOKEN);
-//   const operationDate = localStorage.getItem(AUTH_KEYS.OPERATION_DATE);
-
-//   if (token) {
-//     config.headers['Authorization'] = `Bearer ${token}`;
-//     config.headers['X-Username'] = userCode;
-//     config.headers['X-BranchCode'] = branchCode;
-//     config.headers['Refresh-Token'] = refreshToken;
-//     config.headers['Operation-Date'] = operationDate;
-//   }
-//   return config;
-
-// });
-
-// export { authApi, apiService }
-
+ 

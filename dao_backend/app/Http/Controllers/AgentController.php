@@ -233,23 +233,20 @@ public function saveAddressDetails(Request $request)
     ], 201);
 }
 
-// Store live photo
 public function saveLivePhoto(Request $request)
 {
-    // Hardcode application_id as 6 for testing
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
-        'status' => 'nullable',
+        'status' => 'nullable|in:Pending,Approved,Reject,Review',
+        'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
-    $path = $file->storeAs('live_photos', $filename, 'public');
+    $binaryContent = file_get_contents($file->getRealPath());
 
     // Update if exists, otherwise create
     $photo = ApplicantLivePhoto::updateOrCreate(
@@ -261,14 +258,15 @@ public function saveLivePhoto(Request $request)
             'longitude' => $validated['longitude'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'name' => $filename,
-            'path' => $path,
+            'path' => $binaryContent, // Save as mediumblob
             'status' => $validated['status'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
 
     return response()->json([
         'message' => 'Live photo uploaded successfully.',
-        'data' => $photo,
+       'data' => $photo->makeHidden(['path']),
     ], 201);
 }
 
@@ -277,16 +275,16 @@ public function saveAgentLivePhoto(Request $request)
 {
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'longitude' => 'required|string|max:255', // match DB
-        'latitude' => 'required|string|max:255',  // match DB
-        'status' => 'nullable|in:Pending,Approved,Reject,Review', // match DB enum
+        'longitude' => 'required|string|max:255',
+        'latitude' => 'required|string|max:255',
+        'status' => 'nullable|in:Pending,Approved,Reject,Review',
         'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
-    $path = $file->storeAs('agent_live_photos', $filename, 'public');
+    $binaryContent = file_get_contents($file->getRealPath());
 
     $photo = AgentLivePhoto::updateOrCreate(
         [
@@ -297,7 +295,7 @@ public function saveAgentLivePhoto(Request $request)
             'longitude' => $validated['longitude'],
             'latitude' => $validated['latitude'],
             'name' => $filename,
-            'path' => $path,
+            'path' => $binaryContent, // Save as mediumblob
             'status' => $validated['status'] ?? null,
             'status_comment' => $validated['status_comment'] ?? null,
         ]
@@ -306,20 +304,17 @@ public function saveAgentLivePhoto(Request $request)
     $customerStaus = CustomerApplicationStatus::updateOrCreate([
         'application_id' => $validated['application_id'],
         'status' => 'Pending',
-   ] );
+    ]);
 
-   if($customerStaus){
-
-     return response()->json([
-        'message' => 'Agent Live photo uploaded successfully.',
-        'data' => $photo,
-    ], 201);
-
-   }
+    if ($customerStaus) {
+        return response()->json([
+            'message' => 'Agent Live photo uploaded successfully.',
+            'data' => $photo->makeHidden(['path']),
+        ], 201);
+    }
 
     return response()->json([
         'message' => 'Error uploading agent live photo.',
-        
     ]);
 }
 
@@ -360,11 +355,11 @@ public function saveApplicationDocument(Request $request)
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
                 'file_name' => $filename,
-                'file_path' => $binaryData, // Save as BLOB
+                'file_path' => $binaryData, // Save as mediumblob
             ]
         );
 
-        $documents[] = $doc;
+        $documents[] = $doc->makeHidden(['file_path']);
     }
 
     \DB::table('document_approved_status')->updateOrInsert(
@@ -549,17 +544,26 @@ public function getFullApplicationDetails($applicationId)
         ->where('application_id', $applicationId)
         ->get();
         
-    // Fetch from account_nominees (can be multiple) // application_documents
-    $custlivepic = DB::table('applicant_live_photos')
+      $custlivepic = DB::table('applicant_live_photos')
         ->where('application_id', $applicationId)
-        ->get()  
-        
-        ;
- 
-    // Fetch from account_nominees (can be multiple) // application_documents
+        ->get()
+        ->map(function ($item) {
+            if ($item->path !== null) {
+                $item->path = base64_encode($item->path);
+            }
+            return $item;
+        });
+
+    // Fetch application documents and encode 'file_path'
     $custumerdoc = DB::table('application_documents')
         ->where('application_id', $applicationId)
-        ->get();
+        ->get()
+        ->map(function ($item) {
+            if ($item->file_path !== null) {
+                $item->file_path = base64_encode($item->file_path);
+            }
+            return $item;
+        });
 
 
     if (!$application) {

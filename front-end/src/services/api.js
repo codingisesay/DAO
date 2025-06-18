@@ -3,8 +3,7 @@
 export const API_ENDPOINTS = {
   // BASE_URL_LOGIN: "http://127.0.0.1:8090", // For login only
 
-  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN,
-  BASE_URL_DAO: import.meta.env.VITE_BASE_URL_DAO,
+  BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN, 
   AUTH: {
     LOGIN: "/auth/api/login",
     FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
@@ -30,6 +29,15 @@ export const API_ENDPOINTS = {
 
   AGENT: {
     GET_FULL_APPLICATIONS_BY_AGENT: (agentId) => `/dao/api/agent/full-applications/${agentId}`,
+
+    ///for agent dashboard
+    GET_APPLICATION_COUNT:(id)=> `/dao/api/account-status-by-agent?agent_id=${id}`, 
+    KYC_APPLICATION_STATUS : (id) => `/dao/api/kyc-applications/trends?kyc_agent_id=${id}`,
+    APPROVED_ACCOUNTS:(id) => `dao/api/agent/applications/approved/${id}`,
+    PENDING_ACCOUNTS:(id) => `dao/api/agent/applications/pending/${id}`,
+    REVIEW_ACCOUNTS:(id) => `dao/api/agent/applications/review/${id}`,
+    REJECT_ACCOUNTS:(id) => `dao/api/agent/applications/rejected/${id}`,
+  
   },
 
   PERSONAL_DETAILS: {
@@ -156,8 +164,14 @@ export const API_ENDPOINTS = {
 
 
     //////////For DAshboard Admin
-    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly'
+    MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly',
+    MONTHLY_AUTH_BARCHART:'dao/api/admin/applications/approved/monthly-auth',
+    WEEKLY_AUTH_BARCHART:'dao/api/admin/applications/approved/weekly-auth',
+    KYC_STATUS_FOR_CURRENT_YEAR:'dao/api/admin/kyc-applications/status-summary'
 
+
+
+ 
   },
 
 
@@ -205,67 +219,4 @@ export const API_ENDPOINTS = {
     },
   },
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  
-
-
-
-
-
-
-
-  
-
-  //   //approved
-  //   Route::get('/admin/approvedApplication', [AdminController::class, 'getApprovedApplications']);
-  //   Route::get('/admin/approvedApplicationCount', [AdminController::class, 'getApprovedApplicationsAgentCount']);
-  //   Route::get('/admin/approvedApplicationDetails/{agentId}', [AdminController::class, 'getApprovedApplicationsDetailsAgentById']);
-  //   //review
-  //   Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
-  //   Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
-  //   Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
-  //   //rejected
-  //   Route::get('admin/applications/rejected', [AdminController::class, 'getRejectedApplications']);
-  //   Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
-  //   Route::get('admin/applications/rejected/agent/{agentId}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
-  //   //kyc review 
-  //   Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
-  //   Route::get('/kyc/review/count-by-agent', [AdminController::class, 'getKycReviewApplicationsAgentCount']);
-  //  Route::get('/kyc/review/agent/{agentId}', [AdminController::class, 'getKycReviewApplicationsByAgentId']);
-  //   // kyc approved table 
-  //   Route::get('/admin/kyc-applications/approved', [AdminController::class, 'getKycApprovedApplications']);
-  //   Route::get('/kyc/approved/count-by-agent', [AdminController::class, 'getKycApprovedApplicationsAgentCount']);
-  //   Route::get('/kyc/approved/agent/{agentId}', [AdminController::class, 'getKycApprovedApplicationsByAgentId']);

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
+import userphoto from '../../assets/imgs/user_avatar.jpg';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
 import AccountBarChart from './AdminDashboardMonthlyBarChart';
@@ -18,6 +19,9 @@ const AdminDashboard = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    const username= localStorage.getItem('userName');
+    const userrole =localStorage.getItem('roleName');
+    
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };
@@ -69,11 +73,12 @@ const AdminDashboard = () => {
                             <i className="mx-2 bi  bi-globe2"></i>
                             <i className="mx-2 bi  bi-box-arrow-right md:w-right" onClick={handleLogout}></i>
                             <img height='40px' width='40px'
-                                src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                                src={userphoto}
                                 alt="profile"
                                 className="rounded-full object-cover mx-2"
                             />
-                            <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Admin</small></span>
+                           
+                            <span className='font-bold'> {username}<br /><small className='font-normal'> - {userrole}</small></span>
                         </div>
                     </div>
                 </div>

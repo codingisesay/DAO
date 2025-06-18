@@ -294,22 +294,26 @@ public function getRejectedApplicationsDetailsAgentById($agentId)
 
 
 public function getDetailsForCustomerDetails($application_id)
-{
-    $details = DB::table('customer_application_details')
-        ->leftJoin('application_personal_details', 'customer_application_details.id', '=', 'application_personal_details.application_id')
-        ->leftJoin('applicant_live_photos', 'customer_application_details.id', '=', 'applicant_live_photos.application_id')
-        ->select(
-            'customer_application_details.*',
-            'application_personal_details.*',
-            'applicant_live_photos.name as live_photo_name',
-            'applicant_live_photos.path as live_photo_path'
-        )
-        ->where('customer_application_details.id', $application_id)
-        ->first();
+{ 
+$details = DB::table('customer_application_details')
+    ->leftJoin('application_personal_details', 'customer_application_details.id', '=', 'application_personal_details.application_id')
+    ->leftJoin('applicant_live_photos', 'customer_application_details.id', '=', 'applicant_live_photos.application_id')
+    ->select(
+        'customer_application_details.*',
+        'application_personal_details.*',
+        'applicant_live_photos.name as live_photo_name',
+        'applicant_live_photos.path as live_photo_path'
+    )
+    ->where('customer_application_details.id', $application_id)
+    ->first();
 
-    return response()->json([
-        'details' => $details
-    ], 200);
+if ($details && $details->live_photo_path !== null) {
+    $details->live_photo_path = base64_encode($details->live_photo_path);
+}
+
+return response()->json([
+    'details' => $details
+], 200);
 }
 
 
@@ -355,6 +359,13 @@ public function getApplicantLivePhotosDetails($application_id)
         ->where('application_id', $application_id)
         ->get();
 
+    // Base64 encode the BLOB for each photo
+    foreach ($photos as $photo) {
+        if ($photo->path !== null) {
+            $photo->path = base64_encode($photo->path);
+        }
+    }
+
     return response()->json([
         'photos' => $photos,
     ], 200);
@@ -366,10 +377,16 @@ public function getApplicationDocuments($application_id)
         ->where('application_id', $application_id)
         ->get();
 
+    // Base64 encode the BLOB for each document
+    foreach ($documents as $doc) {
+        if (isset($doc->file_data) && $doc->file_data !== null) {
+            $doc->file_data = base64_encode($doc->file_data);
+        }
+    }
+
     return response()->json([
         'documents' => $documents,
     ], 200);
-
 }
 
 public function getAccountPersonalDetails($application_id)
@@ -414,13 +431,17 @@ function fetchAgentLivePhotos($application_id)
         ->where('application_id', $application_id)
         ->get();
 
+    // Base64 encode the BLOB for each service/photo
+    foreach ($services as $service) {
+        if (isset($service->path) && $service->path !== null) {
+            $service->path = base64_encode($service->path);
+        }
+    }
+
     return response()->json([
         'services' => $services,
     ], 200);
-
 }
-
-
 
 
 //update status of application 

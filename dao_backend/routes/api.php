@@ -41,7 +41,7 @@ Route::get('/eureka/deregister', function (EurekaService $eureka) {
 });
 
 //Video Kyc
-
+Route::post('/video-kyc/guidline/{application_id}',[VideoKycController::class,'acceptKycGuidline']);
 Route::post('/video-kyc/create/{application_id}', [VideoKycController::class, 'create']);
 Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
@@ -139,9 +139,13 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::post('/agent/enrollment', [AgentController::class, 'EnrollmentDetails'])->name('enrollment.details');
         Route::post('/agent/personal-details', [AgentController::class, 'savePersonalDetails']);
         Route::post('/agent/address-details', [AgentController::class, 'saveAddressDetails']);
+
+
         Route::post('/agent/live-photo', [AgentController::class, 'saveLivePhoto']);
-          Route::post('/agent/agent-live-photo', [AgentController::class, 'saveAgentLivePhoto']);
+        Route::post('/agent/agent-live-photo', [AgentController::class, 'saveAgentLivePhoto']);
         Route::post('/agent/application-document', [AgentController::class, 'saveApplicationDocument']);
+
+
         Route::post('/agent/account-personal-details', [AgentController::class, 'saveAccountPersonalDetails']);
         Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
         Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
@@ -173,13 +177,13 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         // all applications for the agent
         Route::get('agent/applications/by-agent/{agentId}', [AgentController::class, 'getApplicationsByAgent']);
         // Approved applications for the agent table 
-        Route::get('/applications/approved/{agentId}', [AgentController::class, 'getApprovedApplicationsByAgent']);
+        Route::get('agent/applications/approved/{agentId}', [AgentController::class, 'getApprovedApplicationsByAgent']);
         // pending application for the agent  table 
-        Route::get('/applications/pending/{agentId}', [AgentController::class, 'getPendingApplicationsByAgent']);
+        Route::get('agent/applications/pending/{agentId}', [AgentController::class, 'getPendingApplicationsByAgent']);
         // review application for the agent table 
-        Route::get('/applications/review/{agentId}', [AgentController::class, 'getReviewApplicationsByAgent']);
+        Route::get('agent/applications/review/{agentId}', [AgentController::class, 'getReviewApplicationsByAgent']);
         // rejected application for the agent table 
-        Route::get('/applications/rejected/{agentId}', [AgentController::class, 'getRejectedApplicationsByAgent']);
+        Route::get('agent/applications/rejected/{agentId}', [AgentController::class, 'getRejectedApplicationsByAgent']);
          // applications for the agent
         Route::get('/agent/full-applications/{agent_id}', [AgentController::class, 'getFullApplicationsByAgent']);
         // full details of application by id 

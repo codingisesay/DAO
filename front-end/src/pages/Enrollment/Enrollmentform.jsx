@@ -9,7 +9,7 @@ import Page5 from './5';
 import Page6 from './6';
 import Stepper from './Stepper';
 
-function Enrollmentform() {
+function Enrollmentform() { 
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
 

@@ -23,7 +23,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
 
     const submitPhoto = async (e) => {
         // Prevent default form submission if this is in a form
-        //    onNext();
+           onNext();
 
         if (!localFormData) {  
             Swal.fire({

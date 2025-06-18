@@ -35,6 +35,22 @@ export const agentService = {
   // applications for the agent
   getFullApplicationsByAgent: (agentId) =>
     apiService.get(API_ENDPOINTS.AGENT.GET_FULL_APPLICATIONS_BY_AGENT(agentId)),
+
+
+  applicationcountbyagent: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.GET_APPLICATION_COUNT(id)),
+  kycapplicationstatus: (id) =>  
+    apiService.get(API_ENDPOINTS.AGENT.KYC_APPLICATION_STATUS(id)),
+  approvedAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.APPROVED_ACCOUNTS(id)),
+  pendingAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.PENDING_ACCOUNTS(id)),
+  reviewAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.REVIEW_ACCOUNTS(id)),
+  rejectAccounts: (id) =>
+    apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
+  
+    
 }
 
 export const personalDetailsService = {
@@ -207,7 +223,12 @@ export const adminService = {
     apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
 
   /// dashobard charts
-  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART)
+  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),
+  monthlyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_AUTH_BARCHART),
+  weeklyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.WEEKLY_AUTH_BARCHART),
+  kycstatusperyear: apiService.get(API_ENDPOINTS.ADMIN.KYC_STATUS_FOR_CURRENT_YEAR),
+   
+ 
 };
 // om data above
 

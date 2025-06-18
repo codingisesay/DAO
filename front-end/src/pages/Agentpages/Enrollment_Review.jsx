@@ -1,6 +1,6 @@
  
 import { useAuth } from '../../auth/AuthContext';  
-import { adminService } from '../../services/apiServices'; // <-- Import your service
+import { kycPendingApplicationsService, agentService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 
 
 function PendingTable() {
-   
+    const storedId = localStorage.getItem('agent_id') || 1;
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
@@ -29,12 +29,11 @@ function PendingTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await adminService.getAllApplicationsPending({
+    const response = await agentService.reviewAccounts(storedId,{
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
     });
-    console.log("Pending Table Err:", response); // Debugging line to check the response structure
     // Set both states correctly
     setTbldata(response.data || []);
     setData({ content: response.data || [] }); // This is what DataTable expects
@@ -78,7 +77,7 @@ const fetchData = async () => {
  
         <div className="container mx-auto">
                 <br />  <br />  
-                <h1>Pending Application</h1>
+                <h1>Review Application</h1>
                   <br />  <br />  
             <div
                     className="Usermaster-main-div"
@@ -102,12 +101,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/verify-account"
+                        basePath="/kyc-varification"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["application_id"]} 
+                        primaryKeys={["kyc_application_id"]} 
                     />
                     </div>
             </div>

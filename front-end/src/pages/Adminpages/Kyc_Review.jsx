@@ -10,7 +10,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 function KycRviewTable() {
    
     const [tbldata, setTbldata] = React.useState([]);
-    const { logout } = useAuth(); 
+   
     const [data, setData] = useState({ content: [] });
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
