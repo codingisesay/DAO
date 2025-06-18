@@ -544,17 +544,26 @@ public function getFullApplicationDetails($applicationId)
         ->where('application_id', $applicationId)
         ->get();
         
-    // Fetch from account_nominees (can be multiple) // application_documents
-    $custlivepic = DB::table('applicant_live_photos')
+      $custlivepic = DB::table('applicant_live_photos')
         ->where('application_id', $applicationId)
-        ->get()  
-        
-        ;
- 
-    // Fetch from account_nominees (can be multiple) // application_documents
+        ->get()
+        ->map(function ($item) {
+            if ($item->path !== null) {
+                $item->path = base64_encode($item->path);
+            }
+            return $item;
+        });
+
+    // Fetch application documents and encode 'file_path'
     $custumerdoc = DB::table('application_documents')
         ->where('application_id', $applicationId)
-        ->get();
+        ->get()
+        ->map(function ($item) {
+            if ($item->file_path !== null) {
+                $item->file_path = base64_encode($item->file_path);
+            }
+            return $item;
+        });
 
 
     if (!$application) {
