@@ -621,12 +621,14 @@ public function getKycReviewApplications()
 {
     $data = DB::table('kyc_application_status')
        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
-
+       ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->select(
             'kyc_application_status.*',
             'kyc_application.kyc_application_no',
             'kyc_application.verify_from',
             'kyc_application.verify_details',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
            
         )
         ->where('kyc_application_status.status', 'review')
@@ -676,11 +678,14 @@ public function getKycApprovedApplications()
 {
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->select(
             'kyc_application_status.*',
             'kyc_application.kyc_application_no',
             'kyc_application.verify_from',
-            'kyc_application.verify_details'
+            'kyc_application.verify_details',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
         )
         ->where('kyc_application_status.status', 'approved')
         ->get();
@@ -730,11 +735,14 @@ public function getKycRejectedApplications()
 {
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+         ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->select(
             'kyc_application_status.*',
             'kyc_application.kyc_application_no',
             'kyc_application.verify_from',
-            'kyc_application.verify_details'
+            'kyc_application.verify_details',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
         )
         ->where('kyc_application_status.status', 'rejected')
         ->get();
@@ -782,17 +790,21 @@ public function getKycPendingApplications()
 {
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->select(
             'kyc_application_status.*',
             'kyc_application.kyc_application_no',
             'kyc_application.verify_from',
-            'kyc_application.verify_details'
+            'kyc_application.verify_details',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
         )
         ->where('kyc_application_status.status', 'pending')
         ->get();
 
     return response()->json(['data' => $data], 200);
 }
+
 	// Get Pending  kycapplications count per agent
 
 public function getKycPendingApplicationsAgentCount()
