@@ -18,6 +18,9 @@ const AdminDashboard = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    const username= localStorage.getItem('userName');
+    const userrole =localStorage.getItem('roleName');
+    
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };
@@ -73,7 +76,8 @@ const AdminDashboard = () => {
                                 alt="profile"
                                 className="rounded-full object-cover mx-2"
                             />
-                            <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Admin</small></span>
+                           
+                            <span className='font-bold'> {username}<br /><small className='font-normal'> - {userrole}</small></span>
                         </div>
                     </div>
                 </div>

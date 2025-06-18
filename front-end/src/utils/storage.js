@@ -31,6 +31,7 @@ api.interceptors.request.use((config) => {
 });
 
 export const apiService = {
+  
     async get(url, config = {}) {
       try {
         const response = await api.get(url, config);

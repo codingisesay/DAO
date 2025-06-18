@@ -14,12 +14,15 @@ import { agentService } from '../../services/apiServices';
 
 
 const Dashboard = () => {
+
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
 
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    const username= localStorage.getItem('userName');
+    const userrole =localStorage.getItem('roleName');
     // Remove 'application_id' from localStorage
     localStorage.removeItem('application_id');
 
@@ -57,7 +60,7 @@ const Dashboard = () => {
                                 alt="profile"
                                 className="rounded-full object-cover mx-2"
                             />
-                            <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Agent</small></span>
+                            <span className='font-bold'> {username}<br /><small className='font-normal'> - {userrole}</small></span>
                         </div>
                     </div>
 

@@ -1,3 +1,5 @@
+
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import React, { useState } from "react";
 import "./assets/css/theme.css";
@@ -37,6 +39,7 @@ export const App = () => {
   // const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
   // const [isDark, setIsDark] = useLocalStorage("isDark", preference);
   const { user } = useAuth();
+  const isauth = localStorage.getItem('accessToken')
 
   return (
     <div className="App"  >
@@ -47,8 +50,13 @@ export const App = () => {
           <Route path="/create-meeting" element={<CreateMeeting />} /> 
 
           {/* User Access */}
+          {!isauth &&
           <Route path="/login" element={<Login />} /> 
+          }
 
+        {isauth ?  
+        <>
+        
           {/* Admin URL Below */}
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/add_agent" element={<AgentRegisterForm />} />
@@ -71,7 +79,13 @@ export const App = () => {
           <Route path="/enrollment_approved_tbl" element={<Enrollment_ApprovedTable_Tbl />} />
           <Route path="/enrollment_pending_tbl" element={<Enrollment_PendingTable_Tbl />} />
           <Route path="/enrollment_rejected_tbl" element={<Enrollment_Reject_Tbl />} />
+        </>   
+        :
+        <>
+           <Route path="/login" element={<Login />} /> 
+        </>
           
+          }
 
 
         <Route path="/dao_extraction" element={<DAOExtraction />} />
