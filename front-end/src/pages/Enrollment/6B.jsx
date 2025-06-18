@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { daoApi } from '../../utils/storage';
-import { agentlivephotoSave } from '../../services/apiServices';
+import { apiService } from '../../utils/storage';
+import { agentlivephotoSave  ,createAccountService} from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const [localFormData, setLocalFormData] = useState();
@@ -23,16 +23,16 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
     const submitAgentPic = async (localFormData) => {
         const payload = {
             application_id: formData.application_id || application_id,
-            longitude: JSON.stringify(localFormData.metadata.location.longitude),
-            latitude: JSON.stringify(localFormData.metadata.location.latitude),
-            photo: localFormData.file,
+            // longitude: JSON.stringify(localFormData.metadata.location.longitude),
+            // latitude: JSON.stringify(localFormData.metadata.location.latitude),
+            // photo: localFormData.file || '', 
             ...localFormData,
             status: 'Pending'
         };
         console.log('ready photodata to send : ', payload)
 
         try {
-            const response = await daoApi.post(agentlivephotoSave.upload(payload));
+            const response = await apiService.post(createAccountService.agentLivePhoto_s6b(payload));
             Swal.fire({
                 title: 'Account Created Successfully!',
                 text: 'Your account has been created successfully.',
@@ -77,9 +77,12 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
                     variant="contained"
                     className="btn-next"
                 >
-                    Submit&nbsp;<i className="bi bi-chevron-double-right"></i>
+                    Submit 
                 </CommonButton>
             </div>
+
+
+
         </div>
     );
 };

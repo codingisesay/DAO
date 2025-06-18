@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { applicationDetailsService } from '../../services/apiServices';
+import { kycService } from '../../services/apiServices';
 
 const Step1PersonalInfo = ({ formData, handleChange, onAadharDataFetched }) => {
   const [selectedOption, setSelectedOption] = useState(formData.auth_type || '');
@@ -23,16 +23,28 @@ const Step1PersonalInfo = ({ formData, handleChange, onAadharDataFetched }) => {
   };
 
   const handleAadharSubmit = async () => {
-    setError('');
+
+  
+    setError(''); 
     setLoading(true);
+
+    const payload={
+      verify_from: selectedOption,
+      verify_details: formData.auth_code,
+    };
+    
     try {
-      const response = await applicationDetailsService.getByAadhar(formData.auth_code);
-      if (response.data && response.data.data) {
-        onAadharDataFetched(response.data.data); // Pass data to parent to go to next step
+      const response = await kycService.startkyc(payload);  
+      console.log('1st stp : ', response)
+      if (response && response.data) {
+        onAadharDataFetched(response.data); // Pass data to parent to go to next step
+  
+        localStorage.setItem('application_id', response.kyc_application_id);
       } else {
         setError('No data found for this Aadhaar number.');
       }
     } catch (err) {
+      console.log(err)
       setError('No data found for this Aadhaar number.');
     }
     setLoading(false);

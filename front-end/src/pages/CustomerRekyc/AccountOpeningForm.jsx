@@ -3,9 +3,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import Step1PersonalInfo from "./Step1PersonalInfo";
 import Step2JobDetails from "./Step2PersonalD";
 import Step3Nomination from "./Step3DocumentUpload";
-import Step4VideoCall from "./Step4VideoCall";
-import Step5AccountDetails from "./Step5AccoutDetails";
-import Step6AccountSummary from "./Step6ccountSummary/Step6ASummary";
+import Step4VideoCall from "./Step4VideoCall"; 
 import "./style.css";
 
 function CustomerForm() {
@@ -241,7 +239,7 @@ function CustomerForm() {
 
     const prevStep = () => {
         if (currentStep === 2) {
-            // Step 2 back navigation is handled within the Step2JobDetails component
+                setProgress({ ...progress, 1: "inprogress", 2: "pending" }); setCurrentStep(1);
         } else if (currentStep === 3) {
             setProgress({ ...progress, 2: "inprogress", 3: "pending" });
             setCurrentStep(2);
@@ -270,19 +268,7 @@ function CustomerForm() {
         alert("Form submitted successfully!");
     };
 
-    const updateStep2Progress = (subStep, status) => {
-        setSubProgress(prev => ({
-            ...prev,
-            [subStep]: status
-        }));
-    };
-    const updateStep5Progress = (subStep, status) => {
-        setSubProgress(prev => ({
-            ...prev,
-            [subStep]: status
-        }));
-    };
-
+   
     const completeStep2 = () => {
         setProgress({ ...progress, 2: "completed", 3: "inprogress" });
         setCurrentStep(3);
@@ -315,6 +301,7 @@ function CustomerForm() {
 
                 </div>
                 <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
+                {/* {currentStep} */}
                     <div className='work-area dark:bg-gray-900'>
                         <div className="form-container">
                             <form onSubmit={handleSubmit}>
@@ -329,8 +316,7 @@ function CustomerForm() {
                                 {currentStep === 2 && (
                                     <Step2JobDetails
                                         formData={formData}
-                                        handleChange={handleChange}
-                                        updateProgress={updateStep2Progress}
+                                        handleChange={handleChange} 
                                         subProgress={subProgress}
                                         completeStep={completeStep2}
                                         nextStep={nextStep}
@@ -357,29 +343,7 @@ function CustomerForm() {
                                     />
                                 )}
 
-                                {/* {currentStep === 5 && (
-                                    <Step5AccountDetails
-                                        formData={formData}
-                                        handleChange={handleChange}
-                                        updateProgress={updateStep2Progress}
-                                        subProgress={subProgress}
-                                        completeStep={completeStep5}
-                                        prevStep={() => {
-                                            setProgress({ ...progress, 5: "inprogress", 6: "pending" });
-                                            setCurrentStep(4);
-                                        }}
-                                    />
-                                )}
-                                {currentStep === 6 && (
-                                    <Step6AccountSummary
-                                        formData={formData}
-                                        prevStep={() => {
-                                            setProgress({ ...progress, 5: "inprogress", 6: "pending" });
-                                            setCurrentStep(5);
-                                        }}
-                                        handleSubmit={handleSubmit}
-                                    />
-                                )} */}
+                  
                             </form>
                         </div>
                     </div>

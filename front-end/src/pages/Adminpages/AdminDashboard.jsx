@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
+import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
 import ThemeToggle from '../../components/Toggle';
 import useLocalStorage from "use-local-storage";
-import AccountBarChart from './AdminDashboard_validationBarGraph';
-import DemographicsBarChart from './AdminDashobard_KYCdounut';
-import MonthlyAccountTrends from './AdminDashboard_MonthlyTrends';
+import AccountBarChart from './AdminDashboardMonthlyBarChart';
+import DemographicsBarChart from './AdminDashobardKycDoughnutChart';
+import MonthlyAccountTrends from './AdminDashboardLineChart';
 import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
+import { kycaccountsStatusListService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
@@ -17,6 +18,9 @@ const AdminDashboard = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    const username= localStorage.getItem('userName');
+    const userrole =localStorage.getItem('roleName');
+    
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };
@@ -38,7 +42,7 @@ const AdminDashboard = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: JSON.stringify(error)
+                    text: error?.response?.data?.message
                 });
             }
         };
@@ -72,7 +76,8 @@ const AdminDashboard = () => {
                                 alt="profile"
                                 className="rounded-full object-cover mx-2"
                             />
-                            <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Admin</small></span>
+                           
+                            <span className='font-bold'> {username}<br /><small className='font-normal'> - {userrole}</small></span>
                         </div>
                     </div>
                 </div>
@@ -87,90 +92,11 @@ const AdminDashboard = () => {
                 <div className="mx-auto flex flex-wrap">
                     <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
-                            <StatusDashboard />
-                            {/* <div className="dashboard-top-caard-collection flex my-1">
-                                <Link to="/approved" className="md:w-1/4  ">
-                                    <div className="approved-card">
-                                        <i className="bi bi-clipboard2-check"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">100+</span>
-                                            <small>Approved</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <Link to="/pending" className="md:w-1/4  ">
-                                    <div className="pending-card">
-                                        <i className="bi bi-clipboard2-minus"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">200+</span>
-                                            <small>Pending</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <Link to="/rejected" className="md:w-1/4  ">
-                                    <div className="recent-applyed-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Review</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <Link to="/rejected" className="md:w-1/4  ">
-                                    <div className="rejected-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Rejected</small>
-                                        </div>
-                                    </div>
-                                </Link>
-
-                            </div> */}
+                            <StatusDashboard1 /> 
                         </div>
                         <h2 className="text-xl font-bold mb-2">Re-KYC</h2>
-                        <div className='w-full sm:w-full p-1'>
-                            <div className="dashboard-top-caard-collection flex my-1 flex-wrap ">
-
-                                <Link to="/rejected" className="md:w-1/4  ">
-                                    <div className="recent-applyed-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Review</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                                <Link to="/approved" className="md:w-1/4  ">
-                                    <div className="approved-card">
-                                        <i className="bi bi-clipboard2-check"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">100+</span>
-                                            <small>Approved</small>
-                                        </div>
-                                    </div>
-                                </Link>
-
-                                <Link to="/pending" className="md:w-1/4  ">
-                                    <div className="pending-card">
-                                        <i className="bi bi-clipboard2-minus"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">200+</span>
-                                            <small>Pending</small>
-                                        </div>
-                                    </div>
-                                </Link>
-
-                                <Link to="/rejected" className="md:w-1/4  ">
-                                    <div className="rejected-card">
-                                        <i className="bi bi-clipboard2-x"></i>
-                                        <div className="card-text">
-                                            <span className="dashboard-card-count">50+</span>
-                                            <small>Rejected</small>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div>
+                        <div className='w-full sm:w-full p-1'> 
+                            <StatusDashboard2 /> 
                         </div>
                     </div>
 
@@ -238,21 +164,22 @@ const AdminDashboard = () => {
 
 
 
-function StatusDashboard() {
+function StatusDashboard1() {
     const [statusCounts, setStatusCounts] = useState({
         Pending: 0,
         Approved: 0,
-        Rejected: 0,
-        // Review: 0/
+        Reject: 0,
+        Review: 0
     });
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
                 const response = await accountsStatusListService.getList();
+                // console.log(response)
                 if (response && response.data) {
                     // Count the statuses
-                    const counts = response.data.data.reduce((acc, item) => {
+                    const counts = response.data.reduce((acc, item) => {
                         acc[item.status] = (acc[item.status] || 0) + 1;
                         return acc;
                     }, {});
@@ -260,8 +187,8 @@ function StatusDashboard() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
-                        // Review: counts.Pending || 0
+                        Reject: counts.Reject || 0,
+                        Review: counts.Review || 0
                     });
                 }
             } catch (error) {
@@ -269,7 +196,7 @@ function StatusDashboard() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: JSON.stringify(error)
+                    text: error?.response?.data?.message
                 });
             }
         };
@@ -278,16 +205,16 @@ function StatusDashboard() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/review" className="md:w-1/4">
+            <Link to="/enrollment_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Pending}</span>
+                        <span className="dashboard-card-count">{statusCounts.Review}</span>
                         <small>Review</small>
                     </div>
                 </div>
             </Link>
-            <Link to="/approved" className="md:w-1/4">
+            <Link to="/enrollment_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -296,7 +223,7 @@ function StatusDashboard() {
                     </div>
                 </div>
             </Link>
-            <Link to="/pending" className="md:w-1/4">
+            <Link to="/enrollment_pending" className="md:w-1/4">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -305,11 +232,93 @@ function StatusDashboard() {
                     </div>
                 </div>
             </Link>
-            <Link to="/rejected" className="md:w-1/4">
+            <Link to="/enrollment_rejected" className="md:w-1/4">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
-                        <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
+                        <small>Rejected</small>
+                    </div>
+                </div>
+            </Link>
+        </div>
+    );
+}
+
+
+
+function StatusDashboard2() {
+    const [statusCounts, setStatusCounts] = useState({
+        Pending: 0,
+        Approved: 0,
+        Reject: 0,
+        // Review: 0/
+    });
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await kycaccountsStatusListService.getList();
+                if (response && response.data) {
+                    // Count the statuses
+                    const counts = response.data.reduce((acc, item) => {
+                        acc[item.status] = (acc[item.status] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    setStatusCounts({
+                        Pending: counts.Pending || 0,
+                        Approved: counts.Approved || 0,
+                        Reject: counts.Reject || 0,
+                        Review: counts.Review || 0
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.response?.data?.message
+                });
+            }
+        };
+        fetchDetails();
+    }, []);
+
+    return (
+        <div className="dashboard-top-caard-collection flex my-1">
+            <Link to="/kyc_review" className="md:w-1/4">
+                <div className="recent-applyed-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Review}</span>
+                        <small>Review</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/kyc_approved" className="md:w-1/4">
+                <div className="approved-card">
+                    <i className="bi bi-clipboard2-check"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Approved}</span>
+                        <small>Approved</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/kyc_pending" className="md:w-1/4">
+                <div className="pending-card">
+                    <i className="bi bi-clipboard2-minus"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Pending}</span>
+                        <small>Pending</small>
+                    </div>
+                </div>
+            </Link>
+            <Link to="/kyc_rejected" className="md:w-1/4">
+                <div className="rejected-card">
+                    <i className="bi bi-clipboard2-x"></i>
+                    <div className="card-text">
+                        <span className="dashboard-card-count">{statusCounts.Reject}</span>
                         <small>Rejected</small>
                     </div>
                 </div>

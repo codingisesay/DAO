@@ -174,25 +174,13 @@ const PhotoCapture = ({
         return new Blob([u8arr], { type: mime });
     };
 
-    function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = (error) => reject(error);
-
-            reader.readAsDataURL(file);
-        });
-    }
-
     // Capture photo with metadata
-    const capturePhoto = async () => {
+    const capturePhoto = () => {
         const imageSrc = webcamRef.current.getScreenshot();
         const blob = dataURLtoBlob(imageSrc);
-        const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
+        const file = blob;
+        // const file = new File([blob], `${photoType}-photo-${Date.now()}.jpg`, { type: 'image/jpeg' });
         const previewUrl = URL.createObjectURL(file);
-        // const previewUrl = await fileToBase64(file);
-
 
         const capturedData = {
             file: file,
@@ -209,7 +197,6 @@ const PhotoCapture = ({
 
         // For localStorage, store the minimal data needed to recreate the preview
         const storageData = {
-            file: file,
             previewUrl: previewUrl,
             timestamp: capturedData.timestamp,
             metadata: capturedData.metadata

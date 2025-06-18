@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\kycApplication;
+use App\Models\kycApplicationDocument;
 use Illuminate\Support\Facades\DB;
 
 class kycAgentController extends Controller
@@ -51,35 +52,40 @@ class kycAgentController extends Controller
 
 }
 
-
 public function saveAllKycData(Request $request)
 {
-    // Hardcode kyc_application_id for testing
-    // $request->merge(['kyc_application_id' => 1]);
-
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
-        // Add other fields as per your table structure for each table
-        // 'after_vs_cbs_field1' => 'nullable|string',
-        // 'from_verify_cbs_field1' => 'nullable|string',
-        // 'from_verify_sources_field1' => 'nullable|string',
+        'from_verify_sources' => 'nullable|array',
+        'from_verify_cbs' => 'nullable|array',
+        'after_vs_cbs' => 'nullable|array',
     ]);
 
-    // Prepare data for each table (replace with your actual fields)
+    // Prepare data for each table
     $afterVsCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-        
     ];
-
+    
     $fromVerifyCbsData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
-
+    
     $fromVerifySourcesData = [
         'kyc_application_id' => $validated['kyc_application_id'],
-       
     ];
+
+    // Merge the nested data if it exists
+    if (!empty($validated['after_vs_cbs'])) {
+        $afterVsCbsData = array_merge($afterVsCbsData, $validated['after_vs_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_cbs'])) {
+        $fromVerifyCbsData = array_merge($fromVerifyCbsData, $validated['from_verify_cbs']);
+    }
+    
+    if (!empty($validated['from_verify_sources'])) {
+        $fromVerifySourcesData = array_merge($fromVerifySourcesData, $validated['from_verify_sources']);
+    }
 
     // Insert or update in all three tables
     DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
@@ -99,6 +105,11 @@ public function saveAllKycData(Request $request)
 
     return response()->json([
         'message' => 'All KYC data saved successfully.',
+        'data' => [
+            'after_vs_cbs' => $afterVsCbsData,
+            'from_verify_cbs' => $fromVerifyCbsData,
+            'from_verify_sources' => $fromVerifySourcesData,
+        ]
     ], 201);
 }
 
@@ -176,9 +187,6 @@ public function saveAllKycData(Request $request)
 
 public function kycSaveApplicationDocument(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'kyc_application_id' => 'required',
         'document_types' => 'required|array|min:1',
@@ -191,29 +199,34 @@ public function kycSaveApplicationDocument(Request $request)
     foreach ($validated['files'] as $index => $file) {
         $documentType = $validated['document_types'][$index] ?? null;
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('kyc_application_documents', $filename, 'public');
+        $binaryContent = file_get_contents($file->getRealPath());
 
-        $doc = ApplicationDocument::updateOrCreate(
+        $doc = kycApplicationDocument::updateOrCreate(
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
+                'kyc_document_type' => $documentType,
             ],
             [
                 'kyc_application_id' => $validated['kyc_application_id'],
-                'document_type' => $documentType,
-                'file_name' => $filename,
-                'file_path' => $path,
+                'kyc_document_type' => $documentType,
+                'kyc_file_name' => $filename,
+                'kyc_file_path' => $binaryContent, // Save as mediumblob
+                'updated_at' => now(),
+                'created_at' => now(),
             ]
         );
 
-        $documents[] = $doc;
+        $documents[] = $doc->makeHidden(['kyc_file_path']);
     }
 
-    DB::table('kyc_customer_document')->insert([
+    DB::table('kyc_document_approved_status')->updateOrInsert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
-        
-       
+    ]);
+
+    DB::table('kyc_application_status')->updateOrInsert([
+        'kyc_application_id' => $validated['kyc_application_id'],
+        'status' => 'Pending',
     ]);
 
     return response()->json([
@@ -262,6 +275,27 @@ public function updateKycAfterVsCbsStatus(Request $request)
 
     return response()->json([
         'message' => 'KYC After VS CBS status updated successfully.',
+    ], 200);
+}
+
+public function updateKycApplicationStatus(Request $request)
+{
+    $validated = $request->validate([
+        'kyc_application_id' => 'required|integer',
+        'status' => 'required|string|max:191',
+        // 'status_comment' => 'nullable|string|max:500',
+    ]);
+
+    DB::table('kyc_application_status')->updateOrInsert(
+        ['kyc_application_id' => $validated['kyc_application_id']],
+        [
+            'status' => $validated['status'],
+            // 'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
+
+    return response()->json([
+        'message' => 'KYC Application status updated successfully.',
     ], 200);
 }
 

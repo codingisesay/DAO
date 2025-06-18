@@ -3,9 +3,10 @@ import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { serviceToCustomerService } from '../../services/apiServices';
+import { serviceToCustomerService , createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { apiService } from '../../utils/storage';
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
@@ -21,14 +22,14 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     useEffect(() => {
         const fetchBankingServices = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/agent/bankingServices');
-                setBankingServices(response.data.data);
+                const response = await createAccountService.getBankingFacilitiesService();
+                setBankingServices(response.data);
 
                 // Initialize form data with all facilities as unchecked if not already set
                 const initialEBankingServices = {};
                 const initialCreditFacilities = {};
 
-                response.data.data.forEach(item => {
+                response.data.forEach(item => {
                     if (item.service_id === 1) { // E-Banking Services
                         const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
                         initialEBankingServices[facilityKey] = formData.bankFacility?.eBankingServices?.[facilityKey] || false;
@@ -120,7 +121,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 banking_services_facilities_id: selectedFacilityIds
             };
 
-            const response = await serviceToCustomerService.create(payload);
+            const response = await createAccountService.serviceToCustomer_s5c(payload);
 
             Swal.fire({
                 icon: 'success',
@@ -151,7 +152,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {eBankingFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -167,7 +168,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             </div>
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-3">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {creditFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
                     return (
@@ -192,14 +193,38 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                     );
                 })}
             </div>
-            <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
+
+
+
+
+
+            <div className="next-back-btns z-10" >{/* z-10 */}
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton onClick={submitServiceToCustomer} variant="contained" className="btn-next">
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </CommonButton>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+            {/* <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
                 <CommonButton onClick={onBack} variant="outlined">
                     Back
                 </CommonButton>
                 <CommonButton onClick={submitServiceToCustomer} variant="contained">
                     Save & Continue
                 </CommonButton>
-            </div>
+            </div> */}
         </div>
     );
 }

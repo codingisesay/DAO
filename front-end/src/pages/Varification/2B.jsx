@@ -43,7 +43,7 @@ const AddressInputs = () => {
                     const response = await pendingAccountData.getDetailsS2B(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     // console.log('got data addr:', response.data.details);
-                    const application = response.data.details || {};
+                    const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setFormData({
@@ -358,7 +358,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: JSON.stringify(error),
+                text:  error?.response?.data?.message,
             });
         }
     }

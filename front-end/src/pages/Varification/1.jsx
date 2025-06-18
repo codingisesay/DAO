@@ -43,7 +43,7 @@ function P1({ onNext, onBack, updateFormData }) {
                     const response = await pendingAccountData.getDetailsS1(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
                     // console.log('got data :', response.data.details);
-                    const application = response.data.details || {};
+                    const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setLocalFormData({
@@ -161,7 +161,7 @@ function P1({ onNext, onBack, updateFormData }) {
         // alert('called')
         try {
             const payload = {
-                applicaiton_id: Number(id),
+                application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
                 admin_id: 1
@@ -204,7 +204,7 @@ function P1({ onNext, onBack, updateFormData }) {
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
-                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-3">
+                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}

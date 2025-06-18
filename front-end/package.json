@@ -11,9 +11,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.80.0",
     "@mui/icons-material": "^7.1.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",
     "@tensorflow-models/face-landmarks-detection": "^1.0.6",
+    "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.22.0",
@@ -25,10 +27,10 @@
     "highcharts": "^12.2.0",
     "highcharts-react-official": "^3.2.2",
     "mui-datatables": "^4.3.0",
-    "react": "^19.0.0",
+    "react": "^18.2.0",
     "react-bootstrap-icons": "^1.11.6",
     "react-date-range": "^2.0.1",
-    "react-dom": "^19.0.0",
+    "react-dom": "^18.2.0",
     "react-router-dom": "^7.5.3",
     "react-to-pdf": "^2.0.1",
     "react-toastify": "^11.0.5",
@@ -38,7 +40,8 @@
     "sweetalert2": "^11.21.0",
     "tailwind": "^4.0.0",
     "tesseract.js": "^6.0.1",
-    "use-local-storage": "^3.0.0"
+    "use-local-storage": "^3.0.0",
+    "webcamjs": "^1.0.26"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

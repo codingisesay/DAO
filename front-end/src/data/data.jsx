@@ -1,6 +1,7 @@
 
 // Define form fields
-const daodocbase = 'http://127.0.0.1:8000/storage/';
+
+const daodocbase = import.meta.env.VITE_BASE_URL_LOGIN + '/dao/storage/';
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
@@ -78,13 +79,13 @@ const relation = [
     { value: 'OTHER', label: 'Other' },
 ];
 const salaryrange = [
-    { value: 'BELOW_1L', label: 'Below ₹1,00,000' },
-    { value: '1L_3L', label: '₹1,00,000 – ₹3,00,000' },
-    { value: '3L_5L', label: '₹3,00,000 – ₹5,00,000' },
-    { value: '5L_10L', label: '₹5,00,000 – ₹10,00,000' },
-    { value: '10L_15L', label: '₹10,00,000 – ₹15,00,000' },
-    { value: '15L_25L', label: '₹15,00,000 – ₹25,00,000' },
-    { value: '25L_PLUS', label: 'Above ₹25,00,000' }
+    { value: 'Below ₹1,00,000', label: 'Below ₹1,00,000' },
+    { value: '₹1,00,000 – ₹3,00,000', label: '₹1,00,000 – ₹3,00,000' },
+    { value: '₹3,00,000 – ₹5,00,000', label: '₹3,00,000 – ₹5,00,000' },
+    { value: '₹5,00,000 – ₹10,00,000', label: '₹5,00,000 – ₹10,00,000' },
+    { value: '10₹10,00,000 – ₹15,00,000L_15L', label: '₹10,00,000 – ₹15,00,000' },
+    { value: '₹15,00,000 – ₹25,00,000', label: '₹15,00,000 – ₹25,00,000' },
+    { value: 'Above ₹25,00,000', label: 'Above ₹25,00,000' }
 ];
 
 

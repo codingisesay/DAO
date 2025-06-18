@@ -1,4 +1,4 @@
-import { pattern } from "framer-motion/client";
+// import { pattern } from "framer-motion/client";
 
 export const VALIDATION_PATTERNS = {
     TEXT_ONLY: {
