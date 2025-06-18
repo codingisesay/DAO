@@ -62,7 +62,12 @@ export default function LoginPage() {
             try{
             const success = await loginUser(formData.username, formData.password, '01');
             if (success) {
+                console.log(success)
+                if(success.roleName === 'Admin') {
+                navigate('/admindashboard');}
+                else{
                 navigate('/agentdashboard');
+                }
             }
             else {
                 Swal.fire({
