@@ -59,6 +59,7 @@ export default function LoginPage() {
             });
         }
         else {
+            try{
             const success = await loginUser(formData.username, formData.password, '01');
             if (success) {
                 navigate('/agentdashboard');
@@ -75,6 +76,19 @@ export default function LoginPage() {
                     }
                 });
             }
+        }
+        catch(error){
+            Swal.fire({
+                title: 'Error',
+                text: JSON.stringify( error ) || 'An unexpected error occurred',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                class: 'btn-login', 
+                customClass: {
+                    confirmButton: 'btn-error',
+                }
+            });
+        }
         }
     };
 
