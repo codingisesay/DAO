@@ -192,6 +192,12 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
         Route::get('/agent-applications-grouped/{agentId}', [AgentController::class, 'getApplicationsByAgentWithDateGroup']);
         // Performance Metrics yearly
         Route::get('/agent-applications-yearly/{agentId}', [AgentController::class, 'getApplicationsByAgentYearly']);
+        // Demographics Report 
+        Route::get('/applications/age-groups', [AgentController::class, 'getApplicationsByAgeGroups']);
+        // V-KYC Pending Status 
+        Route::get('/kyc-applications/pending-by-agent', [AgentController::class, 'getKycPendingApplicationsByAgent']);
+
+  
 
 
 

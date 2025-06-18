@@ -918,6 +918,69 @@ public function getApplicationsByAgentYearly($agentId)
     ]);
 }
 
+// Demographics Report
+public function getApplicationsByAgeGroups(Request $request)
+{
+    $agentId = $request->input('agent_id');
+
+    if (!$agentId) {
+        return response()->json(['message' => 'agent_id is required.'], 400);
+    }
+
+    $ageGroups = DB::table('customer_application_details')
+        ->where('agent_id', $agentId)
+        ->selectRaw("
+            SUM(CASE 
+                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 18 AND 25 THEN 1 
+                ELSE 0 
+            END) as 18_25,
+            SUM(CASE 
+                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 26 AND 35 THEN 1 
+                ELSE 0 
+            END) as 26_35,
+            SUM(CASE 
+                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 36 AND 50 THEN 1 
+                ELSE 0 
+            END) as 36_50,
+            SUM(CASE 
+                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) > 50 THEN 1 
+                ELSE 0 
+            END) as 50_plus
+        ")
+        ->first();
+
+    return response()->json([
+        'message' => 'Applications by age group fetched successfully.',
+        'data' => $ageGroups
+    ]);
+}
+
+
+public function getKycPendingApplicationsByAgent(Request $request)
+{
+    $agentId = $request->input('agent_id');
+
+    if (!$agentId) {
+        return response()->json(['message' => 'agent_id is required.'], 400);
+    }
+
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->select(
+            'kyc_application_status.*',
+            'kyc_application.kyc_application_no',
+            'kyc_application.verify_from',
+            'kyc_application.verify_details',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
+        )
+        ->where('kyc_application_status.status', 'pending')
+        ->where('kyc_application.kyc_agent_id', $agentId)
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
 
 
 }
