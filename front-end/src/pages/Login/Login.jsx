@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import '../../assets/css/login.css'; import useLocalStorage from "use-local-storage";
+import '../../assets/css/login.css'; 
+import useLocalStorage from "use-local-storage";
 import payvanceLogo from '../../assets/imgs/payvance_light_logo.png';
 import CommanInput from '../../components/CommanInput';
 import agenticon from '../../assets/imgs/agent.png';
@@ -22,6 +23,7 @@ const roles = [
 export default function LoginPage() {
     const [selectedRole, setSelectedRole] = useState(null);
     const [formData, setFormData] = useState({ username: '', password: '', captcha: '', role: '' });
+    const [showPassword, setShowPassword] = useState(false); // New state for password visibility
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const navigate = useNavigate();
@@ -42,19 +44,37 @@ export default function LoginPage() {
         setNumbers(newNumbers);
     };
 
-
-    const validateCaptcha = () => {
+    const validateCaptcha = async () => {
         const correctAnswer = Math.min(...numbers);
 
         if (parseInt(formData.captcha) !== correctAnswer) {
             Swal.fire({
                 title: 'Incorrect Captcha!',
-                // text: `The correct answer was ${correctAnswer}.`,
-                icon: 'error', confirmButtonText: 'Try Again',
-                class: 'btn-login', customClass: {
-                    confirmButton: 'btn-error ',  // Custom class for the button
+                icon: 'error', 
+                confirmButtonText: 'Try Again',
+                class: 'btn-login', 
+                customClass: {
+                    confirmButton: 'btn-error',
                 }
             });
+        }
+        else {
+            const success = await loginUser(formData.username, formData.password, '01');
+            if (success) {
+                navigate('/agentdashboard');
+            }
+            else {
+                Swal.fire({
+                    title: 'Login Failed',
+                    text: 'Invalid credentials',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    class: 'btn-login', 
+                    customClass: {
+                        confirmButton: 'btn-error',
+                    }
+                });
+            }
         }
     };
 
@@ -62,55 +82,26 @@ export default function LoginPage() {
         generateCaptcha();
     }, []);
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await loginUser(formData.username, formData.password, '01');
-        // alert(success)
-        if (success) {
-            navigate('/agentdashboard');
-            // if (selectedRole === 'AGENT') {
-            //     navigate('/agentdashboard');
-            // }
-            // else if (selectedRole === 'ADMIN') {
-            //     navigate('/admindashboard');
-            // }
-            // else if (selectedRole === 'EMPLOYEE') {
-            //     Swal.fire({
-            //         title: 'Login Failed',
-            //         text: 'You are not authorized to login as an employee',
-            //         icon: 'error',
-            //         confirmButtonText: 'OK',
-            //         class: 'btn-login', customClass: {
-            //             confirmButton: 'btn-error ',  // Custom class for the button
-            //         }
-            //     });
-            // }
-        }
-        else {
-            Swal.fire({
-                title: 'Login Failed',
-                text: 'Invalid credentials',
-                icon: 'error',
-                confirmButtonText: 'OK',
-                class: 'btn-login', customClass: {
-                    confirmButton: 'btn-error ',  // Custom class for the button
-                }
-            });
-        }
-
+        validateCaptcha();
     };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
-        <div data-theme={isDark ? "dark" : "light"} className=" w-full min-h-screen justify-center flex flex-col md:flex-row bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
+        <div data-theme={isDark ? "dark" : "light"} className="w-full min-h-screen justify-center flex flex-col md:flex-row bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
             {/* Left Panel */}
-            <div className=" md:w-1/2 bg-gradient-to-b from-blue-900 to-black flex items-center justify-center  ">
+            <div className="md:w-1/2 bg-gradient-to-b from-blue-900 to-black flex items-center justify-center">
                 <div className='login-bg'>
-                    <img className="m-5 p-2 px-4 rounded-xl  backdrop-blur-sm" src={payvanceLogo} alt="logo" />
+                    <img className="m-5 p-2 px-4 rounded-xl backdrop-blur-sm" src={payvanceLogo} alt="logo" />
                 </div>
             </div>
 
             {/* Right Panel */}
-            <div className=" md:w-1/2 p-8 flex flex-col justify-center">
+            <div className="md:w-1/2 p-8 flex flex-col justify-center">
                 <div className="w-4/5 m-auto">
                     <div className='flex justify-between'>
                         <p className="green-underline text-3xl font-bold mb-2 w-full font-xl text-gray-900 dark:text-gray-200">Sign In</p>
@@ -118,7 +109,7 @@ export default function LoginPage() {
                     </div>
                     <p className="text-sm my-4 text-gray-500 dark:text-gray-400">Please select your role</p>
 
-                    <div className="flex gap-4 mb-6 ">
+                    <div className="flex gap-4 mb-6">
                         {roles.map((role) => (
                             <span
                                 key={role.label}
@@ -136,7 +127,6 @@ export default function LoginPage() {
 
                     {/* Inputs */}
                     <form onSubmit={handleSubmit} className="space-y-6">
-
                         <CommanInput
                             onChange={handleChange}
                             label={labels.username.label}
@@ -145,15 +135,25 @@ export default function LoginPage() {
                             value={formData.username}
                         />
 
-                        <div >
+                        <div className="relative">
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.password.label}
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={formData.password}
                             />
-
+                            <button
+                                type="button"
+                                className="absolute right-3 top-2 text-gray-500 dark:text-gray-400"
+                                onClick={togglePasswordVisibility}
+                            >
+                                {showPassword ? (
+                                    <i className="bi bi-eye-slash-fill"></i>
+                                ) : (
+                                    <i className="bi bi-eye-fill"></i>
+                                )}
+                            </button>
 
                             <div className="flex items-center text-xs mt-1">
                                 <input type="checkbox" id="remember" className="mx-1" />
@@ -163,7 +163,7 @@ export default function LoginPage() {
 
                         <div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                                Identify the smallest value  ({numbers.join(", ")}) = ?
+                                Identify the smallest value ({numbers.join(", ")}) = ?
                             </p>
                             <div className="flex items-center gap-2">
                                 <CommanInput
@@ -198,5 +198,4 @@ export default function LoginPage() {
             </div>
         </div>
     );
-}
-
+} 
