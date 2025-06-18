@@ -11,7 +11,7 @@ import KYCpendingTbl from './KYCpendingTbl';
 import DateRangePicker from '../../components/DaterangePicker'
 import CommonButton from '../../components/CommonButton';
 import { agentService } from '../../services/apiServices';
-
+import Swal from 'sweetalert2';
 
 const Dashboard = () => {
 
