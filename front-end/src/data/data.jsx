@@ -1,7 +1,7 @@
 
 // Define form fields
 
-const daodocbase = import.meta.env.VITE_BASE_URL_LOGIN + '/dao/storage/';
+const daodocbase = 'data:image/jpeg;base64,';
 const gender = [
     { value: 'MALE', label: 'Male' },
     { value: 'FEMALE', label: 'Female' },
