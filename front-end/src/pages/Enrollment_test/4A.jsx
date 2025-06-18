@@ -24,7 +24,7 @@ const VideoKYCInstructions = () => {
 
     return (
         <>
-            <div className="flex flex-col md:flex-row gap-3 justify-center items-start">
+            <div className="flex flex-col md:flex-row gap-5 justify-center items-start">
                 {/* Guidelines Box */}
                 <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
                     <div className="flex items-start gap-2">

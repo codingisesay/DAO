@@ -9,9 +9,11 @@ import Page5 from './5';
 import Page6 from './6';
 import Stepper from './Stepper';
 
-function Enrollmentform() {
+function Enrollmentform() { 
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
+
+    localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
     // Centralized form data state
     const [formData, setFormData] = useState({
@@ -19,7 +21,7 @@ function Enrollmentform() {
         applicationType: '',
         salutation: '',
         verificationOption: '',
-        verificationNumber: '',
+        verificationNumber: '', email: '',
         correspondenceAddressSame: false,
         personalDetails: {
             firstName: '',
@@ -36,7 +38,7 @@ function Enrollmentform() {
             pincode: '',
             city: '',
             district: '',
-            state: ''
+            state: '', email: '',
         },
         permanentAddress: {},
         correspondenceAddress: {},
@@ -88,7 +90,7 @@ function Enrollmentform() {
 
 
     const handleNext = () => {
-        console.log('Final form data:', formData);
+        // console.log('Final form data:', formData);
         if (currentStep === 6) {
             setComplete(true);
             // On final submission
@@ -150,11 +152,19 @@ function Enrollmentform() {
                     formData={formData}
                 />;
             default:
-                return <Page1
-                    onNext={handleNext}
+                return <Page6
+                    onComplete={() => {
+                        setComplete(true);
+                        // console.log('Final form data:', formData);
+                    }}
+                    onBack={handleBack}
                     formData={formData}
-                    updateFormData={updateFormData}
                 />;
+            // <Page1
+            //     onNext={handleNext}
+            //     formData={formData}
+            //     updateFormData={updateFormData}
+            // />;
         }
     };
 

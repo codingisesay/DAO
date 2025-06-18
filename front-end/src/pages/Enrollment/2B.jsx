@@ -1,41 +1,30 @@
 
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { API_ENDPOINTS } from '../../services/api';
-import { YN } from '../../data/data';
+import { addressDetailsService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
-import { daoApi } from '../../utils/storage';
-import { addressDetailsService } from '../../services/apiServices';
+import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
 
-function AddressForm({ formData, updateFormData, onNext, onBack }) {
-    const [sameAsAbove, setSameAsAbove] = useState(
-        formData.correspondenceAddressSame || false
-    );
-    const [extraInputData, setExtraInputData] = useState({
-        per_resident: formData.per_resident || '',
-        per_residence_status: formData.per_residence_status || '',
-        resi_doc: formData.resi_doc || ''
-    });
-
+function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
+    const applicationId = localStorage.getItem('application_id');    
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
         per_area: formData.area || '',
         per_landmark: formData.landmark || '',
-        per_country: formData.country || '',
+        per_country: formData.country || 'INDIA',
         per_pincode: formData.pincode || '',
         per_city: formData.city || '',
         per_district: formData.district || '',
         per_state: formData.state || '',
-        cor_complex_name: formData.cor_complex_name || '',
-        cor_flat_no: formData.cor_flat_no || '',
+        cor_complex_name: formData.cor_complex_name || (formData.correspondenceAddressSame ? formData.per_complex_name : ''),
+        cor_flat_no: formData.cor_flat_no || (formData.correspondenceAddressSame ? formData.per_flat_no : ''),
         cor_area: formData.cor_area || '',
         cor_landmark: formData.cor_landmark || '',
-        cor_country: formData.cor_country || '',
+        cor_country: formData.cor_country || 'INDIA',
         cor_pincode: formData.cor_pincode || '',
         cor_city: formData.cor_city || '',
         cor_district: formData.cor_district || '',
@@ -43,123 +32,302 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         status: 'Pending'
     });
 
-    // const submitaddress = async () => {
-    //     const payload = {
-    //         application_id: formData.application_id,
-    //         ...localFormData,
-    //         ...extraInputData,
-    //         status: formData.status,
-    //     };
+    const [extraInputData, setExtraInputData] = useState({
+        per_resident: formData.per_resident || '',
+        per_residence_status: formData.per_residence_status || '',
+        resi_doc: formData.resi_doc || ''
+    });
 
-    //     try {
-    //         const response = await daoApi.post(addressDetailsService.create(payload))
-    //         console.log('ADDRESS CHECK :', payload)
+    const [sameAsAbove, setSameAsAbove] = useState(
+        formData.correspondenceAddressSame || false
+    );
 
-    //         updateFormData({
-    //             ...localFormData,
-    //             ...extraInputData,
-    //             correspondenceAddressSame: sameAsAbove
-    //         });
+    const [loadingPinCode, setLoadingPinCode] = useState({
+        per: false,
+        cor: false
+    });
 
-    //         Swal.fire({
-    //             icon: 'success',
-    //             title: 'Address details saved successfully.',
-    //             showConfirmButton: false,
-    //             timer: 1500
-    //         });
-    //         onNext();
-    //     } catch (error) {
-    //         Swal.fire({
-    //             icon: 'error',
-    //             title: 'Error',
-    //             text: 'fail fail'
-    //         });
-    //     }
-    // }
-    const submitaddress = async () => {
-        const payload = {
-            application_id: formData.application_id,
-            ...localFormData,
-            ...extraInputData,
-            status: formData.status,
-        };
-        var response;
-        try {
-            response = await daoApi.post(addressDetailsService.create(payload));
-            console.log('ADDRESS CHECK :', payload);
+    // Fetch address details when component mounts
+    useEffect(() => {
+        if (!applicationId) return;
+        const fetchDetails = async () => {
+            try {
+                const response = await applicationDetailsService.getFullDetails(applicationId);
+                if (response.data) {
+                    const { application_addresss } = response.data; 
+                    const addressFromDB = application_addresss[0];
 
-            if (response.data && response.data.success) {
-                updateFormData({
-                    ...localFormData,
-                    ...extraInputData,
-                    correspondenceAddressSame: sameAsAbove
-                });
+                    const resetFormData = {
+                        per_complex_name: addressFromDB?.per_complex_name || '',
+                        per_flat_no: addressFromDB?.per_flat_no || '',
+                        per_area: addressFromDB?.per_area || '',
+                        per_landmark: addressFromDB?.per_landmark || '',
+                        per_country: addressFromDB?.per_country || '',
+                        per_pincode: addressFromDB?.per_pincode || '',
+                        per_city: addressFromDB?.per_city || '',
+                        per_district: addressFromDB?.per_district || '',
+                        per_state: addressFromDB?.per_state || '',
+                        cor_complex_name: addressFromDB?.cor_complex_name || '',
+                        cor_flat_no: addressFromDB?.cor_flat_no || '',
+                        cor_area: addressFromDB?.cor_area || '',
+                        cor_landmark: addressFromDB?.cor_landmark || '',
+                        cor_country: addressFromDB?.cor_country || '',
+                        cor_pincode: addressFromDB?.cor_pincode || '',
+                        cor_city: addressFromDB?.cor_city || '',
+                        cor_district: addressFromDB?.cor_district || '',
+                        cor_state: addressFromDB?.cor_state || '',
+                        status: addressFromDB?.status || 'Pending'
+                    };
 
-                Swal.fire({
-                    icon: 'success',
-                    title: response.data.message || 'Address details saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                onNext();
-            } else {
-                throw new Error(response.data.message || 'Failed to save address details');
+                    setLocalFormData(resetFormData);
+
+                    const resetExtraInputData = {
+                        per_resident: addressFromDB?.per_resident || '',
+                        per_residence_status: addressFromDB?.per_residence_status || '',
+                        resi_doc: addressFromDB?.resi_doc || ''
+                    };
+
+                    setExtraInputData(resetExtraInputData);
+                }
+            } catch (error) {
+                console.log(error)
+                // Swal.fire({
+                //     icon: 'error',
+                //     title: 'Error',
+                //     text: error?.response?.data?.message
+                // });
             }
-        } catch (error) {
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Error',
-            //     text: error.message || 'Failed to save address details'
-            // });
+        };
+        fetchDetails();
+    }, [applicationId]);
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Address details saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            onNext();
+    // Function to fetch address details from PIN code API
+    const fetchAddressByPinCode = async (pincode, prefix) => {
+        try {
+            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+            const data = await response.json();
+            
+            if (data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
+                const postOffice = data[0].PostOffice[0];
+                return {
+                    [`${prefix}_state`]: postOffice.State,
+                    [`${prefix}_district`]: postOffice.District,
+                    [`${prefix}_city`]: postOffice.Name || postOffice.Block || postOffice.Division,
+                    [`${prefix}_country`]: 'India'
+                };
+            }
+            throw new Error('No address found for this PIN code');
+        } catch (error) {
+            console.error('Error fetching address by PIN code:', error);
+            throw error;
         }
-    }
-    const handlePermanentChange = (e) => {
+    };
+
+    const handlePermanentChange = async (e) => {
         const { name, value } = e.target;
+        
         setLocalFormData(prev => {
             const updated = {
                 ...prev,
                 [name]: value
             };
 
-            if (sameAsAbove) {
+            if (sameAsAbove && name.startsWith('per_')) {
                 const corName = name.replace('per_', 'cor_');
                 updated[corName] = value;
             }
 
+            // Clear error when field is filled
+            if (errors[name]) {
+                setErrors(prev => {
+                    const newErrors = { ...prev };
+                    delete newErrors[name];
+                    return newErrors;
+                });
+            }
+
             return updated;
         });
+
+        // Auto-fill address when PIN code is entered (6 digits)
+        if (name === 'per_pincode' && value.length === 6) {
+            setLoadingPinCode(prev => ({ ...prev, per: true }));
+            try {
+                const addressData = await fetchAddressByPinCode(value, 'per');
+                setLocalFormData(prev => ({
+                    ...prev,
+                    ...addressData,
+                    ...(sameAsAbove ? Object.fromEntries(
+                        Object.entries(addressData).map(([key, val]) => [
+                            key.replace('per_', 'cor_'), 
+                            val
+                        ])
+                    ) : {})
+                }));
+            } catch (error) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'PIN Code Not Found',
+                    text: 'Could not find address details for this PIN code. Please enter manually.',
+                });
+            } finally {
+                setLoadingPinCode(prev => ({ ...prev, per: false }));
+            }
+        }
     };
 
-    const handleCorrespondenceChange = (e) => {
+    const handleCorrespondenceChange = async (e) => {
         const { name, value } = e.target;
+        
         setLocalFormData(prev => ({
             ...prev,
             [name]: value
         }));
+
+        // Clear error when field is filled
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+
+        // Auto-fill address when PIN code is entered (6 digits)
+        if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
+            setLoadingPinCode(prev => ({ ...prev, cor: true }));
+            try {
+                const addressData = await fetchAddressByPinCode(value, 'cor');
+                setLocalFormData(prev => ({
+                    ...prev,
+                    ...addressData
+                }));
+            } catch (error) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'PIN Code Not Found',
+                    text: 'Could not find address details for this PIN code. Please enter manually.',
+                });
+            } finally {
+                setLoadingPinCode(prev => ({ ...prev, cor: false }));
+            }
+        }
     };
+
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const newErrors = {};
+        const requiredFields = [
+            'per_complex_name', 'per_flat_no', 'per_area', 'per_landmark',
+            'per_country', 'per_pincode', 'per_city', 'per_district', 'per_state'
+        ];
+
+        requiredFields.forEach(field => {
+            if (!localFormData[field]) {
+                newErrors[field] = 'This field is required';
+            }
+        });
+
+        if (!sameAsAbove) {
+            const corRequiredFields = [
+                'cor_complex_name', 'cor_flat_no', 'cor_area', 'cor_landmark',
+                'cor_country', 'cor_pincode', 'cor_city', 'cor_district', 'cor_state'
+            ];
+
+            corRequiredFields.forEach(field => {
+                if (!localFormData[field]) {
+                    newErrors[field] = 'This field is required';
+                }
+            });
+        }
+
+        if (!extraInputData.per_resident) {
+            newErrors.per_resident = 'This field is required';
+        } else if (extraInputData.per_resident === 'YES' && !extraInputData.per_residence_status) {
+            newErrors.per_residence_status = 'This field is required';
+        } else if (extraInputData.per_residence_status === 'RESIDENT' && !extraInputData.resi_doc) {
+            newErrors.resi_doc = 'This field is required';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const submitaddress = async () => {
+        if (!validateForm()) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please fill all required fields correctly',
+            });
+            return;
+        }
+
+        const payload = {
+            application_id: formData.application_id,
+            ...localFormData,
+            ...extraInputData,
+            status: formData.status,
+        };
+
+        try {
+            const response = await createAccountService.addressDetails_s2b(payload);
+            console.log('ADDRESS CHECK :', payload);
+
+            updateFormData({
+                ...localFormData,
+                ...extraInputData,
+                correspondenceAddressSame: sameAsAbove
+            });
+
+            Swal.fire({
+                icon: 'success',
+                title: response.data.message || 'Address details saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            onNext();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Failed to save address details'
+            });
+        }
+    }
 
     const handleSameAsAboveToggle = () => {
         const newValue = !sameAsAbove;
         setSameAsAbove(newValue);
 
+        setLocalFormData(prev => {
+            if (newValue) {
+                return {
+                    ...prev,
+                    cor_complex_name: prev.per_complex_name,
+                    cor_flat_no: prev.per_flat_no,
+                    cor_area: prev.per_area,
+                    cor_landmark: prev.per_landmark,
+                    cor_country: prev.per_country,
+                    cor_pincode: prev.per_pincode,
+                    cor_city: prev.per_city,
+                    cor_district: prev.per_district,
+                    cor_state: prev.per_state
+                };
+            }
+            return prev;
+        });
+
         if (newValue) {
-            setLocalFormData(prev => {
-                const updated = { ...prev };
-                Object.keys(prev).forEach(key => {
-                    if (key.startsWith('per_')) {
-                        const corKey = key.replace('per_', 'cor_');
-                        updated[corKey] = prev[key];
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                Object.keys(newErrors).forEach(key => {
+                    if (key.startsWith('cor_')) {
+                        delete newErrors[key];
                     }
                 });
-                return updated;
+                return newErrors;
             });
         }
     };
@@ -180,6 +348,22 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         setSameAsAbove(false);
     };
 
+    const handleExtraInputChange = (e) => {
+        const { name, value } = e.target;
+        setExtraInputData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
+
     return (
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
@@ -188,17 +372,22 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 handleChange={handlePermanentChange}
                 prefix="per"
                 extraInputData={extraInputData}
-                setExtraInputData={setExtraInputData}
+                errors={errors}
+                handleExtraInputChange={handleExtraInputChange}
+                loading={loadingPinCode.per}
             />
 
-            <div className="flex items-center mt-6 mb-2">
-                <input
-                    type="checkbox"
-                    checked={sameAsAbove}
-                    onChange={handleSameAsAboveToggle}
-                    className="mr-2"
-                />
-                <label className="font-semibold">Same As Above</label>
+            <div className='flex items-center mb-2'>
+                <h2 className="text-xl font-bold m-2">Correspondence Address</h2>
+                <div className="flex items-center m-2">
+                    <input
+                        type="checkbox"
+                        checked={sameAsAbove}
+                        onChange={handleSameAsAboveToggle}
+                        className="mr-2"
+                    />
+                    <label className="font-light">Same As Above</label>
+                </div>
 
                 {!sameAsAbove && (
                     <CommonButton
@@ -210,29 +399,49 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 )}
             </div>
 
-            <h2 className="text-xl font-bold mb-2">Correspondence Address</h2>
             <AddressSection
                 formData={localFormData}
                 handleChange={handleCorrespondenceChange}
                 prefix="cor"
                 disabled={sameAsAbove}
+                errors={errors}
+                loading={loadingPinCode.cor}
             />
 
-            <div className="next-back-btns z-10" >
-                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+            <div className="next-back-btns z-10">
+                <CommonButton
+                    onClick={onBack}
+                    variant="outlined"
+                    className="btn-back"
+                    disabled={isSubmitting}
+                >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={submitaddress} variant="contained" className="btn-next">
-                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                <CommonButton
+                    onClick={submitaddress}
+                    variant="contained"
+                    className="btn-next"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? (
+                        <>
+                            <span className="animate-spin inline-block mr-2">↻</span>
+                            Processing...
+                        </>
+                    ) : (
+                        <>
+                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                        </>
+                    )}
                 </CommonButton>
             </div>
         </div>
     );
 }
 
-function AddressSection({ formData, handleChange, prefix, extraInputData, setExtraInputData, disabled = false }) {
+function AddressSection({ formData, handleChange, prefix, extraInputData, errors, handleExtraInputChange, disabled = false, loading = false }) {
     return (
-        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
             <CommanInput
                 label={labels.complexname.label}
                 name={`${prefix}_complex_name`}
@@ -240,8 +449,9 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHANUMERIC"
+                
                 disabled={disabled}
+                error={errors[`${prefix}_complex_name`]}
             />
             <CommanInput
                 label={labels.roomno.label}
@@ -250,8 +460,9 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 onChange={handleChange}
                 required
                 max={5}
-                validationType="ALPHANUMERIC"
+                validationType={'ALPHANUMERIC'}
                 disabled={disabled}
+                error={errors[`${prefix}_flat_no`]}
             />
             <CommanInput
                 label={labels.area.label}
@@ -262,6 +473,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
+                error={errors[`${prefix}_area`]}
             />
             <CommanInput
                 label={labels.landmark.label}
@@ -272,6 +484,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="EVERYTHING"
                 disabled={disabled}
+                error={errors[`${prefix}_landmark`]}
             />
             <CommanInput
                 label={labels.country.label}
@@ -282,6 +495,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
+                error={errors[`${prefix}_country`]}
             />
             <CommanInput
                 label={labels.pincode.label}
@@ -292,6 +506,10 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={6}
                 validationType="NUMBER_ONLY"
                 disabled={disabled}
+                error={errors[`${prefix}_pincode`]}
+                endAdornment={loading && (
+                    <i className="bi bi-arrow-repeat animate-spin"></i>
+                )}
             />
             <CommanInput
                 label={labels.city.label}
@@ -302,6 +520,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
+                error={errors[`${prefix}_city`]}
             />
             <CommanInput
                 label={labels.district.label}
@@ -312,6 +531,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
+                error={errors[`${prefix}_district`]}
             />
             <CommanInput
                 label={labels.state.label}
@@ -322,49 +542,23 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, setExt
                 max={30}
                 validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
+                error={errors[`${prefix}_state`]}
             />
             {prefix === 'per' && (
                 <ExtraInput
                     extraInputData={extraInputData}
-                    setExtraInputData={setExtraInputData}
+                    errors={errors}
+                    handleChange={handleExtraInputChange}
+                    disabled={disabled}
                 />
             )}
         </div>
     );
 }
 
-const RESIDENTIAL_STATUS = [
-    { label: 'RESIDENT', value: 'RESIDENT' },
-    { label: 'NON RESIDENT (NRI)', value: 'NON_RESIDENT' },
-];
-
-const RESIDENCE_DOCS = [
-    { label: 'Aadhar Card', value: 'AADHAR' },
-    { label: 'Ration Card', value: 'RATION' },
-    { label: 'Voter ID', value: 'VOTER_ID' },
-    { label: 'Utility Bill', value: 'UTILITY_BILL' },
-];
-
-const ExtraInput = ({ extraInputData, setExtraInputData, disabled = false }) => {
-    const isResident = extraInputData.per_resident === 'YES';
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-
-        if (name === 'per_resident') {
-            setExtraInputData({
-                ...extraInputData,
-                [name]: value,
-                per_residence_status: '',
-                resi_doc: ''
-            });
-        } else {
-            setExtraInputData({
-                ...extraInputData,
-                [name]: value
-            });
-        }
-    };
+const ExtraInput = ({ extraInputData, errors, handleChange, disabled = false }) => {
+    const isResidentYes = extraInputData.per_resident === 'YES';
+    const isStatusResident = extraInputData.per_residence_status === 'RESIDENT';
 
     return (
         <>
@@ -374,26 +568,36 @@ const ExtraInput = ({ extraInputData, setExtraInputData, disabled = false }) => 
                 value={extraInputData.per_resident || ''}
                 name="per_resident"
                 required
+                disabled={disabled}
                 options={YN}
+                error={errors.per_resident}
             />
-            <CommanSelect
-                onChange={handleChange}
-                label="Residential Status"
-                value={extraInputData.per_residence_status || ''}
-                name="per_residence_status"
-                required={isResident}
-                disabled={!isResident}
-                options={RESIDENTIAL_STATUS}
-            />
-            <CommanSelect
-                onChange={handleChange}
-                label="Residence Document"
-                value={extraInputData.resi_doc || ''}
-                name="resi_doc"
-                required={isResident}
-                disabled={!isResident}
-                options={RESIDENCE_DOCS}
-            />
+
+            {isResidentYes && (
+                <CommanSelect
+                    onChange={handleChange}
+                    label="Residential Status"
+                    value={extraInputData.per_residence_status || ''}
+                    name="per_residence_status"
+                    required
+                    disabled={!isResidentYes || disabled}
+                    options={RESIDENTIAL_STATUS}
+                    error={errors.per_residence_status}
+                />
+            )}
+
+            {isResidentYes && isStatusResident && (
+                <CommanSelect
+                    onChange={handleChange}
+                    label="Residence Document"
+                    value={extraInputData.resi_doc || ''}
+                    name="resi_doc"
+                    required
+                    disabled={disabled}
+                    options={RESIDENCE_DOCS}
+                    error={errors.resi_doc}
+                />
+            )}
         </>
     );
 };

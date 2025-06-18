@@ -1,4 +1,4 @@
-import { pattern } from "framer-motion/client";
+// import { pattern } from "framer-motion/client";
 
 export const VALIDATION_PATTERNS = {
     TEXT_ONLY: {
@@ -11,7 +11,7 @@ export const VALIDATION_PATTERNS = {
     },
     EMAIL: {
         pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        message: "Please enter a valid email address (e.g., user@example.com)",
+        message: " (e.g.user@example.com)",
     },
     PHONE: {
         pattern: /^[0-9]*$/,
@@ -19,7 +19,8 @@ export const VALIDATION_PATTERNS = {
     },
     PAN: {
         pattern: /^[A-Z]{5}[0-9]{4}[A-Z]$/,
-        message: "Please enter a valid PAN number (e.g., ABCDE1234F)",
+        message: "e.g.ABCDE1234F",
+        // message: "Please enter a valid PAN number (e.g., ABCDE1234F)",/
     },
     ALPHANUMERIC: {
         pattern: /^[A-Za-z0-9\s]*$/,
@@ -92,7 +93,8 @@ export const VALIDATION_PATTERNS = {
     },
     DRIVINGLICENCE: {
         pattern: /^[A-Z]{2}\d{2}\s\d{11}$/,
-        message: "e.g., 'RJ19 20190012345'",
+        // message: "e.g., 'RJ19 20190012345",
+        message: "",
     },
     // All: {
     //   pattern: '/.*/',
@@ -103,7 +105,7 @@ export const VALIDATION_PATTERNS = {
 export const validateField = (fieldName, value, required = false) => {
     // If the field is required but empty, return error
     if (required && (!value || value.toString().trim() === "")) {
-        return "This field is required";
+        return " is required";
     }
 
     // Check if the field has a validation pattern defined

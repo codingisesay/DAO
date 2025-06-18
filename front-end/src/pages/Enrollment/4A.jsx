@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import CommonButton from "../../components/CommonButton";
+import Swal from 'sweetalert2';
+import {videoKycServie} from '../../services/apiServices'; // Adjust the import path as necessary
 
-const VideoKYCInstructions = () => {
+import { useNavigate, Link } from 'react-router-dom';
+
+const VideoKYCInstructions = ({onNext}) => {
     const [termsAccepted, setTermsAccepted] = useState({
         guidelines: false,
         technical: false
     });
+      const navigate = useNavigate();
     const [showOptions, setShowOptions] = useState(false);
+    const [assistKycCall, setAssistKycCall] = useState(false);
 
     const handleCheckboxChange = (type) => {
         setTermsAccepted(prev => ({
@@ -15,16 +21,45 @@ const VideoKYCInstructions = () => {
             [type]: !prev[type]
         }));
     };
-
-    const handleConfirm = () => {
+   
+    const handleConfirm = () => {  
+        //  const responce = await videoKycServie.createMeeting(5);
+        // console.log(response);
         setShowOptions(true);
     };
 
     const allTermsAccepted = termsAccepted.guidelines && termsAccepted.technical;
 
+    const skipKyc=()=>{
+          localStorage.setItem('vcall', JSON.stringify(false));
+        Swal.fire({
+            icon: 'info',
+            title: 'VKYC Skipped',
+            text: 'You have chosen to skip the video KYC process.',
+            confirmButtonText: 'Continue'
+            }).then(() => {
+            // This runs after the user clicks "Continue"
+            onNext();
+            }); 
+    }
+    const assistKyc= async()=>{
+          localStorage.setItem('vcall', JSON.stringify(true));
+         
+        const responce = await videoKycServie.createMeeting(5);
+        console.log(responce);
+        setAssistKycCall(true);
+            //    navigate('/startVkyc');
+    }
+
+
     return (
         <>
-            <div className="flex flex-col md:flex-row gap-3 justify-center items-start">
+
+            {assistKycCall === false 
+                ?
+                (<>
+                
+            <div className="flex flex-col md:flex-row gap-5 justify-center items-start">
                 {/* Guidelines Box */}
                 <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
                     <div className="flex items-start gap-2">
@@ -79,7 +114,7 @@ const VideoKYCInstructions = () => {
             <div className="text-center mt-4">
                 <CommonButton
                     className="btn-login my-3 w-[200px]"
-                    // disabled={!allTermsAccepted}
+                    disabled={!allTermsAccepted}
                     onClick={handleConfirm}
                 >
                     &nbsp;Confirm&nbsp;
@@ -103,13 +138,13 @@ const VideoKYCInstructions = () => {
                             Self V-KYC
                         </CommonButton>
 
-                        <CommonButton
+                        <CommonButton onClick={skipKyc}
                             className="btn-login my-3 w-[200px]"
                         >
                             Skip V-KYC
                         </CommonButton>
 
-                        <CommonButton
+                        <CommonButton onClick={assistKyc}
                             className="btn-login my-3 w-[200px]"
                         >
                             Assisted V-KYC
@@ -117,6 +152,30 @@ const VideoKYCInstructions = () => {
                     </div>
                 </div>
             )}
+
+                </>) 
+                
+                : (<>
+                    <h1>
+                        VKYC TOKEN
+                    </h1>
+                    <input className="m-4 p-2 border-2 border-gray-500 rounded" type="text" name="" id="" />
+
+                    <button className="btn-login my-3 w-[200px]">
+                        Join V-KYC
+                    </button>
+                </>
+                ) 
+            }
+
+
+
+
+
+
+
+
+
         </>
     );
 };

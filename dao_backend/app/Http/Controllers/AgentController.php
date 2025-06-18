@@ -10,7 +10,12 @@ use App\Models\ApplicantLivePhoto;
 use App\Models\ApplicationDocument;
 use App\Models\AccountPersonalDetail;
 use App\Models\AccountNominee;
+use App\Models\AgentLivePhoto;
+use App\Models\CustomerApplicationStatus;
+
 use App\Models\ServiceToCustomer;
+
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +32,44 @@ class AgentController extends Controller
             'message' => $user,
         ]);
     }
+
+
+public function getAccountStatusByAgent(Request $request)
+{
+    $agentId = $request->input('agent_id');
+
+    // Base query with join
+    $baseQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select(
+            'cas.*',
+            'cad.agent_id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name'
+        );
+
+    // Clone for reuse in both queries
+    $statusQuery = clone $baseQuery;
+    $countQuery = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->select('cas.status', DB::raw('COUNT(*) as total'))
+        ->groupBy('cas.status');
+
+    if (!empty($agentId)) {
+        $baseQuery->where('cad.agent_id', $agentId);
+        $countQuery->where('cad.agent_id', $agentId);
+    }
+
+    $statuses = $baseQuery->get();
+    $statusCounts = $countQuery->get();
+
+    return response()->json([
+        'data' => $statuses,
+        'summary' => $statusCounts
+    ], 200);
+}
+
 
  
 public function EnrollmentDetails(Request $request)
@@ -111,39 +154,6 @@ public function getApplicationDetails(Request $request, $id)
 }
 
 
-// Store personal details
-// public function savePersonalDetails(Request $request)
-// {
-//     // Hardcode application_id for testing
-//     // $request->merge(['application_id' => 1]); // Replace 4 with a valid ID from your DB
-
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'salutation' => 'required',
-//         'religion' => 'required',
-//         'caste' => 'nullable|string|max:191',
-//         'marital_status' => 'required',
-//         'alt_mob_no' => 'nullable|string|max:191',
-//         'email' => 'nullable|email|max:191',
-//         'adhar_card' => 'nullable|string|max:191',
-//         'pan_card' => 'nullable|string|max:191',
-//         'passport' => 'nullable|string|max:191',
-//         'driving_license' => 'nullable|string|max:191',
-//         'voter_id' => 'nullable|string|max:191',
-//         'status' => 'nullable',
-//     ]);
-
-//     // Update if exists, otherwise create
-//     $personalDetails = \App\Models\ApplicationPersonalDetails::updateOrCreate(
-//         ['application_id' => $validated['application_id']],
-//         $validated
-//     );
-
-//     return response()->json([
-//         'message' => 'Personal details saved successfully.',
-//         'data' => $personalDetails,
-//     ], 201);
-// }
 
 public function savePersonalDetails(Request $request)
 {
@@ -223,23 +233,20 @@ public function saveAddressDetails(Request $request)
     ], 201);
 }
 
-// Store live photo
 public function saveLivePhoto(Request $request)
 {
-    // Hardcode application_id as 6 for testing
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
-        'status' => 'nullable|in:APPROVED,REJECT',
+        'status' => 'nullable|in:Pending,Approved,Reject,Review',
+        'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
-    $path = $file->storeAs('live_photos', $filename, 'public');
+    $binaryContent = file_get_contents($file->getRealPath());
 
     // Update if exists, otherwise create
     $photo = ApplicantLivePhoto::updateOrCreate(
@@ -251,82 +258,95 @@ public function saveLivePhoto(Request $request)
             'longitude' => $validated['longitude'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'name' => $filename,
-            'path' => $path,
+            'path' => $binaryContent, // Save as mediumblob
             'status' => $validated['status'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
 
     return response()->json([
         'message' => 'Live photo uploaded successfully.',
-        'data' => $photo,
+       'data' => $photo->makeHidden(['path']),
     ], 201);
 }
 
-// Store application document
-// public function saveApplicationDocument(Request $request)
-// {
-//     // Hardcode application_id for testing if needed
-//     // $request->merge(['application_id' => 1]);
 
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'document_types' => 'required|array|min:1',
-//         'document_types.*' => 'required|string|max:191',
-//         'files' => 'required|array|min:1',
-//         'files.*' => 'file|max:10240',
-//     ]);
+public function saveAgentLivePhoto(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'longitude' => 'required|string|max:255',
+        'latitude' => 'required|string|max:255',
+        'status' => 'nullable|in:Pending,Approved,Reject,Review',
+        'status_comment' => 'nullable|string|max:255',
+        'photo' => 'required|image|max:5120', // max 5MB
+    ]);
 
-//     $documents = [];
-//    foreach ($validated['files'] as $index => $file) {
-//     $documentType = $validated['document_types'][$index] ?? null;
-//     $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-//     $path = $file->storeAs('application_documents', $filename, 'public');
+    $file = $request->file('photo');
+    $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
+    $binaryContent = file_get_contents($file->getRealPath());
 
-//     ApplicationDocument::updateOrCreate(
-//         [
-//             'application_id' => $validated['application_id'],
-//             'document_type' => $documentType,
-//         ],
-//         [
-//             'application_id' => $validated['application_id'],
-//             'document_type' => $documentType,
-//             'file_name' => $filename,
-//             'file_path' => $path,
-           
-//         ]
-//     );
+    $photo = AgentLivePhoto::updateOrCreate(
+        [
+            'application_id' => $validated['application_id'],
+        ],
+        [
+            'application_id' => $validated['application_id'],
+            'longitude' => $validated['longitude'],
+            'latitude' => $validated['latitude'],
+            'name' => $filename,
+            'path' => $binaryContent, // Save as mediumblob
+            'status' => $validated['status'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
+        ]
+    );
 
-//     return response()->json([
-//         'message' => 'Documents uploaded successfully.',
-//         'data' => $documents,
-//     ], 201);
-// }
+    $customerStaus = CustomerApplicationStatus::updateOrCreate([
+        'application_id' => $validated['application_id'],
+        'status' => 'Pending',
+    ]);
 
-// }
+    if ($customerStaus) {
+        return response()->json([
+            'message' => 'Agent Live photo uploaded successfully.',
+            'data' => $photo->makeHidden(['path']),
+        ], 201);
+    }
+
+    return response()->json([
+        'message' => 'Error uploading agent live photo.',
+    ]);
+}
 
 
 
- 
 public function saveApplicationDocument(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => 1]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
         'files' => 'required|array|min:1',
-        'files.*' => 'file|max:10240',
+        'files.*' => 'required|string', // Expecting base64 string
     ]);
 
     $documents = [];
-    foreach ($validated['files'] as $index => $file) {
+    foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
-        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $path = $file->storeAs('application_documents', $filename, 'public');
 
-        $doc = ApplicationDocument::updateOrCreate(
+        // Extract file extension from base64 string (optional, for file_name)
+        if (preg_match('/^data:.*?\/(.*?);base64,/', $base64File, $match)) {
+            $extension = $match[1];
+            $base64File = preg_replace('/^data:.*?;base64,/', '', $base64File);
+        } else {
+            $extension = 'bin';
+        }
+
+        $filename = uniqid('doc_') . '.' . $extension;
+        $binaryData = base64_decode($base64File);
+
+        // Save to DB using Eloquent
+        $doc = \App\Models\ApplicationDocument::updateOrCreate(
             [
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
@@ -335,19 +355,17 @@ public function saveApplicationDocument(Request $request)
                 'application_id' => $validated['application_id'],
                 'document_type' => $documentType,
                 'file_name' => $filename,
-                'file_path' => $path,
+                'file_path' => $binaryData, // Save as mediumblob
             ]
         );
 
-        $documents[] = $doc;
+        $documents[] = $doc->makeHidden(['file_path']);
     }
 
-    DB::table('document_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
-        
-       
-    ]);
+    \DB::table('document_approved_status')->updateOrInsert(
+        ['application_id' => $validated['application_id']],
+        ['status' => 'Pending']
+    );
 
     return response()->json([
         'message' => 'Documents uploaded successfully.',
@@ -373,17 +391,17 @@ public function saveAccountPersonalDetails(Request $request)
         'maiden_middle_name'=>  'nullable',
         'maiden_last_name'=>  'nullable',
  
-        'father_prefix_name' => 'required|',
-        'father_first_name' => 'required|string|max:191',
+        'father_prefix_name' => 'nullable|',
+        'father_first_name' => 'nullable|string|max:191',
         'father_middle_name' => 'nullable|string|max:191',
         'father_last_name' => 'nullable|string|max:191',
-        'father_prefix_name' => 'required|',
-        'father_first_name' => 'required|string|max:191',
+        'father_prefix_name' => 'nullable|',
+        'father_first_name' => 'nullable|string|max:191',
         'father_middle_name' => 'nullable|string|max:191',
         'father_last_name' => 'nullable|string|max:191',
 
-        'mother_prefix_name' => 'required',
-        'mother_first_name' => 'required|string|max:191',
+        'mother_prefix_name' => 'nullable',
+        'mother_first_name' => 'nullable|string|max:191',
         'mother_middle_name' => 'nullable|string|max:191',
         'mother_last_name' => 'nullable|string|max:191',
         'birth_place' => 'nullable|string|max:191',
@@ -411,50 +429,7 @@ public function saveAccountPersonalDetails(Request $request)
     ], 201);
 }
 
-// Store account nominee details
-// public function saveAccountNominee(Request $request)
-// {
-//     // Hardcode application_id for testing if needed
-//     // $request->merge(['application_id' => 1]);
 
-//     $validated = $request->validate([
-//         'application_id' => 'required|integer|exists:customer_application_details,id',
-//         'salutation' => 'required',
-//         'first_name' => 'required|string|max:191',
-//         'middle_name' => 'nullable|string|max:191',
-//         'last_name' => 'nullable|string|max:191',
-//         'relationship' => 'required|string|max:191',
-//         'percentage' => 'required|string|max:191',
-//         'dob' => 'required|date',
-//         'age' => 'required|string|max:191',
-//         'nom_complex_name' => 'nullable|string|max:191',
-//         'nom_flat_no' => 'nullable|string|max:191',
-//         'nom_area' => 'nullable|string|max:191',
-//         'nom_landmark' => 'nullable|string|max:191',
-//         'nom_country' => 'nullable|string|max:191',
-//         'nom_pincode' => 'nullable|string|max:191',
-//         'nom_city' => 'nullable|string|max:191',
-//         'nom_state' => 'nullable|string|max:191',
-//         'nom_district' => 'nullable|string|max:191',
-//         'nom_mobile' => 'nullable|string|max:191',
-       
-//     ]);
-
-//     // Use a combination of fields to avoid duplicate nominees for the same application
-//     $nominee = AccountNominee::updateOrCreate(
-//         [
-//             'application_id' => $validated['application_id'],
-//             'first_name' => $validated['first_name'],
-//             'dob' => $validated['dob'],
-//         ],
-//         $validated
-//     );
-
-//     return response()->json([
-//         'message' => 'Account nominee saved successfully.',
-//         'data' => $nominee,
-//     ], 201);
-// }
 
 
 
@@ -497,11 +472,10 @@ public function saveAccountNominee(Request $request)
         );
         $savedNominees[] = $nominee;
     }
-
-    DB::table('nominee_approved_status')->insert([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
-    ]);
+DB::table('nominee_approved_status')->updateOrInsert(
+    ['application_id' => $validated['application_id']],
+    ['status' => 'Pending']
+);
 
     return response()->json([
         'message' => 'Account nominees saved successfully.',
@@ -513,35 +487,37 @@ public function saveAccountNominee(Request $request)
 // Store service to customer
 public function saveServiceToCustomer(Request $request)
 {
-    // Hardcode application_id for testing if needed
-    // $request->merge(['application_id' => $validated['application_id'],]);
-
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'application_id' => 'required|integer|exists:customer_application_details,id',
-        'banking_services_id' => 'required|integer|exists:banking_services,id',
+        'banking_services_facilities_id' => 'required|array',
+        'banking_services_facilities_id.*' => 'required|integer|exists:banking_services_facilities,id',
     ]);
 
-    // Update if exists, otherwise create
-    $service = ServiceToCustomer::updateOrCreate(
-        [
-            'application_id' => $validated['application_id'],
-            'banking_services_id' => $validated['banking_services_id'],
-        ],
-        $validated
-    );
+    $saved = [];
+    foreach ($validated['banking_services_facilities_id'] as $facilityId) {
+        $service = ServiceToCustomer::updateOrCreate(
+            [
+                'application_id' => $validated['application_id'],
+                'banking_services_facilities_id' => $facilityId,
+            ],
+            [
+                'application_id' => $validated['application_id'],
+                'banking_services_facilities_id' => $facilityId,
+            ]
+        );
+        $saved[] = $service;
+    }
 
     return response()->json([
-        'message' => 'Service to customer saved successfully.',
-        'data' => $service,
+        'message' => 'Services to customer saved successfully.',
+        'data' => $saved,
     ], 201);
 }
 
 // Fetch full application details
 public function getFullApplicationDetails($applicationId)
 {
-    // Hardcode application_id for testing
-    // $applicationId = 1; // <-- Hardcoded for testing
+  
 
     // Fetch from customer_application_details
     $application = DB::table('customer_application_details')
@@ -592,6 +568,7 @@ public function getFullApplicationDetails($applicationId)
             'personal_details' => $personalDetails,
             'account_personal_details' => $accountPersonalDetails,
             'account_nominees' => $accountNominees,
+            'application_addresss' => $applicationAddresss,
             'customerpic' => $custlivepic,
             'customerdoc' => $custumerdoc,
         ]
@@ -619,5 +596,323 @@ public function getApplicationByAadhar(Request $request)
         'data' => $application
     ]);
 }
+
+public function getBankingServices()
+{
+    // Join banking_services with banking_services_facilities
+    $bankingServices = DB::table('banking_services')
+        ->leftJoin('banking_services_facilities', 'banking_services.id', '=', 'banking_services_facilities.banking_service_id')
+        ->select(
+            'banking_services.id as service_id',
+            'banking_services.name as service_name',
+            'banking_services.status as service_status',
+            'banking_services.created_at as service_created_at',
+            'banking_services.updated_at as service_updated_at',
+            'banking_services_facilities.id as facility_id',
+            'banking_services_facilities.name as facility_name',
+            'banking_services_facilities.status as facility_status',
+            'banking_services_facilities.banking_service_id'
+        )
+        ->get();
+
+    if ($bankingServices->isEmpty()) {
+        return response()->json(['message' => 'No banking services found.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Banking services fetched successfully.',
+        'data' => $bankingServices,
+    ]);
+}
+
+public function getApplicationStatusByAgents($agent_id)
+{
+    $statuses = ['Pending', 'Approved', 'Reject', 'Review'];
+
+    $applications = DB::table('customer_application_details')
+        ->join('customer_appliction_status', 'customer_application_details.id', '=', 'customer_appliction_status.application_id')
+        ->where('customer_application_details.agent_id', $agent_id)
+        ->whereIn('customer_appliction_status.status', $statuses)
+        ->select(
+            'customer_application_details.*',
+            'customer_appliction_status.status as application_status',
+            
+        )
+        ->get();
+
+    if ($applications->isEmpty()) {
+        return response()->json(['message' => 'No applications found for this agent.'], 404);
+    }
+
+    return response()->json([
+        'message' => 'Application statuses fetched successfully.',
+        'data' => $applications,
+    ]);
+}
+
+
+public function getFullApplicationsByAgent($agent_id)
+{
+    // Fetch all applications for the agent
+    $applications = DB::table('customer_application_details')
+        ->where('agent_id', $agent_id)
+        ->get();
+
+    if ($applications->isEmpty()) {
+        return response()->json(['message' => 'No applications found for this agent.'], 404);
+    }
+
+    $result = [];
+
+    foreach ($applications as $application) {
+        $applicationId = $application->id;
+
+        $personalDetails = DB::table('application_personal_details')
+            ->where('application_id', $applicationId)
+            ->first();
+
+        $accountPersonalDetails = DB::table('account_personal_details')
+            ->where('application_id', $applicationId)
+            ->first();
+
+        $accountNominees = DB::table('account_nominees')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $applicationAddresss = DB::table('application_address_details')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $custlivepic = DB::table('applicant_live_photos')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $custumerdoc = DB::table('application_documents')
+            ->where('application_id', $applicationId)
+            ->get();
+
+        $result[] = [
+            'application' => $application,
+            'personal_details' => $personalDetails,
+            'account_personal_details' => $accountPersonalDetails,
+            'account_nominees' => $accountNominees,
+            'application_address' => $applicationAddresss,
+            'customerpic' => $custlivepic,
+            'customerdoc' => $custumerdoc,
+        ];
+    }
+
+    return response()->json([
+        'message' => 'Applications for agent fetched successfully.',
+        'data' => $result,
+    ]);
+}
+
+
+// dashboard Approved table 
+public function getApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// all Approved applications agnet
+public function getApprovedApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'approved') // Filter for approved status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Approved applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+// all pending applications agent
+public function getPendingApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'pending') // Filter for pending status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Pending applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+public function getReviewApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'review') // Filter for review status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Review applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+public function getRejectedApplicationsByAgent($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'rejected') // Filter for rejected status
+        ->select(
+            'cad.id',
+            'cad.application_no',
+            'cad.first_name',
+            'cad.last_name',
+            'cas.status'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => 'Rejected applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// KYC Application Status
+public function getKycApplicationTrends(Request $request)
+{
+    $kycAgentId = $request->input('kyc_agent_id');
+
+    // Safety check
+    if (!$kycAgentId) {
+        return response()->json(['message' => 'kyc_agent_id is required.'], 400);
+    }
+
+    $currentYear = date('Y');
+
+    // Base query for monthly
+    $monthly = DB::table('kyc_application_status as kas')
+        ->join('kyc_application as ka', 'kas.kyc_application_id', '=', 'ka.id')
+        ->where('ka.kyc_agent_id', $kycAgentId)
+        ->whereIn('kas.status', ['approved', 'pending'])
+        ->whereYear('kas.created_at', $currentYear)
+        ->select(
+            DB::raw("DATE_FORMAT(kas.created_at, '%Y-%m') as month"),
+            'kas.status',
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('month', 'kas.status')
+        ->get();
+
+    // Base query for weekly
+    $weekly = DB::table('kyc_application_status as kas')
+        ->join('kyc_application as ka', 'kas.kyc_application_id', '=', 'ka.id')
+        ->where('ka.kyc_agent_id', $kycAgentId)
+        ->whereIn('kas.status', ['approved', 'pending'])
+        ->whereYear('kas.created_at', $currentYear)
+        ->select(
+            DB::raw("DATE_FORMAT(kas.created_at, '%Y-%u') as week"),
+            'kas.status',
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('week', 'kas.status')
+        ->get();
+
+    return response()->json([
+        'message' => 'KYC application trends fetched successfully.',
+        'data' => [
+            'monthly' => $monthly,
+            'weekly' => $weekly
+        ]
+    ]);
+}
+
+// Performance Metrics monthly 
+public function getApplicationsByAgentWithDateGroup($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            DB::raw("DATE_FORMAT(cas.created_at, '%Y-%m') as month"), // e.g. 2025-06
+            DB::raw('YEAR(cas.created_at) as year'),
+            DB::raw('MONTH(cas.created_at) as month_number'),
+            DB::raw('COUNT(*) as total_applications'),
+            DB::raw("SUM(CASE WHEN cas.status = 'approved' THEN 1 ELSE 0 END) as approved"),
+            DB::raw("SUM(CASE WHEN cas.status = 'pending' THEN 1 ELSE 0 END) as pending"),
+            DB::raw("SUM(CASE WHEN cas.status = 'rejected' THEN 1 ELSE 0 END) as rejected"),
+            DB::raw("SUM(CASE WHEN cas.status = 'review' THEN 1 ELSE 0 END) as review")
+        )
+        ->groupBy('month', 'year', 'month_number')
+        ->orderBy('year', 'desc')
+        ->orderBy('month_number', 'desc')
+        ->get();
+
+    return response()->json([
+        'message' => 'Applications grouped by month and year fetched successfully.',
+        'data' => $applications
+    ]);
+}
+// Performance Metrics yearly 
+public function getApplicationsByAgentYearly($agentId)
+{
+    $applications = DB::table('customer_appliction_status as cas')
+        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
+        ->where('cad.agent_id', $agentId)
+        ->select(
+            DB::raw('YEAR(cas.created_at) as year'),
+            DB::raw('COUNT(*) as total_applications'),
+            DB::raw("SUM(CASE WHEN cas.status = 'approved' THEN 1 ELSE 0 END) as approved"),
+            DB::raw("SUM(CASE WHEN cas.status = 'pending' THEN 1 ELSE 0 END) as pending"),
+            DB::raw("SUM(CASE WHEN cas.status = 'rejected' THEN 1 ELSE 0 END) as rejected"),
+            DB::raw("SUM(CASE WHEN cas.status = 'review' THEN 1 ELSE 0 END) as review")
+        )
+        ->groupBy('year')
+        ->orderBy('year', 'desc')
+        ->get();
+
+    return response()->json([
+        'message' => 'Yearly applications summary fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+
 
 }

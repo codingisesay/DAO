@@ -6,14 +6,14 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import { agentService } from '../../services/apiServices';
+import {  createAccountService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
-import { form } from 'framer-motion/client';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
     const [selectedType, setSelectedType] = useState(formData.auth_type || 'new');
     const [showData, setShowData] = useState(!!formData.auth_code);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
@@ -45,8 +45,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         const value = e.target.value;
         setSelectedOption(value);
         setShowData(false);
-        // Clear verification number when changing option
-        setLocalFormData(prev => ({ ...prev, verifynumber: '' }));
+        setLocalFormData(prev => ({ ...prev, verifynumber: '', auth_code: '' }));
     };
 
     const validateAadhaar = (aadhaarNumber) => {
@@ -70,7 +69,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     timer: 1500
                 });
                 setShowData(true);
-                setLocalFormData({ ...localFormData, ...userdummydata.aadhardetails });
+                setLocalFormData(prev => ({
+                    ...prev,
+                    ...userdummydata.aadhardetails,
+                    auth_code: prev.verifynumber
+                }));
             } else {
                 toast.error('Please enter a valid 12-digit Aadhaar number');
             }
@@ -83,6 +86,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     timer: 1500
                 });
                 setShowData(true);
+                setLocalFormData(prev => ({
+                    ...prev,
+                    auth_code: prev.verifynumber
+                }));
             } else {
                 toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
             }
@@ -100,21 +107,23 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const handleNextStep = async (e) => {
         e.preventDefault();
-        // Update form data with current state
+        setIsSubmitting(true);
+
         const updatedData = {
             ...localFormData,
-            auth_type: selectedType,
+            auth_type: selectedOption,
             verificationOption: selectedOption,
-            auth_code: localFormData.verifynumber,
         };
 
         updateFormData(1, updatedData);
 
         const payload = {
             auth_type: selectedOption,
-            auth_code: localFormData.verifynumber,
+            auth_code: localFormData.auth_code,
             first_name: localFormData.first_name,
             auth_status: "Pending",
+            adhar_card: selectedOption === 'Aadhar Card' ? localFormData.auth_code : '',
+            pan_card: selectedOption === 'Pan Card' ? localFormData.auth_code : '',
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
             DOB: localFormData.DOB,
@@ -131,40 +140,49 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             state: localFormData.state,
             status: "Pending",
         };
+
         try {
-            const response = await agentService.agentEnroll(payload);
-            console.log('Submitted Data: ', response)
-            if (response && JSON.stringify(response).includes('201')) {
+            const response = await createAccountService.enrollment_s1(payload);
+            console.log("Response from server:", response);
+            
                 updateFormData(1, {
                     ...updatedData,
-                    application_no: response.data.application_no,
-                    application_id: response.data.application_id,
+                    application_no: response.application_no,
+                    application_id: response.application_id,
                 });
-                // localStorage.setItem('application_no', response.data.application_no);
-                localStorage.setItem('application_id', response.data.application_id);
+                localStorage.setItem('application_id', response.application_id);
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Your data has been saved successfully.',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                onNext();
-            }
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Your data has been saved successfully.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            onNext();
+            
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
-                text: JSON.stringify(error),
+                // text: 'Failed to submit data. Please try again.',
+                text: error.data.message || 'Server error' ,
             });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     return (
         <>
+            {isSubmitting && (
+                <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+                </div>
+            )}
+
             <div className='form-container'>
-                <div className="flex flex-wrap items-top ">
+                <div className="flex flex-wrap items-top">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
                         <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
                         <div className="application-type-container">
@@ -227,7 +245,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
                                 {selectedOption === 'Aadhar Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (UID)</p>
+                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
@@ -309,7 +327,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 {showData && (
                     <>
                         <h2 className="text-xl font-bold mb-2">{selectedOption} Details</h2>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
+
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.firstname.label}
@@ -470,25 +489,36 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 max={30}
                                 validationType="ALPHABETS_AND_SPACE" disabled={true}
                             />
+
+                            {/* Other form fields remain the same... */}
+
                         </div>
 
                         <div className="next-back-btns">
-
-
                             <CommonButton
                                 className="btn-next"
                                 onClick={handleNextStep}
-                                disabled={!showData}
+                                disabled={!showData || isSubmitting}
                             >
-                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                                {isSubmitting ? (
+                                    <>
+                                        <span className="animate-spin inline-block mr-2">↻</span>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                                    </>
+                                )}
                             </CommonButton>
                         </div>
                     </>
                 )}
             </div>
-
         </>
     );
 }
 
 export default P1;
+
+ 

@@ -1,33 +1,34 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
+import { pendingAccountData } from '../../services/apiServices';
 
 const NominationDetailsTable = () => {
-    // Sample data - replace with your actual data
-    const nominations = [
-        {
-            name: "Sushant Subhash Nikam",
-            address: "Kaipcity phase 2 kalpgreen G4/106 old petrol pump katrap pada Badlapur",
-            relationship: "Brother",
-            dob: "29/01/1992",
-            age: 32,
-            percentage: "50%"
-        },
-        {
-            name: "Mahesh Ramesh Suresh",
-            address: "Kaipcity phase 2 kalpgreen G4/106 old petrol pump katrap pada Badlapur",
-            relationship: "Brother",
-            dob: "29/01/1992",
-            age: 30,
-            percentage: "25%"
-        },
-        {
-            name: "Rajesh Mahesh Rahul",
-            address: "Kaipcity phase 2 kalpgreen G4/106 old petrol pump katrap pada Badlapur",
-            relationship: "Brother",
-            dob: "29/01/1992",
-            age: 34,
-            percentage: "25%"
-        }
-    ];
+    const [formData, setFormData] = useState([]); // Keep this as array
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS5B(id);
+
+                    console.log('nominees:', response.documents);
+
+                    // Assuming `documents` is an array of nominees
+                    const nominees = response.documents || [];
+
+                    setFormData(nominees); // Set as array directly
+                }
+            } catch (error) {
+                console.error('Failed to fetch nomination details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [id]);
 
     return (
         <div className="p-4 max-w-6xl mx-auto">
@@ -38,17 +39,21 @@ const NominationDetailsTable = () => {
                         <tr>
                             <th className="py-3 px-4 border-b border-gray-200 text-left">Name of the Nominee</th>
                             <th className="py-3 px-4 border-b border-gray-200 text-left">Address</th>
-                            <th className="py-3 px-4 border-b border-gray-200 text-left">Nominee's relationship with the member</th>
+                            <th className="py-3 px-4 border-b border-gray-200 text-left">Relationship</th>
                             <th className="py-3 px-4 border-b border-gray-200 text-left">Date of Birth</th>
                             <th className="py-3 px-4 border-b border-gray-200 text-left">Age</th>
-                            <th className="py-3 px-4 border-b border-gray-200 text-left">Total amount or share in percentage</th>
+                            <th className="py-3 px-4 border-b border-gray-200 text-left">Share (%)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {nominations.map((nominee, index) => (
+                        {formData.map((nominee, index) => (
                             <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                <td className="py-3 px-4 border-b border-gray-200">{nominee.name}</td>
-                                <td className="py-3 px-4 border-b border-gray-200">{nominee.address}</td>
+                                <td className="py-3 px-4 border-b border-gray-200">
+                                    {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+                                </td>
+                                <td className="py-3 px-4 border-b border-gray-200">
+                                    {nominee.nom_complex_name}, {nominee.nom_landmark}, {nominee.nom_district}, {nominee.nom_country}, {nominee.nom_pincode}
+                                </td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.relationship}</td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.dob}</td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.age}</td>
@@ -62,4 +67,4 @@ const NominationDetailsTable = () => {
     );
 };
 
-export default NominationDetailsTable;
+export default NominationDetailsTable; 

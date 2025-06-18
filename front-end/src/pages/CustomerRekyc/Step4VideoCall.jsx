@@ -24,6 +24,9 @@ const Step4VideoCall = ({
   };
   const handleCombinedSubmit = (e) => {
     e.preventDefault();
+    localStorage.removeItem('nominationFormData');
+    localStorage.removeItem('documentData');
+    localStorage.removeItem('application_id');
 
     // First show main submission message
     Swal.fire({
@@ -37,7 +40,7 @@ const Step4VideoCall = ({
         skipStep();  // This shows the skipped KYC message
 
         // Navigate after showing both messages
-        navigate('/admindashboard');
+        navigate('/agentDashboard');
       }
     });
   };

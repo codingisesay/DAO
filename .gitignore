@@ -12,7 +12,8 @@
 # React
 /front-end/node_modules
 /front-end/build
-
+/front-end/.env
+/fornt-end/nohup.out
 
 # General
 *.log

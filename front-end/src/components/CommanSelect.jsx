@@ -78,7 +78,7 @@ const CommanSelect = ({
 
             {showError && (
                 <p className="mt-1 text-xs text-red-500">
-                    This field is required
+                    {label} is required
                 </p>
             )}
         </div>

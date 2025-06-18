@@ -115,9 +115,9 @@
 
 /* .badge-in-progress */
 
-.badge-in-progress {
-    background-color: #FFA726;
-    color: #fff;
+.badge-in-progress, .in-progress {
+    /* background-color: #FFA726 !important; */
+    color: #FFA726;
 }
 
 .badge-completed {

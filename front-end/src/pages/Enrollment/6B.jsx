@@ -1,31 +1,93 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import PhotoCapture from './CustomerPhotoCapture';
-import customerInstructions from '../../assets/imgs/photo_instructions.png';
-// import agentInstructions from './assets/agent-instructions.png';
+import CommonButton from '../../components/CommonButton';
+import Swal from 'sweetalert2';
+import { apiService } from '../../utils/storage';
+import { agentlivephotoSave  ,createAccountService} from '../../services/apiServices';
 
-const PhotoCaptureApp = () => {
+const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack }) => {
+    const [localFormData, setLocalFormData] = useState();
+    const application_id = localStorage.getItem('application_id') || formData.application_id;
+
+    useEffect(() => {
+        const storedData = localStorage.getItem('agentPhotoData');
+
+        if (!storedData) {
+            console.error('No agentPhotoData found in localStorage');
+            return;
+        }
+        setLocalFormData(JSON.parse(storedData));
+    }, []);
+
+    const submitAgentPic = async (localFormData) => {
+        const payload = {
+            application_id: formData.application_id || application_id,
+            // longitude: JSON.stringify(localFormData.metadata.location.longitude),
+            // latitude: JSON.stringify(localFormData.metadata.location.latitude),
+            // photo: localFormData.file || '', 
+            ...localFormData,
+            status: 'Pending'
+        };
+        console.log('ready photodata to send : ', payload)
+
+        try {
+            const response = await apiService.post(createAccountService.agentLivePhoto_s6b(payload));
+            Swal.fire({
+                title: 'Account Created Successfully!',
+                text: 'Your account has been created successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/agentdashboard'; // Redirect to the desired page
+                }
+            });
+            localStorage.removeItem('customerPhotoData');
+
+        } catch (error) {
+            console.log(error)
+            Swal.fire({
+                title: 'Account Created Successfully!',
+                text: 'Your account has been created successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/agentdashboard'; // Redirect to the desired page
+                }
+            });
+
+        }
+    }
+
     return (
-        <div className="space-y-8 p-4">
-
-
+        <div className="space-y-8 ">
             <PhotoCapture
                 photoType="agent"
-                showLocation={false}
+                onCapture={(data) => { setLocalFormData(data); console.log('After capture : ', data); }}
             />
 
-            <div className="text-center">
-                <button
-                    onClick={() => {
-                        const agentPhoto = localStorage.getItem('agentPhoto');
-                        // Submit to your backend
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg"
+            <div className="next-back-btns z-10">
+                <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                </CommonButton>
+                <CommonButton
+                    onClick={() => submitAgentPic(localFormData)}
+                    variant="contained"
+                    className="btn-next"
                 >
-                    Submit All Photos
-                </button>
+                    Submit 
+                </CommonButton>
             </div>
+
+
+
         </div>
     );
 };
 
 export default PhotoCaptureApp;
+
+
+

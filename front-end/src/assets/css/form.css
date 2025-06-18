@@ -84,12 +84,7 @@ input:-webkit-autofill {
 
 /* document css below */
 
-
-h1,
-h2 {
-    color: #2c3e50;
-}
-
+ 
 /* 
 .table-header {
     display: flex;
@@ -451,4 +446,202 @@ tr:hover {
 
 .document-upload-container .bi {
     color: #00A86B;
+}
+
+.no-borer,
+.no-borer td {
+    border: none !important;
+    border-bottom: none !important;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Blur overlay */
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+/* Disabled button styling */
+.btn-next:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* kyc below */
+/* App.css */
+.customer-details-container {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  padding: 10px;
+  /* background-color: #f8fafc; */
+}
+
+.customer-details-container h1 { 
+  text-align: center; 
+  font-weight: 600;
+}
+
+.details-sections {
+  display: flex;
+  gap: 20px;
+}
+
+.details-section {
+  flex: 1;
+  /* border: 1px solid #e2e8f0; */
+  border-radius: 8px;
+  padding: 10px;
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
+  background-color: white;
+}
+
+.details-section h2 {
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+  margin-top: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.section-content {
+  margin-top: 15px;
+}
+
+.section-content h3 {
+  color: #475569;
+  margin-top: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+ 
+
+/* Floating Input Styles */
+.peer:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.peer:focus ~ label {
+  color: #3b82f6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .details-sections {
+    flex-direction: column;
+  }
+
+  .details-section {
+    width: 100%;
+  }
+}
+
+
+/* to be removed deleted below*/
+.camera-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.error-message {
+  color: #d32f2f;
+  background-color: #fde0e0;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.video-container {
+  width: 100%;
+  background-color: #000;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-element {
+  width: 100%;
+  display: block;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.control-btn {
+  padding: 10px 15px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.control-btn:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.control-btn:hover:not(:disabled) {
+  background-color: #3367d6;
+}
+
+.photo-gallery {
+  margin-top: 30px;
+}
+
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.photo-item {
+  position: relative;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.photo-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.delete-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #b71c1c;
 }
