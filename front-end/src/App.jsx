@@ -49,13 +49,10 @@ export const App = () => {
         <Routes>
           <Route path="/create-meeting" element={<CreateMeeting />} /> 
 
-          {/* User Access */}
-          {!isauth &&
+          
           <Route path="/login" element={<Login />} /> 
-          }
-
-        {isauth ?  
-        <>
+        
+ 
         
           {/* Admin URL Below */}
           <Route path="/admindashboard" element={<AdminDashboard />} />
@@ -79,13 +76,9 @@ export const App = () => {
           <Route path="/enrollment_approved_tbl" element={<Enrollment_ApprovedTable_Tbl />} />
           <Route path="/enrollment_pending_tbl" element={<Enrollment_PendingTable_Tbl />} />
           <Route path="/enrollment_rejected_tbl" element={<Enrollment_Reject_Tbl />} />
-        </>   
-        :
-        <>
+      
            <Route path="/login" element={<Login />} /> 
-        </>
-          
-          }
+      
 
 
         <Route path="/dao_extraction" element={<DAOExtraction />} />
