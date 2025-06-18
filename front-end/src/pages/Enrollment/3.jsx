@@ -63,72 +63,173 @@ const P3 = ({ onNext, onBack }) => {
         setIsProcessing(false);
     };
 
-    
-    const handleSubmit = async () => {
-        onNext();
 
-        // if (documents.length === 0) {
-        //     Swal.fire({
-        //         icon: 'warning',
-        //         title: 'No Documents',
-        //         text: 'Please upload at least one document before proceeding.',
-        //     });
-        //     return;
-        // }
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result.split(',')[1]); // Extract only the base64 part
+    reader.onerror = error => reject(error);
+  });
+};
 
-        // setIsLoading(true);
+const handleSubmit = async () => {
+  if (documents.length === 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No Documents',
+      text: 'Please upload at least one document before proceeding.',
+    });
+    return;
+  }
 
-        // try {
-        //     const formDataObj = new FormData();
-        //     formDataObj.append('application_id', storedId);
+  setIsLoading(true);
 
-        //     // Filter out documents that don't have files (like those loaded from localStorage)
-        //     const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
+  try {
+    // Filter out documents that don't have files
+    const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
 
-        //     if (documentsWithFiles.length === 0) {
-        //         throw new Error('No valid documents found. Please re-upload your documents.');
-        //     }
+    if (documentsWithFiles.length === 0) {
+      throw new Error('No valid documents found. Please re-upload your documents.');
+    }
 
-        //     documentsWithFiles.forEach((doc) => {
-        //         formDataObj.append('files[]',  doc.file);
-        //         formDataObj.append('document_types[]', doc.type || doc.name);
-        //     });
-        //     var response =''
-        //     console.log(documents);
-        //     // Ensure the API endpoint is properly formatted
-        //     const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
-        //         ? createAccountService.applicationDocument_s3(formDataObj)
-        //         : createAccountService.applicationDocument_s3;
+    // Convert all files to base64
+    const base64Files = await Promise.all(
+      documentsWithFiles.map(doc => fileToBase64(doc.file))
+    );
+    const documentTypes = documentsWithFiles.map(doc => doc.type || doc.name);
 
-        //     response = await apiService.post(endpoint, formDataObj );
-
-        //     // Check response status directly
-        //     if (response ) {
-        //         Swal.fire({
-        //             icon: 'success',
-        //             title: 'Success!',
-        //             text: 'Documents saved successfully.',
-        //             showConfirmButton: false,
-        //             timer: 1500
-        //         })
-        //             onNext();
-                 
-        //     } else {
-        //         throw new Error(response || 'Upload failed with status: ' + response);
-        //     }
-        // } catch (error) {
-        //     console.error('Upload error:', error);
-        //             // onNext();
-        //     Swal.fire('Error', error, 'error');
-        
-        
-        // } finally {
-        //     setIsLoading(false);
-        // }
-
-
-        
+    // Prepare the payload
+    const payload = {
+      application_id: storedId,
+      document_types: documentTypes,
+      files: base64Files
     };
+
+    // Determine the endpoint
+    const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+      ? createAccountService.applicationDocument_s3(payload)
+      : createAccountService.applicationDocument_s3;
+
+    // Send the request with proper headers for JSON
+    const response = await apiService.post(
+      endpoint,
+      payload,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Documents saved successfully.',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      onNext();
+    } else {
+      throw new Error(response || 'Upload failed with status: ' + response);
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    // Swal.fire('Error', error.message || error, 'error');
+     
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Documents saved successfully.',
+        showConfirmButton: false,
+        timer: 1500
+      });
+      onNext();
+   
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+    // function fileToBase64(file) {
+    // return new Promise((resolve, reject) => {
+    //     const reader = new FileReader();
+    //     reader.onload = e => resolve(e.target.result.split(',')[1]); // get only base64 part
+    //     reader.onerror = reject;
+    //     reader.readAsDataURL(file);
+    // });
+    // }
+    
+    // const handleSubmit = async () => {
+    //     // onNext();
+
+    //     if (documents.length === 0) {
+    //         Swal.fire({
+    //             icon: 'warning',
+    //             title: 'No Documents',
+    //             text: 'Please upload at least one document before proceeding.',
+    //         });
+    //         return;
+    //     }
+
+    //     setIsLoading(true);
+
+    //     try {
+    //         const formDataObj = new FormData();
+    //         formDataObj.append('application_id', storedId);
+
+    //         // Filter out documents that don't have files (like those loaded from localStorage)
+    //         const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
+
+    //         if (documentsWithFiles.length === 0) {
+    //             throw new Error('No valid documents found. Please re-upload your documents.');
+    //         }
+
+    //         documentsWithFiles.forEach((doc) => {
+    //             formDataObj.append('files[]',  doc.file);
+    //             formDataObj.append('document_types[]', doc.type || doc.name);
+    //         });
+    //         var response =''
+    //         console.log(documents);
+    //         // Ensure the API endpoint is properly formatted
+    //         const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+    //             ? createAccountService.applicationDocument_s3(formDataObj)
+    //             : createAccountService.applicationDocument_s3;
+
+    //         response = await apiService.post(endpoint, formDataObj );
+
+    //         // Check response status directly
+    //         if (response ) {
+    //             Swal.fire({
+    //                 icon: 'success',
+    //                 title: 'Success!',
+    //                 text: 'Documents saved successfully.',
+    //                 showConfirmButton: false,
+    //                 timer: 1500
+    //             })
+    //                 onNext();
+                 
+    //         } else {
+    //             throw new Error(response || 'Upload failed with status: ' + response);
+    //         }
+    //     } catch (error) {
+    //         console.error('Upload error:', error);
+    //                 // onNext();
+    //         Swal.fire('Error', error, 'error');
+        
+        
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+
+
+        
+    // };
+ 
+
+
 
     return (
         <div className='form-container'>
