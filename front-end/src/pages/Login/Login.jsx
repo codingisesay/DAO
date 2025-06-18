@@ -43,7 +43,7 @@ export default function LoginPage() {
     };
 
 
-    const validateCaptcha = () => {
+    const validateCaptcha = async () => {
         const correctAnswer = Math.min(...numbers);
 
         if (parseInt(formData.captcha) !== correctAnswer) {
@@ -56,15 +56,8 @@ export default function LoginPage() {
                 }
             });
         }
-    };
-
-    useEffect(() => {
-        generateCaptcha();
-    }, []);
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        else{
+            
         const success = await loginUser(formData.username, formData.password, '01');
         // alert(success)
         if (success) {
@@ -98,6 +91,19 @@ export default function LoginPage() {
                 }
             });
         }
+        }
+    };
+
+    useEffect(() => {
+        generateCaptcha();
+    }, []);
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        validateCaptcha();
+        
 
     };
     return (

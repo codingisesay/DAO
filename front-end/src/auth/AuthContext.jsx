@@ -19,13 +19,36 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout function
+  // const logout = () => {
+  //   localStorage.removeItem(AUTH_KEYS.ACCESS_TOKEN);
+  //   setUser(null);
+  // };
   const logout = () => {
-    localStorage.removeItem(AUTH_KEYS.ACCESS_TOKEN);
-    setUser(null);
-  };
+  // Remove all auth-related items using AUTH_KEYS
+  localStorage.removeItem(AUTH_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(AUTH_KEYS.BANK_CODE);
+  localStorage.removeItem(AUTH_KEYS.BANK_NAME);
+  localStorage.removeItem(AUTH_KEYS.BRANCH_CODE);
+  localStorage.removeItem(AUTH_KEYS.BRANCH_NAME);
+  localStorage.removeItem(AUTH_KEYS.LAST_LOGIN);
+  localStorage.removeItem(AUTH_KEYS.LOOKUPS_ARRAY);
+  localStorage.removeItem(AUTH_KEYS.OPERATION_DATE);
+  localStorage.removeItem(AUTH_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(AUTH_KEYS.ROLE_ACCESS);
+  localStorage.removeItem(AUTH_KEYS.ROLE_NAME);
+  localStorage.removeItem(AUTH_KEYS.SUBSCRIPTION_INFO);
+  localStorage.removeItem(AUTH_KEYS.USER_CODE);
+  localStorage.removeItem(AUTH_KEYS.USER_NAME);
+  
+  // Clear the user state
+  setUser(null);
+  
+  // Optional: Add redirect to login page if needed
+  // window.location.href = '/login';
+};
 
   // Check auth state on initial load
-  useEffect(() => {
+  useEffect(() => { 
     const token = localStorage.getItem(AUTH_KEYS.ACCESS_TOKEN);
     if (token) {
       // You might want to validate the token here
