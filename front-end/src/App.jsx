@@ -36,7 +36,7 @@ import PrintApplication from './pages/Enrollment/PrintApplication';
 import KycVarification from './pages/KycVarification/Enrollmentform';
 import StartKyc from './pages/Enrollment/4B';  
 import CreateMeeting from './pages/Enrollment/CreateMeeting';
-
+import ViewForm from './pages/Enrollment_View/Enrollmentform'
  
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -117,6 +117,11 @@ export const App = () => {
           <Route path="/verify-account/edit/:id" element={
             <ProtectedRoute>
               <Varificationform />
+            </ProtectedRoute>
+          } />
+          <Route path="/verify-account/view/:id" element={
+            <ProtectedRoute>
+              <ViewForm />
             </ProtectedRoute>
           } />
           <Route path="/kyc-varification/edit/:id" element={

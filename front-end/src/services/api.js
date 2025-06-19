@@ -115,7 +115,7 @@ export const API_ENDPOINTS = {
 
     UPDATE_S5A: (id) => `/dao/api/admin/updateAccountPersonalDetails/${id}`,
     UPDATE_S5B: (id) => `/dao/api/admin/updateAccountNominees/${id}`,
-    UPDATE_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S5C: (id) => `/dao/api/admin/updateServiceToCustomer/${id}`,
     UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },

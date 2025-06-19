@@ -21,8 +21,8 @@ function PendingTable() {
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_no, field: "application_no", type: "text" },
+    { ...COLUMN_DEFINITIONS.middle_name, field: "first_name", type: "text" },
   ];
 
   

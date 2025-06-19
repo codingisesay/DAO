@@ -21,7 +21,7 @@ function p3({ onNext, onBack }) {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS3(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('documants :', response.documents);
+                    console.log('documants :', response);
                     const application = response.documents || {};
                     setLocalFormData(application);
                 }
@@ -150,27 +150,17 @@ function p3({ onNext, onBack }) {
 
 
 
-
-            <div className="next-back-btns">
-                <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleRejectClick}
-                >
-                    Reject & Continue
+        <div className="next-back-btns mt-6">
+                 <CommonButton className="btn-back" onClick={onBack}>
+                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-
-                <CommonButton
-                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleReviewClick}
+                 <CommonButton
+                    className="btn-next"
+                    onClick={onNext} 
                 >
-                    Review & Continue
-                </CommonButton>
-
-                <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
-                >
-                    Accept & Continue
+                    
+                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                     
                 </CommonButton>
             </div>
 
@@ -217,11 +207,13 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                               <img
-                                                src={daodocbase+`${doc.file_path}`}
+                                            {/* <a href={daodocbase+`${doc.file_path}`} target="_blank" rel="noopener noreferrer"> */}
+                                            <img
+                                                src= {daodocbase+`${doc.file_path}`}
                                                 alt="document"
                                                 className="h-auto w-20 object-contain border rounded"
-                                                /> 
+                                                />
+                                            {/* </a> */}
                                         </td>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.created_at}</td>
                                     </tr>
@@ -237,3 +229,6 @@ const DocumentDetailsTable = ({ documentslist }) => {
 
 
 export default p3;
+
+
+ 

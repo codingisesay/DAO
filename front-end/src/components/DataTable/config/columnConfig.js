@@ -1,3 +1,5 @@
+import { header } from "framer-motion/client";
+
 export const COLUMN_DEFINITIONS = {
   id: {
     header: "ID",
@@ -30,7 +32,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   middle_name: {
-    header: "Middle Name",
+    header: "Customer Name",
     sortable: true,
     filterable: true,
   },
@@ -54,4 +56,14 @@ export const COLUMN_DEFINITIONS = {
     sortable: true,
     filterable: true,
   },
+  admin_id:{
+    header:'Reject By',
+    sortable: true,
+    filterable: true,
+  },
+  status_comment: {
+    header: "Rejected Reason",
+    sortable: true,
+    filterable: true,
+  }
 };

@@ -9,7 +9,7 @@ import { pendingAccountStatusUpdate } from '../../services/apiServices';
 import { useParams } from 'react-router-dom';
 
 
-const p2 = ({ onNext, onBack }) => {
+const p5 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
@@ -496,4 +496,4 @@ const p2 = ({ onNext, onBack }) => {
     );
 };
 
-export default p2;
+export default p5;

@@ -93,7 +93,7 @@ const Dashboard = () => {
                   style={{ cursor: "pointer" }}
                 />
                 {showHelp && (
-                  <div ref={helpRef} className="dropdown-box absolute w-[200px]">
+                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md">
                     <Help />
                   </div>
                 )}
@@ -109,7 +109,7 @@ const Dashboard = () => {
                   style={{ cursor: "pointer" }}
                 />
                 {showProfile && (
-                  <div ref={profileRef} className="dropdown-box absolute w-[200px]">
+                  <div ref={profileRef} className="dropdown-box absolute w-[200px] h-[200px] overflow-y-auto shadow-md">
                     <Profilecard />
                   </div>
                 )}
