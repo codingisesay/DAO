@@ -9,6 +9,8 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 
 function PendingTable() {
    
+    const [countLoading, setCountLoading] = useState(false);
+       const [countData, setCountData] = useState({ content: [] });
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
@@ -24,6 +26,12 @@ function PendingTable() {
     { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
   ];
+
+    // Columns for the agent counts table
+    const countColumns = [
+        { header: "Agent ID", field: "agent_id", type: "text" },
+        { header: "Pending Count", field: "pending_count", type: "text" }
+    ];
 
   
 const fetchData = async () => {
@@ -45,6 +53,20 @@ const fetchData = async () => {
   }
 };
  
+  
+     const fetchDataCount = async () => {
+         try {
+             setCountLoading(true);
+             const response = await adminService.pendingApplicationCountByAgent;
+             console.log("PENDING APPLICATION COUNT:", response);   
+             setCountData({ content: response.data || [] });
+         } catch (error) {
+             console.error("No agent tbl :", error);
+         } finally {
+             setCountLoading(false);
+         }
+     };
+   
   /*
   The `useEffect` hook is used to perform side effects in the component.
   In this case, it ensures that `fetchBranches()` is called whenever 
@@ -57,7 +79,7 @@ const fetchData = async () => {
   - This ensures that the latest data is retrieved whenever filters, sorting, or pagination change.
 */
   useEffect(() => {
-    fetchData();
+    fetchData();fetchDataCount();
   }, [currentPage, sortConfig, filters]);
 
   const handleSort = (field, order) => {
@@ -111,6 +133,19 @@ const fetchData = async () => {
                     />
                     </div>
             </div>
+            
+                    <h2>Pending Applications Count by Agent</h2>
+                    
+                    <div className="bank-master">
+                        <DataTable
+                            data={countData}
+                            columns={countColumns}
+                            basePath="" // No base path needed for this table
+                            loading={countLoading}
+                            primaryKeys={["agent_id"]}
+                            hidePagination={true} // Assuming you want a simple table without pagination
+                        />
+                    </div>
         </div>
                 
        

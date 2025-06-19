@@ -2,7 +2,7 @@ import { header } from "framer-motion/client";
 
 export const COLUMN_DEFINITIONS = {
   id: {
-    header: "ID",
+    header: "Application No.",
     sortable: true,
     filterable: true,
   },
@@ -73,6 +73,27 @@ export const COLUMN_DEFINITIONS = {
   },
   pending_count:{
     header: "Pending Count",
+    sortable: true,
+    filterable: true,
+  },
+  rejected_by:{
+    header: "Reejected By",
+    sortable: true,
+    filterable: true,
+
+  },
+  rejected_reason:{
+    header: "Rejected Reason",
+    sortable: true,
+    filterable: true,
+  },
+  account_no:{
+    header: "Account No.",
+    sortable: true,
+    filterable: true,
+  },
+  account_open_date:{
+    header: "Account Open Date",
     sortable: true,
     filterable: true,
   }

@@ -1,14 +1,10 @@
- 
 import { useAuth } from '../../auth/AuthContext';  
-import { kycPendingApplicationsService, adminService } from '../../services/apiServices'; // <-- Import your service
+import { kycPendingApplicationsService, adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
-import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
-import React, { useState, useEffect } from "react"; // Import necessary hooks from React
- 
-
+import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; 
+import React, { useState, useEffect } from "react";
 
 function PendingTable() {
-   
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
@@ -17,107 +13,128 @@ function PendingTable() {
     const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
     const [filters, setFilters] = useState({});
 
+    // Function to collect all review comments
+    const getReviewComments = (item) => {
+        const comments = [];
+        
+        // Check all possible status comment fields
+        const statusFields = [
+            'status_comment',
+            'account_personal_details_status_comment',
+            'application_address_details_status_comment',
+            'agent_live_photos_status_comment',
+            'applicant_live_photos_status_comment',
+            'application_personal_details_status_comment',
+            'application_service_status_status_comment',
+            'document_approved_status_status_comment',
+            'nominee_approved_status_status_comment'
+        ];
+        
+        statusFields.forEach(field => {
+            if (item[field]) {
+                // Format the field name for display (remove '_comment' and make it readable)
+                const fieldName = field.replace(/_comment$/, '')
+                                      .replace(/_/g, ' ')
+                                      .replace(/\b\w/g, l => l.toUpperCase());
+                comments.push(`${fieldName}: ${item[field]}`);
+            }
+        });
+        
+        return comments.length > 0 ? comments.join('; ') : 'No review comments';
+    };
 
-  const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
-  ];
+    const columns = [
+        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+        { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" }, 
+        { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+        { ...COLUMN_DEFINITIONS.admin_id, field: "admin_id", type: "text" },
+        { 
+            header: "Review Comments", 
+            field: "review_comments", 
+            type: "text",
+            render: (rowData) => getReviewComments(rowData)
+        },
+    ];
 
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await adminService.getAllReviewApplications({
+                page: currentPage,
+                sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
+                ...filters,
+            });
+            
+            // Process the data to include all review comments
+            const processedData = response.data ? response.data.map(item => ({
+                ...item,
+                review_comments: getReviewComments(item)
+            })) : [];
+            
+            setTbldata(processedData);
+            setData({ content: processedData });
+        } catch (error) {
+            console.error("Failed to fetch review applications:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
   
-const fetchData = async () => {
-  try {
-    setLoading(true);
-    const response = await adminService.getAllReviewApplications({
-      page: currentPage,
-      sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
-      ...filters,
-    });
-    // Set both states correctly
-    setTbldata(response.data || []);
-    setData({ content: response.data || [] }); // This is what DataTable expects
-  } catch (error) {
-    console.error("Failed to fetch pending applications:", error);
-  } finally {
-    setLoading(false);
-  }
-};
- 
-  /*
-  The `useEffect` hook is used to perform side effects in the component.
-  In this case, it ensures that `fetchBranches()` is called whenever 
-  certain dependencies change.
-*/
+    useEffect(() => {
+        fetchData();
+    }, [currentPage, sortConfig, filters]);
 
-  /*
-  `fetchBranches();`
-  - Calls the function to fetch bank data from the API.
-  - This ensures that the latest data is retrieved whenever filters, sorting, or pagination change.
-*/
-  useEffect(() => {
-    fetchData();
-  }, [currentPage, sortConfig, filters]);
+    const handleSort = (field, order) => {
+        setSortConfig({ field, order });
+    };
 
-  const handleSort = (field, order) => {
-    setSortConfig({ field, order });
-  };
+    const handleFilter = (newFilters) => {
+        setFilters(newFilters);
+        setCurrentPage(0);
+    };
 
-  const handleFilter = (newFilters) => {
-    setFilters(newFilters);
-    setCurrentPage(0);
-  };
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
- 
     return (
         <>
- 
-        <div className="container mx-auto">
-                <br />  <br />  
-                <h1>Review Application</h1>
-                  <br />  <br />  
-            <div
+            <div className="container mx-auto">
+                <br /><br />  
+                <h1>Review Applications</h1>
+                <br /><br />  
+                <div
                     className="Usermaster-main-div"
                     style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderRadius: "30px",
+                        display: "flex",
+                        flexDirection: "column",
+                        borderRadius: "30px",
                     }}
                 >
-                    {/* Header and Search section */}
                     <div
-                    className="search-user-container"
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                        className="search-user-container"
+                        style={{ display: "flex", justifyContent: "space-between" }}
                     >
-                    
-                    {/* Action Buttons */}
-                    <div className="button-section"> </div>
+                        <div className="button-section"></div>
                     </div>
 
-                    <div className="bank-master" >
-                    <DataTable
-                        data={data}
-                        columns={columns}
-                        basePath="/kyc-varification"
-                        onSort={handleSort}
-                        onFilter={handleFilter}
-                        onPageChange={handlePageChange}
-                        loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
-                    />
+                    <div className="bank-master">
+                        <DataTable
+                            data={data}
+                            columns={columns}
+                            basePath="/kyc-varification"
+                            onSort={handleSort}
+                            onFilter={handleFilter}
+                            onPageChange={handlePageChange}
+                            loading={loading}
+                            primaryKeys={["kyc_application_id"]} 
+                        />
                     </div>
+                </div>
             </div>
-        </div>
-                
-       
-
-        </>);
+        </>
+    );
 }
 
-export default PendingTable;
-
-
+export default PendingTable; 
  
