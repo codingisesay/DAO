@@ -231,19 +231,43 @@ public function getReviewApplicationsDetailsAgentById($agentId)
 }
 
 // Get all Rejected applications
-public function getRejectedApplications()
+public function getRejectedApplications($status)
 {
+    // $status = 'Rejected'; // Use the enum value for 'Rejected'
     $rejectedApplications = DB::table('customer_appliction_status')
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
-        ->select(
-            'customer_appliction_status.*',
-            'customer_application_details.first_name as first_name',
-            'customer_application_details.middle_name as middle_name',
-            'customer_application_details.last_name as last_name',
-            'customer_application_details.created_at as created_at',
-            'customer_application_details.application_no as application_no'
+        ->join('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->join('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->join('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->join('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->join('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->join('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->join('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->join('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id'
         )
-        ->where('customer_appliction_status.status', 'rejected')
+        
+        ->select(
+          
+            'customer_application_details.*',
+          'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+             'account_personal_details.status_comment as account_personal_details_status_comment',
+             'application_address_details.status as application_address_details_status',
+             'application_address_details.status_comment as application_address_details_status_comment',
+             'agent_live_photos.status as agent_live_photos_status',
+             'agent_live_photos.status_comment as agent_live_photos_status_comment',
+             'applicant_live_photos.status as applicant_live_photos_status',
+             'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+             'application_personal_details.status as application_personal_details_status',
+             'application_personal_details.status_comment as application_personal_details_status_comment',
+             'application_service_status.status as application_service_status_status',
+             'application_service_status.status_comment as application_service_status_status_comment',
+             'document_approved_status.status as document_approved_status_status',
+             'document_approved_status.status_comment as document_approved_status_status_comment',
+             'nominee_approved_status.status as nominee_approved_status_status',
+             'nominee_approved_status.status_comment as nominee_approved_status_status_comment',
+        )
+        ->where('customer_appliction_status.status', $status) // Use 'Rejected' as per your enum
         ->get();
 
     return response()->json([
@@ -268,19 +292,42 @@ public function getRejectedApplicationsAgentCount()
     ], 200);
 }
 // Get Rejected applications for a specific agent
-public function getRejectedApplicationsDetailsAgentById($agentId)
+public function getRejectedApplicationsDetailsAgentById($agentId,$status)
 {
     $rejectedApplications = DB::table('customer_appliction_status')
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
-        ->select(
-            'customer_appliction_status.*',
-            'customer_application_details.first_name as first_name',
-            'customer_application_details.middle_name as middle_name',
-            'customer_application_details.last_name as last_name',
-            'customer_application_details.created_at as created_at',
-            'customer_application_details.application_no as application_no'
+        ->join('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->join('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->join('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->join('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->join('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->join('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->join('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->join('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id'
         )
-        ->where('customer_appliction_status.status', 'rejected')
+        
+        ->select(
+          
+            'customer_application_details.*',
+          'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+             'account_personal_details.status_comment as account_personal_details_status_comment',
+             'application_address_details.status as application_address_details_status',
+             'application_address_details.status_comment as application_address_details_status_comment',
+             'agent_live_photos.status as agent_live_photos_status',
+             'agent_live_photos.status_comment as agent_live_photos_status_comment',
+             'applicant_live_photos.status as applicant_live_photos_status',
+             'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+             'application_personal_details.status as application_personal_details_status',
+             'application_personal_details.status_comment as application_personal_details_status_comment',
+             'application_service_status.status as application_service_status_status',
+             'application_service_status.status_comment as application_service_status_status_comment',
+             'document_approved_status.status as document_approved_status_status',
+             'document_approved_status.status_comment as document_approved_status_status_comment',
+             'nominee_approved_status.status as nominee_approved_status_status',
+             'nominee_approved_status.status_comment as nominee_approved_status_status_comment',
+        )
+        ->where('customer_appliction_status.status', $status) // Use 'Rejected' as per your enum
         ->where('customer_application_details.agent_id', $agentId)
         ->get();
 
@@ -731,20 +778,25 @@ public function getKycApprovedApplicationsByAgentId($agentId)
 
 
 // Get all Rejected  applications
-public function getKycRejectedApplications()
+public function getKycRejectedApplications($status)
 {
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
-         ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->join('kyc_data_after_vs_cbs','kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->join('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
         ->select(
-            'kyc_application_status.*',
-            'kyc_application.kyc_application_no',
-            'kyc_application.verify_from',
-            'kyc_application.verify_details',
+            'kyc_application_status.kyc_application_id as kyc_application_id',
+            'kyc_application_status.status as kyc_application_status',
+            'kyc_application.*',
             'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
-            'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
+            'kyc_data_after_vs_cbs.kyc_vscbs_middle_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name',
+            'kyc_data_after_vs_cbs.status as kyc_data_after_vs_cbs_status',
+            'kyc_data_after_vs_cbs.status_comment as kyc_data_after_vs_cbs_status_comment',
+            'kyc_document_approved_status.status as kyc_document_approved_status',
+            'kyc_document_approved_status.status_comment as kyc_document_approved_status_comment'
         )
-        ->where('kyc_application_status.status', 'rejected')
+        ->where('kyc_application_status.status', $status)
         ->get();
 
     return response()->json(['data' => $data], 200);
@@ -766,17 +818,27 @@ public function getKycRejectedApplicationsAgentCount()
     return response()->json(['data' => $data], 200);
 }
 // Get Rejected  kycapplications for a specific agent
-public function getKycRejectedApplicationsByAgentId($agentId)
+public function getKycRejectedApplicationsByAgentId($agentId,$status)
 {
+
+    
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->join('kyc_data_after_vs_cbs','kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->join('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
         ->select(
-            'kyc_application_status.*',
-            'kyc_application.kyc_application_no',
-            'kyc_application.verify_from',
-            'kyc_application.verify_details'
+            'kyc_application_status.kyc_application_id as kyc_application_id',
+            'kyc_application_status.status as kyc_application_status',
+            'kyc_application.*',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_middle_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name',
+            'kyc_data_after_vs_cbs.status as kyc_data_after_vs_cbs_status',
+            'kyc_data_after_vs_cbs.status_comment as kyc_data_after_vs_cbs_status_comment',
+            'kyc_document_approved_status.status as kyc_document_approved_status',
+            'kyc_document_approved_status.status_comment as kyc_document_approved_status_comment'
         )
-        ->where('kyc_application_status.status', 'rejected')
+        ->where('kyc_application_status.status', $status)
         ->where('kyc_application.kyc_agent_id', $agentId)
         ->get();
 
@@ -793,9 +855,7 @@ public function getKycPendingApplications()
         ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application.id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->select(
             'kyc_application_status.*',
-            'kyc_application.kyc_application_no',
-            'kyc_application.verify_from',
-            'kyc_application.verify_details',
+            'kyc_application.*',
             'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
             'kyc_data_after_vs_cbs.kyc_vscbs_last_name'
         )
