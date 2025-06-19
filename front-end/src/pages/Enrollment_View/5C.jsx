@@ -7,6 +7,7 @@ import { serviceToCustomerService , createAccountService, pendingAccountData} fr
 import Swal from 'sweetalert2';
 import { apiService } from '../../utils/storage';
 
+
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
     const [bankingServices, setBankingServices] = useState([]);
@@ -67,93 +68,8 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
 
         fetchBankingServices();
     }, [storedId]);
-
-    const handleEBankingChange = (e) => {
-        const { name, checked } = e.target;
-        setLocalFormData(prev => ({
-            ...prev,
-            eBankingServices: {
-                ...prev.eBankingServices,
-                [name]: checked
-            }
-        }));
-    };
-
-    const handleCreditFacilityChange = (e) => {
-        const { name, checked } = e.target;
-        setLocalFormData(prev => ({
-            ...prev,
-            creditFacilities: {
-                ...prev.creditFacilities,
-                [name]: checked
-            }
-        }));
-    };
-
-    const handleOtherFacilityTextChange = (e) => {
-        setLocalFormData(prev => ({
-            ...prev,
-            otherFacilityText: e.target.value
-        }));
-    };
-
-    const getSelectedFacilityIds = () => {
-        const selectedIds = [];
-
-        // Check eBankingServices
-        bankingServices.forEach(item => {
-            if (item.service_id === 1) {
-                const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
-                if (localFormData.eBankingServices[facilityKey]) {
-                    selectedIds.push(item.facility_id);
-                }
-            }
-        });
-
-        // Check creditFacilities
-        bankingServices.forEach(item => {
-            if (item.service_id === 2) {
-                const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
-                if (localFormData.creditFacilities[facilityKey]) {
-                    selectedIds.push(item.facility_id);
-                }
-            }
-        });
-
-        return selectedIds;
-    };
-
-    const submitServiceToCustomer = async () => {
-        try {
-            // Get all selected facility IDs
-            const selectedFacilityIds = getSelectedFacilityIds();
-
-            // Prepare the payload
-            const payload = {
-                application_id: Number(storedId),
-                banking_services_facilities_id: selectedFacilityIds
-            };
-
-            const response = await createAccountService.serviceToCustomer_s5c(payload);
-
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Service to customer saved!',
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            if (onNext) onNext();
-
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save service to customer'
-            });
-        }
-    };
-
+ 
+ 
     if (loading) {
         return <div>Loading banking services...</div>;
     }
@@ -173,8 +89,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                             key={facility.facility_id}
                             label={facility.facility_name}
                             name={facilityKey}
-                            checked={localFormData.eBankingServices[facilityKey] || false}
-                            onChange={handleEBankingChange}
+                            checked={localFormData.eBankingServices[facilityKey] || false} 
                         />
                     );
                 })}
@@ -189,16 +104,14 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                             <CommanCheckbox
                                 label={facility.facility_name}
                                 name={facilityKey}
-                                checked={localFormData.creditFacilities[facilityKey] || false}
-                                onChange={handleCreditFacilityChange}
+                                checked={localFormData.creditFacilities[facilityKey] || false} 
                             />
                             {facilityKey === 'others' && localFormData.creditFacilities.others && (
                                 <div className="md:col-span-4">
                                     <CommanInput
                                         label={labels.otherFacilityText.label}
                                         name="otherFacilityText"
-                                        value={localFormData.otherFacilityText}
-                                        onChange={handleOtherFacilityTextChange}
+                                        value={localFormData.otherFacilityText} 
                                     />
                                 </div>
                             )}
@@ -211,7 +124,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={submitServiceToCustomer} variant="contained" className="btn-next">
+                <CommonButton onClick={onNext} variant="contained" className="btn-next">
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>

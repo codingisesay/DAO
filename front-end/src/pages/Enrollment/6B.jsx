@@ -48,8 +48,8 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
             const response = await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
-                title: 'Account Created Successfully!',
-                text: 'Your account has been created successfully.',
+                title: 'Application Created Successfully!',
+                // text: 'Your account has been created successfully.',
                 icon: 'success',
                 confirmButtonText: 'OK',
             }).then((result) => {
@@ -65,23 +65,11 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
             // onNext();
         } catch (error) {
             console.error('Photo submission error:', error);
-            // Swal.fire({
-            //     icon: 'error',
-            //     title: 'Error',
-            //     text: JSON.stringify(error) || 'Failed to save photo. Please try again.'
-            // });
-
-
             Swal.fire({
-                title: 'Account Created Successfully!',
-                text: 'Your account has been created successfully.',
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '/agentdashboard'; // Redirect to the desired page
-                }
-            });
+                icon: 'error',
+                title: 'Error',
+                text: JSON.stringify(error) || 'Failed to save photo. Please try again.'
+            }); 
         } finally {
             setLocalIsSubmitting(false); 
         }

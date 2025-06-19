@@ -9,7 +9,7 @@ import { pendingAccountStatusUpdate } from '../../services/apiServices';
 import { useParams } from 'react-router-dom';
 
 
-const p2 = ({ onNext, onBack }) => {
+const p5 = ({ onNext, onBack }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
@@ -98,7 +98,7 @@ const p2 = ({ onNext, onBack }) => {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -196,7 +196,7 @@ const p2 = ({ onNext, onBack }) => {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -288,7 +288,7 @@ const p2 = ({ onNext, onBack }) => {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -496,4 +496,4 @@ const p2 = ({ onNext, onBack }) => {
     );
 };
 
-export default p2;
+export default p5;

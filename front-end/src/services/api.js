@@ -115,7 +115,7 @@ export const API_ENDPOINTS = {
 
     UPDATE_S5A: (id) => `/dao/api/admin/updateAccountPersonalDetails/${id}`,
     UPDATE_S5B: (id) => `/dao/api/admin/updateAccountNominees/${id}`,
-    UPDATE_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S5C: (id) => `/dao/api/admin/updateServiceToCustomer/${id}`,
     UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },
@@ -161,7 +161,7 @@ export const API_ENDPOINTS = {
     // /// By ankitka
     APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
     GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
-
+    PENDING_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/pendingApplicationCount',
 
     //////////For DAshboard Admin
     MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly',

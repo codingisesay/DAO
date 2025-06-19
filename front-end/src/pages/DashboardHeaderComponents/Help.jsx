@@ -33,12 +33,13 @@ const HelpAccordion = () => {
 
   return (
     <div className="  mx-auto mt-0 bg-white p-2 z-40" >
-      <h1 className="text-sm font-bold mb-2 ">Help</h1>
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <h1 className="text-sm font-bold mb-0 text-center">Help</h1>
+      <hr />
+      <div className=" overflow-hidden">
         {accordionItems.map((item, index) => (
           <div key={index} className="border-b border-gray-200 last:border-b-0">
             <button
-              className="w-full flex justify-between items-center p-2 text-left hover:bg-gray-50 transition-colors"
+              className="w-full flex justify-between items-center p-1 text-left hover:bg-gray-50 transition-colors"
               onClick={() => toggleAccordion(index)}
             >
               <span className="font-medium text-xs">{item.question}</span>
@@ -51,12 +52,12 @@ const HelpAccordion = () => {
                 activeIndex === index ? 'block' : 'hidden'
               }`}
             >
-              <p className="text-gray-700">{item.answer}</p>
-              <div className="mt-2 text-green-500">
+              <p className="text-gray-700 text-start">{item.answer}</p>
+              {/* <div className="mt-2 text-green-500">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}
