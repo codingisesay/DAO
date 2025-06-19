@@ -280,9 +280,9 @@ public function getRejectedApplicationsAgentCount()
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->select(
             'customer_application_details.agent_id',
-            DB::raw('COUNT(*) as rejected_count')
+            DB::raw('COUNT(*) as reject_count')
         )
-        ->where('customer_appliction_status.status', 'rejected')
+        ->where('customer_appliction_status.status', 'Rejected')
         ->groupBy('customer_application_details.agent_id')
         ->get();
 
@@ -290,6 +290,8 @@ public function getRejectedApplicationsAgentCount()
         'data' => $agentCounts
     ], 200);
 }
+
+
 // Get Rejected applications for a specific agent
 public function getRejectedApplicationsDetailsAgentById($agentId,$status)
 {
