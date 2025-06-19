@@ -123,7 +123,7 @@ const p6 = ({ onNext, onBack }) => {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -133,7 +133,7 @@ const p6 = ({ onNext, onBack }) => {
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             // console.log('Payload:', payload);
 
-            localStorage.getItem('approveStatusArray'.remove())
+            
             navigate('/admindashboard');
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -167,7 +167,7 @@ const p6 = ({ onNext, onBack }) => {
             await pendingAccountStatusUpdate.updateS6B(id, payload);
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            localStorage.getItem('approveStatusArray').remove()
+            
             // console.log('Payload:', payload);
             navigate('/admindashboard');  // pass the payload forward
         } else if (result.isDismissed) {
@@ -187,7 +187,7 @@ const p6 = ({ onNext, onBack }) => {
             const response = pendingAccountStatusUpdate.updateS6B(id, payload);
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            localStorage.getItem('approveStatusArray'.remove())
+            
 
             Swal.fire({
                 icon: 'success',

@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 
     const username= localStorage.getItem('userName');
     const userrole =localStorage.getItem('roleName');
-    
+    localStorage.getItem('approveStatusArray').remove;
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };

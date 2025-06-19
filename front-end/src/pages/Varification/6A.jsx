@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { applicationDetailsService } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
 import { usePDF } from 'react-to-pdf';
+import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const ViewApplicationForm = () => {
@@ -16,13 +17,16 @@ const ViewApplicationForm = () => {
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
 
-    const applicationId = localStorage.getItem('application_id');
+    // const id = localStorage.getItem('application_id');
+        const { id } = useParams();
 
     useEffect(() => {
-        if (!applicationId) return;
+    
+        if (!id) return;
         const fetchDetails = async () => {
             try {
-                const response = await applicationDetailsService.getFullDetails(applicationId);
+                
+                const response = await applicationDetailsService.getFullDetails(id);
                 if (response) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
@@ -32,7 +36,7 @@ const ViewApplicationForm = () => {
                     // console.log('photo :', customerpic[0].path);
 
                     setFormData({
-                        application_id: applicationId,
+                        application_id: id,
                         // Authentication
                         auth_type: application.auth_type,
                         auth_code: application.auth_code,
@@ -119,7 +123,7 @@ const ViewApplicationForm = () => {
             }
         };
         fetchDetails();
-    }, [applicationId]);
+    }, [id]);
 
 
     const handlePrint = () => {
