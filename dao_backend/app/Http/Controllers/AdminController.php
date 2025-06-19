@@ -117,7 +117,9 @@ public function getApprovedApplications()
             'customer_application_details.middle_name as middle_name',
             'customer_application_details.last_name as last_name',
             'customer_application_details.created_at as created_at',
-            'customer_application_details.application_no as application_no'
+            'customer_application_details.application_no as application_no',
+            'customer_application_details.agent_id as agent_id',
+            'customer_application_details.admin_id as admin_id' // Assuming agent_name is a field in customer_application_details
             // You can join user table here if needed for agent name
         )
         ->where('customer_appliction_status.status', 'approved')
