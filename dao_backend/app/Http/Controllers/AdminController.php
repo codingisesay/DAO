@@ -379,8 +379,8 @@ public function getApplicationDocuments($application_id)
 
     // Base64 encode the BLOB for each document
     foreach ($documents as $doc) {
-        if (isset($doc->file_data) && $doc->file_data !== null) {
-            $doc->file_data = base64_encode($doc->file_data);
+        if (isset($doc->file_path) && $doc->file_path !== null) {
+            $doc->file_path = base64_encode($doc->file_path);
         }
     }
 
@@ -844,7 +844,6 @@ public function getKycPendingApplicationsByAgentId($agentId)
 }
 
 
-
 public function getAllKycDetails($id)
 {
     $kycData = DB::table('kyc_application as ka')
@@ -864,7 +863,7 @@ public function getAllKycDetails($id)
             'kdvs.*',
             'kdas.*'
         )
-        ->get(); // Use ->first() if expecting only one record
+        ->get();
 
     if ($kycData->isEmpty()) {
         return response()->json([
@@ -873,11 +872,21 @@ public function getAllKycDetails($id)
         ], 404);
     }
 
+    // Base64 encode BLOB fields
+  $kycData->transform(function ($item) {
+    // Base64 encode the kyc_file_path field if it exists
+    if (isset($item->kyc_file_path) && $item->kyc_file_path !== null) {
+        $item->kyc_file_path = base64_encode($item->kyc_file_path);
+    }
+    return $item;
+});
+
     return response()->json([
         'message' => 'KYC details fetched successfully',
         'data' => $kycData
     ]);
 }
+
 
 
 
