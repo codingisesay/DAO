@@ -55,7 +55,7 @@ function p3({ onNext, onBack }) {
         if (result.isConfirmed && result.value) {
             const payload = {
                 kyc_application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
