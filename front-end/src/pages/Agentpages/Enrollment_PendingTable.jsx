@@ -13,8 +13,6 @@ function PendingTable() {
     const [currentPage, setCurrentPage] = useState(0);
     const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
     const [filters, setFilters] = useState({});
-    const [countData, setCountData] = useState({ content: [] });
-    const [countLoading, setCountLoading] = useState(false);
 
     // Columns for the main applications table
     const columns = [
@@ -23,12 +21,6 @@ function PendingTable() {
         { ...COLUMN_DEFINITIONS.application_no, field: "id", type: "text" },
         { ...COLUMN_DEFINITIONS.middle_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.open_date, field: "created_at", type: "date" },
-    ];
-
-    // Columns for the agent counts table
-    const countColumns = [
-        { header: "Agent ID", field: "agent_id", type: "text" },
-        { header: "Pending Count", field: "pending_count", type: "text" }
     ];
 
     const fetchData = async () => {
@@ -47,20 +39,6 @@ function PendingTable() {
             setLoading(false);
         }
     };
- 
-    const fetchDataCount = async () => {
-        try {
-            setCountLoading(true);
-            const response = await adminService.pendingApplicationCountByAgent;
-            console.log("PENDING APPLICATION COUNT:", response);   
-            setCountData({ content: response.data || [] });
-        } catch (error) {
-            console.error("No agent tbl :", error);
-        } finally {
-            setCountLoading(false);
-        }
-    };
-  
     useEffect(() => {
         fetchData();
         fetchDataCount();
@@ -107,21 +85,7 @@ function PendingTable() {
                         />
                     </div>
 
-                    <br /><br />
-                    <h2>Pending Applications Count by Agent</h2>
-                    <br />
-
-                    {/* Agent Counts Table */}
-                    <div className="bank-master">
-                        <DataTable
-                            data={countData}
-                            columns={countColumns}
-                            basePath="" // No base path needed for this table
-                            loading={countLoading}
-                            primaryKeys={["agent_id"]}
-                            hidePagination={true} // Assuming you want a simple table without pagination
-                        />
-                    </div>
+                    
                 </div>
             </div>
         </>
