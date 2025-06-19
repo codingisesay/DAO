@@ -750,6 +750,9 @@ public function getApprovedApplicationsByAgent($agentId)
             'cad.application_no',
             'cad.first_name',
             'cad.last_name',
+            'cad.created_at',
+            'cad.agent_id',
+            'cad.admin_id',
             'cas.status'
         )
         ->get();
@@ -772,6 +775,7 @@ public function getPendingApplicationsByAgent($agentId)
             'cad.application_no',
             'cad.first_name',
             'cad.last_name',
+            'cad.created_at',
             'cas.status'
         )
         ->get();
