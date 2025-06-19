@@ -32,8 +32,7 @@ const DataTable = ({
 
   useEffect(() => {
     setPage(data.number);
-    setPageSize(data.size);
-    console.log('DATA  TABLE row : ', data.size)
+    setPageSize(data.size); 
   }, [data]);
 
   const getActionPath = (row) => primaryKeys.map((key) => row[key]).join('/');

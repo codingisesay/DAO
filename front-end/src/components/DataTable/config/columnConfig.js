@@ -65,5 +65,16 @@ export const COLUMN_DEFINITIONS = {
     header: "Account Open Date",
     sortable: true,
     filterable: true,
+  },
+  agent_id:{
+    header: "Agent ID",
+    sortable: true,
+    filterable: true,
+  },
+  pending_count:{
+    header: "Pending Count",
+    sortable: true,
+    filterable: true,
   }
+
 };
