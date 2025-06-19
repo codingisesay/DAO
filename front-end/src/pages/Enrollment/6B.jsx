@@ -48,8 +48,8 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
             const response = await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
-                title: 'Account Created Successfully!',
-                text: 'Your account has been created successfully.',
+                title: 'Application Created Successfully!',
+                // text: 'Your account has been created successfully.',
                 icon: 'success',
                 confirmButtonText: 'OK',
             }).then((result) => {

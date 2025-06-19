@@ -34,8 +34,7 @@ function P1({ onNext, onBack, updateFormData }) {
     });
     const { id } = useParams();
 
-    useEffect(() => {
-        localStorage.setItem('application_id', id);
+    useEffect(() => { 
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
@@ -75,6 +74,7 @@ function P1({ onNext, onBack, updateFormData }) {
 
         fetchAndStoreDetails();
     }, [id]);
+    
     if (!localStorage.getItem("approveStatusArray")) {
         localStorage.setItem("approveStatusArray", JSON.stringify([]));
 

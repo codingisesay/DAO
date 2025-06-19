@@ -17,7 +17,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   created_at: {
-    header: "Created At",
+    header: "Application Date",
     sortable: true,
     filterable: true,
   },
@@ -32,7 +32,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   middle_name: {
-    header: "Customer Name",
+    header: "Applicant Name",
     sortable: true,
     filterable: true,
   },
@@ -45,12 +45,7 @@ export const COLUMN_DEFINITIONS = {
     header: "Application No",
     sortable: true,
     filterable: true,
-  },
-  created_at: {
-    header: "Created At",
-    sortable: true,
-    filterable: true,
-  },
+  }, 
   kyc_application_id: {
     header: "KYC Application ID",
     sortable: true,
@@ -63,6 +58,11 @@ export const COLUMN_DEFINITIONS = {
   },
   status_comment: {
     header: "Rejected Reason",
+    sortable: true,
+    filterable: true,
+  },
+  open_date:{
+    header: "Account Open Date",
     sortable: true,
     filterable: true,
   }

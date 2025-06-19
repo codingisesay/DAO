@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { accountPersonalDetailsService, applicationDetailsService ,createAccountService} from '../../services/apiServices';
+import { pendingAccountData, applicationDetailsService ,createAccountService} from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
@@ -40,6 +40,32 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         annualIncome:   '',
         remark:   ''
     });
+
+    useEffect(() => { 
+        const fetchAndStoreDetails = async () => {
+            try {
+                // alert('called')
+                if (applicationId) {
+                    const response = await pendingAccountData.getDetailsS1(applicationId); 
+                    const application = response.details || {}; 
+                   setLocalFormData(prevData => ({
+                        ...prevData, 
+                        motherLastName:  application.last_name || '',
+                        fatherSpouseLastName:  application.last_name || '',
+                        maidenLastName:  application.last_name || '',
+                        fatherSpouseFirstName : application.middle_name || '',
+                       
+                    }));
+
+                    // alert(localFormData.photo);
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [applicationId]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
