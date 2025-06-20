@@ -7,6 +7,7 @@ import labels from '../../components/labels';
 import { pre } from 'framer-motion/client';
 import { pendingKycStusUpdate, pendingKyc } from '../../services/apiServices';
 import { useParams } from "react-router-dom";
+import userphoto from '../../assets/imgs/user_avatar.jpg';
 
 const FloatingInput = ({
   name,
@@ -124,10 +125,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
         
         fetchAndStoreDetails(id);
   }, [id]);
-
  
-
-
     const handleRejectClick = async () => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
@@ -235,8 +233,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             });
         }
     }
-
-
+ 
   return (
     <div className="customer-details-container form-container">
       <h1 className="text-2xl font-bold flex justify-between text-gray-800 mb-0">
@@ -249,7 +246,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             Aadhaar Details
           </h2>
           <img
-            src=""
+            src={userphoto}
             width={'100px'}
             height={'100px'}
             alt="Customer Photo"
@@ -392,7 +389,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             CBS Details
           </h2>
           <img
-            src=""
+            src={userphoto}
             width={'100px'}
             height={'100px'}
             alt="Customer Photo"

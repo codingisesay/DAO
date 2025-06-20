@@ -134,7 +134,7 @@ const fetchData = async () => {
                     </div>
             </div>
             
-                    <h2>Pending Applications Count by Agent</h2>
+                    {/* <h2>Pending Applications Count by Agent</h2>
                     
                     <div className="bank-master">
                         <DataTable
@@ -145,7 +145,7 @@ const fetchData = async () => {
                             primaryKeys={["agent_id"]}
                             hidePagination={true} // Assuming you want a simple table without pagination
                         />
-                    </div>
+                    </div> */}
         </div>
                 
        
