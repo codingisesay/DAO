@@ -15,7 +15,7 @@ const NominationDetailsTable = () => {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS5B(id);
 
-                    console.log('nominees:', response.documents);
+                    // console.log('nominees:', response.documents);
 
                     // Assuming `documents` is an array of nominees
                     const nominees = response.documents || [];

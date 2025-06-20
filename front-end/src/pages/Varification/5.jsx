@@ -180,7 +180,7 @@ const p5 = ({ onNext, onBack }) => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
             input: 'text',
-            inputLabel: 'Nominnie  Details Rejection Reason',
+            inputLabel: 'Nominee  Details Rejection Reason',
             inputPlaceholder: 'Enter reason here...',
             showCancelButton: true,
             confirmButtonText: 'Submit',
@@ -211,7 +211,7 @@ const p5 = ({ onNext, onBack }) => {
         const result = await Swal.fire({
             title: 'Reason for Review',
             input: 'text',
-            inputLabel: 'Nominnie  Details Review Reason',
+            inputLabel: 'Nominee  Details Review Reason',
             inputPlaceholder: 'Enter reason here...',
             showCancelButton: true,
             confirmButtonText: 'Submit',
@@ -249,7 +249,7 @@ const p5 = ({ onNext, onBack }) => {
             pendingAccountStatusUpdate.updateS5A(id, payload);
             Swal.fire({
                 icon: 'success',
-                title: 'Nominnie  Details Approved Successfully',
+                title: 'Nominee  Details Approved Successfully',
                 timer: 2000,
                 showConfirmButton: false,
                 allowOutsideClick: false,
