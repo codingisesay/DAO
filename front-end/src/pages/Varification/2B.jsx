@@ -287,7 +287,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };

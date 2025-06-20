@@ -34,8 +34,7 @@ function P1({ onNext, onBack, updateFormData }) {
     });
     const { id } = useParams();
 
-    useEffect(() => {
-        localStorage.setItem('application_id', id);
+    useEffect(() => { 
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
@@ -75,6 +74,7 @@ function P1({ onNext, onBack, updateFormData }) {
 
         fetchAndStoreDetails();
     }, [id]);
+    
     if (!localStorage.getItem("approveStatusArray")) {
         localStorage.setItem("approveStatusArray", JSON.stringify([]));
 
@@ -108,7 +108,7 @@ function P1({ onNext, onBack, updateFormData }) {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };

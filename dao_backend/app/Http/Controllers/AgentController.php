@@ -797,6 +797,7 @@ public function getReviewApplicationsByAgent($agentId)
             'cad.application_no',
             'cad.first_name',
             'cad.last_name',
+            'cad.created_at',
             'cas.status'
         )
         ->get();
@@ -818,6 +819,7 @@ public function getRejectedApplicationsByAgent($agentId)
             'cad.application_no',
             'cad.first_name',
             'cad.last_name',
+            'cad.created_at',
             'cas.status'
         )
         ->get();

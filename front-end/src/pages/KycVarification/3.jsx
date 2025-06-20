@@ -55,7 +55,7 @@ function p3({ onNext, onBack }) {
         if (result.isConfirmed && result.value) {
             const payload = {
                 kyc_application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -220,7 +220,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                         <td className="py-2 px-4 border-b border-gray-200">
                                             <a href={daodocbase + `/${doc.kyc_file_path}`} target="_blank" rel="noopener noreferrer">
                                                 <img
-                                                    src={daodocbase + `/${doc.kyc_file_path}`}
+                                                    src={daodocbase + `${doc.kyc_file_path}`}
                                                     alt="document"
                                                     className="h-auto w-20 object-contain border rounded"
                                                 />

@@ -221,6 +221,7 @@ export const adminService = {
   // Clicking on the view button in the admin dashboard
   getFullApplicationDetails: (id) =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+  pendingApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.PENDING_APPLICATION_COUNT_BY_AGENT),
 
   /// dashobard charts
   monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),

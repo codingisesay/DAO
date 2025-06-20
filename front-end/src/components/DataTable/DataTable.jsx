@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { NavLink } from 'react-router-dom';
@@ -31,38 +32,54 @@ const DataTable = ({
 
   useEffect(() => {
     setPage(data.number);
-    setPageSize(data.size);
+    setPageSize(data.size); 
   }, [data]);
 
   const getActionPath = (row) => primaryKeys.map((key) => row[key]).join('/');
 
-  const muiColumns = columns.map((col) => ({
-    name: col.field,
-    label: col.header,
-    options: {
-      filter: true,
-      sort: col.sortable,
-      filterType: col.filterType || 'dropdown',
-      filterOptions: col.filterOptions || {},
-      customBodyRender: (value) => {
-        if (col.type === 'date') {
-          return formatDate(value);
-        } else if (['integer', 'float', 'double'].includes(col.type)) {
-          return <div style={{ textAlign: 'right' }}>{value}</div>;
-        } else if (col.type === 'amount') {
-          return (
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-              <span>₹</span>
-              <span style={{ textAlign: 'right', flex: 1 }}>
-                {parseFloat(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-          );
-        }
-        return <div style={{ textAlign: 'left' }}>{value}</div>;
+  // Add serial number column as the first column
+  const muiColumns = [
+    // {
+    //   name: 'serialNo',
+    //   label: 'S.No',
+    //   options: {
+    //     filter: false,
+    //     sort: false,
+    //     customBodyRender: (value, tableMeta) => {
+    //       // Calculate serial number based on current page and row index
+    //       const serialNo = page * pageSize + tableMeta.rowIndex + 1;
+    //       return <div style={{ textAlign: 'center' }}>{serialNo}</div>;
+    //     },
+    //   },
+    // },
+    ...columns.map((col) => ({
+      name: col.field,
+      label: col.header,
+      options: {
+        filter: true,
+        sort: col.sortable,
+        filterType: col.filterType || 'dropdown',
+        filterOptions: col.filterOptions || {},
+        customBodyRender: (value) => {
+          if (col.type === 'date') {
+            return formatDate(value);
+          } else if (['integer', 'float', 'double'].includes(col.type)) {
+            return <div style={{ textAlign: 'right' }}>{value}</div>;
+          } else if (col.type === 'amount') {
+            return (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                <span>₹</span>
+                <span style={{ textAlign: 'right', flex: 1 }}>
+                  {parseFloat(value).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+            );
+          }
+          return <div style={{ textAlign: 'left' }}>{value}</div>;
+        },
       },
-    },
-  }));
+    })),
+  ];
 
   if (showActions) {
     muiColumns.push({
@@ -74,7 +91,6 @@ const DataTable = ({
         customBodyRender: (_, { rowIndex }) => {
           const row = data.content[rowIndex];
           const isLoanApplication = window.location.pathname.includes('loanapplication');
-          // work only if url contains loanapplication 
           const rowEditDisabled = isLoanApplication
             ? editButtonDisabled || row.authorized
             : editButtonDisabled;
@@ -156,7 +172,8 @@ const DataTable = ({
           onFilterChange: (changedColumn, filterList, type) => {
             const filters = {};
             filterList.forEach((filterVals, index) => {
-              const columnName = muiColumns[index]?.name;
+              // Adjust index by -1 to account for serial number column
+              const columnName = muiColumns[index + 1]?.name;
               if (filterVals.length > 0 && columnName) {
                 filters[columnName] = filterVals;
               }
@@ -173,3 +190,5 @@ const DataTable = ({
 };
 
 export default DataTable;
+
+ 

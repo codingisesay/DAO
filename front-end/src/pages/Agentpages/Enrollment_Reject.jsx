@@ -20,9 +20,18 @@ function PendingTable() {
 
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_no, field: "application_no", type: "text" },
+    { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
+  //   {
+  //   ...COLUMN_DEFINITIONS.first_name,
+  //   field: "full_name", // Not required to match an API field
+  //   type: "text",
+  //   valueGetter: (params) => `${params.first_name || ""} ${params.last_name || ""}`.trim()
+  // },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.admin_id, field: "admin_id", type: "text" },
+    // { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.status_comment, field: "status_comment", type: "text" },
   ];
 
   

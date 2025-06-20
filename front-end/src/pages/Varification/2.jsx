@@ -41,8 +41,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
         if (result.isConfirmed && result.value) {
             const payload = {
-                application_id: Number(id),
-                status: 'Reject',
+                application_id: id,
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -203,7 +203,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };

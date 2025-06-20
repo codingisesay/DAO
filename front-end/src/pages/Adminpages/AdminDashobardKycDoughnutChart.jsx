@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 const KYCVerificationChart = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const admin_id= localStorage.getItem('userCode')
 
     const COLORS = ['#20C475', '#FFA726', '#FF5252'];
 
@@ -25,11 +26,11 @@ const KYCVerificationChart = () => {
                 }
             } catch (error) {
                 console.error('Error fetching KYC status:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message || 'Failed to load KYC status data'
-                });
+                // Swal.fire({
+                //     icon: 'error',
+                //     title: 'Error',
+                //     text: error?.response?.data?.message || 'Failed to load KYC status data'
+                // });
                 // Fallback to empty data if API fails
                 setData([
                     { name: 'Verified', value: 0 },
@@ -42,7 +43,7 @@ const KYCVerificationChart = () => {
         };
 
         fetchKYCStatus();
-    }, []);
+    }, [admin_id]);
 
     const renderCustomizedLabel = ({
         cx,
