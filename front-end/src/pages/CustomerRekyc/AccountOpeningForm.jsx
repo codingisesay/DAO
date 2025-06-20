@@ -267,16 +267,7 @@ function CustomerForm() {
         setProgress({ ...progress, 5: "completed" });
         alert("Form submitted successfully!");
     };
-
-   
-    const completeStep2 = () => {
-        setProgress({ ...progress, 2: "completed", 3: "inprogress" });
-        setCurrentStep(3);
-    };
-    const completeStep5 = () => {
-        setProgress({ ...progress, 5: "completed", 6: "inprogress" });
-        setCurrentStep(6);
-    };
+ 
 
     // Add this handler
     const handleAadharDataFetched = (data) => {
@@ -317,8 +308,7 @@ function CustomerForm() {
                                     <Step2JobDetails
                                         formData={formData}
                                         handleChange={handleChange} 
-                                        subProgress={subProgress}
-                                        completeStep={completeStep2}
+                                        subProgress={subProgress} 
                                         nextStep={nextStep}
                                         prevStep={prevStep}
                                     />

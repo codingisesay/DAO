@@ -5,10 +5,11 @@ import { apiService } from '../../utils/storage'
 import { kycService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
+import { pre } from 'framer-motion/client';
 
 
 
-const P3 = ({ nextStep, onBack }) => {
+const P3 = ({ nextStep, prevStep }) => {
 //  console.log('P3 component rendered');
     // In the main component
     const [isLoading, setIsLoading] = React.useState(false);
@@ -163,7 +164,7 @@ const P3 = ({ nextStep, onBack }) => {
 
             </div>
             <div className="next-back-btns mt-6 z-10">
-                <CommonButton className="btn-back" onClick={onBack}>
+                <CommonButton className="btn-back" onClick={prevStep}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
                 <CommonButton
