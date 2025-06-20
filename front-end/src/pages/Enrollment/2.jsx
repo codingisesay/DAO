@@ -11,7 +11,7 @@ import { form } from 'framer-motion/client';
 import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const steps = [

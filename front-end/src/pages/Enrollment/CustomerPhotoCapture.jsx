@@ -5,9 +5,10 @@ import '@tensorflow/tfjs';
 
 const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation = true }) => {
   const webcamRef = useRef(null);
-  const [imgSrc, setImgSrc] = useState(null); // Track captured image
+  const [imgSrc, setImgSrc] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isWebcamReady, setIsWebcamReady] = useState(false);
   const [validation, setValidation] = useState({
     hasFace: false,
     lightingOk: false,
@@ -17,21 +18,65 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
   const [personCount, setPersonCount] = useState(0);
   const [location, setLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [isFetchingAddress, setIsFetchingAddress] = useState(false);
+
+  // Function to fetch address from coordinates
+  const fetchAddress = async (lat, lng) => {
+    setIsFetchingAddress(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+      );
+      const data = await response.json();
+      
+      if (data.address) {
+        const addressParts = [];
+        if (data.address.road) addressParts.push(data.address.road);
+        if (data.address.village) addressParts.push(data.address.village);
+        if (data.address.town) addressParts.push(data.address.town);
+        if (data.address.city) addressParts.push(data.address.city);
+        if (data.address.state) addressParts.push(data.address.state);
+        if (data.address.country) addressParts.push(data.address.country);
+        
+        return addressParts.join(', ');
+      }
+      return "Address not available";
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      return "Error fetching address";
+    } finally {
+      setIsFetchingAddress(false);
+    }
+  };
+
+  // Webcam onUserMedia handler
+  const handleUserMedia = () => {
+    setIsWebcamReady(true);
+  };
 
   // Get geolocation if enabled
   useEffect(() => {
     if (!showLocation) return;
 
-    const getLocation = () => {
+    const getLocation = async () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocation({
+          async (position) => {
+            const locationData = {
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
               accuracy: position.coords.accuracy,
               timestamp: new Date(position.timestamp).toISOString()
-            });
+            };
+            setLocation(locationData);
+            
+            // Fetch address based on coordinates
+            const fetchedAddress = await fetchAddress(
+              locationData.latitude, 
+              locationData.longitude
+            );
+            setAddress(fetchedAddress);
           },
           (error) => {
             setLocationError(error.message);
@@ -54,58 +99,72 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
   // Camera control functions
   const startCamera = () => {
     setIsCameraActive(true);
-    setImgSrc(null); // Clear any previous image when starting camera
+    setImgSrc(null);
   };
 
-  const stopCamera = () => setIsCameraActive(false);
+  const stopCamera = () => {
+    setIsCameraActive(false);
+    setIsWebcamReady(false);
+  };
 
   // Face Detection Setup
   useEffect(() => {
     let mounted = true;
     let model;
+    let detectionInterval;
 
     const loadModel = async () => {
-      if (!isCameraActive) return;
+      if (!isCameraActive || !isWebcamReady) return;
 
       try {
         setIsLoading(true);
         model = await cocoSsd.load();
 
         const detect = async () => {
-          if (!mounted || !webcamRef.current?.video?.readyState === 4) return;
+          if (!mounted || !webcamRef.current || !webcamRef.current.video) {
+            return;
+          }
+
+          const video = webcamRef.current.video;
+          
+          // Check if video is ready and has valid dimensions
+          if (video.readyState !== 4 || video.videoWidth === 0 || video.videoHeight === 0) {
+            return;
+          }
 
           try {
-            const predictions = await model.detect(webcamRef.current.video);
+            const predictions = await model.detect(video);
             const people = predictions.filter(p => p.class === "person");
-            const { hasFace, lightingOk } = analyzeFrame();
+            const { hasFace, lightingOk } = analyzeFrame(video);
 
-            setValidation({
-              hasFace,
-              lightingOk,
-              singlePerson: people.length === 1
-            });
+            if (mounted) {
+              setValidation({
+                hasFace,
+                lightingOk,
+                singlePerson: people.length === 1
+              });
 
-            // Update hints based on detection
-            setPersonCount(people.length);
-            if (people.length === 0) {
-              setHints('No face detected. Position your face in the frame');
-            } else if (people.length > 1) {
-              setHints('Multiple people detected. Only one person should be in frame');
-            } else if (!hasFace) {
-              setHints('Face not clearly visible. Move into better lighting');
-            } else if (!lightingOk) {
-              setHints('Lighting not optimal. Adjust your environment');
-            } else {
-              setHints('Ready to capture');
+              setPersonCount(people.length);
+              if (people.length === 0) {
+                setHints('No face detected. Position your face in the frame');
+              } else if (people.length > 1) {
+                setHints('Multiple people detected. Only one person should be in frame');
+              } else if (!hasFace) {
+                setHints('Face not clearly visible. Move into better lighting');
+              } else if (!lightingOk) {
+                setHints('Lighting not optimal. Adjust your environment');
+              } else {
+                setHints('Ready to capture');
+              }
             }
           } catch (error) {
             console.error("Detection error:", error);
           }
-
-          if (mounted) requestAnimationFrame(detect);
         };
 
-        detect();
+        // Run detection at a reasonable interval
+        detectionInterval = setInterval(detect, 500);
+
       } catch (error) {
         console.error("Model loading error:", error);
       } finally {
@@ -113,23 +172,23 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
       }
     };
 
-    if (isCameraActive) {
+    if (isCameraActive && isWebcamReady) {
       loadModel();
     }
 
     return () => {
       mounted = false;
+      clearInterval(detectionInterval);
       model?.dispose();
     };
-  }, [isCameraActive]);
+  }, [isCameraActive, isWebcamReady]);
 
   // Frame analysis for face and lighting
-  const analyzeFrame = () => {
-    if (!webcamRef.current?.video) {
+  const analyzeFrame = (video) => {
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
       return { hasFace: false, lightingOk: false };
     }
 
-    const video = webcamRef.current.video;
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -142,14 +201,12 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
     let brightnessSum = 0;
     let skinTonePixels = 0;
 
-    // Analyze image data
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
       brightnessSum += (r + g + b) / 3;
 
-      // Skin tone detection
       if (r > 95 && g > 40 && b > 20 && r > g && r > b && Math.abs(r - g) > 15) {
         skinTonePixels++;
       }
@@ -179,8 +236,10 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
 
   // Capture image
   const capture = () => {
+    if (!webcamRef.current || !isWebcamReady) return;
+
     const imageSrc = webcamRef.current.getScreenshot();
-    setImgSrc(imageSrc); // Store the captured image
+    setImgSrc(imageSrc);
     
     const blob = dataURLtoBlob(imageSrc);
     const file = blob;
@@ -193,6 +252,7 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
       metadata: {
         location: location || null,
         locationError: locationError || null,
+        address: address || null,
         validation: photoType === 'customer' ? validation : null
       }
     };
@@ -206,8 +266,8 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
 
   // Retake photo
   const retake = () => {
-    setImgSrc(null); // Clear the captured image
-    startCamera(); // Restart the camera
+    setImgSrc(null);
+    startCamera();
   };
 
   // Check if all validations pass
@@ -234,6 +294,13 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
                   alt="Captured"
                   className="w-full h-full object-cover"
                 />
+                {showLocation && location && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2 text-xs">
+                    <div>Lat: {location.latitude.toFixed(5)}</div>
+                    <div>Lng: {location.longitude.toFixed(5)}</div>
+                    {address && <div>Address: {address}</div>}
+                  </div>
+                )}
               </div>
             ) : isCameraActive ? (
               // Show live camera feed
@@ -248,6 +315,11 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
                     height: 720
                   }}
                   className="w-full h-full object-cover"
+                  onUserMedia={handleUserMedia}
+                  onUserMediaError={(error) => {
+                    console.error("Webcam error:", error);
+                    setHints('Camera access error. Please check permissions.');
+                  }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="border-2 border-dashed border-white rounded-full w-48 h-64 opacity-50"></div>
@@ -340,12 +412,15 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
                   <span className="font-medium mr-2">
                     {location ? '✓' : '✗'} Location captured
                   </span>
-                  {locationError ? (
+                  {isFetchingAddress ? (
+                    <span className="text-yellow-500 text-sm">Fetching address...</span>
+                  ) : locationError ? (
                     <span className="text-red-500 text-sm">Error: {locationError}</span>
                   ) : location ? (
-                    <span className="text-green-500 text-sm">
-                      {location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}
-                    </span>
+                    <div className="text-green-500 text-sm">
+                      <div>{location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}</div>
+                      {address && <div>{address}</div>}
+                    </div>
                   ) : (
                     <span className="text-yellow-500 text-sm">Acquiring location...</span>
                   )}
@@ -377,6 +452,16 @@ export default ImageCaptureValidator;
 
 
 
+
+
+
+
+
+
+
+
+
+
 // import React, { useState, useRef, useEffect } from 'react';
 // import Webcam from 'react-webcam';
 // import * as cocoSsd from '@tensorflow-models/coco-ssd';
@@ -384,6 +469,7 @@ export default ImageCaptureValidator;
 
 // const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation = true }) => {
 //   const webcamRef = useRef(null);
+//   const [imgSrc, setImgSrc] = useState(null); // Track captured image
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [isCameraActive, setIsCameraActive] = useState(false);
 //   const [validation, setValidation] = useState({
@@ -430,7 +516,11 @@ export default ImageCaptureValidator;
 //   }, [showLocation]);
 
 //   // Camera control functions
-//   const startCamera = () => setIsCameraActive(true);
+//   const startCamera = () => {
+//     setIsCameraActive(true);
+//     setImgSrc(null); // Clear any previous image when starting camera
+//   };
+
 //   const stopCamera = () => setIsCameraActive(false);
 
 //   // Face Detection Setup
@@ -554,6 +644,8 @@ export default ImageCaptureValidator;
 //   // Capture image
 //   const capture = () => {
 //     const imageSrc = webcamRef.current.getScreenshot();
+//     setImgSrc(imageSrc); // Store the captured image
+    
 //     const blob = dataURLtoBlob(imageSrc);
 //     const file = blob;
 //     const previewUrl = URL.createObjectURL(file);
@@ -578,7 +670,8 @@ export default ImageCaptureValidator;
 
 //   // Retake photo
 //   const retake = () => {
-//     startCamera();
+//     setImgSrc(null); // Clear the captured image
+//     startCamera(); // Restart the camera
 //   };
 
 //   // Check if all validations pass
@@ -594,9 +687,20 @@ export default ImageCaptureValidator;
 //         {/* Camera/Image Preview */}
 //         <div className="flex-1">
 //           <div className={`border-2 rounded-lg overflow-hidden transition-all ${
+//             imgSrc ? 'border-gray-300' : 
 //             allValid() ? 'border-green-500' : 'border-red-500'
 //           }`}>
-//             {isCameraActive ? (
+//             {imgSrc ? (
+//               // Show captured image
+//               <div className="relative" style={{ aspectRatio: '4/3' }}>
+//                 <img
+//                   src={imgSrc}
+//                   alt="Captured"
+//                   className="w-full h-full object-cover"
+//                 />
+//               </div>
+//             ) : isCameraActive ? (
+//               // Show live camera feed
 //               <div className="relative" style={{ aspectRatio: '4/3' }}>
 //                 <Webcam
 //                   audio={false}
@@ -614,6 +718,7 @@ export default ImageCaptureValidator;
 //                 </div>
 //               </div>
 //             ) : (
+//               // Show start camera button
 //               <div
 //                 className="flex flex-col items-center justify-center bg-gray-100 p-8 h-full"
 //                 style={{ aspectRatio: '4/3' }}
@@ -630,7 +735,16 @@ export default ImageCaptureValidator;
 //           </div>
           
 //           <div className="mt-4">
-//             {isCameraActive ? (
+//             {imgSrc ? (
+//               // Show retake button when image is captured
+//               <button
+//                 onClick={retake}
+//                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+//               >
+//                 Retake Photo
+//               </button>
+//             ) : isCameraActive ? (
+//               // Show capture button when camera is active
 //               <button
 //                 onClick={capture}
 //                 disabled={!allValid() || isLoading}
@@ -643,11 +757,13 @@ export default ImageCaptureValidator;
 //                 {isLoading ? 'Processing...' : 'Capture Photo'}
 //               </button>
 //             ) : (
+//               // Show start camera button when no camera is active
 //               <button
-//                 onClick={retake}
-//                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"
+//                 onClick={startCamera}
+//                 disabled={isLoading}
+//                 className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50"
 //               >
-//                 Retake Photo
+//                 {isLoading ? 'Loading...' : 'Start Camera'}
 //               </button>
 //             )}
 //           </div>
@@ -711,6 +827,8 @@ export default ImageCaptureValidator;
 // };
 
 // export default ImageCaptureValidator;
+
+
 
 
  
