@@ -39,64 +39,65 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
     };
 
     const submitPhoto = async (e) => {
-        if (!photoData || !photoData.file) {  
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please capture a photo before submitting'
-            });
-            return;
-        }
+             onNext();
+        // if (!photoData || !photoData.file) {  
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: 'Please capture a photo before submitting'
+        //     });
+        //     return;
+        // }
 
-        setLocalIsSubmitting(true);
+        // setLocalIsSubmitting(true);
 
-        // Use FormData for file upload
-        const submitFormData = new FormData();
-        submitFormData.append('application_id', formData.application_id || application_id);
+        // // Use FormData for file upload
+        // const submitFormData = new FormData();
+        // submitFormData.append('application_id', formData.application_id || application_id);
         
-        // Add location data if available
-        if (photoData.metadata?.location) {
-            submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
-            submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
-        }
+        // // Add location data if available
+        // if (photoData.metadata?.location) {
+        //     submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+        //     submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+        // }
         
-        // Add validation data if available
-        if (photoData.metadata?.validation) {
-            submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
-        }
+        // // Add validation data if available
+        // if (photoData.metadata?.validation) {
+        //     submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+        // }
         
-        submitFormData.append('photo', photoData.file);
-        submitFormData.append('timestamp', photoData.timestamp);
-        submitFormData.append('status', 'Pending');
+        // submitFormData.append('photo', photoData.file);
+        // submitFormData.append('timestamp', photoData.timestamp);
+        // submitFormData.append('status', 'Pending');
         
-        try {
-            const response = await createAccountService.livePhoto_s2c(submitFormData);
+        // try {
+        //     const response = await createAccountService.livePhoto_s2c(submitFormData);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Photo saved successfully',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        //     Swal.fire({
+        //         icon: 'success',
+        //         title: response.data.message || 'Photo saved successfully',
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     });
 
-            // Update parent component with the photo data
-            updateFormData({
-                ...formData,
-                photoData: photoData
-            });
+        //     // Update parent component with the photo data
+        //     updateFormData({
+        //         ...formData,
+        //         photoData: photoData
+        //     });
 
-            // Proceed to next step after successful submission
-            onNext();
-        } catch (error) {
-            console.error('Photo submission error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.data?.message +` Retake and Save Photo` || 'Failed to save photo. Please try again.'
-            });
-        } finally {
-            setLocalIsSubmitting(false); 
-        }
+        //     // Proceed to next step after successful submission
+        //     onNext();
+        // } catch (error) {
+        //     console.error('Photo submission error:', error);
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: error?.data?.message +` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+        //     });
+        // } finally {
+        //     setLocalIsSubmitting(false); 
+        // }
     };
 
     return (
