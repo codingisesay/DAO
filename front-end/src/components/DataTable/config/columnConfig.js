@@ -1,6 +1,8 @@
+import { header } from "framer-motion/client";
+
 export const COLUMN_DEFINITIONS = {
   id: {
-    header: "ID",
+    header: "Application No.",
     sortable: true,
     filterable: true,
   },
@@ -15,7 +17,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   created_at: {
-    header: "Created At",
+    header: "Application Date",
     sortable: true,
     filterable: true,
   },
@@ -30,7 +32,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   middle_name: {
-    header: "Middle Name",
+    header: "Applicant Name",
     sortable: true,
     filterable: true,
   },
@@ -43,15 +45,57 @@ export const COLUMN_DEFINITIONS = {
     header: "Application No",
     sortable: true,
     filterable: true,
-  },
-  created_at: {
-    header: "Created At",
-    sortable: true,
-    filterable: true,
-  },
+  }, 
   kyc_application_id: {
     header: "KYC Application ID",
     sortable: true,
     filterable: true,
   },
+  admin_id:{
+    header:'Reject By',
+    sortable: true,
+    filterable: true,
+  },
+  status_comment: {
+    header: "Rejected Reason",
+    sortable: true,
+    filterable: true,
+  },
+  open_date:{
+    header: "Account Open Date",
+    sortable: true,
+    filterable: true,
+  },
+  agent_id:{
+    header: "Agent ID",
+    sortable: true,
+    filterable: true,
+  },
+  pending_count:{
+    header: "Pending Count",
+    sortable: true,
+    filterable: true,
+  },
+  rejected_by:{
+    header: "Reejected By",
+    sortable: true,
+    filterable: true,
+
+  },
+  rejected_reason:{
+    header: "Rejected Reason",
+    sortable: true,
+    filterable: true,
+  },
+  account_no:{
+    header: "Account No.",
+    sortable: true,
+    filterable: true,
+  },
+  account_open_date:{
+    header: "Account Open Date",
+    sortable: true,
+    filterable: true,
+  }
+
 };

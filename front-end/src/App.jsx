@@ -36,7 +36,7 @@ import PrintApplication from './pages/Enrollment/PrintApplication';
 import KycVarification from './pages/KycVarification/Enrollmentform';
 import StartKyc from './pages/Enrollment/4B';  
 import CreateMeeting from './pages/Enrollment/CreateMeeting';
-
+import ViewForm from './pages/Enrollment_View/Enrollmentform'
  
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -46,11 +46,13 @@ const ProtectedRoute = ({ children }) => {
   }
   return children;
 };
+ 
 const PublicRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuth();
   
   if (isAuthenticated && isAuthenticated()) {
     // Check user role and redirect accordingly
+    console.log("User role:", user?.roleName);
     if (user?.roleName === 'Admin') {
       return <Navigate to="/admindashboard" replace />;
     } else if (user?.roleName === 'Agent') {
@@ -61,6 +63,7 @@ const PublicRoute = ({ children }) => {
   }
   return children;
 };
+
 export const App = () => {
   const { user } = useAuth();
 
@@ -114,6 +117,11 @@ export const App = () => {
           <Route path="/verify-account/edit/:id" element={
             <ProtectedRoute>
               <Varificationform />
+            </ProtectedRoute>
+          } />
+          <Route path="/verify-account/view/:id" element={
+            <ProtectedRoute>
+              <ViewForm />
             </ProtectedRoute>
           } />
           <Route path="/kyc-varification/edit/:id" element={
@@ -181,7 +189,7 @@ export const App = () => {
 
           {/* Catch-all route */}
           <Route path="*" element={
-            <Navigate to={user ? "/admindashboard" : "/login"} replace />
+            <Navigate to={user ? "/admindashboard" : "/login"} replace /> 
           } />
         </Routes>
       </Router>

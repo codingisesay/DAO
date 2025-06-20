@@ -20,10 +20,10 @@ const ImageWithDetails = () => {
             try {
                 // alert('called')
                 if (id) {
-                    const response = await pendingAccountData.getDetailsS2C(id);
+                    const response = await pendingAccountData.getDetailsS6B(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('got data 2C :', response.photos);
-                    const application = response.photos[0] || {};
+                    console.log('got data 6b :', response.services);
+                    const application = response.services[0] || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setLocalFormData({

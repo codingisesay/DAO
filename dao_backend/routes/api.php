@@ -65,10 +65,14 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
     Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
-    //rejected
-    Route::get('admin/applications/rejected', [AdminController::class, 'getRejectedApplications']);
+    //This is for getting the applications by status(Approved,Review)
+
+
+
+
+    Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
     Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
-    Route::get('admin/applications/rejected/agent/{agentId}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
+    Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
     //kyc review 
     Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
     Route::get('/kyc/review/count-by-agent', [AdminController::class, 'getKycReviewApplicationsAgentCount']);
@@ -78,10 +82,14 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('/kyc/approved/count-by-agent', [AdminController::class, 'getKycApprovedApplicationsAgentCount']);
     Route::get('/kyc/approved/agent/{agentId}', [AdminController::class, 'getKycApprovedApplicationsByAgentId']);
 
-    // kyc rejected table 
-    Route::get('/admin/kyc-applications/rejected', [AdminController::class, 'getKycRejectedApplications']);
+    // This is for getting the kyc applications by status(Reject and Review)
+
+
+
+    
+    Route::get('/admin/kyc-applications/rejected/{status}', [AdminController::class, 'getKycRejectedApplications']);
     Route::get('admin/kyc/rejected/count-by-agent', [AdminController::class, 'getKycRejectedApplicationsAgentCount']);
-    Route::get('admin/kyc/rejected/agent/{agentId}', [AdminController::class, 'getKycRejectedApplicationsByAgentId']);
+    Route::get('admin/kyc/rejected/agent/{agentId}/{status}', [AdminController::class, 'getKycRejectedApplicationsByAgentId']);
     // kyc pending table
     Route::get('/admin/kyc-applications/pending', [AdminController::class, 'getKycPendingApplications']);
     Route::get('admin/kyc/pending/count-by-agent', [AdminController::class, 'getKycPendingApplicationsAgentCount']);

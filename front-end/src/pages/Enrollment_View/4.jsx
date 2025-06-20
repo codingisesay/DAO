@@ -3,11 +3,14 @@ import React from 'react';
 import VideoKYCInstructions from './4A';
 import CommonButton from '../../components/CommonButton';
 function p4({ onNext, onBack }) {
+
+
+
     return (
         <>
             <div className="form-container">
                 <h2 className="text-xl font-bold mb-2">Video KYC</h2>
-                <VideoKYCInstructions />
+                <VideoKYCInstructions onNext={onNext} />
 
                 <div className="next-back-btns">
                     <CommonButton className="btn-back" onClick={onBack}>

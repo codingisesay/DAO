@@ -14,7 +14,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedType, setSelectedType] = useState(formData.auth_type || 'new');
     const [showData, setShowData] = useState(!!formData.auth_code);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const agent_id =localStorage.getItem('userCode')
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -33,6 +33,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         pincode: formData.pincode || '',
         city: formData.city || '',
         district: formData.district || '',
+        agent_id: agent_id || '',
         state: formData.state || ''
     });
 
@@ -137,7 +138,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             pincode: localFormData.pincode,
             city: localFormData.city,
             district: localFormData.district,
-            state: localFormData.state,
+            state: localFormData.state, agent_id: agent_id,
             status: "Pending",
         };
 

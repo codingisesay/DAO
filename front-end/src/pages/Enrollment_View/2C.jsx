@@ -22,7 +22,7 @@ const ImageWithDetails = () => {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS2C(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    console.log('got data 2C :', response.photos);
+                    console.log('got data 2C :', response.photos[0]);
                     const application = response.photos[0] || {};
                     // const personal = response?.data?.personal_details || {};
 
@@ -51,7 +51,7 @@ const ImageWithDetails = () => {
 
 
     return (
-        <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg mx-auto">
+       <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg mx-auto">
             {/* Left Side - Image */}
             <div className="w-full md:w-1/2 mb-6 md:mb-0 md:pr-6">
 

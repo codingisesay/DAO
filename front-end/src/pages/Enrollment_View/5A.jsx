@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { pendingAccountData, applicationDetailsService ,createAccountService} from '../../services/apiServices';
+import { accountPersonalDetailsService, applicationDetailsService ,createAccountService} from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
@@ -40,44 +40,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         annualIncome:   '',
         remark:   ''
     });
-
-    useEffect(() => { 
-        const fetchAndStoreDetails = async () => {
-            try {
-                // alert('called')
-                if (applicationId) {
-                    const response = await pendingAccountData.getDetailsS1(applicationId); 
-                    const application = response.details || {}; 
-                   setLocalFormData(prevData => ({
-                        ...prevData, 
-                        motherLastName:  application.last_name || '',
-                        fatherSpouseLastName:  application.last_name || '',
-                        maidenLastName:  application.last_name || '',
-                        fatherSpouseFirstName : application.middle_name || '',
-                       
-                    }));
-
-                    // alert(localFormData.photo);
-                }
-            } catch (error) {
-                console.error('Failed to fetch application details:', error);
-            }
-        };
-
-        fetchAndStoreDetails();
-    }, [applicationId]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const updatedLocalFormData = { ...localFormData, [name]: value };
-
-        setLocalFormData(updatedLocalFormData);
-        updateFormData({
-            ...formData,
-            personalOccupation: updatedLocalFormData
-        });
-    };
-
+ 
     
     
 useEffect(() => {
@@ -137,103 +100,7 @@ useEffect(() => {
     }
 }, [applicationId]);
 
-
-    const submitpd = async () => {
-        const nameFields = {
-            maiden_prefix: localFormData.maidenPrefixName,
-            maiden_first_name: localFormData.maidenFirstName,
-            maiden_middle_name: localFormData.maidenMiddleName,
-            maiden_last_name: localFormData.maidenLastName,
-            father_prefix_name: localFormData.fatherSpousePrefixName,
-            father_first_name: localFormData.fatherSpouseFirstName,
-            father_middle_name: localFormData.fatherSpouseMiddleName,
-            father_last_name: localFormData.fatherSpouseLastName,
-            mother_prefix_name: localFormData.motherPrefixName,
-            mother_first_name: localFormData.motherFirstName,
-            mother_middle_name: localFormData.motherMiddleName,
-            mother_last_name: localFormData.motherLastName,
-            };
-    const errors = [];
-
-    Object.entries(nameFields).forEach(([key, value]) => {
-    if (/\d/.test(value)) {
-        // Format key to show friendly error
-        const fieldName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        errors.push(`${fieldName} should not contain numbers.`);
-    }
-    });
-
-    if (errors.length > 0) {
-        // alert(errors.join('\n'));
-            
-  Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: errors.join('\n') || 'Failed to save details'
-            });
-
-
-        return; // Stop submission
-    }
-        try {
-            // Validate required fields before submission
-            if ( 
-                !localFormData.birthPlaceCity ||
-                !localFormData.birthPlaceCountry ||
-                !localFormData.maritalStatus ||
-                !localFormData.nationality ||
-                !localFormData.religion ||
-                !localFormData.caste) {
-                throw new Error('Please fill all required fields');
-            }
-
-            const payload = {
-                application_id: formData.application_id ||  localFormData.application_id,
-                maiden_prefix: localFormData.maidenPrefixName,
-                maiden_first_name: localFormData.maidenFirstName,
-                maiden_middle_name: localFormData.maidenMiddleName,
-                maiden_last_name: localFormData.maidenLastName,
-                father_prefix_name: localFormData.fatherSpousePrefixName,
-                father_first_name: localFormData.fatherSpouseFirstName,
-                father_middle_name: localFormData.fatherSpouseMiddleName,
-                father_last_name: localFormData.fatherSpouseLastName,
-                mother_prefix_name: localFormData.motherPrefixName,
-                mother_first_name: localFormData.motherFirstName,
-                mother_middle_name: localFormData.motherMiddleName,
-                mother_last_name: localFormData.motherLastName,
-                birth_place: localFormData.birthPlaceCity,
-                birth_country: localFormData.birthPlaceCountry,
-                occoupation_type: localFormData.occupationType,
-                occupation_name: localFormData.businessName,
-                if_salaryed: localFormData.salariedWith,
-                designation: localFormData.designation,
-                nature_of_occoupation: localFormData.organisationNature,
-                qualification: localFormData.educationQualification,
-                anual_income: localFormData.annualIncome,
-                remark: localFormData.remark,
-                status: "Pending",
-            };
-            console.log('nominie :', payload)
-            const response = await createAccountService.accountPersonalDetails_s5a(payload);
-
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Account personal details saved!',
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            if (onNext) onNext();
-
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.response?.data?.message || error.message || 'Failed to save details'
-            });
-        }
-    }
-
+ 
     return (
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
@@ -243,14 +110,12 @@ useEffect(() => {
                     value={localFormData.maidenPrefixName}
                     label={labels.maidenPrefixName.label}
                     name="maidenPrefixName"
-                    onChange={handleChange}
                     options={salutation}
                 />
                 <CommanInput
                     label={labels.maidenFirstName.label}
                     name="maidenFirstName"
                     value={localFormData.maidenFirstName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -258,7 +123,6 @@ useEffect(() => {
                     label={labels.maidenMiddleName.label}
                     name="maidenMiddleName"
                     value={localFormData.maidenMiddleName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -266,7 +130,6 @@ useEffect(() => {
                     label={labels.maidenLastName.label}
                     name="maidenLastName"
                     value={localFormData.maidenLastName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -276,14 +139,12 @@ useEffect(() => {
                     value={localFormData.fatherSpousePrefixName}
                     label={labels.fatherSpousePrefixName.label}
                     name="fatherSpousePrefixName"
-                    onChange={handleChange}
                     options={salutation}
                 />
                 <CommanInput
                     label={labels.fatherSpouseFirstName.label}
                     name="fatherSpouseFirstName"
                     value={localFormData.fatherSpouseFirstName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -291,7 +152,6 @@ useEffect(() => {
                     label={labels.fatherSpouseMiddleName.label}
                     name="fatherSpouseMiddleName"
                     value={localFormData.fatherSpouseMiddleName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -299,7 +159,6 @@ useEffect(() => {
                     label={labels.fatherSpouseLastName.label}
                     name="fatherSpouseLastName"
                     value={localFormData.fatherSpouseLastName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -309,14 +168,12 @@ useEffect(() => {
                     label={labels.motherPrefixName.label}
                     name="motherPrefixName"
                     value={localFormData.motherPrefixName}
-                    onChange={handleChange}
                     options={salutation}
                 />
                 <CommanInput
                     label={labels.motherFirstName.label}
                     name="motherFirstName"
                     value={localFormData.motherFirstName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -324,7 +181,6 @@ useEffect(() => {
                     label={labels.motherMiddleName.label}
                     name="motherMiddleName"
                     value={localFormData.motherMiddleName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -332,7 +188,6 @@ useEffect(() => {
                     label={labels.motherLastName.label}
                     name="motherLastName"
                     value={localFormData.motherLastName}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -342,7 +197,6 @@ useEffect(() => {
                     label={labels.birthPlaceCity.label}
                     name="birthPlaceCity"
                     value={localFormData.birthPlaceCity}
-                    onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
@@ -351,7 +205,6 @@ useEffect(() => {
                     label={labels.birthPlaceCountry.label}
                     name="birthPlaceCountry"
                     value={localFormData.birthPlaceCountry}
-                    onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
@@ -360,7 +213,6 @@ useEffect(() => {
                     label={labels.maritalStatus.label}
                     name="maritalStatus"
                     value={localFormData.maritalStatus}
-                    onChange={handleChange}
                     required
                     options={maritalStatusOptions}
                 />
@@ -368,7 +220,6 @@ useEffect(() => {
                     label={labels.nationality.label}
                     name="nationality"
                     value={localFormData.nationality}
-                    onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
@@ -377,7 +228,6 @@ useEffect(() => {
                     label={labels.religion.label}
                     name="religion"
                     value={localFormData.religion}
-                    onChange={handleChange}
                     required
                     options={religion}
                 />
@@ -385,7 +235,6 @@ useEffect(() => {
                     label={labels.caste.label}
                     name="caste"
                     value={localFormData.caste}
-                    onChange={handleChange}
                     required
                     options={caste}
                 />
@@ -397,7 +246,6 @@ useEffect(() => {
                     label={labels.occupationType.label}
                     name="occupationType"
                     value={localFormData.occupationType}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -405,7 +253,6 @@ useEffect(() => {
                     label={labels.businessName.label}
                     name="businessName"
                     value={localFormData.businessName}
-                    onChange={handleChange}
                     validationType="ALPHANUMERIC_AND_SPACE"
                     max={30}
                 />
@@ -413,7 +260,6 @@ useEffect(() => {
                     label={labels.salariedWith.label}
                     name="salariedWith"
                     value={localFormData.salariedWith}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -421,7 +267,6 @@ useEffect(() => {
                     label={labels.designation.label}
                     name="designation"
                     value={localFormData.designation}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={10}
                 />
@@ -429,7 +274,6 @@ useEffect(() => {
                     label={labels.organisationNature.label}
                     name="organisationNature"
                     value={localFormData.organisationNature}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={30}
                 />
@@ -437,7 +281,6 @@ useEffect(() => {
                     label={labels.educationQualification.label}
                     name="educationQualification"
                     value={localFormData.educationQualification}
-                    onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
                     max={30}
                 />
@@ -445,7 +288,6 @@ useEffect(() => {
                     label={labels.annualIncome.label}
                     name="annualIncome"
                     value={localFormData.annualIncome}
-                    onChange={handleChange}
                     validationType="DECIMAL"
                     max={15}
                 /> */}
@@ -454,14 +296,12 @@ useEffect(() => {
                     label={labels.annualIncome.label}
                     name="annualIncome"
                     value={localFormData.annualIncome}
-                    onChange={handleChange}
                     options={salaryrange}
                 />
                 <CommanInput
                     label={labels.remark.label}
                     name="remark"
                     value={localFormData.remark}
-                    onChange={handleChange}
                     validationType="EVERYTHING"
                     max={200}
                 />
@@ -471,7 +311,7 @@ useEffect(() => {
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton onClick={submitpd} variant="contained" className="btn-next">
+                <CommonButton onClick={onNext} variant="contained" className="btn-next">
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>

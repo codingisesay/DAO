@@ -267,148 +267,33 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const { id } = useParams();
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
-    const handleRejectClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Rejection',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Rejected',
-                status_comment: result.value,
-                admin_id: 1
-            };
-            await pendingAccountStatusUpdate.updateS2B(id, payload);
-            applicationStatus.push('Reject');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            onNext();
-        } else if (result.isDismissed) {
-            console.log('Rejection canceled');
-        }
-    };
-
-    const handleReviewClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Review',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Review',
-                status_comment: result.value,
-                admin_id: 1
-            };
-            await pendingAccountStatusUpdate.updateS2B(id, payload);
-            applicationStatus.push('Review');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            onNext();
-        } else if (result.isDismissed) {
-            console.log('Rejection canceled');
-        }
-    };
-
-    const handleNextStep = async () => {
-        try {
-            const payload = {
-                applicaiton_id: Number(id),
-                status: 'Approved',
-                status_comment: '',
-                admin_id: 1
-            }
-            await pendingAccountStatusUpdate.updateS2B(id, payload);
-            applicationStatus.push('Approved');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            Swal.fire({
-                icon: 'success',
-                title: 'Address Details Approved Successfully',
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            });
-            onNext();
-        }
-        catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text:  error?.response?.data?.message,
-            });
-        }
-    }
+ 
 
     return (
         <div className="address-form">
 
             <AddressInputs />
 
-
+ 
             <div className="next-back-btns z-10">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleRejectClick}
+                    className="btn-back"
+                    onClick={onBack}
+                    iconLeft={<i className="bi bi-chevron-double-left"></i>} 
                 >
-                    Reject & Continue
+                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
 
                 <CommonButton
-                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleReviewClick}
+                    className="btn-next"
+                    onClick={onNext }
+                    iconRight={<i className="bi bi-chevron-double-right"></i>} 
                 >
-                    Review & Continue
-                </CommonButton>
-
-                <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
-                >
-                    Accept & Continue
+                    
+                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                     
                 </CommonButton>
             </div>
-
-
-
-            {/* <div className="next-back-btns z-10">
-                <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
-                    onClick={handleRejectClick}
-                >
-                    Reject & Continue
-                </CommonButton>
-
-                <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
-                >
-                    Accept & Continue
-                </CommonButton>
-            </div> */}
         </div>
     );
 }

@@ -54,7 +54,7 @@ function p3({ onNext, onBack }) {
         if (result.isConfirmed && result.value) {
             const payload = {
                 application_id: Number(id),
-                status: 'Reject',
+                status: 'Rejected',
                 status_comment: result.value,
                 admin_id: 1
             };
@@ -217,13 +217,11 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                            <a href={daodocbase + `/${doc.file_path}`} target="_blank" rel="noopener noreferrer">
-                                                <img
-                                                    src={daodocbase + `/${doc.file_path}`}
-                                                    alt="document"
-                                                    className="h-auto w-20 object-contain border rounded"
-                                                />
-                                            </a>
+                                               <img
+                                                src={daodocbase+`${doc.file_path}`}
+                                                alt="document"
+                                                className="h-auto w-20 object-contain border rounded"
+                                                /> 
                                         </td>
                                         <td className="py-2 px-4 border-b border-gray-200">{doc.created_at}</td>
                                     </tr>
