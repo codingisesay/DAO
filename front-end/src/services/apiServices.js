@@ -51,6 +51,7 @@ export const agentService = {
     apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
   
     
+  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id))
 }
 
 export const personalDetailsService = {
