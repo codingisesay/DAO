@@ -22,11 +22,7 @@ const VideoKYCInstructions = ({onNext}) => {
         }));
     };
    
-    const handleConfirm = () => {  
-        //  const responce = await videoKycServie.createMeeting(5);
-        // console.log(response);
-        setShowOptions(true);
-    };
+    const handleConfirm = () => { setShowOptions(true); };
 
     const allTermsAccepted = termsAccepted.guidelines && termsAccepted.technical;
 
@@ -43,12 +39,18 @@ const VideoKYCInstructions = ({onNext}) => {
             }); 
     }
     const assistKyc= async()=>{
-          localStorage.setItem('vcall', JSON.stringify(true));
-         
+        localStorage.setItem('vcall', JSON.stringify(true));
+        try{
         const responce = await videoKycServie.createMeeting(5);
         console.log(responce);
         setAssistKycCall(true);
-            //    navigate('/startVkyc');
+    }catch(error){
+         Swal.fire({
+      icon: 'error',
+      title: JSON.stringify( error.data.message ),
+    //   text: 'Please upload at least one document before proceeding.',
+    });
+    }          
     }
 
 

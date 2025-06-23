@@ -20,10 +20,13 @@ function ApprovedTable() {
 
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.application_id, field: "application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
-    { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_no, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.customer_no, field: "customer_no", type: "date" },
+    { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
+    { ...COLUMN_DEFINITIONS.approved_by, field: "approved_by", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
   ];
 
   

@@ -3,15 +3,15 @@ import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { serviceToCustomerService , createAccountService} from '../../services/apiServices';
+import { serviceToCustomerService , createAccountService, pendingAccountData} from '../../services/apiServices';
 import Swal from 'sweetalert2';
-import axios from 'axios';
 import { apiService } from '../../utils/storage';
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
     const storedId = localStorage.getItem('application_id');
     const [bankingServices, setBankingServices] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [initialSelectedFacilities, setInitialSelectedFacilities] = useState([]);
 
     const [localFormData, setLocalFormData] = useState({
         eBankingServices: formData.bankFacility?.eBankingServices || {},
@@ -22,28 +22,41 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     useEffect(() => {
         const fetchBankingServices = async () => {
             try {
-                const response = await createAccountService.getBankingFacilitiesService();
-                setBankingServices(response.data);
+                // Fetch available banking services
+                const servicesResponse = await createAccountService.getBankingFacilitiesService();
+                setBankingServices(servicesResponse.data);
 
-                // Initialize form data with all facilities as unchecked if not already set
+                // Fetch user's selected services
+                const userSelectionResponse = await pendingAccountData.getDetailsS5C(storedId);
+                const userSelectedIds = userSelectionResponse.services.map(
+                    service => service.banking_services_facilities_id
+                );
+                setInitialSelectedFacilities(userSelectedIds);
+
+                // Initialize form data with user's selections
                 const initialEBankingServices = {};
                 const initialCreditFacilities = {};
 
-                response.data.forEach(item => {
+                servicesResponse.data.forEach(item => {
+                    const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
+                    const isInitiallySelected = userSelectedIds.includes(item.facility_id);
+
                     if (item.service_id === 1) { // E-Banking Services
-                        const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
-                        initialEBankingServices[facilityKey] = formData.bankFacility?.eBankingServices?.[facilityKey] || false;
+                        initialEBankingServices[facilityKey] = isInitiallySelected || 
+                            formData.bankFacility?.eBankingServices?.[facilityKey] || 
+                            false;
                     } else if (item.service_id === 2) { // Credit Facilities
-                        const facilityKey = item.facility_name.toLowerCase().replace(/ /g, '');
-                        initialCreditFacilities[facilityKey] = formData.bankFacility?.creditFacilities?.[facilityKey] || false;
+                        initialCreditFacilities[facilityKey] = isInitiallySelected || 
+                            formData.bankFacility?.creditFacilities?.[facilityKey] || 
+                            false;
                     }
                 });
 
-                setLocalFormData(prev => ({
-                    ...prev,
+                setLocalFormData({
                     eBankingServices: initialEBankingServices,
-                    creditFacilities: initialCreditFacilities
-                }));
+                    creditFacilities: initialCreditFacilities,
+                    otherFacilityText: formData.bankFacility?.otherFacilityText || ''
+                });
 
                 setLoading(false);
             } catch (error) {
@@ -53,7 +66,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
         };
 
         fetchBankingServices();
-    }, []);
+    }, [storedId]);
 
     const handleEBankingChange = (e) => {
         const { name, checked } = e.target;
@@ -194,11 +207,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 })}
             </div>
 
-
-
-
-
-            <div className="next-back-btns z-10" >{/* z-10 */}
+            <div className="next-back-btns z-10">
                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
@@ -206,28 +215,10 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
                 </CommonButton>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-            {/* <div className="flex justify-between mt-6 z-10" style={{ zIndex: '999' }}>
-                <CommonButton onClick={onBack} variant="outlined">
-                    Back
-                </CommonButton>
-                <CommonButton onClick={submitServiceToCustomer} variant="contained">
-                    Save & Continue
-                </CommonButton>
-            </div> */}
         </div>
     );
 }
 
 export default BankFacility;
 
+ 

@@ -57,27 +57,33 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                     const { application_addresss } = response.data; 
                     const addressFromDB = application_addresss[0];
 
-                    const resetFormData = {
-                        per_complex_name: addressFromDB?.per_complex_name || '',
-                        per_flat_no: addressFromDB?.per_flat_no || '',
-                        per_area: addressFromDB?.per_area || '',
-                        per_landmark: addressFromDB?.per_landmark || '',
-                        per_country: addressFromDB?.per_country || '',
-                        per_pincode: addressFromDB?.per_pincode || '',
-                        per_city: addressFromDB?.per_city || '',
-                        per_district: addressFromDB?.per_district || '',
-                        per_state: addressFromDB?.per_state || '',
-                        cor_complex_name: addressFromDB?.cor_complex_name || '',
-                        cor_flat_no: addressFromDB?.cor_flat_no || '',
-                        cor_area: addressFromDB?.cor_area || '',
-                        cor_landmark: addressFromDB?.cor_landmark || '',
-                        cor_country: addressFromDB?.cor_country || '',
-                        cor_pincode: addressFromDB?.cor_pincode || '',
-                        cor_city: addressFromDB?.cor_city || '',
-                        cor_district: addressFromDB?.cor_district || '',
-                        cor_state: addressFromDB?.cor_state || '',
-                        status: addressFromDB?.status || 'Pending'
-                    };
+                 const resetFormData = {
+                    // Permanent Address (fallback to formData if addressFromDB is not available)
+                    per_complex_name: addressFromDB?.per_complex_name || formData.complex_name || '',
+                    per_flat_no: addressFromDB?.per_flat_no || formData.flat_no || '',
+                    per_area: addressFromDB?.per_area || formData.area || '',
+                    per_landmark: addressFromDB?.per_landmark || formData.landmark || '',
+                    per_country: addressFromDB?.per_country || formData.country || 'INDIA',
+                    per_pincode: addressFromDB?.per_pincode || formData.pincode || '',
+                    per_city: addressFromDB?.per_city || formData.city || '',
+                    per_district: addressFromDB?.per_district || formData.district || '',
+                    per_state: addressFromDB?.per_state || formData.state || '',
+
+                    // Correspondence Address (only from DB if available, else empty)
+                    cor_complex_name: addressFromDB?.cor_complex_name || '',
+                    cor_flat_no: addressFromDB?.cor_flat_no || '',
+                    cor_area: addressFromDB?.cor_area || '',
+                    cor_landmark: addressFromDB?.cor_landmark || '',
+                    cor_country: addressFromDB?.cor_country || '',
+                    cor_pincode: addressFromDB?.cor_pincode || '',
+                    cor_city: addressFromDB?.cor_city || '',
+                    cor_district: addressFromDB?.cor_district || '',
+                    cor_state: addressFromDB?.cor_state || '',
+
+                    // Status
+                    status: addressFromDB?.status || 'Pending'
+                };
+
 
                     setLocalFormData(resetFormData);
 
@@ -273,7 +279,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
         try {
             const response = await createAccountService.addressDetails_s2b(payload);
-            console.log('ADDRESS CHECK :', payload);
+            // console.log('ADDRESS CHECK :', payload);
 
             updateFormData({
                 ...localFormData,

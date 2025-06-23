@@ -75,11 +75,11 @@ function ValidationBarChart() {
                 }
             } catch (error) {
                 console.error('Error fetching chart data:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message || 'Failed to load chart data'
-                });
+                // Swal.fire({
+                //     icon: 'error',
+                //     title: 'Error',
+                //     text: error?.response?.data?.message || 'Failed to load chart data'
+                // });
             } finally {
                 setLoading(false);
             }

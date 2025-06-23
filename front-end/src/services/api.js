@@ -115,7 +115,7 @@ export const API_ENDPOINTS = {
 
     UPDATE_S5A: (id) => `/dao/api/admin/updateAccountPersonalDetails/${id}`,
     UPDATE_S5B: (id) => `/dao/api/admin/updateAccountNominees/${id}`,
-    UPDATE_S5C: (id) => `/dao/api/admin/fetchServiceToCustomer/${id}`,
+    UPDATE_S5C: (id) => `/dao/api/admin/updateServiceToCustomer/${id}`,
     UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },
@@ -141,7 +141,8 @@ export const API_ENDPOINTS = {
   ADMIN: {
     GET_ALL_APPLICATIONS: '/dao/api/admin/applications',
     GET_ALL_PENDING_APPLICATIONS: '/dao/api/admin/pendingApplication', 
-    GET_ALL_APPLICATIONS_REJECTED: '/dao/api/admin/applications/rejected',
+    GET_ALL_APPLICATIONS_REJECTED: '/dao/api/admin/applications/rejected/Rejected',
+    // GET_ALL_APPLICATIONS_REJECTED: '/dao/api/admin/applications/rejected/review',
     UPDATE_APPLICATION_STATUS: '/dao/api/admin/application/update-status',
     UPDATE_PERSONAL_DETAILS_STATUS: '/dao/api/admin/personal-details/update-status',
     UPDATE_DOCUMENTS_STATUS: '/dao/api/admin/documents/update-status',
@@ -152,7 +153,7 @@ export const API_ENDPOINTS = {
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
     // Add these for Reviews applications
-    GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/reviewApplication',
+    GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/applications/rejected/Review',
     GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/dao/api/admin/reviewApplicationCount',
     GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/reviewApplicationDetails/${agentId}`,
     // Add these for kyc review applications
@@ -161,7 +162,7 @@ export const API_ENDPOINTS = {
     // /// By ankitka
     APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
     GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
-
+    PENDING_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/pendingApplicationCount',
 
     //////////For DAshboard Admin
     MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly',

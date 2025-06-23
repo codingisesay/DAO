@@ -1,31 +1,46 @@
-
 import React, { useEffect, useState } from 'react';
-import PhotoCapture from './CustomerPhotoCapture';
-import CommonButton from '../../components/CommonButton'; 
+import ImageCaptureValidator from './CustomerPhotoCapture';
+import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { createAccountService } from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
-    const [localFormData, setLocalFormData] = useState();
+    const [photoData, setPhotoData] = useState(null);
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
     const application_id = localStorage.getItem('application_id') || formData.application_id;
+    const storageKey = 'customerPhotoData';
 
     useEffect(() => {
-        const storedData = localStorage.getItem('customerPhotoData');
-        if (!storedData) {
-            console.error('No customerPhotoData found in localStorage');
-            return;
+        // Load saved photo data from localStorage
+        const storedData = localStorage.getItem(storageKey);
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                setPhotoData(parsedData);
+            } catch (error) {
+                console.error('Error parsing stored photo data:', error);
+                localStorage.removeItem(storageKey);
+            }
         }
-        setLocalFormData(JSON.parse(storedData));
     }, []);
 
- 
+    const handlePhotoCapture = (capturedData) => {
+        // Store the full captured data in state
+        setPhotoData(capturedData);
+
+        // Prepare the data for localStorage (without the file object)
+        const storageData = {
+            previewUrl: capturedData.previewUrl,
+            timestamp: capturedData.timestamp,
+            metadata: capturedData.metadata
+        };
+
+        localStorage.setItem(storageKey, JSON.stringify(storageData));
+    };
 
     const submitPhoto = async (e) => {
-        // Prevent default form submission if this is in a form
-        //    onNext();
-
-        if (!localFormData) {  
+        onNext();
+        if (!photoData || !photoData.file) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -39,11 +54,22 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         // Use FormData for file upload
         const submitFormData = new FormData();
         submitFormData.append('application_id', formData.application_id || application_id);
-        submitFormData.append('longitude', localFormData.metadata?.location?.longitude ?? '');
-        submitFormData.append('latitude', localFormData.metadata?.location?.latitude ?? '');
-        submitFormData.append('photo', localFormData.file);
+
+        // Add location data if available
+        if (photoData.metadata?.location) {
+            submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+            submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+        }
+
+        // Add validation data if available
+        if (photoData.metadata?.validation) {
+            submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+        }
+
+        submitFormData.append('photo', photoData.file);
+        submitFormData.append('timestamp', photoData.timestamp);
         submitFormData.append('status', 'Pending');
-        
+
         try {
             const response = await createAccountService.livePhoto_s2c(submitFormData);
 
@@ -54,22 +80,23 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                 timer: 1500
             });
 
+            // Update parent component with the photo data
             updateFormData({
                 ...formData,
-                photoData: localFormData
+                photoData: photoData
             });
 
-            // Only call onNext after successful submission
+            // Proceed to next step after successful submission
             onNext();
         } catch (error) {
             console.error('Photo submission error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.data?.message +` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+                text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
             });
         } finally {
-            setLocalIsSubmitting(false); 
+            setLocalIsSubmitting(false);
         }
     };
 
@@ -82,13 +109,10 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                 </div>
             )}
 
-            <PhotoCapture
+            <ImageCaptureValidator
+                onCapture={handlePhotoCapture}
                 photoType="customer"
-                onCapture={(data) => {
-                    setLocalFormData(data);
-                    localStorage.setItem('customerPhotoData', JSON.stringify(data));
-                    console.log('Photo captured:', data);
-                }}
+                showLocation={true}
             />
 
             <div className="next-back-btns z-10">
@@ -97,19 +121,19 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                     variant="outlined"
                     className="btn-back z-10"
                     disabled={isSubmitting || localIsSubmitting}
-                    type="button" // Ensure this doesn't submit form
+                    type="button"
                 >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
                 <CommonButton
                     onClick={(e) => {
-                        e.preventDefault(); // Prevent default form submission
+                        e.preventDefault();
                         submitPhoto();
                     }}
                     variant="contained"
                     className="btn-next z-10"
-                    disabled={ isSubmitting || localIsSubmitting}
-                    type="button" // Important: Set type to button to prevent form submission
+                    disabled={!photoData || isSubmitting || localIsSubmitting}
+                    type="button"
                 >
                     {(isSubmitting || localIsSubmitting) ? (
                         <>
@@ -129,4 +153,5 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
 
 export default PhotoCaptureApp;
 
- 
+
+

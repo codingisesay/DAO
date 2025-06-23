@@ -67,9 +67,6 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
     //This is for getting the applications by status(Approved,Review)
 
-
-
-
     Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
     Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
     Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
