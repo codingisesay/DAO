@@ -132,7 +132,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                     }}
                     variant="contained"
                     className="btn-next z-10"
-                    disabled={!photoData || isSubmitting || localIsSubmitting}
+                    // disabled={ isSubmitting || localIsSubmitting}
                     type="button"
                 >
                     {(isSubmitting || localIsSubmitting) ? (
