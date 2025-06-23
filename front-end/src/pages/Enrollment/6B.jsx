@@ -41,14 +41,14 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
     };
 
     const submitPhoto = async (e) => {
-        if (!photoData || !photoData.file) {  
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please capture a photo before submitting'
-            });
-            return;
-        }
+        // if (!photoData || !photoData.file) {  
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: 'Please capture a photo before submitting'
+        //     });
+        //     return;
+        // }
 
         setLocalIsSubmitting(true);
 
