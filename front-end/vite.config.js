@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => {
     server: {
       https: useHttps
         ? {
-            key: fs.readFileSync(path.resolve(__dirname, './cert.key')),
-            cert: fs.readFileSync(path.resolve(__dirname, './cert.crt')),
+            key: fs.readFileSync(path.resolve(__dirname, './payvance.co.in.key')),
+            cert: fs.readFileSync(path.resolve(__dirname, './payvance.co.in.crt.txt')),
           }
         : false,
       host: true,

@@ -37,7 +37,7 @@ export const API_ENDPOINTS = {
     PENDING_ACCOUNTS:(id) => `dao/api/agent/applications/pending/${id}`,
     REVIEW_ACCOUNTS:(id) => `dao/api/agent/applications/review/${id}`,
     REJECT_ACCOUNTS:(id) => `dao/api/agent/applications/rejected/${id}`,
-  
+    DEMOGRAPHIC_AGE_GRAPH :(id)=>`dao/api/agent/applications/age-groups/${id}`,
   },
 
   PERSONAL_DETAILS: {

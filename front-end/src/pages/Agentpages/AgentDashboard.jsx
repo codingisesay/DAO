@@ -114,7 +114,7 @@ const Dashboard = () => {
                   style={{ cursor: "pointer" }}
                 />
                 {showProfile && (
-                  <div ref={profileRef} className="dropdown-box absolute w-[200px] h-[200px] overflow-y-auto shadow-md">
+                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
                     <Profilecard />
                   </div>
                 )}

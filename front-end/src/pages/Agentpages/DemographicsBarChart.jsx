@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Box, Typography } from '@mui/material';
+import { agentService } from '../../services/apiServices';
+import Swal from 'sweetalert2'
 import {
     ResponsiveContainer,
     BarChart,
@@ -21,7 +23,31 @@ const ageDistributionData = [
 
 const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'];
 
+
+
 function DemographicsBarChart() {
+    const [loading, setLoading] = useState(true);
+    const [chartData, setChartData] =useState();
+     const storedId = localStorage.getItem('agent_id') || 1;
+    
+    useEffect(() => {
+        const fetchKYCData = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.demographicReport(storedId);
+                console.log('DR : ', response)
+            } catch (error) {
+                console.error('Error fetching KYC data:', error);
+              
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchKYCData();
+    }, [storedId]);
+
+
     return (
         <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', mt: 5 }}>
             {/* <Typography variant="h5" gutterBottom>
