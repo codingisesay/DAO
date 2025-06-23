@@ -9,12 +9,11 @@ class VideoKycSession extends Model
 {
      use HasFactory;
     
-    protected $table = 'video_kyc_guidelines';
+    protected $table = 'video_kyc_sessions';
 
     protected $fillable = [
         'application_id',
         'token',
-        'client_email',
         'status',
         'recording_url',
         'expires_at',

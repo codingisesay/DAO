@@ -152,9 +152,9 @@ export const App = () => {
             </ProtectedRoute>
           } />
           <Route path="/startVkyc" element={
-            <ProtectedRoute>
+            
               <StartKyc />
-            </ProtectedRoute>
+            
           } />
           <Route path="/enrollment_review_tbl" element={
             <ProtectedRoute>

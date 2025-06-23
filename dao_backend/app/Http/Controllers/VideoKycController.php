@@ -7,6 +7,7 @@ use App\Models\VideoKycSession;
 use App\Models\videoKycGuideLine;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class VideoKycController extends Controller
 {
@@ -46,15 +47,15 @@ public function create(Request $request, $application_id)
 {
     $validated = $request->validate([
         'application_id' => 'required',
-        'client_email' => 'required',
+        // 'client_email' => 'required|email', // Uncomment if you want to validate email
     ]);
 
     $token = strtoupper(Str::random(6));
 
+    // --- Database insertion is commented out ---
     $session = VideoKycSession::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
-            'client_email' => $validated['client_email'],
         ],
         [
             'token' => $token,
@@ -64,24 +65,25 @@ public function create(Request $request, $application_id)
     );
 
     // Prepare join URL
-    $joinUrl = config('app.frontend_url') . "/video-kyc?token={$token}";
+    $joinUrl = config('app.frontend_url') . "/startVkyc?token={$token}";
 
-    // Send mail
-    \Mail::raw(
+    $applicationDetails = DB::table('application_personal_details')->where('application_id', $validated['application_id'])->first();
+
+    // --- Mail sending is commented out ---
+   \Mail::raw(
         "Your Video KYC session has been created. Please join using this link: {$joinUrl}",
-        function ($message) use ($validated) {
-            $message->to($validated['client_email'])
+        function ($message) use ($validated, $applicationDetails) {
+            $message->to($applicationDetails->email)
                     ->subject('Your Video KYC Session Link');
         }
     );
-
     return response()->json([
         'success' => true,
         'application_id' => $session->application_id,
         'token' => $session->token,
-        'client_email' => $session->client_email,
         'join_url' => $joinUrl,
         'expires_at' => $session->expires_at,
+        'data' => $applicationDetails
     ]);
 }
 
