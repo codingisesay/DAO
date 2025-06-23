@@ -14,6 +14,7 @@ function ValidationBarChart() {
     const [selectedValidation, setSelectedValidation] = useState('all');
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const role=localStorage.getItem('roleName')
 
     const handleTimeChange = (event) => {
         setTimePeriod(event.target.value);
@@ -86,7 +87,7 @@ function ValidationBarChart() {
         };
 
         fetchData();
-    }, [timePeriod]);
+    }, [timePeriod, role]);
 
     const getXAxisKey = () => 'label';
 
