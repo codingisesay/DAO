@@ -110,12 +110,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/enrollment_review"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["id"]} 
                     />
                     </div>
             </div>
@@ -235,7 +235,7 @@ export default PendingTable;
 //                     <DataTable
 //                         data={data}
 //                         columns={columns}
-//                         basePath="/kyc-varification"
+//                         basePath="/kyc-verification"
 //                         onSort={handleSort}
 //                         onFilter={handleFilter}
 //                         onPageChange={handlePageChange}

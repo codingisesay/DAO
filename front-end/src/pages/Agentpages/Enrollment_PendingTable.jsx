@@ -41,7 +41,7 @@ function PendingTable() {
     };
     useEffect(() => {
         fetchData();
-        fetchDataCount();
+        // fetchDataCount();
     }, [currentPage, sortConfig, filters]);
 
     const handleSort = (field, order) => {
@@ -81,7 +81,7 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["application_id"]} 
+                            primaryKeys={["id"]} 
                         />
                     </div>
 

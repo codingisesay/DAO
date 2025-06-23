@@ -122,12 +122,12 @@ function PendingTable() {
                         <DataTable
                             data={data}
                             columns={columns}
-                            basePath="/kyc-varification"
+                            basePath="/verify-account"
                             onSort={handleSort}
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["kyc_application_id"]} 
+                            primaryKeys={["id"]} 
                         />
                     </div>
                 </div>

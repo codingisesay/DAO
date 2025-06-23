@@ -51,7 +51,9 @@ export const agentService = {
     apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
   
     
-  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id))
+  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id)),
+
+  refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id))
 }
 
 export const personalDetailsService = {

@@ -103,12 +103,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/home/bankmaster"
+                        basePath="/verify-account"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["bankCode"]} 
+                        primaryKeys={["application_id"]} 
                     />
                     </div>
             </div>

@@ -1,6 +1,6 @@
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Page1 from './1';
 import Page2 from './2';
 import Page3 from './3';
@@ -8,10 +8,15 @@ import Page4 from './4';
 import Page5 from './5';
 import Page6 from './6';
 import Stepper from './Stepper';
+import { agentService } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
 
-function Enrollmentform() { 
+function Enrollmentform() {  
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { id } = useParams();
+
 
     localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
@@ -51,6 +56,27 @@ function Enrollmentform() {
         personalDetailsf5: [],
     });
     // Update form data handler
+ 
+     useEffect(() => {
+     
+    const fetchAndStoreDetails = async (id) => {
+        try {
+            setLoading(true);
+            const response = await agentService.refillApplication(id);
+            console.log(response)
+        } catch (error) {
+            console.error("Failed to fetch review applications:", error);
+        } finally {
+            setLoading(false);
+        }
+    }; 
+    
+        fetchAndStoreDetails();
+    }, [id]);
+
+  
+
+
 
     const updateFormData = (step, data) => {
         setFormData(prev => {

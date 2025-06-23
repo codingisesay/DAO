@@ -101,7 +101,7 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/home/bankmaster"
+                        basePath="/kyc-verification"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}

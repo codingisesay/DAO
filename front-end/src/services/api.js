@@ -38,6 +38,8 @@ export const API_ENDPOINTS = {
     REVIEW_ACCOUNTS:(id) => `dao/api/agent/applications/review/${id}`,
     REJECT_ACCOUNTS:(id) => `dao/api/agent/applications/rejected/${id}`,
     DEMOGRAPHIC_AGE_GRAPH :(id)=>`dao/api/agent/applications/age-groups/${id}`,
+
+    APPLICATION_REWORK:(id)=>`dao/api/admin/applications/reson/review/${id}`
   },
 
   PERSONAL_DETAILS: {

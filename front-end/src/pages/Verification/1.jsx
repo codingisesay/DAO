@@ -205,6 +205,48 @@ function P1({ onNext, onBack, updateFormData }) {
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
                         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
+                                {/* Salutation - Select field */}
+                    <CommanSelect
+                        onChange={handleChange}
+                        label={labels.salutation.label}
+                        name="salutation"
+                        value={localFormData.salutation}
+                        options={salutation}
+                        required
+                    />
+
+                    {/* First Name - Text only, 50 char limit */}
+                    <CommanInput
+                        onChange={handleChange}
+                        label={labels.firstname.label} 
+                        name="first_name"
+                        value={localFormData.first_name}
+                        required
+                        max={30}
+                        validationType="TEXT_ONLY" 
+                    />
+
+                    {/* Middle Name - Text only, 50 char limit */}
+                    <CommanInput
+                        onChange={handleChange}
+                        label={labels.middlename.label} 
+                        name="middle_name"
+                        value={localFormData.middle_name}
+                        max={30}
+                        validationType="TEXT_ONLY"
+                    />
+
+                    {/* Last Name - Text only, 50 char limit */}
+                    <CommanInput
+                        onChange={handleChange}
+                        label={labels.lastname.label} 
+                        name="last_name"
+                        value={localFormData.last_name}
+                        required
+                        max={30}
+                        validationType="TEXT_ONLY"
+                    />
+
                             <CommanInput
                                 onChange={handleChange}
                                 label={labels.dob.label}

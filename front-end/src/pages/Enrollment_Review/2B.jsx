@@ -7,9 +7,13 @@ import Swal from 'sweetalert2';
 import { addressDetailsService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
+import { useParams } from 'react-router-dom';
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
-    const applicationId = localStorage.getItem('application_id');    
+
+    const {applicationId} =useParams();
+    // const applicationId = localStorage.getItem('application_id');    
+
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',

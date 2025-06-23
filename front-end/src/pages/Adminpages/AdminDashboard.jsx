@@ -162,6 +162,7 @@ const AdminDashboard = () => {
 };
 
 
+import KycRviewTable from './Kyc_Review'
 
 
 
@@ -286,9 +287,40 @@ function StatusDashboard2() {
         fetchDetails();
     }, []);
 
+
+
+      const [isModalOpen, setIsModalOpen] = useState(false); 
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/kyc_review" className="md:w-1/4">
+             {/* Clickable card */}
+      <div onClick={openModal} className="md:w-1/4 cursor-pointer">
+        <div className="recent-applyed-card">
+          <i className="bi bi-clipboard2-x"></i>
+          <div className="card-text">
+            <span className="dashboard-card-count">{statusCounts.Review}</span>
+            <small>Review</small>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <KycRviewTable />
+            <button onClick={closeModal}>Close</button>
+          </div>
+        </div>
+      )}
+            {/* <Link to="/kyc_review" className="md:w-1/4">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -296,7 +328,7 @@ function StatusDashboard2() {
                         <small>Review</small>
                     </div>
                 </div>
-            </Link>
+            </Link> */}
             <Link to="/kyc_approved" className="md:w-1/4">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
