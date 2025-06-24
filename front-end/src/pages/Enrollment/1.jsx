@@ -61,6 +61,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
     const fetchShowData = (e) => {
         e.preventDefault();
+        try{
+            
         if (selectedOption === 'Aadhar Card') {
             if (validateAadhaar(localFormData.verifynumber)) {
                 Swal.fire({
@@ -104,6 +106,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             });
             setShowData(true);
         }
+    }
+    catch{
+
+    }
     };
 
     const handleNextStep = async (e) => {
@@ -264,7 +270,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
-                                                    disabled={!localFormData.verifynumber || localFormData.verifynumber.length !== 12}
+                                                    disabled={ isSubmitting || !localFormData.verifynumber || localFormData.verifynumber.length !== 12}
                                                 >
                                                     Submit
                                                 </CommonButton>

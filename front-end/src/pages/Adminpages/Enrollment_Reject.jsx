@@ -5,7 +5,7 @@ import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; 
 import React, { useState, useEffect } from "react";  
 
-function PendingTable() {
+function RejectTable() {
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth(); 
     const [data, setData] = useState({ content: [] });
@@ -135,7 +135,7 @@ function PendingTable() {
     );
 }
 
-export default PendingTable;
+export default RejectTable;
 
 
  
