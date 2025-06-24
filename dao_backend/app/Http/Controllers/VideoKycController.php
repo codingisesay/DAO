@@ -107,9 +107,23 @@ public function upload(Request $request)
         'video' => 'required|file|mimes:webm,mp4,mov,avi|max:500000',
         'token' => 'required'
     ]);
+
+    // Store the uploaded video
     $path = $request->file('video')->store('kyc-videos');
-    // Optionally, save $path and $request->token to DB
-    return response()->json(['success' => true, 'path' => $path]);
+
+    // Update the recording_url in VideoKycSession where token matches
+    $session = \App\Models\VideoKycSession::where('token', $request->token)->first();
+    if ($session) {
+        $session->recording_url = $path;
+        $session->status = 'completed'; // Optionally mark as completed
+        $session->save();
+    }
+
+    return response()->json([
+        'success' => true,
+        'path' => $path,
+        'updated' => (bool)$session
+    ]);
 }
 
 

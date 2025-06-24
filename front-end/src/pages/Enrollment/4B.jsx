@@ -39,6 +39,32 @@ const VideoKYC = () => {
     if (!callEnded) requestAnimationFrame(draw);
   };
 
+  // Upload video blob to backend
+  const uploadVideo = async (blob) => {
+    const formData = new FormData();
+    formData.append('video', blob);
+    formData.append('token', token);
+    try {
+      setStatus('Uploading...');
+      const res = await fetch('/api/video-kyc/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStatus('Video uploaded and session updated!');
+        alert('Video uploaded and session updated!');
+      } else {
+        setStatus('Upload failed!');
+        alert('Upload failed!');
+      }
+    } catch (err) {
+      setStatus('Upload error');
+      alert('Upload error: ' + err.message);
+    }
+    setRecording(false);
+  };
+
   // Start the call
   const startCall = async () => {
     setStatus('Requesting camera/mic...');
@@ -121,7 +147,7 @@ const VideoKYC = () => {
     }
   };
 
-  // End the call
+  // End the call and upload video if recording
   const endCall = () => {
     setStatus('Call Ended');
     setCallStarted(false);
@@ -140,6 +166,30 @@ const VideoKYC = () => {
     // Clear video elements
     if (localVideoRef.current) localVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+
+    // If recording, stop and upload
+    if (recorder && recording) {
+      recorder.onstop = async () => {
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        await uploadVideo(blob);
+      };
+      recorder.stop();
+      setStatus('Uploading...');
+    } else {
+      // If not recording, capture a short video (1s) and upload
+      const canvas = canvasRef.current;
+      const mixedStream = canvas.captureStream();
+      const tempRecorder = new window.MediaRecorder(mixedStream);
+      let tempChunks = [];
+      tempRecorder.ondataavailable = (e) => tempChunks.push(e.data);
+      tempRecorder.onstop = async () => {
+        const blob = new Blob(tempChunks, { type: 'video/webm' });
+        await uploadVideo(blob);
+      };
+      tempRecorder.start();
+      setTimeout(() => tempRecorder.stop(), 1000); // record 1s
+      setStatus('Uploading...');
+    }
   };
 
   // Start recording
@@ -152,16 +202,7 @@ const VideoKYC = () => {
     mediaRecorder.ondataavailable = (e) => recordedChunksRef.current.push(e.data);
     mediaRecorder.onstop = async () => {
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-      const formData = new FormData();
-      formData.append('video', blob);
-      formData.append('token', token);
-      await fetch('/api/video-kyc/upload', {
-        method: 'POST',
-        body: formData,
-      });
-      alert('Video uploaded');
-      setRecording(false);
-      setStatus('Call Started');
+      await uploadVideo(blob);
     };
 
     mediaRecorder.start();
@@ -170,10 +211,16 @@ const VideoKYC = () => {
     setStatus('Recording...');
   };
 
-  // Stop recording
+  // Stop recording and upload
   const stopRecording = () => {
-    recorder?.stop();
-    setStatus('Uploading...');
+    if (recorder) {
+      recorder.onstop = async () => {
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        await uploadVideo(blob);
+      };
+      recorder.stop();
+      setStatus('Uploading...');
+    }
   };
 
   // PiP drag handlers
@@ -236,6 +283,7 @@ const VideoKYC = () => {
         <video
           ref={remoteVideoRef}
           autoPlay
+          playsInline
           style={{
             width: '100%',
             height: '100%',
@@ -248,6 +296,7 @@ const VideoKYC = () => {
           ref={localVideoRef}
           autoPlay
           muted
+          playsInline
           style={{
             width: 160,
             height: 120,
