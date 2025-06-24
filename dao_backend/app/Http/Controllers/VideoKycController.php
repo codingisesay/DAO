@@ -8,9 +8,34 @@ use App\Models\videoKycGuideLine;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Info(
+ *     version="1.0.0",
+ *     title="DAO Backend API",
+ *     description="This is the API documentation for the DAO application"
+ * )
+ *
+ * @OA\Server(
+ *     url="http://localhost:8000",
+ *     description="Local Server"
+ * )
+ */
 
 class VideoKycController extends Controller
 {
+
+    /**
+ * @OA\Get(
+ *     path="/api/auth/login",
+ *     summary="Login User",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Successful login"
+ *     )
+ * )
+ */
 
   public function acceptKycGuidline(Request $request,$application_id){
 
@@ -100,6 +125,7 @@ public function validateToken(Request $request)
 
     return response()->json(['valid' => true, 'application_id' => $session->application_id]);
 }
+
 
 public function upload(Request $request)
 {
