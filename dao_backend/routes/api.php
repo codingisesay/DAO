@@ -70,6 +70,8 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
     Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
 
     Route::get('admin/applications/reson/{status}/{application_id}', [AdminController::class, 'getResonApplications']);
+    // This is for getting the reason applications by status and application id for KYC
+    Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminController::class, 'getKycReasonApplications']);
 
     Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
     Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
