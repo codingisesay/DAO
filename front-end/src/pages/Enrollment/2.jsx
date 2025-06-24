@@ -11,7 +11,7 @@ import { form } from 'framer-motion/client';
 import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const steps = [
@@ -42,7 +42,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
         try {
             if (activeStep === 0) {
-                // console.log('2A formadta : ', formData)
+                console.log('2A formadta : ', formData.personalDetails)
                 const pd = formData.personalDetails || {};
                 if (
                     /\d/.test(pd.first_name) ||
@@ -52,6 +52,14 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     Swal.fire({
                         icon: 'error',
                         text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
+                    });
+                    return;
+                }
+
+                if(!pd.religion  || !pd.caste || !pd.email ){
+                      Swal.fire({
+                        icon: 'error',
+                        text: 'Kindly Fill All Required Fields.',
                     });
                     return;
                 }

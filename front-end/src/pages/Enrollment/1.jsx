@@ -13,6 +13,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
     const [selectedType, setSelectedType] = useState(formData.auth_type || 'new');
     const [showData, setShowData] = useState(!!formData.auth_code);
+    const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const agent_id =localStorage.getItem('userCode')
     const [localFormData, setLocalFormData] = useState({
@@ -40,6 +41,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setLocalFormData(prev => ({ ...prev, [name]: value }));
+           if (name === "verifynumber") {
+            setIsFetchDisabled(false);
+        }
     };
 
     const handleRadioChange = (e) => {
@@ -59,57 +63,63 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         return panRegex.test(panNumber);
     };
 
+  
+
     const fetchShowData = (e) => {
         e.preventDefault();
-        try{
-            
-        if (selectedOption === 'Aadhar Card') {
-            if (validateAadhaar(localFormData.verifynumber)) {
+        try {
+            setIsSubmitting(true);
+            if (selectedOption === 'Aadhar Card') {
+                if (validateAadhaar(localFormData.verifynumber)) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Aadhar Card verified!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setShowData(true);
+                    setLocalFormData(prev => ({
+                        ...prev,
+                        ...userdummydata.aadhardetails,
+                        auth_code: prev.verifynumber
+                    }));
+                    setIsFetchDisabled(true); // Disable after success
+                } else {
+                    toast.error('Please enter a valid 12-digit Aadhaar number');
+                }
+            } else if (selectedOption === 'Pan Card') {
+                if (validatePAN(localFormData.verifynumber)) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pan Card verified!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setShowData(true);
+                    setLocalFormData(prev => ({
+                        ...prev,
+                        auth_code: prev.verifynumber
+                    }));
+                    setIsFetchDisabled(true); // Disable after success
+                } else {
+                    toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                }
+            } else if (selectedOption === 'DigiLocker') {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Aadhar Card verified!',
+                    title: 'Success!',
+                    text: 'Your data has been saved successfully.',
                     showConfirmButton: false,
                     timer: 1500
                 });
                 setShowData(true);
-                setLocalFormData(prev => ({
-                    ...prev,
-                    ...userdummydata.aadhardetails,
-                    auth_code: prev.verifynumber
-                }));
-            } else {
-                toast.error('Please enter a valid 12-digit Aadhaar number');
+                setIsFetchDisabled(true); // Disable after success
             }
-        } else if (selectedOption === 'Pan Card') {
-            if (validatePAN(localFormData.verifynumber)) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pan Card verified!',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                setShowData(true);
-                setLocalFormData(prev => ({
-                    ...prev,
-                    auth_code: prev.verifynumber
-                }));
-            } else {
-                toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
-            }
-        } else if (selectedOption === 'DigiLocker') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Your data has been saved successfully.',
-                showConfirmButton: false,
-                timer: 1500
-            });
-            setShowData(true);
+        } catch (error) {
+            // handle error if needed
+        } finally {
+            setIsSubmitting(false);
         }
-    }
-    catch{
-
-    }
     };
 
     const handleNextStep = async (e) => {
@@ -249,7 +259,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         DigiLocker
                                     </label>
                                 </form>
-
                                 {selectedOption === 'Aadhar Card' && (
                                     <div className="mt-3">
                                         <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)</p>
@@ -270,7 +279,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
-                                                    disabled={ isSubmitting || !localFormData.verifynumber || localFormData.verifynumber.length !== 12}
+                                                    disabled={
+                                                        !localFormData.verifynumber ||
+                                                        localFormData.verifynumber.length !== 12 ||
+                                                        isFetchDisabled
+                                                    }
                                                 >
                                                     Submit
                                                 </CommonButton>
@@ -302,7 +315,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
-                                                    disabled={!localFormData.verifynumber || !validatePAN(localFormData.verifynumber)}
+                                                    disabled={
+                                                        !localFormData.verifynumber ||
+                                                        !validatePAN(localFormData.verifynumber) ||
+                                                        isFetchDisabled
+                                                    }
                                                 >
                                                     Submit
                                                 </CommonButton>

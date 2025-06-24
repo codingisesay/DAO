@@ -525,18 +525,7 @@ tr:hover {
   font-weight: 500;
   margin-bottom: 1.5rem;
 }
- 
-
-/* Floating Input Styles */
-.peer:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 1px #3b82f6;
-}
-
-.peer:focus ~ label {
-  color: #3b82f6;
-}
+  
 
 /* Responsive design */
 @media (max-width: 768px) {

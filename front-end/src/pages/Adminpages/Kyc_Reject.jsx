@@ -104,7 +104,7 @@ const fetchData = async () => {
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["kyc_application_id"]}  
                     />
                     </div>
             </div>
