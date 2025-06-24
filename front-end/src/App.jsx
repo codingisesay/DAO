@@ -14,7 +14,7 @@ import Login from "./pages/Login/Login";
 import { useAuth } from "./auth/AuthContext";
 
  
-import Verificationform from './pages/verification/Enrollmentform';
+import Verificationform from './pages/Verification/Enrollmentform';
 import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
