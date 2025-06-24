@@ -125,6 +125,14 @@ export const kycPendingApplicationsService = {
   getList: () =>
     apiService.get(API_ENDPOINTS.KYC_PENDING_APPLICATIONS.GET_LIST),
 };
+export const kycRjectedApplicationsService = {
+  getList: () =>
+    apiService.get(API_ENDPOINTS.KYC_REJECTED_APPLICATIONS.GET_LIST),
+};
+export const kycReviewApplicationsService = {
+  getList: () =>
+    apiService.get(API_ENDPOINTS.KYC_REVIEW_APPLICATIONS.GET_LIST),
+};
 export const recentPendingApplicationsService = {
   getList: () =>
     apiService.get(API_ENDPOINTS.RECENT_PENDING_APPLICATIONS.GET_LIST),

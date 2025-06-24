@@ -60,9 +60,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-                <br /><br />  
-                <h1>Pending Applications</h1>
-                <br /><br />  
+           <br />  
                 <div
                     className="Usermaster-main-div"
                     style={{

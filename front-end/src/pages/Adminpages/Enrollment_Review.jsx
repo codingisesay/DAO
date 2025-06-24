@@ -1,3 +1,6 @@
+ 
+
+
 import { useAuth } from '../../auth/AuthContext';  
 import { kycPendingApplicationsService, adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
@@ -15,6 +18,7 @@ function PendingTable() {
 
     // Function to collect all review comments
     const getReviewComments = (item) => {
+        console.log( 'to pass to rzon : ', item)
         const comments = [];
         
         // Check all possible status comment fields
@@ -100,9 +104,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-                <br /><br />  
-                <h1>Review Applications</h1>
-                <br /><br />  
+               <br />  
                 <div
                     className="Usermaster-main-div"
                     style={{
@@ -122,12 +124,15 @@ function PendingTable() {
                         <DataTable
                             data={data}
                             columns={columns}
-                            basePath="/verify-account"
+                            basePath="/enrollment_review"
                             onSort={handleSort}
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
                             primaryKeys={["id"]} 
+                            
+                            editButtonDisabled = {true}
+                            viewButtonDisabled = {false}
                         />
                     </div>
                 </div>

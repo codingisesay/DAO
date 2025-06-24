@@ -101,6 +101,11 @@ export const App = () => {
               <Enrollment_ReviewTable />
             </ProtectedRoute>
           } />
+          <Route path="/enrollment_review/view/:id" element={
+            <ProtectedRoute>
+                  <ViewForm />
+            </ProtectedRoute>
+          } />
           <Route path="/enrollment_review/edit/:id" element={
             <ProtectedRoute>
               <Enrollment_Review_Edit />

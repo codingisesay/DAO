@@ -79,6 +79,12 @@ export const API_ENDPOINTS = {
   KYC_PENDING_APPLICATIONS: {
     GET_LIST: '/dao/api/admin/kyc-applications/pending',  // Updated endpoint path ]
   },
+  KYC_REVIEW_APPLICATIONS: {
+    GET_LIST: '/dao/api/admin/kyc-applications/rejected/review',  // Updated endpoint path ]
+  },
+  KYC_REJECTED_APPLICATIONS: {
+    GET_LIST: '/dao/api/admin/kyc-applications/rejected/Rejected',  // Updated endpoint path ]
+  },
   KYC_ACCOUNTS_STATUS_LIST: {
     GET_LIST: '/dao/api/admin/kycaccountsStatus',  // Updated endpoint path
   },
