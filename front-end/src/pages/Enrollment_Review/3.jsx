@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
 import { apiService } from '../../utils/storage'
-import { applicationDocumentService ,createAccountService} from '../../services/apiServices';
+import { agentService ,createAccountService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton'
 import { swap } from '@tensorflow/tfjs-core/dist/util_base';
-
+import { useParams } from 'react-router-dom';
 
 
 const P3 = ({ onNext, onBack }) => {
@@ -29,6 +29,31 @@ const P3 = ({ onNext, onBack }) => {
     const [isProcessing, setIsProcessing] = useState(false);
 
     // Save to localStorage whenever documents change
+
+    
+      const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReason = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id);
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReason();
+    }, [id]);
+
+
 
     useEffect(() => {
         try {
@@ -156,6 +181,7 @@ const handleSubmit = async () => {
 
     return (
         <div className='form-container'>
+          
             <div className="relative ">
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -168,6 +194,7 @@ const handleSubmit = async () => {
                     </div>
                 )}
 
+            <p className="text-red-500" > Review For : {reason && reason.document_approved_status_status_comment}</p>  
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}

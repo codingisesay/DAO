@@ -10,7 +10,7 @@ import CommonButton from '../../components/CommonButton';
 import { userService } from '../../services/apiServices';
 import { ToastContainer, toast } from "react-toastify";
 
-
+import Swal from 'sweetalert2'
 
 
 const AgentRegisterForm = () => {
@@ -46,6 +46,7 @@ const AgentRegisterForm = () => {
     });
     const [isPasswordFocused, setIsPasswordFocused] = React.useState(false);
     const [validationErrors, setValidationErrors] = React.useState({});
+    const [isSubmitting , setIsSubmitting] =React.useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -99,7 +100,7 @@ const AgentRegisterForm = () => {
             toast.error("Password and Confirm Password do not match");
             return;
         }
-
+        console.log(Object.values(validationErrors))
         toast.error(Object.values(validationErrors));
         // Check if there are any validation errors
         // if (
@@ -109,10 +110,10 @@ const AgentRegisterForm = () => {
         //     setShowSuccessPopup(true); // Show a success message to the user
         //     return;
         // }
-        // setIsSubmitting(true); // Disable submit button
+        setIsSubmitting(true); // Disable submit button
         // Validate form fields
         try {
-            await userService.createUsers({
+            const respo =   await userService.createUsers({
                 userCode: formData.userCode.toUpperCase(),
                 userName: formData.userName.toUpperCase(),
                 emailId: formData.emailId,
@@ -135,11 +136,29 @@ const AgentRegisterForm = () => {
                 password: formData.password,
                 confirmPassword: formData.confirmPassword,
             });
-            alert('Agent / Admin Created !!')
+            // console.log("creation response  : ", respo)
+            // alert('Agent / Admin Created !!')
+                Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Application processed successfully!',
+                        confirmButtonText: 'Go to Dashboard'
+                    }).then(() => {
+                        // Navigate after alert confirmation
+                        navigate('/admindashboard');
+                    });
+
         } catch (error) {
-            toast.error("Submission Error:", error);
+            console.log('AGENT CREATION FALIED : ', error)
+                // Optional: Show error alert
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again.'
+                });
+
         } finally {
-            // setIsSubmitting(false); // Enable submit button again
+            setIsSubmitting(false); // Enable submit button again
         }
     };
 
@@ -413,6 +432,7 @@ const AgentRegisterForm = () => {
                     <CommonButton onClick={handleSubmit}
                         className="btn-login w-[150px] py-2"
                         type="submit"
+                        disabled={isSubmitting}
                     >
                         Register Agent
                     </CommonButton>&emsp;

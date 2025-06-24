@@ -41,7 +41,7 @@ function PendingTable() {
     };
     useEffect(() => {
         fetchData();
-        fetchDataCount();
+        // fetchDataCount();
     }, [currentPage, sortConfig, filters]);
 
     const handleSort = (field, order) => {
@@ -60,9 +60,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-                <br /><br />  
-                <h1>Pending Applications</h1>
-                <br /><br />  
+           <br />  
                 <div
                     className="Usermaster-main-div"
                     style={{
@@ -81,7 +79,7 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["application_id"]} 
+                            primaryKeys={["id"]} 
                         />
                     </div>
 

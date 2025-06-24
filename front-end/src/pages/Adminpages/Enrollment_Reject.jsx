@@ -45,7 +45,7 @@ function PendingTable() {
     };
 
     const columns = [
-        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+        { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
         { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
         { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.rejected_by, field: "admin_id", type: "text" },
@@ -101,9 +101,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-                <br /><br />  
-                <h1>Rejected Applications</h1>
-                <br /><br />  
+           <br />  
                 <div
                     className="Usermaster-main-div"
                     style={{
@@ -123,12 +121,12 @@ function PendingTable() {
                         <DataTable
                             data={data}
                             columns={columns}
-                            basePath="/kyc-varification"
+                            basePath="/verify-account"
                             onSort={handleSort}
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["kyc_application_id"]} 
+                            primaryKeys={["application_id"]} 
                         />
                     </div>
                 </div>
