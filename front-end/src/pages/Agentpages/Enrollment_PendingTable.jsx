@@ -1,4 +1,4 @@
-import { useAuth } from '../../auth/AuthContext';  
+import { useAuth } from '../../auth/AuthContext';
 import { agentService, adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
@@ -7,7 +7,7 @@ import React, { useState, useEffect } from "react";
 function PendingTable() {
     const storedId = localStorage.getItem('agent_id') || 1;
     const [tbldata, setTbldata] = React.useState([]);
-    const { logout } = useAuth(); 
+    const { logout } = useAuth();
     const [data, setData] = useState({ content: [] });
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
@@ -60,7 +60,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-           <br />  
+                <br />
                 <div
                     className="Usermaster-main-div"
                     style={{
@@ -79,11 +79,12 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["id"]} 
+                            primaryKeys={["id"]}
+                            editButtonDisabled={true}
                         />
                     </div>
 
-                    
+
                 </div>
             </div>
         </>
@@ -91,4 +92,3 @@ function PendingTable() {
 }
 
 export default PendingTable;
- 

@@ -849,7 +849,7 @@ public function getKycApprovedApplicationsByAgentId($agentId)
 
 
 
-// Get all Rejected  applications
+// Get all Rejected  applications kyc 
 public function getKycRejectedApplications($status)
 {
     $data = DB::table('kyc_application_status')

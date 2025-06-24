@@ -5,7 +5,7 @@ import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
- 
+
 
 
 function KycApprovedTable() {
@@ -72,50 +72,50 @@ const fetchData = async () => {
     setCurrentPage(page);
   };
 
- 
-    return (
-        <>
- 
-        <div className="container mx-auto">
-              <br />
-            <div
-                    className="Usermaster-main-div"
-                    style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    borderRadius: "30px",
-                    }}
-                >
-                    {/* Header and Search section */}
-                    <div
-                    className="search-user-container"
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                    
-                    {/* Action Buttons */}
-                    <div className="button-section"> </div>
-                    </div>
 
-                    <div className="bank-master" >
-                    <DataTable
-                        data={data}
-                        columns={columns}
-                        basePath="/kyc-verification"
-                        onSort={handleSort}
-                        onFilter={handleFilter}
-                        onPageChange={handlePageChange}
-                        loading={loading}
-                        primaryKeys={["id"]} 
-                    />
-                    </div>
-            </div>
+  return (
+    <>
+
+      <div className="container mx-auto">
+        <br />
+        <div
+          className="Usermaster-main-div"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            borderRadius: "30px",
+          }}
+        >
+          {/* Header and Search section */}
+          <div
+            className="search-user-container"
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
+
+            {/* Action Buttons */}
+            <div className="button-section"> </div>
+          </div>
+
+          <div className="bank-master" >
+            <DataTable
+              data={data}
+              columns={columns}
+              basePath="/kyc-verification"
+              onSort={handleSort}
+              onFilter={handleFilter}
+              onPageChange={handlePageChange}
+              loading={loading}
+              primaryKeys={["id"]}
+              editButtonDisabled={true}
+            />
+          </div>
         </div>
-                
-       
+      </div>
 
-        </>);
+
+
+    </>);
 }
- 
+
 export default KycApprovedTable;
 
- 
