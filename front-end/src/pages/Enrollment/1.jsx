@@ -144,7 +144,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         try {
             const response = await createAccountService.enrollment_s1(payload);
-            console.log("Response from server:", response);
+            // console.log("Response from server:", response);
             
                 updateFormData(1, {
                     ...updatedData,

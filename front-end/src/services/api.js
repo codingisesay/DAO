@@ -37,7 +37,10 @@ export const API_ENDPOINTS = {
     PENDING_ACCOUNTS:(id) => `dao/api/agent/applications/pending/${id}`,
     REVIEW_ACCOUNTS:(id) => `dao/api/agent/applications/review/${id}`,
     REJECT_ACCOUNTS:(id) => `dao/api/agent/applications/rejected/${id}`,
-    DEMOGRAPHIC_AGE_GRAPH :(id)=>`dao/api/agent/applications/age-groups/${id}`,
+    DEMOGRAPHIC_AGE_GRAPH :(id)=>`dao/api/applications/age-groups?agent_id=${id}`,
+    VKYC_PENDING_TABLE :(id)=>`dao/api/kyc-applications/pending-by-agent?agent_id=${id}`,
+
+    APPLICATION_REWORK:(id)=>`dao/api/admin/applications/reson/review/${id}`
   },
 
   PERSONAL_DETAILS: {
@@ -76,6 +79,12 @@ export const API_ENDPOINTS = {
 
   KYC_PENDING_APPLICATIONS: {
     GET_LIST: '/dao/api/admin/kyc-applications/pending',  // Updated endpoint path ]
+  },
+  KYC_REVIEW_APPLICATIONS: {
+    GET_LIST: '/dao/api/admin/kyc-applications/rejected/review',  // Updated endpoint path ]
+  },
+  KYC_REJECTED_APPLICATIONS: {
+    GET_LIST: '/dao/api/admin/kyc-applications/rejected/Rejected',  // Updated endpoint path ]
   },
   KYC_ACCOUNTS_STATUS_LIST: {
     GET_LIST: '/dao/api/admin/kycaccountsStatus',  // Updated endpoint path

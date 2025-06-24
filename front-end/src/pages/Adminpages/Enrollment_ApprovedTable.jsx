@@ -79,8 +79,7 @@ function ApprovedTable() {
     <>
 
       <div className="container mx-auto">
-        <br />    <br />
-        <h1>Approved Application</h1>    <br />    <br />
+        <br />
         <div
           className="Usermaster-main-div"
           style={{
@@ -103,12 +102,12 @@ function ApprovedTable() {
             <DataTable
               data={data}
               columns={columns}
-              basePath="/home/bankmaster"
+              basePath="/verify-account"
               onSort={handleSort}
               onFilter={handleFilter}
               onPageChange={handlePageChange}
               loading={loading}
-              primaryKeys={["bankCode"]}
+              primaryKeys={["application_id"]}
             />
           </div>
         </div>

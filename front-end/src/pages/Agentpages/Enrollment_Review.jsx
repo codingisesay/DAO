@@ -85,9 +85,7 @@ const fetchData = async () => {
         <>
  
         <div className="container mx-auto">
-                <br />  <br />  
-                <h1>Review Application</h1>
-                  <br />  <br />  
+            <br />  
             <div
                     className="Usermaster-main-div"
                     style={{
@@ -110,12 +108,12 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/enrollment_review"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["kyc_application_id"]} 
+                        primaryKeys={["id"]} 
                     />
                     </div>
             </div>
@@ -128,6 +126,8 @@ const fetchData = async () => {
 
 export default PendingTable;
 
+
+ 
 
  
 
@@ -235,7 +235,7 @@ export default PendingTable;
 //                     <DataTable
 //                         data={data}
 //                         columns={columns}
-//                         basePath="/kyc-varification"
+//                         basePath="/kyc-verification"
 //                         onSort={handleSort}
 //                         onFilter={handleFilter}
 //                         onPageChange={handlePageChange}

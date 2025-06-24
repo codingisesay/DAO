@@ -8,6 +8,11 @@ import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
 import Swal from 'sweetalert2'; 
+import {pendingAccountData, agentService} from  '../../services/apiServices'
+import { useParams } from 'react-router-dom';
+
+
+
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
 
@@ -43,6 +48,132 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         status: 'Pending'
     });
  
+
+
+
+
+
+    
+  
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    // Initialize form data on mount and when formData prop changes
+    useEffect(() => {
+        if (!dataLoaded && formData) {
+            setLocalFormData(prev => ({
+                ...prev,
+                salutation: formData.personalDetails?.salutation || formData.salutation || '',
+                first_name: formData.personalDetails?.first_name || formData.first_name || '',
+                middle_name: formData.personalDetails?.middle_name || formData.middle_name || '',
+                last_name: formData.personalDetails?.last_name || formData.last_name || '',
+                DOB: formData.personalDetails?.DOB || formData.DOB || '',
+                gender: formData.personalDetails?.gender || formData.gender || '',
+                religion: formData.personalDetails?.religion || formData.religion || '',
+                caste: formData.personalDetails?.caste || formData.caste || '',
+                marital_status: formData.personalDetails?.maritalStatus || formData.maritalStatus || '',
+                mobile: formData.personalDetails?.mobile || formData.mobile || '',
+                alt_mob_no: formData.personalDetails?.alt_mob_no || formData.alt_mob_no || '',
+                email: formData.personalDetails?.email || formData.email || '',
+                adhar_card: formData.personalDetails?.adhar_card || formData.adhar_card || 
+                    (verificationMethod === 'Aadhar Card' ? formData.auth_code : ''),
+                pan_card: formData.personalDetails?.pan_card || formData.pan_card || 
+                    (verificationMethod === 'Pan Card' ? formData.auth_code : ''),
+                driving_license: formData.personalDetails?.driving_license || formData.driving_license || '',
+                voterid: formData.personalDetails?.voterid || formData.voterid || '',
+                passport: formData.personalDetails?.passport || formData.passport || '',
+                complex_name: formData.personalDetails?.complex_name || formData.complex_name || '',
+                flat_no: formData.personalDetails?.flat_no || formData.flat_no || '',
+                area: formData.personalDetails?.area || formData.area || '',
+                landmark: formData.personalDetails?.landmark || formData.landmark || '',
+                country: formData.personalDetails?.country || formData.country || '',
+                pincode: formData.personalDetails?.pincode || formData.pincode || '',
+                city: formData.personalDetails?.city || formData.city || '',
+                district: formData.personalDetails?.district || formData.district || '',
+                state: formData.personalDetails?.state || formData.state || ''
+            }));
+            setDataLoaded(true);
+        }
+    }, [formData, dataLoaded, verificationMethod]);
+
+
+    const { id } = useParams();
+    
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS2A(id);
+                    console.log(response);
+                    
+                    const updatedData = {
+                        ...localFormData,
+                        ...response.details,
+                        pannumber:response.details.pan_card, 
+                    };
+                    
+                    setLocalFormData(updatedData);
+                    // updateParentFormData(updatedData);
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAndStoreDetails();
+        fetchReason(id);
+    }, [id]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -87,6 +218,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     return (
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
+            <p className="text-red-500" > Review For : {reason && reason.account_personal_details_status_comment}</p> <br />
             <div className='block sm:flex'>
                 <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-4">
 
@@ -179,7 +311,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         label={labels.maritalStatus.label}
                         name="maritalStatus"
                         value={localFormData.maritalStatus}
-                        options={maritalStatusOptions}
+                        options={maritalStatusOptions} required
                     />
 
                     {/* Mobile - Phone number validation */}

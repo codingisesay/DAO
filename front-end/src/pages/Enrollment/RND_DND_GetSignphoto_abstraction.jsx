@@ -31,7 +31,9 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
     const [apiResponse, setApiResponse] = useState(null);
 
     // API configuration
-    const API_URL = 'http://172.16.1.224:5001/api/detect';
+    // const API_URL = 'http://172.16.1.224:5001/api/detect';
+    const API_URL ='https://dao.payvance.co.in:8091/ext/api/detect';
+   
 
     useEffect(() => {
         if (document) {

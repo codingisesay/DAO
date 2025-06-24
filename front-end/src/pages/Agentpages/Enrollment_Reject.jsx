@@ -85,9 +85,7 @@ function PendingTable() {
     <>
 
       <div className="container mx-auto">
-        <br />  <br />
-        <h1>Reject Application</h1>
-        <br />  <br />
+        <br />
         <div
           className="Usermaster-main-div"
           style={{
@@ -110,13 +108,12 @@ function PendingTable() {
             <DataTable
               data={data}
               columns={columns}
-              basePath="/kyc-varification"
+              basePath="/verify-account"
               onSort={handleSort}
               onFilter={handleFilter}
               onPageChange={handlePageChange}
               loading={loading}
-              primaryKeys={["kyc_application_id"]}
-              editButtonDisabled={true}
+              primaryKeys={["id"]}
             />
           </div>
         </div>

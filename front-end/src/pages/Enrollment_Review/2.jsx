@@ -37,9 +37,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleSubmit = async (e) => {
-        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault(); 
         setIsSubmitting(true);
-
+  
         try {
             if (activeStep === 0) {
                 // console.log('2A formadta : ', formData)
@@ -57,7 +57,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 }
 
 
-                else if (pd.mobile.length != 10) {
+                else if (pd.mobile.length !== 10) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error saving personal details',

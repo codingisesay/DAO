@@ -11,6 +11,7 @@ import MonthlyAccountTrends from './AdminDashboardLineChart';
 import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
+import Footer from '../../components/Footer';
 import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
@@ -155,14 +156,21 @@ const AdminDashboard = () => {
 
 
             </div >
-
+   <Footer />
 
         </>
     );
 };
 
 
-
+import KycRviewTable from './Kyc_Review'
+import KycRejectedTable from './Kyc_Reject'
+import KycPendingTable from './Kyc_PendingTable'
+import KycApprovedTable from './Kyc_ApprovedTable'
+import Enrollment_PendingTable from './Enrollment_PendingTable';
+import Enrollment_ReviewTable from './Enrollment_Review';
+import Enrollment_ApprovedTable from './Enrollment_ApprovedTable'; 
+import Enrollment_Reject from './Enrollment_Reject'; 
 
 
 function StatusDashboard1() {
@@ -173,11 +181,16 @@ function StatusDashboard1() {
         Review: 0
     });
 
+    // State for each modal
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
+    const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
+    const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
+
     useEffect(() => {
         const fetchDetails = async () => {
             try {
                 const response = await accountsStatusListService.getList();
-                // console.log(response)
                 if (response && response.data) {
                     // Count the statuses
                     const counts = response.data.reduce((acc, item) => {
@@ -206,7 +219,8 @@ function StatusDashboard1() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/enrollment_review" className="md:w-1/4">
+            {/* Review Card with Modal */}
+            <div onClick={() => setIsReviewModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -214,8 +228,10 @@ function StatusDashboard1() {
                         <small>Review</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/enrollment_approved" className="md:w-1/4">
+            </div>
+
+            {/* Approved Card with Modal */}
+            <div onClick={() => setIsApprovedModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -223,8 +239,10 @@ function StatusDashboard1() {
                         <small>Approved</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/enrollment_pending" className="md:w-1/4">
+            </div>
+
+            {/* Pending Card with Modal */}
+            <div onClick={() => setIsPendingModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -232,8 +250,10 @@ function StatusDashboard1() {
                         <small>Pending</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/enrollment_rejected" className="md:w-1/4">
+            </div>
+
+            {/* Rejected Card with Modal */}
+            <div onClick={() => setIsRejectedModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -241,10 +261,145 @@ function StatusDashboard1() {
                         <small>Rejected</small>
                     </div>
                 </div>
-            </Link>
+            </div>
+
+            {/* Review Modal */}
+            {isReviewModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Review Application List</span>
+                            <button onClick={() => setIsReviewModalOpen(false)}>X</button>
+                        </h1>
+                        <Enrollment_ReviewTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Approved Modal */}
+            {isApprovedModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Approved Application List</span>
+                            <button onClick={() => setIsApprovedModalOpen(false)}>X</button>
+                        </h1>
+                        <Enrollment_ApprovedTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Pending Modal */}
+            {isPendingModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Pending Application List</span>
+                            <button onClick={() => setIsPendingModalOpen(false)}>X</button>
+                        </h1>
+                        <Enrollment_PendingTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Rejected Modal */}
+            {isRejectedModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Rejected Application List</span>
+                            <button onClick={() => setIsRejectedModalOpen(false)}>X</button>
+                        </h1>
+                        <Enrollment_Reject />
+                    </div>
+                </div>
+            )}
+         
         </div>
     );
 }
+
+// function StatusDashboard1() {
+//     const [statusCounts, setStatusCounts] = useState({
+//         Pending: 0,
+//         Approved: 0,
+//         Rejected: 0,
+//         Review: 0
+//     });
+
+//     useEffect(() => {
+//         const fetchDetails = async () => {
+//             try {
+//                 const response = await accountsStatusListService.getList();
+//                 // console.log(response)
+//                 if (response && response.data) {
+//                     // Count the statuses
+//                     const counts = response.data.reduce((acc, item) => {
+//                         acc[item.status] = (acc[item.status] || 0) + 1;
+//                         return acc;
+//                     }, {});
+
+//                     setStatusCounts({
+//                         Pending: counts.Pending || 0,
+//                         Approved: counts.Approved || 0,
+//                         Rejected: counts.Rejected || 0,
+//                         Review: counts.Review || 0
+//                     });
+//                 }
+//             } catch (error) {
+//                 console.log(error);
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Error',
+//                     text: error?.response?.data?.message
+//                 });
+//             }
+//         };
+//         fetchDetails();
+//     }, []);
+
+//     return (
+//         <div className="dashboard-top-caard-collection flex my-1">
+//             <Link to="/enrollment_review" className="md:w-1/4">
+//                 <div className="recent-applyed-card">
+//                     <i className="bi bi-clipboard2-x"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Review}</span>
+//                         <small>Review</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//             <Link to="/enrollment_approved" className="md:w-1/4">
+//                 <div className="approved-card">
+//                     <i className="bi bi-clipboard2-check"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Approved}</span>
+//                         <small>Approved</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//             <Link to="/enrollment_pending" className="md:w-1/4">
+//                 <div className="pending-card">
+//                     <i className="bi bi-clipboard2-minus"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Pending}</span>
+//                         <small>Pending</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//             <Link to="/enrollment_rejected" className="md:w-1/4">
+//                 <div className="rejected-card">
+//                     <i className="bi bi-clipboard2-x"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+//                         <small>Rejected</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//         </div>
+//     );
+// }
+
 
 
 
@@ -253,8 +408,14 @@ function StatusDashboard2() {
         Pending: 0,
         Approved: 0,
         Rejected: 0,
-        // Review: 0/
+        Review: 0
     });
+
+    // State for each modal
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
+    const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
+    const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -270,7 +431,7 @@ function StatusDashboard2() {
                     setStatusCounts({
                         Pending: counts.Pending || 0,
                         Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected|| 0,
+                        Rejected: counts.Rejected || 0,
                         Review: counts.Review || 0
                     });
                 }
@@ -288,7 +449,8 @@ function StatusDashboard2() {
 
     return (
         <div className="dashboard-top-caard-collection flex my-1">
-            <Link to="/kyc_review" className="md:w-1/4">
+            {/* Review Card with Modal */}
+            <div onClick={() => setIsReviewModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="recent-applyed-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -296,8 +458,10 @@ function StatusDashboard2() {
                         <small>Review</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/kyc_approved" className="md:w-1/4">
+            </div>
+
+            {/* Approved Card with Modal */}
+            <div onClick={() => setIsApprovedModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
                     <div className="card-text">
@@ -305,8 +469,10 @@ function StatusDashboard2() {
                         <small>Approved</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/kyc_pending" className="md:w-1/4">
+            </div>
+
+            {/* Pending Card with Modal */}
+            <div onClick={() => setIsPendingModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="pending-card">
                     <i className="bi bi-clipboard2-minus"></i>
                     <div className="card-text">
@@ -314,8 +480,10 @@ function StatusDashboard2() {
                         <small>Pending</small>
                     </div>
                 </div>
-            </Link>
-            <Link to="/kyc_rejected" className="md:w-1/4">
+            </div>
+
+            {/* Rejected Card with Modal */}
+            <div onClick={() => setIsRejectedModalOpen(true)} className="md:w-1/4 cursor-pointer">
                 <div className="rejected-card">
                     <i className="bi bi-clipboard2-x"></i>
                     <div className="card-text">
@@ -323,9 +491,177 @@ function StatusDashboard2() {
                         <small>Rejected</small>
                     </div>
                 </div>
-            </Link>
+            </div>
+
+            {/* Review Modal */}
+            {isReviewModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Review Application List</span>
+                            <button onClick={() => setIsReviewModalOpen(false)}>X</button>
+                        </h1>
+                        <KycRviewTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Approved Modal */}
+            {isApprovedModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Approved Application List</span>
+                            <button onClick={() => setIsApprovedModalOpen(false)}>X</button>
+                        </h1>
+                        {/* Replace with your Approved table component */}
+                        <KycApprovedTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Pending Modal */}
+            {isPendingModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Pending Application List</span>
+                            <button onClick={() => setIsPendingModalOpen(false)}>X</button>
+                        </h1>
+                        {/* Replace with your Pending table component */}
+                        <KycPendingTable />
+                    </div>
+                </div>
+            )}
+
+            {/* Rejected Modal */}
+            {isRejectedModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h1 className='flex justify-between'>
+                            <span>Rejected Application List</span>
+                            <button onClick={() => setIsRejectedModalOpen(false)}>X</button>
+                        </h1>
+                        {/* Replace with your Rejected table component */}
+                        <KycRejectedTable />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+
+
+
+// function StatusDashboard2() {
+//     const [statusCounts, setStatusCounts] = useState({
+//         Pending: 0,
+//         Approved: 0,
+//         Rejected: 0,
+//         // Review: 0/
+//     });
+
+//     useEffect(() => {
+//         const fetchDetails = async () => {
+//             try {
+//                 const response = await kycaccountsStatusListService.getList();
+//                 if (response && response.data) {
+//                     // Count the statuses
+//                     const counts = response.data.reduce((acc, item) => {
+//                         acc[item.status] = (acc[item.status] || 0) + 1;
+//                         return acc;
+//                     }, {});
+
+//                     setStatusCounts({
+//                         Pending: counts.Pending || 0,
+//                         Approved: counts.Approved || 0,
+//                         Rejected: counts.Rejected|| 0,
+//                         Review: counts.Review || 0
+//                     });
+//                 }
+//             } catch (error) {
+//                 console.log(error);
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Error',
+//                     text: error?.response?.data?.message
+//                 });
+//             }
+//         };
+//         fetchDetails();
+//     }, []);
+
+
+
+//       const [isModalOpen, setIsModalOpen] = useState(false); 
+
+//   const openModal = () => {
+//     setIsModalOpen(true);
+//   };
+
+//   const closeModal = () => {
+//     setIsModalOpen(false);
+//   };
+//     return (
+//         <div className="dashboard-top-caard-collection flex my-1">
+//              {/* Clickable card */}
+//       <div onClick={openModal} className="md:w-1/4 cursor-pointer">
+//         <div className="recent-applyed-card">
+//           <i className="bi bi-clipboard2-x"></i>
+//           <div className="card-text">
+//             <span className="dashboard-card-count">{statusCounts.Review}</span>
+//             <small>Review</small>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Modal */}
+//       {isModalOpen && (
+//         <div className="modal-overlay">
+//           <div className="modal-content">
+//             <h1 className='flex justify-between'><span> Review Application List</span> <button onClick={closeModal}>X</button></h1>
+//             <KycRviewTable />
+//           </div>
+//         </div>
+//       )}
+//             {/* <Link to="/kyc_review" className="md:w-1/4">
+//                 <div className="recent-applyed-card">
+//                     <i className="bi bi-clipboard2-x"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Review}</span>
+//                         <small>Review</small>
+//                     </div>
+//                 </div>
+//             </Link> */}
+//             <Link to="/kyc_approved" className="md:w-1/4">
+//                 <div className="approved-card">
+//                     <i className="bi bi-clipboard2-check"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Approved}</span>
+//                         <small>Approved</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//             <Link to="/kyc_pending" className="md:w-1/4">
+//                 <div className="pending-card">
+//                     <i className="bi bi-clipboard2-minus"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Pending}</span>
+//                         <small>Pending</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//             <Link to="/kyc_rejected" className="md:w-1/4">
+//                 <div className="rejected-card">
+//                     <i className="bi bi-clipboard2-x"></i>
+//                     <div className="card-text">
+//                         <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+//                         <small>Rejected</small>
+//                     </div>
+//                 </div>
+//             </Link>
+//         </div>
+//     );
+// }
 
 export default AdminDashboard;

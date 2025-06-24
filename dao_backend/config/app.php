@@ -59,6 +59,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', '/'),
+    'frontend_url' => env('FRONTEND_URL', 'https://172.16.1.223:5173'),
 
     /*
     |--------------------------------------------------------------------------

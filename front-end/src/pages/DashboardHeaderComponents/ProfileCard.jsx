@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProfileCard = () => {
+export const ProfileCard = () => {
   return (
     <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden text-left">
       <div className="p-3">
@@ -39,4 +39,4 @@ const ProfileCard = () => {
   );
 };
 
-export default ProfileCard;
+export default ProfileCard
