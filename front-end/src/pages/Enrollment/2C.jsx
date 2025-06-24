@@ -38,8 +38,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
 
-    const submitPhoto = async (e) => {
-        onNext();
+    const submitPhoto = async (e) => { 
         if (!photoData || !photoData.file) {
             Swal.fire({
                 icon: 'error',
