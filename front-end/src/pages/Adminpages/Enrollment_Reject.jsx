@@ -1,13 +1,13 @@
- 
-import { useAuth } from '../../auth/AuthContext';  
-import { adminService } from '../../services/apiServices'; 
+
+import { useAuth } from '../../auth/AuthContext';
+import { adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
-import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; 
-import React, { useState, useEffect } from "react";  
+import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
+import React, { useState, useEffect } from "react";
 
 function PendingTable() {
     const [tbldata, setTbldata] = React.useState([]);
-    const { logout } = useAuth(); 
+    const { logout } = useAuth();
     const [data, setData] = useState({ content: [] });
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
@@ -17,7 +17,7 @@ function PendingTable() {
     // Function to collect all rejection reasons
     const getRejectionReasons = (item) => {
         const reasons = [];
-        
+
         // Check all possible status comment fields
         const statusFields = [
             'status_comment',
@@ -30,17 +30,17 @@ function PendingTable() {
             'document_approved_status_status_comment',
             'nominee_approved_status_status_comment'
         ];
-        
+
         statusFields.forEach(field => {
             if (item[field]) {
                 // Format the field name for display (remove '_comment' and make it readable)
                 const fieldName = field.replace(/_comment$/, '')
-                                      .replace(/_/g, ' ')
-                                      .replace(/\b\w/g, l => l.toUpperCase());
+                    .replace(/_/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase());
                 reasons.push(`${fieldName}: ${item[field]}`);
             }
         });
-        
+
         return reasons.length > 0 ? reasons.join(', ') : 'No reason provided';
     };
 
@@ -49,9 +49,9 @@ function PendingTable() {
         { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
         { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.rejected_by, field: "admin_id", type: "text" },
-        { 
-            ...COLUMN_DEFINITIONS.rejected_reason, 
-            field: "rejected_reason", 
+        {
+            ...COLUMN_DEFINITIONS.rejected_reason,
+            field: "rejected_reason",
             type: "text",
             render: (rowData) => getRejectionReasons(rowData)
         },
@@ -65,13 +65,13 @@ function PendingTable() {
                 sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
                 ...filters,
             });
-            
+
             // Process the data to include all rejection reasons
             const processedData = response.data ? response.data.map(item => ({
                 ...item,
                 rejected_reason: getRejectionReasons(item)
             })) : [];
-            
+
             setTbldata(processedData);
             setData({ content: processedData });
         } catch (error) {
@@ -80,7 +80,7 @@ function PendingTable() {
             setLoading(false);
         }
     };
-  
+
     useEffect(() => {
         fetchData();
     }, [currentPage, sortConfig, filters]);
@@ -101,7 +101,7 @@ function PendingTable() {
     return (
         <>
             <div className="container mx-auto">
-           <br />  
+                <br />
                 <div
                     className="Usermaster-main-div"
                     style={{
@@ -126,7 +126,8 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["application_id"]} 
+                            primaryKeys={["application_id"]}
+                            editButtonDisabled={true}
                         />
                     </div>
                 </div>
@@ -138,4 +139,3 @@ function PendingTable() {
 export default PendingTable;
 
 
- 

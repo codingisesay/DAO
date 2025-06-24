@@ -109,6 +109,7 @@ function ApprovedTable() {
               onPageChange={handlePageChange}
               loading={loading}
               primaryKeys={["id"]}
+              editButtonDisabled={true}
             />
           </div>
         </div>
