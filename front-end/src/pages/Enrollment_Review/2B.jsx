@@ -4,12 +4,18 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { addressDetailsService, applicationDetailsService, createAccountService } from '../../services/apiServices';
+import { agentService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
+import { useParams } from 'react-router-dom';
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
-    const applicationId = localStorage.getItem('application_id');    
+
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null); 
+    const {id} =useParams();
+    // const id = localStorage.getItem('application_id');    
+
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
@@ -49,10 +55,10 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
     // Fetch address details when component mounts
     useEffect(() => {
-        if (!applicationId) return;
+        if (!id) return;
         const fetchDetails = async () => {
             try {
-                const response = await applicationDetailsService.getFullDetails(applicationId);
+                const response = await applicationDetailsService.getFullDetails(id);
                 if (response.data) {
                     const { application_addresss } = response.data; 
                     const addressFromDB = application_addresss[0];
@@ -103,9 +109,25 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 //     text: error?.response?.data?.message
                 // });
             }
-        };
+        }; 
+        
+          const fetchReason = async (id) => {  
+                    if (!id) return;
+                    try {
+                        setLoading(true);
+                        const response = await agentService.refillApplication(id); 
+                        setReason(response.data[0]);
+                    } catch (error) {
+                        console.error("Failed to fetch review applications:", error);
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+         
+                fetchReason(id);
+
         fetchDetails();
-    }, [applicationId]);
+    }, [id]);
 
     // Function to fetch address details from PIN code API
     const fetchAddressByPinCode = async (pincode, prefix) => {
@@ -373,6 +395,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     return (
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
+            <p className="text-red-500" > Review For : {reason && reason.application_address_details_status_comment}</p> <br />
             <AddressSection
                 formData={localFormData}
                 handleChange={handlePermanentChange}

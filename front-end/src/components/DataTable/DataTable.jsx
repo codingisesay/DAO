@@ -1,3 +1,5 @@
+ 
+
 
 import React, { useEffect, useState } from 'react';
 import MUIDataTable from 'mui-datatables';
@@ -24,8 +26,8 @@ const DataTable = ({
   showActions = true,
   showEditButton = true,
   showViewButton = true,
-  editButtonDisabled = false,
-  viewButtonDisabled = false,
+  editButtonDisabled ,
+  viewButtonDisabled ,
 }) => {
   const [page, setPage] = useState(data.number);
   const [pageSize, setPageSize] = useState(data.size);

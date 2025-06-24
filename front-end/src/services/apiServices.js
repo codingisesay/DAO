@@ -51,7 +51,11 @@ export const agentService = {
     apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
   
     
-  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id))
+  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id)),
+
+  vkycpendingtable:(id) => apiService.get(API_ENDPOINTS.AGENT.VKYC_PENDING_TABLE(id)),
+
+  refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id))
 }
 
 export const personalDetailsService = {
@@ -122,6 +126,14 @@ export const kycaccountsStatusListService = {
 export const kycPendingApplicationsService = {
   getList: () =>
     apiService.get(API_ENDPOINTS.KYC_PENDING_APPLICATIONS.GET_LIST),
+};
+export const kycRjectedApplicationsService = {
+  getList: () =>
+    apiService.get(API_ENDPOINTS.KYC_REJECTED_APPLICATIONS.GET_LIST),
+};
+export const kycReviewApplicationsService = {
+  getList: () =>
+    apiService.get(API_ENDPOINTS.KYC_REVIEW_APPLICATIONS.GET_LIST),
 };
 export const recentPendingApplicationsService = {
   getList: () =>

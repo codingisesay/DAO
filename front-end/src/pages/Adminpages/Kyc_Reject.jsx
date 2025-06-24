@@ -19,7 +19,7 @@ function KycRejectTable() {
 
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
@@ -29,7 +29,7 @@ function KycRejectTable() {
 const fetchData = async () => {
   try {
     setLoading(true);
-    const response = await kycPendingApplicationsService.getList({
+    const response = await kycRjectedApplicationsService.getList({
       page: currentPage,
       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
       ...filters,
@@ -76,9 +76,7 @@ const fetchData = async () => {
         <>
  
         <div className="container mx-auto">
-                <br />  <br />  
-                <h1>Pending Application</h1>
-                  <br />  <br />  
+           <br />  
             <div
                     className="Usermaster-main-div"
                     style={{
@@ -101,7 +99,7 @@ const fetchData = async () => {
                     <DataTable
                         data={data}
                         columns={columns}
-                        basePath="/kyc-varification"
+                        basePath="/kyc-verification"
                         onSort={handleSort}
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}

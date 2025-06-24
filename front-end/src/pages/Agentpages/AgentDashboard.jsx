@@ -15,6 +15,7 @@ import { agentService } from "../../services/apiServices";
 import Swal from "sweetalert2";
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
 
 const Dashboard = () => {
   const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -34,24 +35,28 @@ const Dashboard = () => {
 
   const [showHelp, setShowHelp] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const helpRef = useRef();
   const profileRef = useRef();
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        helpRef.current &&
-        !helpRef.current.contains(event.target) &&
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
-        setShowHelp(false);
-        setShowProfile(false);
-      }
+  const notifyRef = useRef();
+useEffect(() => {
+  function handleClickOutside(event) {
+    // Help dropdown
+    if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+      setShowHelp(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+    // Profile dropdown
+    if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+      setShowProfile(false);
+    }
+    // Notification dropdown
+    if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+      setShowNotification(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [showHelp, showProfile, showNotification]);
   const handleRedireact = () => {
     localStorage.removeItem("application_id"); // Clear any previous application ID
     navigate("/enrollmentform"); // Change to your route
@@ -80,20 +85,34 @@ const Dashboard = () => {
           </div>
           <div className="text-right">
             <div className="flex items-center">
-              <ThemeToggle />
-              <i className="mx-2 bi  bi-bell"></i>
-              {/* <i className="mx-2 bi  bi-question-circle"></i>
-                            <i className="mx-2 bi  bi-globe2"></i>
-                               <Help />
-                                <Profilecard /> */}
+              <ThemeToggle /> 
             
+                <div className="inline-block relative"> 
+                <i
+                  className="mx-2 bi bi-bell"
+                  onClick={() => {
+                    setShowProfile(false);
+                    setShowHelp(false);
+                    setShowNotification(!showNotification)
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+                {showNotification && (
+                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
+                    <NotificationDd />
+                  </div>
+                )}
+              </div>
+
+
                 {/* Help Icon */}
                 <div className="inline-block relative">
                 <i
                   className="mx-2 bi bi-question-circle"
                   onClick={() => {
                     setShowHelp(!showHelp);
-                    setShowProfile(false); // hide profile if open
+                    setShowProfile(false); 
+                    setShowNotification(false); // hide profile if open
                   }}
                   style={{ cursor: "pointer" }}
                 />
@@ -103,39 +122,76 @@ const Dashboard = () => {
                   </div>
                 )}
                 </div>
+
+
+
+
+
                 <div className="inline-block relative">
                 {/* Profile Icon */}
                 <i
-                  className="mx-2 bi bi-globe2"
-                  onClick={() => {
-                    setShowProfile(!showProfile);
-                    setShowHelp(false); // hide help if open
-                  }}
+                  className="mx-2 bi bi-globe2" 
                   style={{ cursor: "pointer" }}
                 />
+             
+              </div>
+
+
+
+
+
+
+
+
+              <i
+                className="mx-2 bi  bi-box-arrow-right md:w-right"
+                onClick={handleLogout}
+              ></i>
+
+              
+                <div className="inline-block relative">
+                {/* Profile Icon */}
+
+                  <div className="flex">
+                <img
+                  height="40px"
+                  width="40px"
+                  src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                  alt="profile"
+                  className="rounded-full object-cover mx-2 my-auto"
+                    onClick={() => {
+                      setShowProfile(!showProfile);
+                      setShowHelp(false); // hide help if open
+                      setShowNotification(false)
+                    }}
+                />
+                <span className="font-bold">
+                  {" "}
+                  {username}
+                  <br />
+                  <small className="font-normal"> - {userrole}</small>
+                </span>
+                    </div>
+ 
                 {showProfile && (
                   <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
                     <Profilecard />
                   </div>
                 )}
               </div>
-              <i
-                className="mx-2 bi  bi-box-arrow-right md:w-right"
-                onClick={handleLogout}
-              ></i>
-              <img
-                height="40px"
-                width="40px"
-                src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                alt="profile"
-                className="rounded-full object-cover mx-2"
-              />
-              <span className="font-bold">
-                {" "}
-                {username}
-                <br />
-                <small className="font-normal"> - {userrole}</small>
-              </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
           </div>
         </div>
@@ -249,6 +305,12 @@ const Dashboard = () => {
   );
 };
 
+
+import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
+import EnrollmentPendingTable from './Enrollment_PendingTable'
+import EnrollmentRejectedTable from './Enrollment_Reject'
+import EnrollmentReviewTable from './Enrollment_Review'
+
 function StatusDashboard1() {
   const storedId = localStorage.getItem("agent_id") || 1;
   const [statusCounts, setStatusCounts] = useState({
@@ -258,13 +320,17 @@ function StatusDashboard1() {
     Review: 0,
   });
 
+  // State for each modal
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
+  const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
+  const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const response = await agentService.applicationcountbyagent(storedId);
-        // console.log(response)
         if (response && response.data) {
-          // Count the statuses
           const counts = response.data.reduce((acc, item) => {
             acc[item.status] = (acc[item.status] || 0) + 1;
             return acc;
@@ -287,11 +353,12 @@ function StatusDashboard1() {
       }
     };
     fetchDetails();
-  }, []);
+  }, [storedId]);
 
   return (
     <div className="dashboard-top-caard-collection flex my-1">
-      <Link to="/enrollment_review_tbl" className="md:w-1/4">
+      {/* Review Card */}
+      <div onClick={() => setIsReviewModalOpen(true)} className="md:w-1/4 cursor-pointer">
         <div className="recent-applyed-card">
           <i className="bi bi-clipboard2-x"></i>
           <div className="card-text">
@@ -299,19 +366,21 @@ function StatusDashboard1() {
             <small>Review</small>
           </div>
         </div>
-      </Link>
-      <Link to="/enrollment_approved_tbl" className="md:w-1/4">
+      </div>
+
+      {/* Approved Card */}
+      <div onClick={() => setIsApprovedModalOpen(true)} className="md:w-1/4 cursor-pointer">
         <div className="approved-card">
           <i className="bi bi-clipboard2-check"></i>
           <div className="card-text">
-            <span className="dashboard-card-count">
-              {statusCounts.Approved}
-            </span>
+            <span className="dashboard-card-count">{statusCounts.Approved}</span>
             <small>Approved</small>
           </div>
         </div>
-      </Link>
-      <Link to="/enrollment_pending_tbl" className="md:w-1/4">
+      </div>
+
+      {/* Pending Card */}
+      <div onClick={() => setIsPendingModalOpen(true)} className="md:w-1/4 cursor-pointer">
         <div className="pending-card">
           <i className="bi bi-clipboard2-minus"></i>
           <div className="card-text">
@@ -319,8 +388,10 @@ function StatusDashboard1() {
             <small>Pending</small>
           </div>
         </div>
-      </Link>
-      <Link to="/enrollment_rejected_tbl" className="md:w-1/4">
+      </div>
+
+      {/* Rejected Card */}
+      <div onClick={() => setIsRejectedModalOpen(true)} className="md:w-1/4 cursor-pointer">
         <div className="rejected-card">
           <i className="bi bi-clipboard2-x"></i>
           <div className="card-text">
@@ -328,9 +399,149 @@ function StatusDashboard1() {
             <small>Rejected</small>
           </div>
         </div>
-      </Link>
+      </div>
+
+      {/* Review Modal */}
+      {isReviewModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h1 className='flex justify-between'>
+              <span>Review Applications</span>
+              <button onClick={() => setIsReviewModalOpen(false)}>X</button>
+            </h1>
+            <EnrollmentReviewTable agentId={storedId} />
+          </div>
+        </div>
+      )}
+
+      {/* Approved Modal */}
+      {isApprovedModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h1 className='flex justify-between'>
+              <span>Approved Applications</span>
+              <button onClick={() => setIsApprovedModalOpen(false)}>X</button>
+            </h1>
+            <EnrollmentApprovedTable agentId={storedId} />
+          </div>
+        </div>
+      )}
+
+      {/* Pending Modal */}
+      {isPendingModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h1 className='flex justify-between'>
+              <span>Pending Applications</span>
+              <button onClick={() => setIsPendingModalOpen(false)}>X</button>
+            </h1>
+            <EnrollmentPendingTable agentId={storedId} />
+          </div>
+        </div>
+      )}
+
+      {/* Rejected Modal */}
+      {isRejectedModalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h1 className='flex justify-between'>
+              <span>Rejected Applications</span>
+              <button onClick={() => setIsRejectedModalOpen(false)}>X</button>
+            </h1>
+            <EnrollmentRejectedTable agentId={storedId} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+
+
+
+
+// function StatusDashboard1() {
+//   const storedId = localStorage.getItem("agent_id") || 1;
+//   const [statusCounts, setStatusCounts] = useState({
+//     Pending: 0,
+//     Approved: 0,
+//     Rejected: 0,
+//     Review: 0,
+//   });
+
+//   useEffect(() => {
+//     const fetchDetails = async () => {
+//       try {
+//         const response = await agentService.applicationcountbyagent(storedId);
+//         // console.log(response)
+//         if (response && response.data) {
+//           // Count the statuses
+//           const counts = response.data.reduce((acc, item) => {
+//             acc[item.status] = (acc[item.status] || 0) + 1;
+//             return acc;
+//           }, {});
+
+//           setStatusCounts({
+//             Pending: counts.Pending || 0,
+//             Approved: counts.Approved || 0,
+//             Rejected: counts.Rejected || 0,
+//             Review: counts.Review || 0,
+//           });
+//         }
+//       } catch (error) {
+//         console.log(error);
+//         Swal.fire({
+//           icon: "error",
+//           title: "Error",
+//           text: error?.response?.data?.message,
+//         });
+//       }
+//     };
+//     fetchDetails();
+//   }, []);
+
+//   return (
+//     <div className="dashboard-top-caard-collection flex my-1">
+//       <Link to="/enrollment_review_tbl" className="md:w-1/4">
+//         <div className="recent-applyed-card">
+//           <i className="bi bi-clipboard2-x"></i>
+//           <div className="card-text">
+//             <span className="dashboard-card-count">{statusCounts.Review}</span>
+//             <small>Review</small>
+//           </div>
+//         </div>
+//       </Link>
+//       <Link to="/enrollment_approved_tbl" className="md:w-1/4">
+//         <div className="approved-card">
+//           <i className="bi bi-clipboard2-check"></i>
+//           <div className="card-text">
+//             <span className="dashboard-card-count">
+//               {statusCounts.Approved}
+//             </span>
+//             <small>Approved</small>
+//           </div>
+//         </div>
+//       </Link>
+//       <Link to="/enrollment_pending_tbl" className="md:w-1/4">
+//         <div className="pending-card">
+//           <i className="bi bi-clipboard2-minus"></i>
+//           <div className="card-text">
+//             <span className="dashboard-card-count">{statusCounts.Pending}</span>
+//             <small>Pending</small>
+//           </div>
+//         </div>
+//       </Link>
+//       <Link to="/enrollment_rejected_tbl" className="md:w-1/4">
+//         <div className="rejected-card">
+//           <i className="bi bi-clipboard2-x"></i>
+//           <div className="card-text">
+//             <span className="dashboard-card-count">{statusCounts.Rejected}</span>
+//             <small>Rejected</small>
+//           </div>
+//         </div>
+//       </Link>
+//     </div>
+//   );
+// }
 
 export default Dashboard;

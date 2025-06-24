@@ -92,16 +92,56 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     <div className="lg:w-3/4 md:full sm:w-full"><br />
                         <p>Customer Application Form Details</p> <br />
                         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
-                            <CommanInput
-                               
+                                {/* Salutation - Select field */}
+                                                <CommanSelect
+                                                  
+                                                    label={labels.salutation.label}
+                                                    name="salutation"
+                                                    value={localFormData.salutation}
+                                                    options={salutation}
+                                                    required
+                                                />
+                            
+                                                {/* First Name - Text only, 50 char limit */}
+                                                <CommanInput
+                                                  
+                                                    label={labels.firstname.label} 
+                                                    name="first_name"
+                                                    value={localFormData.first_name}
+                                                    required
+                                                    max={30}
+                                                    validationType="TEXT_ONLY" 
+                                                />
+                            
+                                                {/* Middle Name - Text only, 50 char limit */}
+                                                <CommanInput
+                                                  
+                                                    label={labels.middlename.label} 
+                                                    name="middle_name"
+                                                    value={localFormData.middle_name}
+                                                    max={30}
+                                                    validationType="TEXT_ONLY"
+                                                />
+                            
+                                                {/* Last Name - Text only, 50 char limit */}
+                                                <CommanInput
+                                                  
+                                                    label={labels.lastname.label} 
+                                                    name="last_name"
+                                                    value={localFormData.last_name}
+                                                    required
+                                                    max={30}
+                                                    validationType="TEXT_ONLY"
+                                                />
+                            
+                            <CommanInput 
                                 label={labels.dob.label}
                                 type="date"
                                 name="dob"
                                 value={localFormData.DOB}
                                 readOnly={true}
                             />
-                            <CommanInput
-                               
+                            <CommanInput 
                                 label={labels.gender.label}
                                 type="text"
                                 name="gender"

@@ -508,6 +508,11 @@ public function saveServiceToCustomer(Request $request)
         $saved[] = $service;
     }
 
+    DB::table('application_service_status')->updateOrInsert(
+        ['application_id' => $validated['application_id']],
+        ['status' => 'Pending']
+    );  
+
     return response()->json([
         'message' => 'Services to customer saved successfully.',
         'data' => $saved,

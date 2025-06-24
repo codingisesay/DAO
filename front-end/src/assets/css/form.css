@@ -645,3 +645,5 @@ tr:hover {
 .delete-btn:hover {
   background-color: #b71c1c;
 }
+
+.css-53g0n7-MuiButtonBase-root-MuiIconButton-root.Mui-disabled{display: none;}

@@ -28,8 +28,7 @@ const ViewApplicationForm = () => {
                 if (response.data) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    
-                    console.log('toshoe :', response);
+                     
                  setFormData({
                     application_id: applicationId,
                     // Authentication
@@ -118,6 +117,16 @@ const ViewApplicationForm = () => {
                     signature: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE')) 
                             ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path 
                             : null,
+
+                    identity: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG')) 
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path 
+                            : null,
+
+                    address: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')) 
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path 
+                            : null,
+
+                    
                     photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : null,
                 });
                 }
@@ -154,7 +163,10 @@ const ViewApplicationForm = () => {
                     <div className='flex justify-between items-center mb-4'>
                         <div>
                             <p className="text-gray-600">Application ID: {formData.application_id || 'N/A'}</p>
-                            <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
+                          <p className="text-gray-600">
+  Date: {new Date().toLocaleDateString('en-GB')}
+</p>
+
                         </div>
                         <button className='btn-login px-5' onClick={handlePrint} > Download </button>
                     </div>
@@ -754,6 +766,34 @@ const ViewApplicationForm = () => {
                                 <span>No signature uploaded</span>
                             )}
                         </div>
+                    
+                        <div>
+                            <label className="block text-gray-700 font-bold mb-2">Signature</label>
+                            {formData.address ? (
+                                <img
+                                    src={typeof formData.address === 'string' ? formData.address : URL.createObjectURL(formData.address)}
+                                    alt="Signature"
+                                    className="w-40 h-auto  "
+                                />
+                            ) : (
+                                <span>No signature uploaded</span>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-gray-700 font-bold mb-2">Identity</label>
+                            {formData.identity ? (
+                                <img
+                                    src={typeof formData.identity === 'string' ? formData.identity : URL.createObjectURL(formData.identity)}
+                                    alt="Signature"
+                                    className="w-40 h-auto  "
+                                />
+                            ) : (
+                                <span>No signature uploaded</span>
+                            )}
+                        </div>
+
+
                     </div>
                 </div>
             </div>
