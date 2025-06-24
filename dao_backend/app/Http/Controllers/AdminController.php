@@ -708,6 +708,33 @@ public function updateAgentLivePhotos($application_id, Request $request)
     ], 200);
 }
 
+// Get all KYC applications with status and comments
+public function getKycReasonApplications($status, $kyc_application_id)
+{
+    $result = DB::table('kyc_application_status')
+        ->leftJoin('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
+        ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->select(
+            'kyc_application_status.status as application_status',
+            // 'kyc_application_status.status_comment as application_status_comment',
+            'kyc_document_approved_status.status as document_status',
+            'kyc_document_approved_status.status_comment as document_status_comment',
+            'kyc_data_after_vs_cbs.status as after_vs_cbs_status',
+            'kyc_data_after_vs_cbs.status_comment as after_vs_cbs_status_comment'
+        )
+        ->where('kyc_application_status.kyc_application_id', $kyc_application_id)
+        ->where(function($query) use ($status) {
+            $query->where('kyc_application_status.status', $status)
+                  ->orWhere('kyc_document_approved_status.status', $status)
+                  ->orWhere('kyc_data_after_vs_cbs.status', $status);
+        })
+        ->get();
+
+    return response()->json([
+        'data' => $result
+    ], 200);
+}
+
 // Get allRejected  kycReview applications
 public function getKycReviewApplications()
 {
