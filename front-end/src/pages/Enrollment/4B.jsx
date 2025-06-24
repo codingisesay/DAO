@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import io from 'socket.io-client';
 
-const SIGNALING_SERVER_URL = 'https://localhost:5000'; // Update as needed
+const SIGNALING_SERVER_URL = 'https://172.16.1.223:5000'; // Update as needed
 
 const VideoKYC = () => {
   const token = new URLSearchParams(window.location.search).get('token');
