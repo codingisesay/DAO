@@ -15,6 +15,9 @@
 /front-end/.env
 /fornt-end/nohup.out
 
+#signaling server
+/signaling_server/node_modules
+
 # General
 *.log
 *.DS_Store
