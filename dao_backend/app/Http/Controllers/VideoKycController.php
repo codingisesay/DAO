@@ -87,23 +87,29 @@ public function create(Request $request, $application_id)
     ]);
 }
 
+
+public function validateToken(Request $request)
+{
+    $token = $request->query('token');
+
+    $session = VideoKycSession::where('token', $token)->first();
+
+    if (!$session || $session->expires_at->isPast()) {
+        return response()->json(['valid' => false, 'message' => 'Token expired or invalid'], 401);
+    }
+
+    return response()->json(['valid' => true, 'application_id' => $session->application_id]);
+}
+
 public function upload(Request $request)
 {
     $request->validate([
-        'token' => 'required|string',
-        'video' => 'required|file|mimes:webm,mp4|max:500000'
+        'video' => 'required|file|mimes:webm,mp4,mov,avi|max:500000',
+        'token' => 'required'
     ]);
-
-    $session = VideoKycSession::where('token', $request->token)->firstOrFail();
-
-    $path = $request->file('video')->store("video_kyc/{$session->application_id}", 'public'); // or 's3'
-
-    $session->update([
-        'recording_url' => Storage::url($path),
-        'status' => 'completed',
-    ]);
-
-    return response()->json(['message' => 'Video uploaded', 'url' => Storage::url($path)]);
+    $path = $request->file('video')->store('kyc-videos');
+    // Optionally, save $path and $request->token to DB
+    return response()->json(['success' => true, 'path' => $path]);
 }
 
 
