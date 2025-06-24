@@ -188,7 +188,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         <div className="form-container">
           <div className="flex flex-wrap items-top">
             <div className="lg:w-1/2 md:full sm:w-full my-4">
-              <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
+              <h2 className="text-xl font-bold mb-2">Application Form : {id}</h2>
               <div className="application-type-container">
                 <label className="application-type">
                   <input
@@ -336,7 +336,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
           </div>
 
           <> 
-            <p className="text-red-500" > Review For : {localFormData && localFormData.account_personal_details_status_comment}</p> 
+            <p className="text-red-500" > Review For : {localFormData && localFormData.status_comment}</p> 
             <br />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
               {/* First Name - Text only, 50 char limit */}

@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { pendingAccountData, applicationDetailsService ,createAccountService} from '../../services/apiServices';
+import { pendingAccountData, applicationDetailsService ,createAccountService, agentService} from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';import { useParams } from 'react-router-dom';
 import { salutation, religion, caste, salaryrange } from '../../data/data';
 
 function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
     
-    const applicationId = localStorage.getItem('application_id');
+      const { id } = useParams();
+    // const id = localStorage.getItem('application_id');
     const [localFormData, setLocalFormData] = useState({
-        application_id: applicationId,
+        application_id: id,
          maidenPrefixName: '',
         maidenFirstName:  '',
         maidenMiddleName:   '',
@@ -45,8 +46,8 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
-                if (applicationId) {
-                    const response = await pendingAccountData.getDetailsS1(applicationId); 
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS1(id); 
                     const application = response.details || {}; 
                    setLocalFormData(prevData => ({
                         ...prevData, 
@@ -65,7 +66,31 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         };
 
         fetchAndStoreDetails();
-    }, [applicationId]);
+    }, [id]);
+
+    
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReason = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id);
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReason();
+    }, [id]);
+
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -83,7 +108,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
 useEffect(() => {
     const fetchDetails = async () => {
         try {
-            const response = await applicationDetailsService.getFullDetails(applicationId);
+            const response = await applicationDetailsService.getFullDetails(id);
             if (response && response.data) {
                 const { personal_details, account_personal_details } = response.data;
                 
@@ -132,10 +157,10 @@ useEffect(() => {
         }
     };
 
-    if (applicationId) {
+    if (id) {
         fetchDetails();
     }
-}, [applicationId]);
+}, [id]);
 
 
     const submitpd = async () => {
@@ -237,6 +262,7 @@ useEffect(() => {
     return (
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
+            <p className="text-red-500" > Review For : {reason && reason.account_personal_details_status_comment}</p>  <br />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
                 {/* Maiden Name Section */}
                 <CommanSelect

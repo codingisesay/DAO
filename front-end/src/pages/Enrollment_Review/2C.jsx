@@ -2,13 +2,36 @@ import React, { useEffect, useState } from 'react';
 import ImageCaptureValidator from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { createAccountService } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
+import { createAccountService, agentService } from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
-    const [photoData, setPhotoData] = useState(null);
+    const [photoData, setPhotoData] = useState(null); 
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
     const application_id = localStorage.getItem('application_id') || formData.application_id;
     const storageKey = 'customerPhotoData';
+
+      const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReason = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id);
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReason();
+    }, [id]);
 
     useEffect(() => {
         // Load saved photo data from localStorage
@@ -101,7 +124,9 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
     };
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-1">
+            
+            <p className="text-red-500" > Review For : {reason && reason.applicant_live_photos_status_comment}</p> 
             {/* Loading overlay */}
             {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">

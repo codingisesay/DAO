@@ -2,10 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
-import { accountNomineeService , createAccountService,applicationDetailsService} from '../../services/apiServices';
+import { agentService , createAccountService,applicationDetailsService} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { salutation, relation } from '../../data/data';
 import { add } from '@tensorflow/tfjs-core/dist/engine';
+import { useParams } from 'react-router-dom';
 
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
@@ -41,6 +42,28 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     });
 
     const [errors, setErrors] = useState({});
+
+      const { id } = useParams();
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReason = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id);
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchReason();
+    }, [id]);
 
     const calculateAge = (dob) => {
         if (!dob) return '';
@@ -408,6 +431,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     return (
         <div className="max-w-screen-xl mx-auto">
             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
+            
+            <p className="text-red-500" > Review For : {reason && reason.nominee_approved_status_status_comment}</p> 
             {/* Nominee Form */}
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
                 <SelectField

@@ -209,8 +209,8 @@ export default function LoginPage() {
                             Login
                         </CommonButton>
                     </form>
-
-                    <p className="text-sm text-center mt-4 text-gray-400">Forgot Password?</p>
+                        <span to="/forgotpassword" className="text-sm text-center mt-4 text-gray-400">Forgot Password?</span>
+                    {/* <Link to="/forgotpassword" className="text-sm text-center mt-4 text-gray-400">Forgot Password?</Link> */}
                 </div>
             </div>
         </div>

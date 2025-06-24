@@ -37,89 +37,89 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleSubmit = async (e) => {
-        if (e && e.preventDefault) e.preventDefault(); handleNext();
-        // setIsSubmitting(true);
+        if (e && e.preventDefault) e.preventDefault(); 
+        setIsSubmitting(true);
   
-        // try {
-        //     if (activeStep === 0) {
-        //         // console.log('2A formadta : ', formData)
-        //         const pd = formData.personalDetails || {};
-        //         if (
-        //             /\d/.test(pd.first_name) ||
-        //             /\d/.test(pd.middle_name) ||
-        //             /\d/.test(pd.last_name)
-        //         ) {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
-        //             });
-        //             return;
-        //         }
+        try {
+            if (activeStep === 0) {
+                // console.log('2A formadta : ', formData)
+                const pd = formData.personalDetails || {};
+                if (
+                    /\d/.test(pd.first_name) ||
+                    /\d/.test(pd.middle_name) ||
+                    /\d/.test(pd.last_name)
+                ) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
+                    });
+                    return;
+                }
 
 
-        //         else if (pd.mobile.length != 10) {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Error saving personal details',
-        //                 text: '10 Digit Must for Mobile Number ',
-        //             }); return
-        //         }
-        //         else if (pd.alt_mob_no.length != 10) {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Error saving personal details',
-        //                 text: '10 Digit Must for Alternate Mobile Number ',
-        //             }); return
-        //         }
-        //         else if (pd.pannumber.length != 10) {
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Error saving personal details',
-        //                 text: 'Invalid PAN Number',
-        //             }); return
-        //         }
+                else if (pd.mobile.length !== 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Mobile Number ',
+                    }); return
+                }
+                else if (pd.alt_mob_no.length != 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Alternate Mobile Number ',
+                    }); return
+                }
+                else if (pd.pannumber.length != 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: 'Invalid PAN Number',
+                    }); return
+                }
 
-        //         const payload = {
-        //             application_id: formData.application_id,
-        //             salutation: pd.salutation,
-        //             religion: pd.religion,
-        //             caste: pd.caste,
-        //             marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
-        //             alt_mob_no: pd.alt_mob_no,
-        //             email: pd.email,
-        //             adhar_card: pd.adhar_card,
-        //             pan_card: pd.pannumber,
-        //             passport: pd.passport,
-        //             driving_license: pd.driving_license,
-        //             voter_id: pd.voterid,
-        //             status: 'Pending'
-        //         };
+                const payload = {
+                    application_id: formData.application_id,
+                    salutation: pd.salutation,
+                    religion: pd.religion,
+                    caste: pd.caste,
+                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                    alt_mob_no: pd.alt_mob_no,
+                    email: pd.email,
+                    adhar_card: pd.adhar_card,
+                    pan_card: pd.pannumber,
+                    passport: pd.passport,
+                    driving_license: pd.driving_license,
+                    voter_id: pd.voterid,
+                    status: 'Pending'
+                };
 
-        //         try {
-        //             let response = await createAccountService.personalDetails_s2a(payload);
+                try {
+                    let response = await createAccountService.personalDetails_s2a(payload);
 
-        //             Swal.fire({
-        //                 icon: 'success',
-        //                 title: response.data.message || 'Personal details saved successfully.',
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             });
-        //             handleNext();
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.data.message || 'Personal details saved successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    handleNext();
 
-        //         } catch (error) {
-        //             console.error("Error saving personal details:", error);
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 title: 'Error saving personal details',
-        //                 text: error.response?.data?.message || 'Required field contains invalid data.',
-        //             });
-        //         }
-        //     }
-        // } catch (err) {
-        //     console.error("Submission error:", err);
-        // } finally {
-        //     setIsSubmitting(false);
-        // }
+                } catch (error) {
+                    console.error("Error saving personal details:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: error.response?.data?.message || 'Required field contains invalid data.',
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Submission error:", err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const CurrentStepComponent = steps[activeStep].component;

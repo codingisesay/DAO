@@ -15,6 +15,7 @@ import { agentService } from "../../services/apiServices";
 import Swal from "sweetalert2";
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
 
 const Dashboard = () => {
   const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -34,24 +35,28 @@ const Dashboard = () => {
 
   const [showHelp, setShowHelp] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const helpRef = useRef();
   const profileRef = useRef();
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (
-        helpRef.current &&
-        !helpRef.current.contains(event.target) &&
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
-        setShowHelp(false);
-        setShowProfile(false);
-      }
+  const notifyRef = useRef();
+useEffect(() => {
+  function handleClickOutside(event) {
+    // Help dropdown
+    if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+      setShowHelp(false);
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+    // Profile dropdown
+    if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+      setShowProfile(false);
+    }
+    // Notification dropdown
+    if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+      setShowNotification(false);
+    }
+  }
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, [showHelp, showProfile, showNotification]);
   const handleRedireact = () => {
     localStorage.removeItem("application_id"); // Clear any previous application ID
     navigate("/enrollmentform"); // Change to your route
@@ -80,20 +85,34 @@ const Dashboard = () => {
           </div>
           <div className="text-right">
             <div className="flex items-center">
-              <ThemeToggle />
-              <i className="mx-2 bi  bi-bell"></i>
-              {/* <i className="mx-2 bi  bi-question-circle"></i>
-                            <i className="mx-2 bi  bi-globe2"></i>
-                               <Help />
-                                <Profilecard /> */}
+              <ThemeToggle /> 
             
+                <div className="inline-block relative"> 
+                <i
+                  className="mx-2 bi bi-bell"
+                  onClick={() => {
+                    setShowProfile(false);
+                    setShowHelp(false);
+                    setShowNotification(!showNotification)
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+                {showNotification && (
+                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
+                    <NotificationDd />
+                  </div>
+                )}
+              </div>
+
+
                 {/* Help Icon */}
                 <div className="inline-block relative">
                 <i
                   className="mx-2 bi bi-question-circle"
                   onClick={() => {
                     setShowHelp(!showHelp);
-                    setShowProfile(false); // hide profile if open
+                    setShowProfile(false); 
+                    setShowNotification(false); // hide profile if open
                   }}
                   style={{ cursor: "pointer" }}
                 />
@@ -103,39 +122,76 @@ const Dashboard = () => {
                   </div>
                 )}
                 </div>
+
+
+
+
+
                 <div className="inline-block relative">
                 {/* Profile Icon */}
                 <i
-                  className="mx-2 bi bi-globe2"
-                  onClick={() => {
-                    setShowProfile(!showProfile);
-                    setShowHelp(false); // hide help if open
-                  }}
+                  className="mx-2 bi bi-globe2" 
                   style={{ cursor: "pointer" }}
                 />
+             
+              </div>
+
+
+
+
+
+
+
+
+              <i
+                className="mx-2 bi  bi-box-arrow-right md:w-right"
+                onClick={handleLogout}
+              ></i>
+
+              
+                <div className="inline-block relative">
+                {/* Profile Icon */}
+
+                  <div className="flex">
+                <img
+                  height="40px"
+                  width="40px"
+                  src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                  alt="profile"
+                  className="rounded-full object-cover mx-2 my-auto"
+                    onClick={() => {
+                      setShowProfile(!showProfile);
+                      setShowHelp(false); // hide help if open
+                      setShowNotification(false)
+                    }}
+                />
+                <span className="font-bold">
+                  {" "}
+                  {username}
+                  <br />
+                  <small className="font-normal"> - {userrole}</small>
+                </span>
+                    </div>
+ 
                 {showProfile && (
                   <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
                     <Profilecard />
                   </div>
                 )}
               </div>
-              <i
-                className="mx-2 bi  bi-box-arrow-right md:w-right"
-                onClick={handleLogout}
-              ></i>
-              <img
-                height="40px"
-                width="40px"
-                src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                alt="profile"
-                className="rounded-full object-cover mx-2"
-              />
-              <span className="font-bold">
-                {" "}
-                {username}
-                <br />
-                <small className="font-normal"> - {userrole}</small>
-              </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ function KycApprovedTable() {
 
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.application_id, field: "application_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
     { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
@@ -105,7 +105,7 @@ const fetchData = async () => {
                         onFilter={handleFilter}
                         onPageChange={handlePageChange}
                         loading={loading}
-                        primaryKeys={["bankCode"]} 
+                        primaryKeys={["id"]} 
                     />
                     </div>
             </div>

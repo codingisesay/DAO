@@ -53,6 +53,8 @@ export const agentService = {
     
   demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id)),
 
+  vkycpendingtable:(id) => apiService.get(API_ENDPOINTS.AGENT.VKYC_PENDING_TABLE(id)),
+
   refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id))
 }
 

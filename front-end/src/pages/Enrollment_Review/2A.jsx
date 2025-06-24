@@ -8,7 +8,7 @@ import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
 import Swal from 'sweetalert2'; 
-import {pendingAccountData} from  '../../services/apiServices'
+import {pendingAccountData, agentService} from  '../../services/apiServices'
 import { useParams } from 'react-router-dom';
 
 
@@ -54,7 +54,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 
 
     
-    const { id } = useParams();
+  
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
@@ -97,6 +97,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     }, [formData, dataLoaded, verificationMethod]);
 
 
+    const { id } = useParams();
     
     useEffect(() => {
         const fetchAndStoreDetails = async () => {
@@ -107,7 +108,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     
                     const updatedData = {
                         ...localFormData,
-                        ...response.details
+                        ...response.details,
+                        pannumber:response.details.pan_card, 
                     };
                     
                     setLocalFormData(updatedData);
@@ -118,12 +120,11 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
             }
         };
 
-        const fetchReason = async (id) => {
-          
+        const fetchReason = async (id) => { 
             if (!id) return;
             try {
                 setLoading(true);
-                const response = await agentService.refillApplication(id);
+                const response = await agentService.refillApplication(id); 
                 setReason(response.data[0]);
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
@@ -133,7 +134,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         };
 
         fetchAndStoreDetails();
-        fetchReason();
+        fetchReason(id);
     }, [id]);
 
 
@@ -310,7 +311,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         label={labels.maritalStatus.label}
                         name="maritalStatus"
                         value={localFormData.maritalStatus}
-                        options={maritalStatusOptions}
+                        options={maritalStatusOptions} required
                     />
 
                     {/* Mobile - Phone number validation */}

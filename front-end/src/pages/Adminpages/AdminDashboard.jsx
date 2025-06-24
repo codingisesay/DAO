@@ -11,6 +11,7 @@ import MonthlyAccountTrends from './AdminDashboardLineChart';
 import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
+import Footer from '../../components/Footer';
 import Swal from 'sweetalert2';
 
 const AdminDashboard = () => {
@@ -155,7 +156,7 @@ const AdminDashboard = () => {
 
 
             </div >
-
+   <Footer />
 
         </>
     );
@@ -313,6 +314,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             )}
+         
         </div>
     );
 }

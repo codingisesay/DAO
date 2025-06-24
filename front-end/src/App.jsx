@@ -18,7 +18,7 @@ import Verificationform from './pages/verification/Enrollmentform';
 import Enrollmentform from './pages/Enrollment/Enrollmentform';
 import AgentDashboard from './pages/Agentpages/AgentDashboard';
 import AdminDashboard from './pages/Adminpages/AdminDashboard';
-import AgentRegisterForm from './pages/Adminpages/Add_Agent';
+import AgentRegisterForm from './pages/Adminpages/Agent_Create';
 import Enrollment_PendingTable from './pages/Adminpages/Enrollment_PendingTable';
 import Enrollment_ReviewTable from './pages/Adminpages/Enrollment_Review';
 import Enrollment_ApprovedTable from './pages/Adminpages/Enrollment_ApprovedTable'; 
@@ -31,7 +31,7 @@ import Kyc_PendingTable from './pages/Adminpages/Kyc_PendingTable';
 import Kyc_ApprovedTable from './pages/Adminpages/Kyc_ApprovedTable';
 import Kyc_ReviewTable from './pages/Adminpages/Kyc_Review';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
@@ -40,8 +40,11 @@ import StartKyc from './pages/Enrollment/4B';
 import CreateMeeting from './pages/Enrollment/CreateMeeting';
 import ViewForm from './pages/Enrollment_View/Enrollmentform';
 import Enrollment_Review_Edit from './pages/Enrollment_Review/Enrollmentform';
- 
+import AgentList from './pages/Adminpages/Agent_Table'; 
 
+// import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+// import OtpVerification from "./pages/ForgotPassword/OtpVerification";
+// import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 
 
 /// kyc_pending kyc_approved kyc_review
@@ -77,6 +80,13 @@ export const App = () => {
   return (
     <div className="App">
       <Router>
+
+{/* 
+    <Route path="/forgotpassword" element={<ForgotPassword />} errorElement={<NotFoundPage />} />
+    <Route path="/otpvarification" element={<OtpVerification />} errorElement={<NotFoundPage />} />
+    <Route path="/changepass" element={<ChangePassword />} errorElement={<NotFoundPage />} />
+ */}
+
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={
@@ -94,6 +104,11 @@ export const App = () => {
           <Route path="/add_agent" element={
             <ProtectedRoute>
               <AgentRegisterForm />
+            </ProtectedRoute>
+          } />
+          <Route path="/agent_list" element={
+            <ProtectedRoute>
+              <AgentList />
             </ProtectedRoute>
           } />
           <Route path="/enrollment_review" element={
@@ -225,7 +240,7 @@ export const App = () => {
           } />
         </Routes>
       </Router>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
