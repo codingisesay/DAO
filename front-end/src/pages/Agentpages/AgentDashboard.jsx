@@ -122,11 +122,6 @@ useEffect(() => {
                   </div>
                 )}
                 </div>
-
-
-
-
-
                 <div className="inline-block relative">
                 {/* Profile Icon */}
                 <i
@@ -179,18 +174,7 @@ useEffect(() => {
                   </div>
                 )}
               </div>
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
             </div>
           </div>

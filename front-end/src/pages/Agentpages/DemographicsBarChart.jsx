@@ -26,7 +26,7 @@ function DemographicsBarChart() {
             try {
                 setLoading(true);
                 const response = await agentService.demographicReport(storedId);
-                console.log('DR : ', response);
+                // console.log('DR : ', response);
                 
                 if (response && response.data) {
                     // Transform the API data into the format needed for the chart

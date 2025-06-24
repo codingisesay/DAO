@@ -45,7 +45,7 @@ function PendingTable() {
     };
 
     const columns = [
-        { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
+        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
         { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
         { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.rejected_by, field: "admin_id", type: "text" },
@@ -126,7 +126,7 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["application_id"]} 
+                            primaryKeys={["id"]} 
                         />
                     </div>
                 </div>
