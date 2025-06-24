@@ -1,0 +1,27 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "DAO Backend API",
+        "description": "This is the API documentation for the DAO application",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Local Server"
+        }
+    ],
+    "paths": {
+        "/api/auth/login": {
+            "get": {
+                "summary": "Login User",
+                "operationId": "33a61d15d2dba981f17e473cc2f7a34e",
+                "responses": {
+                    "200": {
+                        "description": "Successful login"
+                    }
+                }
+            }
+        }
+    }
+}
