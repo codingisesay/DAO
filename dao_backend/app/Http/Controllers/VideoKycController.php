@@ -7,6 +7,7 @@ use App\Models\VideoKycSession;
 use App\Models\videoKycGuideLine;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class VideoKycController extends Controller
 {
@@ -46,15 +47,15 @@ public function create(Request $request, $application_id)
 {
     $validated = $request->validate([
         'application_id' => 'required',
-        'client_email' => 'required',
+        // 'client_email' => 'required|email', // Uncomment if you want to validate email
     ]);
 
     $token = strtoupper(Str::random(6));
 
+    // --- Database insertion is commented out ---
     $session = VideoKycSession::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
-            'client_email' => $validated['client_email'],
         ],
         [
             'token' => $token,
@@ -64,44 +65,65 @@ public function create(Request $request, $application_id)
     );
 
     // Prepare join URL
-    $joinUrl = config('app.frontend_url') . "/video-kyc?token={$token}";
+    $joinUrl = config('app.frontend_url') . "/startVkyc?token={$token}";
 
-    // Send mail
-    \Mail::raw(
+    $applicationDetails = DB::table('application_personal_details')->where('application_id', $validated['application_id'])->first();
+
+    // --- Mail sending is commented out ---
+   \Mail::raw(
         "Your Video KYC session has been created. Please join using this link: {$joinUrl}",
-        function ($message) use ($validated) {
-            $message->to($validated['client_email'])
+        function ($message) use ($validated, $applicationDetails) {
+            $message->to($applicationDetails->email)
                     ->subject('Your Video KYC Session Link');
         }
     );
-
     return response()->json([
         'success' => true,
         'application_id' => $session->application_id,
         'token' => $session->token,
-        'client_email' => $session->client_email,
         'join_url' => $joinUrl,
         'expires_at' => $session->expires_at,
+        'data' => $applicationDetails
     ]);
+}
+
+
+public function validateToken(Request $request)
+{
+    $token = $request->query('token');
+
+    $session = VideoKycSession::where('token', $token)->first();
+
+    if (!$session || $session->expires_at->isPast()) {
+        return response()->json(['valid' => false, 'message' => 'Token expired or invalid'], 401);
+    }
+
+    return response()->json(['valid' => true, 'application_id' => $session->application_id]);
 }
 
 public function upload(Request $request)
 {
     $request->validate([
-        'token' => 'required|string',
-        'video' => 'required|file|mimes:webm,mp4|max:500000'
+        'video' => 'required|file|mimes:webm,mp4,mov,avi|max:500000',
+        'token' => 'required'
     ]);
 
-    $session = VideoKycSession::where('token', $request->token)->firstOrFail();
+    // Store the uploaded video
+    $path = $request->file('video')->store('kyc-videos');
 
-    $path = $request->file('video')->store("video_kyc/{$session->application_id}", 'public'); // or 's3'
+    // Update the recording_url in VideoKycSession where token matches
+    $session = \App\Models\VideoKycSession::where('token', $request->token)->first();
+    if ($session) {
+        $session->recording_url = $path;
+        $session->status = 'completed'; // Optionally mark as completed
+        $session->save();
+    }
 
-    $session->update([
-        'recording_url' => Storage::url($path),
-        'status' => 'completed',
+    return response()->json([
+        'success' => true,
+        'path' => $path,
+        'updated' => (bool)$session
     ]);
-
-    return response()->json(['message' => 'Video uploaded', 'url' => Storage::url($path)]);
 }
 
 
