@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import io from 'socket.io-client';
 
-const SIGNALING_SERVER_URL = 'https://172.16.1.223:5000'; // Use https if your signaling server is https
+const SIGNALING_SERVER_URL = 'https://localhost:5000'; // Update as needed
 
 const VideoKYC = () => {
   const token = new URLSearchParams(window.location.search).get('token');
@@ -10,9 +10,13 @@ const VideoKYC = () => {
   const canvasRef = useRef(null);
 
   const [callStarted, setCallStarted] = useState(false);
+  const [callEnded, setCallEnded] = useState(false);
   const [recording, setRecording] = useState(false);
   const [status, setStatus] = useState('Idle');
   const [recorder, setRecorder] = useState(null);
+  const [pipPos, setPipPos] = useState({ x: 420, y: 300 });
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
   // Store these outside state to avoid re-renders
   const socketRef = useRef(null);
@@ -30,9 +34,9 @@ const VideoKYC = () => {
       ctx.drawImage(remoteVideoRef.current, 0, 0, canvas.width, canvas.height);
     }
     if (localVideoRef.current && localVideoRef.current.readyState >= 2) {
-      ctx.drawImage(localVideoRef.current, canvas.width - 200, canvas.height - 150, 200, 150);
+      ctx.drawImage(localVideoRef.current, canvas.width - 180, canvas.height - 140, 160, 120);
     }
-    requestAnimationFrame(draw);
+    if (!callEnded) requestAnimationFrame(draw);
   };
 
   // Start the call
@@ -94,7 +98,6 @@ const VideoKYC = () => {
 
       // When another user joins, create and send offer
       socketRef.current.on('user-joined', async () => {
-        // Only the second user to join will trigger this
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         socketRef.current.emit('signal', {
@@ -107,6 +110,7 @@ const VideoKYC = () => {
       const canvas = canvasRef.current;
       canvas.width = 640;
       canvas.height = 480;
+      setCallEnded(false);
       draw();
 
       setCallStarted(true);
@@ -115,6 +119,27 @@ const VideoKYC = () => {
       setStatus('Camera/Mic error: ' + err.message);
       alert('Camera/Mic error: ' + err.message);
     }
+  };
+
+  // End the call
+  const endCall = () => {
+    setStatus('Call Ended');
+    setCallStarted(false);
+    setCallEnded(true);
+
+    // Stop all media tracks
+    localStreamRef.current?.getTracks().forEach(track => track.stop());
+    remoteStreamRef.current?.getTracks().forEach(track => track.stop());
+
+    // Close peer connection
+    peerConnectionRef.current?.close();
+
+    // Disconnect socket
+    socketRef.current?.disconnect();
+
+    // Clear video elements
+    if (localVideoRef.current) localVideoRef.current.srcObject = null;
+    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
   };
 
   // Start recording
@@ -151,41 +176,142 @@ const VideoKYC = () => {
     setStatus('Uploading...');
   };
 
+  // PiP drag handlers
+  const onPipMouseDown = (e) => {
+    setDragging(true);
+    setDragOffset({
+      x: e.clientX - pipPos.x,
+      y: e.clientY - pipPos.y
+    });
+  };
+  const onPipMouseMove = (e) => {
+    if (dragging) {
+      setPipPos({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y
+      });
+    }
+  };
+  const onPipMouseUp = () => setDragging(false);
+
   // Cleanup on unmount
   React.useEffect(() => {
+    window.addEventListener('mousemove', onPipMouseMove);
+    window.addEventListener('mouseup', onPipMouseUp);
     return () => {
+      window.removeEventListener('mousemove', onPipMouseMove);
+      window.removeEventListener('mouseup', onPipMouseUp);
       socketRef.current?.disconnect();
       peerConnectionRef.current?.close();
       localStreamRef.current?.getTracks().forEach(track => track.stop());
+      remoteStreamRef.current?.getTracks().forEach(track => track.stop());
     };
-  }, []);
+    // eslint-disable-next-line
+  }, [dragging, dragOffset]);
 
   return (
-    <div>
-      <h2>Video KYC</h2>
-      <div style={{ position: 'relative', width: 640, height: 480 }}>
-        <video ref={remoteVideoRef} autoPlay style={{ width: '100%', background: '#000' }} />
-        <video ref={localVideoRef} autoPlay muted style={{
-          width: 200, position: 'absolute', bottom: 20, right: 20, border: '2px solid red'
-        }} />
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+    }}>
+      <h2 style={{ margin: '30px 0 10px 0', color: '#2d3a4b', fontWeight: 700 }}>Video KYC</h2>
+      <div style={{
+        position: 'relative',
+        width: 640,
+        height: 480,
+        background: '#222',
+        borderRadius: 18,
+        boxShadow: '0 8px 32px rgba(60,60,120,0.18)',
+        overflow: 'hidden'
+      }}>
+        {/* Status badge */}
+        <div style={{
+          position: 'absolute', top: 16, left: 16, zIndex: 10,
+          background: status === 'Recording...' ? '#e74c3c' : '#3498db',
+          color: '#fff', padding: '6px 18px', borderRadius: 12, fontWeight: 600, fontSize: 15, boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        }}>
+          {status}
+        </div>
+        {/* Remote video */}
+        <video
+          ref={remoteVideoRef}
+          autoPlay
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            background: '#000'
+          }}
+        />
+        {/* PiP local video */}
+        <video
+          ref={localVideoRef}
+          autoPlay
+          muted
+          style={{
+            width: 160,
+            height: 120,
+            position: 'absolute',
+            left: pipPos.x,
+            top: pipPos.y,
+            borderRadius: 16,
+            border: '3px solid #fff',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.18)',
+            cursor: 'grab',
+            zIndex: 20,
+            background: '#222',
+            transition: 'box-shadow 0.2s'
+          }}
+          onMouseDown={onPipMouseDown}
+        />
+        {/* Hidden canvas for recording */}
         <canvas ref={canvasRef} style={{ display: 'none' }} />
+        {/* Control bar */}
+        <div style={{
+          position: 'absolute',
+          bottom: 18,
+          left: 0,
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 18,
+          zIndex: 30
+        }}>
+          {!callStarted && !callEnded && (
+            <button onClick={startCall} style={btnStyle('#27ae60')}>Start Call</button>
+          )}
+          {callStarted && (
+            <button onClick={endCall} style={btnStyle('#e67e22')}>End Call</button>
+          )}
+          {callStarted && !recording && (
+            <button onClick={startRecording} style={btnStyle('#2980b9')}>Start Recording</button>
+          )}
+          {callStarted && recording && (
+            <button onClick={stopRecording} style={btnStyle('#c0392b')}>End & Upload Recording</button>
+          )}
+        </div>
       </div>
-      <div style={{ marginTop: 20 }}>
-        {!callStarted && (
-          <button onClick={startCall}>Start Call</button>
-        )}
-        {callStarted && !recording && (
-          <button onClick={startRecording}>Start Recording</button>
-        )}
-        {recording && (
-          <button onClick={stopRecording}>End & Upload Recording</button>
-        )}
-      </div>
-      <div style={{ marginTop: 10 }}>
-        <b>Status:</b> {status}
+      <div style={{ marginTop: 30, color: '#888', fontSize: 15 }}>
+        <span>Powered by Payvance DAO</span>
       </div>
     </div>
   );
 };
+
+// Button style helper
+function btnStyle(bg) {
+  return {
+    background: bg,
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    padding: '12px 28px',
+    fontWeight: 600,
+    fontSize: 16,
+    cursor: 'pointer',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+    transition: 'background 0.2s, box-shadow 0.2s'
+  };
+}
 
 export default VideoKYC;
