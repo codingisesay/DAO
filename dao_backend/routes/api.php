@@ -101,6 +101,7 @@ Route::get('admin/applications/approved/weekly-auth', [AdminController::class, '
 // KYC Verification Status count yearly of approved , rejected , pending 
 Route::get('admin/kyc-applications/status-summary', [AdminController::class, 'getKycStatusCountsForCurrentYear']);
 // Route::post('/admin/updateCustomerApplicationDetails/{application_id}', [AdminController::class, 'updateCustomerApplicationDetails']);
+// admin routes for fetching application details
 Route::get('/admin/fetchApplicationPersonalDetails/{application_id}', [AdminController::class, 'getApplicationPersonalDetails']);
 Route::get('/admin/fetchApplicationAddressDetails/{application_id}', [AdminController::class, 'getApplicationAddressDetails']);
 Route::get('/admin/fetchApplicantLivePhotosDetails/{application_id}', [AdminController::class, 'getApplicantLivePhotosDetails']);
@@ -132,6 +133,8 @@ Route::post('/agent/application-document', [AgentController::class, 'saveApplica
 Route::post('/agent/account-personal-details', [AgentController::class, 'saveAccountPersonalDetails']);
 Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
 Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
+// This is for deleting the application document by agent
+Route::delete('/agent/application-document', [AgentController::class, 'deleteApplicationDocument']);
 //rekyc
 Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
