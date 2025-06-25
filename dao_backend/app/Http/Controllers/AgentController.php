@@ -103,9 +103,11 @@ public function EnrollmentDetails(Request $request)
     ]);
 
     // Add the agent ID to the validated data from the authenticated user
-    $validatedData['agent_id'] = 1;
-
+    // $validatedData['agent_id'] = 1;
+    $user = $request->user(); // or $request->get('auth_user')
+    $validatedData['agent_id'] = $user->id; // or $user['id']
     // Try to find an existing application by auth_type + auth_code
+
     $existingApplication = CustomerApplicationDetail::where('auth_type', $validatedData['auth_type'] ?? null)
         ->where('auth_code', $validatedData['auth_code'] ?? null)
         ->first();
@@ -330,6 +332,10 @@ public function saveApplicationDocument(Request $request)
         'files.*' => 'required|string', // Expecting base64 string
     ]);
 
+    // 1. Delete all existing documents for this application_id
+    \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])->delete();
+
+    // 2. Insert new documents
     $documents = [];
     foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
@@ -345,19 +351,13 @@ public function saveApplicationDocument(Request $request)
         $filename = uniqid('doc_') . '.' . $extension;
         $binaryData = base64_decode($base64File);
 
-        // Save to DB using Eloquent
-        $doc = \App\Models\ApplicationDocument::updateOrCreate(
-            [
-                'application_id' => $validated['application_id'],
-                'document_type' => $documentType,
-            ],
-            [
-                'application_id' => $validated['application_id'],
-                'document_type' => $documentType,
-                'file_name' => $filename,
-                'file_path' => $binaryData, // Save as mediumblob
-            ]
-        );
+        // Save to DB using Eloquent (insert)
+        $doc = \App\Models\ApplicationDocument::create([
+            'application_id' => $validated['application_id'],
+            'document_type' => $documentType,
+            'file_name' => $filename,
+            'file_path' => $binaryData, // Save as mediumblob
+        ]);
 
         $documents[] = $doc->makeHidden(['file_path']);
     }
@@ -373,8 +373,28 @@ public function saveApplicationDocument(Request $request)
     ], 201);
 }
 
+// detete application document while enrollment it has the mapping of application_id and document id
+public function deleteApplicationDocument(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'id' => 'required|integer|exists:application_documents,id',
+    ]);
 
+    $deleted = \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])
+        ->where('id', $validated['id'])
+        ->delete();
 
+    if ($deleted) {
+        return response()->json([
+            'message' => 'Document deleted successfully.',
+        ], 200);
+    } else {
+        return response()->json([
+            'message' => 'Document not found or already deleted.',
+        ], 404);
+    }
+}
 
 
 
@@ -459,30 +479,27 @@ public function saveAccountNominee(Request $request)
         'nominees.*.nom_mobile' => 'nullable|string|max:191',
     ]);
 
+    // 1. Delete all existing nominees for this application_id
+    \App\Models\AccountNominee::where('application_id', $validated['application_id'])->delete();
+
+    // 2. Insert new nominees
     $savedNominees = [];
     foreach ($validated['nominees'] as $nomineeData) {
         $nomineeData['application_id'] = $validated['application_id'];
-        $nominee = AccountNominee::updateOrCreate(
-            [
-                'application_id' => $validated['application_id'],
-                'first_name' => $nomineeData['first_name'],
-                'dob' => $nomineeData['dob'],
-            ],
-            $nomineeData
-        );
+        $nominee = \App\Models\AccountNominee::create($nomineeData);
         $savedNominees[] = $nominee;
     }
-DB::table('nominee_approved_status')->updateOrInsert(
-    ['application_id' => $validated['application_id']],
-    ['status' => 'Pending']
-);
+
+    DB::table('nominee_approved_status')->updateOrInsert(
+        ['application_id' => $validated['application_id']],
+        ['status' => 'Pending']
+    );
 
     return response()->json([
         'message' => 'Account nominees saved successfully.',
         'data' => $savedNominees,
     ], 201);
 }
-
 
 // Store service to customer
 public function saveServiceToCustomer(Request $request)
@@ -493,18 +510,16 @@ public function saveServiceToCustomer(Request $request)
         'banking_services_facilities_id.*' => 'required|integer|exists:banking_services_facilities,id',
     ]);
 
+    // 1. Delete all existing records for this application_id
+    \App\Models\ServiceToCustomer::where('application_id', $validated['application_id'])->delete();
+
+    // 2. Insert new records
     $saved = [];
     foreach ($validated['banking_services_facilities_id'] as $facilityId) {
-        $service = ServiceToCustomer::updateOrCreate(
-            [
-                'application_id' => $validated['application_id'],
-                'banking_services_facilities_id' => $facilityId,
-            ],
-            [
-                'application_id' => $validated['application_id'],
-                'banking_services_facilities_id' => $facilityId,
-            ]
-        );
+        $service = \App\Models\ServiceToCustomer::create([
+            'application_id' => $validated['application_id'],
+            'banking_services_facilities_id' => $facilityId,
+        ]);
         $saved[] = $service;
     }
 
@@ -518,7 +533,6 @@ public function saveServiceToCustomer(Request $request)
         'data' => $saved,
     ], 201);
 }
-
 // Fetch full application details
 public function getFullApplicationDetails($applicationId)
 {
