@@ -1,7 +1,11 @@
 import React, { useRef, useState } from 'react';
 import io from 'socket.io-client';
 
-const SIGNALING_SERVER_URL = 'https://172.16.1.223:5000'; // Update as needed
+// const SIGNALING_SERVER_URL = 'https://172.16.1.223:5000'; // Update as needed
+
+const API_BASE_URL = import.meta.env.VITE_BASE_URL_LOGIN;
+
+const SIGNALING_SERVER_URL = import.meta.env.VITE_SIGNALING_SERVER_URL;
 
 const VideoKYC = () => {
   const token = new URLSearchParams(window.location.search).get('token');
@@ -46,10 +50,10 @@ const VideoKYC = () => {
     formData.append('token', token);
     try {
       setStatus('Uploading...');
-      const res = await fetch('/api/video-kyc/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(`${API_BASE_URL}/video-kyc/upload`, {
+      method: 'POST',
+      body: formData,
+     });
       const data = await res.json();
       if (data.success) {
         setStatus('Video uploaded and session updated!');
