@@ -479,10 +479,75 @@ const ImageCaptureValidator = ({
             {/* <h2 className="text-xl font-semibold mb-4">Validation Requirements</h2> */}
          
             {showLocation && location && imgSrc ? (
-              <div className=" ">
-                <div>Lat: {location.latitude.toFixed(5)}</div>
-                <div>Lng: {location.longitude.toFixed(5)}</div>
-                {address && <div>Address: {address}</div>}
+              <div className=" text-start"><br />
+                <div> <i class="bi bi-send"></i> Latitude : {location.latitude.toFixed(5)}</div><br />
+                <div> <i class="bi bi-send"></i> Longitude : {location.longitude.toFixed(5)}</div><br />
+                 {address && <div> <i class="bi bi-geo-alt"></i> Address : {address}</div>} 
+
+                 <hr />
+                 
+            <div className="space-y-3">
+              {photoType === 'customer' && (
+                <>
+                  {/* <div className={`flex items-center p-3 rounded ${
+                    validation.hasFace ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {validation.hasFace ? '✓' : '✗'} Face detected:
+                    </span>
+                    {personCount} person(s) in frame
+                  </div> */} <br />
+                  <div className={`flex items-center p-3 rounded ${
+                    validation.lightingOk ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {validation.lightingOk ? '✓' : '✗'} Good lighting
+                    </span>
+                  </div>
+                  <div className={`flex items-center p-3 rounded ${
+                    validation.singlePerson ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {validation.singlePerson ? '✓' : '✗'} Person in frame
+                    </span>
+                  </div>
+                </>
+              )}
+              {photoType === 'agent' && (
+                <>
+                  <div className="flex items-center p-3 rounded bg-gray-100">
+                    <span className="font-medium mr-2">Agent face clearly visible</span>
+                  </div>
+                  <div className="flex items-center p-3 rounded bg-gray-100">
+                    <span className="font-medium mr-2">ID badge visible</span>
+                  </div>
+                  <div className="flex items-center p-3 rounded bg-gray-100">
+                    <span className="font-medium mr-2">Plain background preferred</span>
+                  </div>
+                </>
+              )}
+              {/* {showLocation && (
+                <div className={`flex items-center p-3 rounded ${
+                  location ? 'bg-green-100' : 'bg-red-100'
+                }`}>
+                  <span className="font-medium mr-2">
+                    {location ? '✓' : '✗'} Location captured
+                  </span>
+                  {isFetchingAddress ? (
+                    <span className="text-yellow-500 text-sm">Fetching address...</span>
+                  ) : locationError ? (
+                    <span className="text-red-500 text-sm">Error: {locationError}</span>
+                  ) : location ? (
+                    <div className="text-green-500 text-sm">
+                      <div>{location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}</div>
+                      {address && <div>{address}</div>}
+                    </div>
+                  ) : (
+                    <span className="text-yellow-500 text-sm">Acquiring location...</span>
+                  )}
+                </div>
+              )} */}
+            </div>
               </div>
             ) : (
               <div className="">
@@ -507,68 +572,6 @@ const ImageCaptureValidator = ({
               </div>
             )}
 
-            {/* <div className="space-y-3">
-              {photoType === 'customer' && (
-                <>
-                  <div className={`flex items-center p-3 rounded ${
-                    validation.hasFace ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    <span className="font-medium mr-2">
-                      {validation.hasFace ? '✓' : '✗'} Face detected:
-                    </span>
-                    {personCount} person(s) in frame
-                  </div>
-                  <div className={`flex items-center p-3 rounded ${
-                    validation.lightingOk ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    <span className="font-medium mr-2">
-                      {validation.lightingOk ? '✓' : '✗'} Good lighting
-                    </span>
-                  </div>
-                  <div className={`flex items-center p-3 rounded ${
-                    validation.singlePerson ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
-                    <span className="font-medium mr-2">
-                      {validation.singlePerson ? '✓' : '✗'} Single person in frame
-                    </span>
-                  </div>
-                </>
-              )}
-              {photoType === 'agent' && (
-                <>
-                  <div className="flex items-center p-3 rounded bg-gray-100">
-                    <span className="font-medium mr-2">Agent face clearly visible</span>
-                  </div>
-                  <div className="flex items-center p-3 rounded bg-gray-100">
-                    <span className="font-medium mr-2">ID badge visible</span>
-                  </div>
-                  <div className="flex items-center p-3 rounded bg-gray-100">
-                    <span className="font-medium mr-2">Plain background preferred</span>
-                  </div>
-                </>
-              )}
-              {showLocation && (
-                <div className={`flex items-center p-3 rounded ${
-                  location ? 'bg-green-100' : 'bg-red-100'
-                }`}>
-                  <span className="font-medium mr-2">
-                    {location ? '✓' : '✗'} Location captured
-                  </span>
-                  {isFetchingAddress ? (
-                    <span className="text-yellow-500 text-sm">Fetching address...</span>
-                  ) : locationError ? (
-                    <span className="text-red-500 text-sm">Error: {locationError}</span>
-                  ) : location ? (
-                    <div className="text-green-500 text-sm">
-                      <div>{location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}</div>
-                      {address && <div>{address}</div>}
-                    </div>
-                  ) : (
-                    <span className="text-yellow-500 text-sm">Acquiring location...</span>
-                  )}
-                </div>
-              )}
-            </div> */}
           </div>
         </div>
       </div>
