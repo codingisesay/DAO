@@ -115,10 +115,7 @@ function KycRejectTable() {
             />
           </div>
         </div>
-      </div>
-
-
-
+      </div> 
     </>);
 }
 
