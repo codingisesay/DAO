@@ -55,7 +55,10 @@ export const agentService = {
 
   vkycpendingtable:(id) => apiService.get(API_ENDPOINTS.AGENT.VKYC_PENDING_TABLE(id)),
 
-  refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id))
+  refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id)),
+
+  agentapplicationmonthly:(id)=> apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_MONTHLY(id)),
+  agentapplicationyearly:(id)=> apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_YEARLY(id)),
 }
 
 export const personalDetailsService = {
@@ -123,6 +126,10 @@ export const kycaccountsStatusListService = {
     apiService.get(API_ENDPOINTS.KYC_ACCOUNTS_STATUS_LIST.GET_LIST),
 };
 
+export const kycApprovedApplicationsService = {
+  getList: () =>
+    apiService.get(API_ENDPOINTS.KYC_APPROVED_APPLICATIONS.GET_LIST),
+};
 export const kycPendingApplicationsService = {
   getList: () =>
     apiService.get(API_ENDPOINTS.KYC_PENDING_APPLICATIONS.GET_LIST),
@@ -297,6 +304,7 @@ export const forgotpass = {
 
   setpass: (identifier, newPassword) =>
     apiService.post(API_ENDPOINTS.AUTH.SETPASS(identifier, newPassword)),
+  
 };
 
 export const branchService = {

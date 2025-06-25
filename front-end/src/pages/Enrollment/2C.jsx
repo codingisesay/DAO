@@ -4,7 +4,7 @@ import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { createAccountService } from '../../services/apiServices';
 
-const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
+const PhotoCaptureApp = ({ formData,  onNext, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
     const application_id = localStorage.getItem('application_id') || formData.application_id;
@@ -38,8 +38,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
 
-    const submitPhoto = async (e) => {
-        onNext();
+    const submitPhoto = async (e) => { 
         if (!photoData || !photoData.file) {
             Swal.fire({
                 icon: 'error',
@@ -80,11 +79,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                 timer: 1500
             });
 
-            // Update parent component with the photo data
-            updateFormData({
-                ...formData,
-                photoData: photoData
-            });
+         
 
             // Proceed to next step after successful submission
             onNext();
