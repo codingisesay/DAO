@@ -1,12 +1,7 @@
-<<<<<<< HEAD
  
-import { useAuth } from '../../auth/AuthContext';  
-import { kycRjectedApplicationsService } from '../../services/apiServices'; // <-- Import your service
-=======
 
 import { useAuth } from '../../auth/AuthContext';
-import { kycPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service
->>>>>>> 64707ec6868dbadf489ba9f61eb98d12e0577652
+import { kycPendingApplicationsService } from '../../services/apiServices'; // <-- Import your service g
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
