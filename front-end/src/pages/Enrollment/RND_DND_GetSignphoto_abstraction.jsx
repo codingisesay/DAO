@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getsignabstract } from '../../services/apiServices';
 import axios from 'axios';
 import {
     Box,
@@ -33,7 +34,7 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
     // API configuration
     // const API_URL = 'http://172.16.1.224:5001/api/detect';
     const API_URL ='https://dao.payvance.co.in:8091/ext/api/detect';
-   
+    const bearer =localStorage.getItem('accessToken')
 
     useEffect(() => {
         if (document) {
@@ -57,25 +58,25 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
             const formData = new FormData();
             formData.append('image', document.file);
 
-            const response = await axios.post(API_URL, formData, {
+            const response = await getsignabstract.upload(formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data', 
                 },
                 timeout: 30000 // 30 seconds timeout
             });
 
-            setApiResponse(response.data);
+            setApiResponse(response);
 
             // Process detections into signatures and photographs
-            if (response.data.detections && response.data.detections.length > 0) {
-                const sigs = response.data.detections
+            if (response.detections && response.detections.length > 0) {
+                const sigs = response.detections
                     .filter(d => d.class_id === 2) // Signature is class_id 2
                     .map(d => ({
                         ...d,
                         image: d.crop // Use the crop field directly
                     }));
 
-                const photos = response.data.detections
+                const photos = response.detections
                     .filter(d => d.class_id === 1) // Photograph is class_id 1
                     .map(d => ({
                         ...d,
@@ -111,8 +112,8 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
                 errorMessage = 'File too large. Please upload an image smaller than 5MB.';
             } else if (err.response.status === 500) {
                 errorMessage = 'Server error during image processing. Please try again.';
-            } else if (err.response.data && err.response.data.message) {
-                errorMessage = err.response.data.message;
+            } else if (err.response && err.response.message) {
+                errorMessage = err.response.message;
             }
         } else if (err.request) {
             if (err.code === 'ECONNABORTED') {

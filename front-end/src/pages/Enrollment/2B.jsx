@@ -477,7 +477,6 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
                 error={errors[`${prefix}_area`]}
             />
@@ -499,7 +498,6 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
                 error={errors[`${prefix}_country`]}
             />
@@ -524,7 +522,6 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
                 error={errors[`${prefix}_city`]}
             />
@@ -535,7 +532,6 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
                 error={errors[`${prefix}_district`]}
             />
@@ -546,7 +542,6 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 onChange={handleChange}
                 required
                 max={30}
-                validationType="ALPHABETS_AND_SPACE"
                 disabled={disabled}
                 error={errors[`${prefix}_state`]}
             />
@@ -564,7 +559,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
 
 const ExtraInput = ({ extraInputData, errors, handleChange, disabled = false }) => {
     const isResidentYes = extraInputData.per_resident === 'YES';
-    const isStatusResident = extraInputData.per_residence_status === 'RESIDENT';
+    const isStatusResident = extraInputData.per_residence_status === 'Resident';
 
     return (
         <>

@@ -154,7 +154,7 @@ const ViewApplicationForm = () => {
                 {/* Authentication Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Authentication Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
                             label="Auth Type"
@@ -185,7 +185,7 @@ const ViewApplicationForm = () => {
                 {/* Personal Information */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Personal Information</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-5 mb-6">
                         <CommanSelect
                             onChange={handleChange}
                             label={labels.salutation.label}
@@ -271,7 +271,7 @@ const ViewApplicationForm = () => {
                 {/* Contact Information */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Contact Information</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
                             label={labels.mobile.label}
@@ -307,7 +307,7 @@ const ViewApplicationForm = () => {
                 {/* Permanent Address */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Permanent Address</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
                             label={labels.complexname.label}
@@ -405,7 +405,7 @@ const ViewApplicationForm = () => {
                 {formData.correspondenceAddressSame !== "YES" && (
                     <div className="pdf-section">
                         <h2 className="text-xl font-semibold mb-4 border-b pb-2">Correspondence Address</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                             <CommanInput
                                 onChange={handleChange}
                                 label="Correspondence Complex Name"
@@ -503,7 +503,7 @@ const ViewApplicationForm = () => {
                 {/* Identity Documents */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Identity Documents</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
                             label={labels.adhar_card.label}
@@ -560,7 +560,7 @@ const ViewApplicationForm = () => {
                 {/* Family Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanSelect
                             onChange={handleChange}
                             label="Father's Prefix"
@@ -663,7 +663,7 @@ const ViewApplicationForm = () => {
                 {/* Occupation Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Occupation Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
                             label="Occupation Type"
@@ -740,7 +740,7 @@ const ViewApplicationForm = () => {
                 {/* File Uploads */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                         <div>
                             <label className="block text-gray-700 font-bold mb-2">Photo</label>
                             {formData.photo ? (

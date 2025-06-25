@@ -127,7 +127,7 @@ export default function LoginPage() {
                     </div>
                     <p className="text-sm my-4 text-gray-500 dark:text-gray-400">Please select your role</p>
 
-                    <div className="flex gap-4 mb-6">
+                    <div className="flex gap-5 mb-6">
                         {roles.map((role) => (
                             <span
                                 key={role.label}
@@ -353,7 +353,7 @@ export default function LoginPage() {
 //                     </div>
 //                     <p className="text-sm my-4 text-gray-500 dark:text-gray-400">Please select your role</p>
 
-//                     <div className="flex gap-4 mb-6">
+//                     <div className="flex gap-5 mb-6">
 //                         {roles.map((role) => (
 //                             <span
 //                                 key={role.label}

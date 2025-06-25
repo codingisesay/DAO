@@ -63,9 +63,7 @@ function DemographicsBarChart() {
 
     return (
         <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', mt: 5 }}>
-            <Typography variant="h5" gutterBottom align="center">
-                Demographics Report: Age Distribution of Customers
-            </Typography>
+       
 
             {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={400}>
