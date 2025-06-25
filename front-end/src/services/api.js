@@ -136,7 +136,9 @@ export const API_ENDPOINTS = {
     UPDATE_S6B: (id) => `/dao/api/admin/updateAgentLivePhotos/${id}`,
 
   },
-  
+  DOCUMENT_SIGN_ABSTRACTION :{
+    UPLOAD_DOC:'ext/api/detect',
+  },
   PENDING_KYC: {
     GET_DATAILS_KYC1:(id)=> `/dao/api/admin/kyc/details/${id}`,
     GET_DATAILS_KYC2:(id)=> `/dao/api/admin/kyc/details/${id}`, // Updated endpoint path

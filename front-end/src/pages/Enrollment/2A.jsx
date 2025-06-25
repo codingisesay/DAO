@@ -88,7 +88,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
             <div className='block sm:flex'>
-                <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-4">
+                <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
 
                     {/* Salutation - Select field */}
                     <CommanSelect
@@ -180,6 +180,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         name="maritalStatus"
                         value={localFormData.maritalStatus}
                         options={maritalStatusOptions}
+                        required={true}
                     />
 
                     {/* Mobile - Phone number validation */}
@@ -225,7 +226,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                         type="text"
                         name="adhar_card"
                         value={localFormData.adhar_card}
-                        required={verificationMethod === 'Aadhar Card'} // Required if this was verification method
+                        required={true} // Required if this was verification method
                         max={12}
                         validationType="NUMBER_ONLY"
                         disabled={verificationMethod === 'Aadhar Card'} // Disable if this was verification method

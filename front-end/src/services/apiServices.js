@@ -1,4 +1,4 @@
-import { apiService } from "../utils/storage";
+import api, { apiService } from "../utils/storage";
 import { API_ENDPOINTS } from "./api";
 
 
@@ -190,7 +190,13 @@ export const pendingAccountStatusUpdate = {
   updateS6B: (id, data) =>
     apiService.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S6B(id), data),
 };
-
+export const getsignabstract={ 
+    upload: (formData) =>
+    apiService.post(API_ENDPOINTS.DOCUMENT_SIGN_ABSTRACTION.UPLOAD_DOC, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+    
+}
 
 
 

@@ -141,8 +141,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                     return 'You need to write a reason!';
                 }
             },
-        });
-     onNext()
+        }); 
         if (result.isConfirmed && result.value) {
             const payload = {
                 kyc_application_id: Number(id),
@@ -176,8 +175,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                     return 'You need to write a reason!';
                 }
             },
-        });
-     onNext()
+        }); 
 
         if (result.isConfirmed && result.value) {
             const payload = {

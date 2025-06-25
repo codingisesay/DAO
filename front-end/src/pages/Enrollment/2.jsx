@@ -56,13 +56,20 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     return;
                 }
 
-                if(!pd.religion  || !pd.caste || !pd.email ){
-                      Swal.fire({
-                        icon: 'error',
-                        text: 'Kindly Fill All Required Fields.',
-                    });
-                    return;
-                }
+             let missingFields = [];
+
+            if (!pd.email) missingFields.push("Email");
+            if (!pd.caste) missingFields.push("Caste");
+            if (!pd.religion) missingFields.push("Religion");
+
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Required Fields',
+                    html: 'Please fill the following fields:<br><b>' + missingFields.join('</b><br><b>') + '</b>',
+                });
+                return;
+            }
 
 
                 else if (pd.mobile.length != 10) {

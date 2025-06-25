@@ -99,7 +99,7 @@ const Step1PersonalInfo = ({ formData, handleChange, onAadharDataFetched }) => {
                   checked
                   onChange={() => handleTypeSelect('rekyc')}
                 />
-                <div className="border rounded-lg p-2 flex items-center gap-4 peer-checked:border-green-600 transition-colors">
+                <div className="border rounded-lg p-2 flex items-center gap-5 peer-checked:border-green-600 transition-colors">
                   <i className="bi bi-person-fill-check"></i>
                   <span className="font-medium">Re-KYC</span>
                 </div>
