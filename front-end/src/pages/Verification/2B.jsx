@@ -5,7 +5,8 @@ import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
-
+import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
+import CommanSelect from '../../components/CommanSelect';
 
 const AddressInputs = () => {
 
@@ -31,6 +32,9 @@ const AddressInputs = () => {
         cor_city: '',
         cor_district: '',
         cor_state: '',
+        per_resident: "",
+        per_residence_status: "",
+        resi_doc: "",
         status: 'APPROVED'
     });
     const { id } = useParams();
@@ -58,6 +62,9 @@ const AddressInputs = () => {
                         per_city: application.per_city || '',
                         per_district: application.per_district || '',
                         per_state: application.per_state || '',
+                        per_resident: application.per_resident,
+                        per_residence_status: application.per_residence_status,
+                        resi_doc: application.resi_doc,
                         // Correspondence Address
                         cor_complex: application.cor_complex_name || '',
                         cor_flat_no: application.cor_flat_no || '',
@@ -171,6 +178,38 @@ const AddressInputs = () => {
                             max={191}
                             error={errors.per_state}
                             readOnly={true} />
+                            
+            <CommanSelect
+                label="Resident Y/N"
+                value={formData.per_resident || ''}
+                name="per_resident" 
+                options={YN}
+                error={errors.per_resident}
+                     disabled={true}              readOnly={true}
+            />
+
+       
+                <CommanSelect
+                    onChange={handleChange}
+                    label="Residential Status"
+                    value={formData.per_residence_status || ''}
+                    name="per_residence_status" 
+                    options={RESIDENTIAL_STATUS}
+                    error={errors.per_residence_status}
+                     disabled={true}              readOnly={true}
+                />
+     
+
+     
+                <CommanSelect
+                    onChange={handleChange}
+                    label="Residence Document"
+                    value={formData.resi_doc || ''}
+                    name="resi_doc" 
+                    options={RESIDENCE_DOCS}
+                    error={errors.resi_doc}
+                    disabled={true}        readOnly={true}
+                />
                     </div>
                 </div>
 
