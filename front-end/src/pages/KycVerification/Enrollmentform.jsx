@@ -5,6 +5,7 @@ import Page1 from './1';
 import Page3 from './3';
 import Page4 from './4'; 
 import Stepper from './Stepper';
+import Footer from '../../components/Footer';
 
 function Enrollmentform() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -81,6 +82,7 @@ function Enrollmentform() {
     };
 
     return (
+        <>
         <div className="enrollment-form-container">
             <div className='flex justify-around items-center flex-wrap'>
                 <div className='xl:w-1/5 lg:w-1/4 md:w-2/6 sm:w-1/3 p-2'>
@@ -101,6 +103,8 @@ function Enrollmentform() {
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     );
 }
 

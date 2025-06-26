@@ -95,7 +95,7 @@ const Notification = () => {
   ];
 
   return (
-    <div className="mt-4">
+    <div className="">
       <NotificationPanel notifications={notifications} />
     </div>
   );
