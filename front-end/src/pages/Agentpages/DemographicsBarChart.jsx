@@ -26,7 +26,7 @@ function DemographicsBarChart() {
             try {
                 setLoading(true);
                 const response = await agentService.demographicReport(storedId);
-                console.log('DR : ', response);
+                // console.log('DR : ', response);
                 
                 if (response && response.data) {
                     // Transform the API data into the format needed for the chart
@@ -62,16 +62,14 @@ function DemographicsBarChart() {
     }
 
     return (
-        <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto', mt: 5 }}>
-            <Typography variant="h5" gutterBottom align="center">
-                Demographics Report: Age Distribution of Customers
-            </Typography>
+        <Box sx={{ width: '100%', maxWidth: 800, mx: 'auto',   }}>
+       
 
             {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height={400}>
+                <ResponsiveContainer width="100%" height={300}>
                     <BarChart
                         data={chartData}
-                        margin={{ top: 20, right: 30, left: 10, bottom: 5 }}
+                        margin={{ top: 20, right: 30, left: 10, bottom: 10 }}
                         barCategoryGap="20%"
                     >
                         <CartesianGrid strokeDasharray="3 3" />
@@ -87,7 +85,7 @@ function DemographicsBarChart() {
                             formatter={(value) => [`${value} customers`, 'Count']}
                             labelFormatter={(label) => `Age Range: ${label}`}
                         />
-                        <Legend />
+                    
                         <Bar 
                             dataKey="count" 
                             name="Customers" 
@@ -97,7 +95,11 @@ function DemographicsBarChart() {
                                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                             ))}
                         </Bar>
+                        
+                        
+                            {/* <Legend /> */}
                     </BarChart>
+                    
                 </ResponsiveContainer>
             ) : (
                 <Typography variant="h6" align="center">

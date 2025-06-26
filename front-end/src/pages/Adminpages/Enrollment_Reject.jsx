@@ -5,7 +5,7 @@ import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
 import React, { useState, useEffect } from "react";
 
-function PendingTable() {
+function RejectTable() {
     const [tbldata, setTbldata] = React.useState([]);
     const { logout } = useAuth();
     const [data, setData] = useState({ content: [] });
@@ -45,7 +45,7 @@ function PendingTable() {
     };
 
     const columns = [
-        { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
+        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
         { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
         { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.rejected_by, field: "admin_id", type: "text" },
@@ -126,7 +126,7 @@ function PendingTable() {
                             onFilter={handleFilter}
                             onPageChange={handlePageChange}
                             loading={loading}
-                            primaryKeys={["application_id"]}
+                            primaryKeys={["id"]}
                             editButtonDisabled={true}
                         />
                     </div>
@@ -136,6 +136,6 @@ function PendingTable() {
     );
 }
 
-export default PendingTable;
+export default RejectTable;
 
 

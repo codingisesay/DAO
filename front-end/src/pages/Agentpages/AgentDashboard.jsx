@@ -71,6 +71,12 @@ useEffect(() => {
   const handleDateChange = (range) => {
     console.log("Selected Range:", range);
   };
+  function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
+
   return (
     <>
       <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
@@ -86,7 +92,6 @@ useEffect(() => {
           <div className="text-right">
             <div className="flex items-center">
               <ThemeToggle /> 
-            
                 <div className="inline-block relative"> 
                 <i
                   className="mx-2 bi bi-bell"
@@ -98,13 +103,11 @@ useEffect(() => {
                   style={{ cursor: "pointer" }}
                 />
                 {showNotification && (
-                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
+                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
                     <NotificationDd />
                   </div>
                 )}
-              </div>
-
-
+              </div> 
                 {/* Help Icon */}
                 <div className="inline-block relative">
                 <i
@@ -117,32 +120,20 @@ useEffect(() => {
                   style={{ cursor: "pointer" }}
                 />
                 {showHelp && (
-                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md">
+                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
                     <Help />
                   </div>
                 )}
                 </div>
-
-
-
-
-
                 <div className="inline-block relative">
-                {/* Profile Icon */}
+              
                 <i
                   className="mx-2 bi bi-globe2" 
                   style={{ cursor: "pointer" }}
                 />
              
-              </div>
-
-
-
-
-
-
-
-
+            {/* <LanguageSwitcher/> */}
+              </div> 
               <i
                 className="mx-2 bi  bi-box-arrow-right md:w-right"
                 onClick={handleLogout}
@@ -165,32 +156,20 @@ useEffect(() => {
                       setShowNotification(false)
                     }}
                 />
-                <span className="font-bold">
-                  {" "}
-                  {username}
+                <span className="font-bold">  
+                  {toTitleCase( username )}
                   <br />
-                  <small className="font-normal"> - {userrole}</small>
+                  <small className="font-normal"> -  {toTitleCase( userrole )} </small>
                 </span>
                     </div>
  
                 {showProfile && (
-                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md">
+                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
                     <Profilecard />
                   </div>
                 )}
               </div>
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
             </div>
           </div>
@@ -246,7 +225,7 @@ useEffect(() => {
                 <DateRangePicker onChange={handleDateChange} />
               </div>
 
-              <div className="dashboard-top-caard-collection flex flex-wrap my-1">
+              {/* <div className="dashboard-top-caard-collection flex flex-wrap my-1">
                 <div className="w-1/2">
                   <div className="approved-card">
                     <i className="bi bi-clipboard2-check"></i>
@@ -283,7 +262,7 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -301,6 +280,7 @@ useEffect(() => {
           </div>
         </div>
       </div>
+        <Footer />
     </>
   );
 };
@@ -310,6 +290,7 @@ import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
 import EnrollmentPendingTable from './Enrollment_PendingTable'
 import EnrollmentRejectedTable from './Enrollment_Reject'
 import EnrollmentReviewTable from './Enrollment_Review'
+import Footer from "../../components/Footer";
 
 function StatusDashboard1() {
   const storedId = localStorage.getItem("agent_id") || 1;
@@ -456,92 +437,26 @@ function StatusDashboard1() {
   );
 }
 
+ 
+const LanguageSwitcher = () => {
+  const handleTranslateClick = () => {
+    const select = document.querySelector(".goog-te-combo");
+    if (select) {
+      const currentLang = select.value;
+      // Toggle between English and Spanish as an example
+      select.value = currentLang === "hi" ? "en" : "hi";
+      select.dispatchEvent(new Event("change"));
+    }
+  };
 
-
-
-
-// function StatusDashboard1() {
-//   const storedId = localStorage.getItem("agent_id") || 1;
-//   const [statusCounts, setStatusCounts] = useState({
-//     Pending: 0,
-//     Approved: 0,
-//     Rejected: 0,
-//     Review: 0,
-//   });
-
-//   useEffect(() => {
-//     const fetchDetails = async () => {
-//       try {
-//         const response = await agentService.applicationcountbyagent(storedId);
-//         // console.log(response)
-//         if (response && response.data) {
-//           // Count the statuses
-//           const counts = response.data.reduce((acc, item) => {
-//             acc[item.status] = (acc[item.status] || 0) + 1;
-//             return acc;
-//           }, {});
-
-//           setStatusCounts({
-//             Pending: counts.Pending || 0,
-//             Approved: counts.Approved || 0,
-//             Rejected: counts.Rejected || 0,
-//             Review: counts.Review || 0,
-//           });
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         Swal.fire({
-//           icon: "error",
-//           title: "Error",
-//           text: error?.response?.data?.message,
-//         });
-//       }
-//     };
-//     fetchDetails();
-//   }, []);
-
-//   return (
-//     <div className="dashboard-top-caard-collection flex my-1">
-//       <Link to="/enrollment_review_tbl" className="md:w-1/4">
-//         <div className="recent-applyed-card">
-//           <i className="bi bi-clipboard2-x"></i>
-//           <div className="card-text">
-//             <span className="dashboard-card-count">{statusCounts.Review}</span>
-//             <small>Review</small>
-//           </div>
-//         </div>
-//       </Link>
-//       <Link to="/enrollment_approved_tbl" className="md:w-1/4">
-//         <div className="approved-card">
-//           <i className="bi bi-clipboard2-check"></i>
-//           <div className="card-text">
-//             <span className="dashboard-card-count">
-//               {statusCounts.Approved}
-//             </span>
-//             <small>Approved</small>
-//           </div>
-//         </div>
-//       </Link>
-//       <Link to="/enrollment_pending_tbl" className="md:w-1/4">
-//         <div className="pending-card">
-//           <i className="bi bi-clipboard2-minus"></i>
-//           <div className="card-text">
-//             <span className="dashboard-card-count">{statusCounts.Pending}</span>
-//             <small>Pending</small>
-//           </div>
-//         </div>
-//       </Link>
-//       <Link to="/enrollment_rejected_tbl" className="md:w-1/4">
-//         <div className="rejected-card">
-//           <i className="bi bi-clipboard2-x"></i>
-//           <div className="card-text">
-//             <span className="dashboard-card-count">{statusCounts.Rejected}</span>
-//             <small>Rejected</small>
-//           </div>
-//         </div>
-//       </Link>
-//     </div>
-//   );
-// }
+  return (
+    <i
+      className="mx-2 bi bi-globe2"
+      style={{ cursor: "pointer" }}
+      onClick={handleTranslateClick}
+      title="Translate"
+    />
+  );
+}; 
 
 export default Dashboard;

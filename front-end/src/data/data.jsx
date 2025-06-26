@@ -90,8 +90,8 @@ const salaryrange = [
 
 
 const RESIDENTIAL_STATUS = [
-    { label: 'RESIDENT', value: 'RESIDENT' },
-    { label: 'NON RESIDENT (NRI)', value: 'NON_RESIDENT' },
+    { label: 'Resident', value: 'Resident' },
+    { label: 'Non Resident', value: 'Non Resident' },
 ];
 
 const RESIDENCE_DOCS = [

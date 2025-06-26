@@ -587,7 +587,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
 
 const ExtraInput = ({ extraInputData, errors, handleChange, disabled = false }) => {
     const isResidentYes = extraInputData.per_resident === 'YES';
-    const isStatusResident = extraInputData.per_residence_status === 'RESIDENT';
+    const isStatusResident = extraInputData.per_residence_status === 'Resident';
 
     return (
         <>

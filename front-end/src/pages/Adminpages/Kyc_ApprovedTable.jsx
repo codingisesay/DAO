@@ -1,6 +1,6 @@
-
-import { useAuth } from '../../auth/AuthContext';
-import { adminService } from '../../services/apiServices'; // <-- Import your service
+ 
+import { useAuth } from '../../auth/AuthContext';  
+import { adminService, kycApprovedApplicationsService } from '../../services/apiServices'; // <-- Import your service
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 
@@ -9,9 +9,9 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 
 
 function KycApprovedTable() {
-
+   
   const [tbldata, setTbldata] = React.useState([]);
-  const { logout } = useAuth();
+  const { logout } = useAuth(); 
   const [data, setData] = useState({ content: [] });
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -20,31 +20,31 @@ function KycApprovedTable() {
 
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.application_id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.application_id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
     { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
   ];
 
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await adminService.getAllApprovedApplications({
-        page: currentPage,
-        sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
-        ...filters,
-      });
-      // Set both states correctly
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] }); // This is what DataTable expects
-    } catch (error) {
-      console.error("Failed to fetch pending applications:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
+const fetchData = async () => {
+  try {
+    setLoading(true);
+    const response = await kycApprovedApplicationsService.getList({
+      page: currentPage,
+      sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
+      ...filters,
+    });
+    // Set both states correctly
+    setTbldata(response.data || []);
+    setData({ content: response.data || [] }); // This is what DataTable expects
+  } catch (error) {
+    console.error("Failed to fetch pending applications:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+ 
   /*
   The `useEffect` hook is used to perform side effects in the component.
   In this case, it ensures that `fetchBranches()` is called whenever 

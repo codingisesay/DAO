@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
@@ -12,7 +12,10 @@ import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
 import Footer from '../../components/Footer';
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2'; 
+import Help from "../DashboardHeaderComponents/Help";
+import Profilecard from "../DashboardHeaderComponents/ProfileCard";
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -57,6 +60,36 @@ const AdminDashboard = () => {
     const handleDateChange = (range) => {
         console.log("Selected Range:", range);
     };
+    
+      const [showHelp, setShowHelp] = useState(false);
+      const [showProfile, setShowProfile] = useState(false);
+      const [showNotification, setShowNotification] = useState(false);
+      const helpRef = useRef();
+      const profileRef = useRef();
+      const notifyRef = useRef();
+    useEffect(() => {
+      function handleClickOutside(event) {
+        // Help dropdown
+        if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+          setShowHelp(false);
+        }
+        // Profile dropdown
+        if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+          setShowProfile(false);
+        }
+        // Notification dropdown
+        if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+          setShowNotification(false);
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showHelp, showProfile, showNotification]);
+      function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
     return (
         <>
             <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
@@ -66,22 +99,90 @@ const AdminDashboard = () => {
                         <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
                         <h2>Welcome to FinAcctz</h2>
                     </div>
-                    <div className="text-right">
-                        <div className='flex items-center'>
-                            <ThemeToggle />
-                            <i className="mx-2 bi  bi-bell"></i>
-                            <i className="mx-2 bi  bi-question-circle"></i>
-                            <i className="mx-2 bi  bi-globe2"></i>
-                            <i className="mx-2 bi  bi-box-arrow-right md:w-right" onClick={handleLogout}></i>
-                            <img height='40px' width='40px'
-                                src={userphoto}
-                                alt="profile"
-                                className="rounded-full object-cover mx-2"
-                            />
-                           
-                            <span className='font-bold'> {username}<br /><small className='font-normal'> - {userrole}</small></span>
-                        </div>
+          <div className="text-right">
+            <div className="flex items-center">
+              <ThemeToggle /> 
+                <div className="inline-block relative"> 
+                <i
+                  className="mx-2 bi bi-bell"
+                  onClick={() => {
+                    setShowProfile(false);
+                    setShowHelp(false);
+                    setShowNotification(!showNotification)
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+                {showNotification && (
+                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
+                    <NotificationDd />
+                  </div>
+                )}
+              </div> 
+                {/* Help Icon */}
+                <div className="inline-block relative">
+                <i
+                  className="mx-2 bi bi-question-circle"
+                  onClick={() => {
+                    setShowHelp(!showHelp);
+                    setShowProfile(false); 
+                    setShowNotification(false); // hide profile if open
+                  }}
+                  style={{ cursor: "pointer" }}
+                />
+                {showHelp && (
+                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
+                    <Help />
+                  </div>
+                )}
+                </div>
+                <div className="inline-block relative">
+              
+                <i
+                  className="mx-2 bi bi-globe2" 
+                  style={{ cursor: "pointer" }}
+                />
+             
+            {/* <LanguageSwitcher/> */}
+              </div> 
+              <i
+                className="mx-2 bi  bi-box-arrow-right md:w-right"
+                onClick={handleLogout}
+              ></i>
+
+              
+                <div className="inline-block relative">
+                {/* Profile Icon */}
+
+                  <div className="flex">
+                <img
+                  height="40px"
+                  width="40px"
+                  src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                  alt="profile"
+                  className="rounded-full object-cover mx-2 my-auto"
+                    onClick={() => {
+                      setShowProfile(!showProfile);
+                      setShowHelp(false); // hide help if open
+                      setShowNotification(false)
+                    }}
+                />
+                <span className="font-bold">  
+                  {toTitleCase( username )}
+                  <br />
+                  <small className="font-normal"> -  {toTitleCase( userrole )} </small>
+                </span>
                     </div>
+ 
+                {showProfile && (
+                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
+                    <Profilecard />
+                  </div>
+                )}
+              </div>
+ 
+
+            </div>
+          </div>
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
@@ -103,32 +204,8 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className='md:w-1/2 sm:w-full p-1'>
-                        <div className="bg-white w-full my-2 p-4 rounded-md">
-                            <h2 className="text-xl font-bold mb-0">Agent Performance</h2>
-                            <div className="table-container  overflow-y-auto " style={{ maxHeight: '150px' }}>
-                                <table className="table-auto w-full">
-                                    <thead>
-                                        <tr>
-                                            <th>Agent Name</th>
-                                            <th>Total Application</th>
-                                            <th>Approval Rate</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        <tr>
-                                            <td>Vaibhav Talekar</td>
-                                            <td>300</td>
-                                            <td>855</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Anjor Rane</td>
-                                            <td>250</td>
-                                            <td>75%</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div className="bg-white w-full my-2 p-4 rounded-md text-sm text-gray-400 h-[190px] text-center">
+                            yet to be come..
                         </div>
 
                     </div>
@@ -319,86 +396,6 @@ function StatusDashboard1() {
     );
 }
 
-// function StatusDashboard1() {
-//     const [statusCounts, setStatusCounts] = useState({
-//         Pending: 0,
-//         Approved: 0,
-//         Rejected: 0,
-//         Review: 0
-//     });
-
-//     useEffect(() => {
-//         const fetchDetails = async () => {
-//             try {
-//                 const response = await accountsStatusListService.getList();
-//                 // console.log(response)
-//                 if (response && response.data) {
-//                     // Count the statuses
-//                     const counts = response.data.reduce((acc, item) => {
-//                         acc[item.status] = (acc[item.status] || 0) + 1;
-//                         return acc;
-//                     }, {});
-
-//                     setStatusCounts({
-//                         Pending: counts.Pending || 0,
-//                         Approved: counts.Approved || 0,
-//                         Rejected: counts.Rejected || 0,
-//                         Review: counts.Review || 0
-//                     });
-//                 }
-//             } catch (error) {
-//                 console.log(error);
-//                 Swal.fire({
-//                     icon: 'error',
-//                     title: 'Error',
-//                     text: error?.response?.data?.message
-//                 });
-//             }
-//         };
-//         fetchDetails();
-//     }, []);
-
-//     return (
-//         <div className="dashboard-top-caard-collection flex my-1">
-//             <Link to="/enrollment_review" className="md:w-1/4">
-//                 <div className="recent-applyed-card">
-//                     <i className="bi bi-clipboard2-x"></i>
-//                     <div className="card-text">
-//                         <span className="dashboard-card-count">{statusCounts.Review}</span>
-//                         <small>Review</small>
-//                     </div>
-//                 </div>
-//             </Link>
-//             <Link to="/enrollment_approved" className="md:w-1/4">
-//                 <div className="approved-card">
-//                     <i className="bi bi-clipboard2-check"></i>
-//                     <div className="card-text">
-//                         <span className="dashboard-card-count">{statusCounts.Approved}</span>
-//                         <small>Approved</small>
-//                     </div>
-//                 </div>
-//             </Link>
-//             <Link to="/enrollment_pending" className="md:w-1/4">
-//                 <div className="pending-card">
-//                     <i className="bi bi-clipboard2-minus"></i>
-//                     <div className="card-text">
-//                         <span className="dashboard-card-count">{statusCounts.Pending}</span>
-//                         <small>Pending</small>
-//                     </div>
-//                 </div>
-//             </Link>
-//             <Link to="/enrollment_rejected" className="md:w-1/4">
-//                 <div className="rejected-card">
-//                     <i className="bi bi-clipboard2-x"></i>
-//                     <div className="card-text">
-//                         <span className="dashboard-card-count">{statusCounts.Rejected}</span>
-//                         <small>Rejected</small>
-//                     </div>
-//                 </div>
-//             </Link>
-//         </div>
-//     );
-// }
 
 
 

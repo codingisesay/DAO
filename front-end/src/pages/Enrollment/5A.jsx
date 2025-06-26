@@ -26,7 +26,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         motherMiddleName:  '',
         motherLastName:   '',
         birthPlaceCity:  '',
-        birthPlaceCountry:  '',
+        birthPlaceCountry:  'India',
         maritalStatus:   '',
         nationality: 'Indian',
         religion:  '',
