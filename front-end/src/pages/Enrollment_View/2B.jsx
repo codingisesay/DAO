@@ -184,8 +184,7 @@ const AddressInputs = () => {
             <CommanSelect
                 label="Resident Y/N"
                 value={formData.per_resident || ''}
-                name="per_resident"
-                required 
+                name="per_resident" 
                 options={YN}
                 error={errors.per_resident}
                      disabled={true}              readOnly={true}
@@ -196,8 +195,7 @@ const AddressInputs = () => {
                     onChange={handleChange}
                     label="Residential Status"
                     value={formData.per_residence_status || ''}
-                    name="per_residence_status"
-                    required 
+                    name="per_residence_status" 
                     options={RESIDENTIAL_STATUS}
                     error={errors.per_residence_status}
                      disabled={true}              readOnly={true}
@@ -209,8 +207,7 @@ const AddressInputs = () => {
                     onChange={handleChange}
                     label="Residence Document"
                     value={formData.resi_doc || ''}
-                    name="resi_doc"
-                    required 
+                    name="resi_doc" 
                     options={RESIDENCE_DOCS}
                     error={errors.resi_doc}
                     disabled={true}        readOnly={true}
