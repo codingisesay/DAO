@@ -9,7 +9,7 @@ import React, { useState, useEffect } from "react"; // Import necessary hooks fr
 
 
 function ApprovedTable() {
-  const storedId = localStorage.getItem('agent_id') || 1;
+  const storedId = localStorage.getItem('userCode') || 1;
   const [tbldata, setTbldata] = React.useState([]);
   const { logout } = useAuth();
   const [data, setData] = useState({ content: [] });
