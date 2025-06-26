@@ -5,6 +5,7 @@ import Step2JobDetails from "./Step2PersonalD";
 import Step3Nomination from "./Step3DocumentUpload";
 import Step4VideoCall from "./Step4VideoCall"; 
 import "./style.css";
+import Footer from "../../components/Footer";
 
 function CustomerForm() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -280,7 +281,8 @@ function CustomerForm() {
     };
 
     return (
-        <div className="enrollment-form-container p-1">
+        <>
+        <div className="enrollment-form-container px-1 pt-1">
             <div className='flex justify-around items-center flex-wrap'>
                 <div className='xl:w-1/5 lg:w-1/4 md:w-2/6 sm:w-1/3 p-1'>
 
@@ -340,6 +342,8 @@ function CustomerForm() {
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     );
 }
 

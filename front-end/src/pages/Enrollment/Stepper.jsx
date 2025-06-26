@@ -18,10 +18,10 @@ const Stepper = ({ currentStep, complete, steps }) => {
     };
 
     const getStepStatus = (stepIndex) => {
-        if (complete) return 'Completed';
-        if (stepIndex + 1 < currentStep) return 'Completed';
-        if (stepIndex + 1 === currentStep) return 'In Progress';
-        return 'Pending';
+        if (complete) return '';
+        if (stepIndex + 1 < currentStep) return '';
+        if (stepIndex + 1 === currentStep) return '';
+        return '';
     };
 
     return (
@@ -30,15 +30,15 @@ const Stepper = ({ currentStep, complete, steps }) => {
 
             <ul className='max-w-md mx-auto my-3 dark:text-white'  onClick={() => navigate(-1)}>
                 <li>
-                    <i className="bi bi-columns-gap"></i> &nbsp;
+                  <i className="bi bi-columns-gap p-2 m-auto border border-green-400 rounded-full text-green-500"></i>&nbsp;
                     Back To Dashboard
                 </li>
             </ul>
-            <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
+            {/* <hr className="h-px my-1 bg-gray-400 border-0 dark:bg-gray-700" /> */}
             <p className='my-3'> Account Opening</p>
 
-            <div className="sidebar-stepper-container">
-                <div className="vertical-stepper">
+            <div className="sidebar-stepper-container ">
+                <div className="vertical-stepper ">
                     {steps.map((step, i) => (
                         <div
                             key={i}
@@ -48,7 +48,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
                                 {i + 1 < currentStep || complete ? '' : <i className={step.icon}></i>}
                             </div>
                             <div className="ms-2">
-                                {/* <div className="stepper-subtitle">{step.subtitle}</div> */}
+                                <div className="stepper-subtitle text-xs">{step.subtitle}</div>
                                 <div className="stepper-title">{step.title}</div>
                                 <div className={`stepper-status text-xs ${getStepStatus(i).toLowerCase().replace(' ', '-')}`}>
                                     {getStepStatus(i)}
