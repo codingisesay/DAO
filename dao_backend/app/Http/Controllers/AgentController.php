@@ -74,13 +74,12 @@ public function getAccountStatusByAgent(Request $request)
  
 public function EnrollmentDetails(Request $request)
 {
-    // Normalize gender input to match validation
     $request->merge([
         'gender' => ucfirst(strtolower($request->input('gender')))
     ]);
 
-    // Validate incoming request data (excluding application_no since it will be generated)
     $validatedData = $request->validate([
+        'agent_id' => 'required',
         'auth_type' => 'nullable|in:Pan Card,Aadhar Card,Digilocker',
         'auth_code' => 'nullable|string',
         'auth_status' => 'nullable|string',
@@ -102,33 +101,27 @@ public function EnrollmentDetails(Request $request)
         'status' => 'nullable',
     ]);
 
-    // Add the agent ID to the validated data from the authenticated user
-    // $validatedData['agent_id'] = 1;
-    $user = $request->user(); // or $request->get('auth_user')
-    $validatedData['agent_id'] = $user->id; // or $user['id']
-    // Try to find an existing application by auth_type + auth_code
+    // Use agent_id from payload
+    // $validatedData['agent_id'] = $request->input('agent_id');
 
-    $existingApplication = CustomerApplicationDetail::where('auth_type', $validatedData['auth_type'] ?? null)
-        ->where('auth_code', $validatedData['auth_code'] ?? null)
-        ->first();
+ $existingApplication = CustomerApplicationDetail::where('auth_type', $validatedData['auth_type'] ?? null)
+    ->where('auth_code', $validatedData['auth_code'] ?? null)
+    ->first();
 
-    if ($existingApplication) {
-        // Update the existing application
-        $existingApplication->update($validatedData);
-        $applicationNo = $existingApplication->application_no;
-        $applicationId = $existingApplication->id;
-        $customerApplication = $existingApplication;
-        $message = 'Customer application details updated successfully.';
-    } else {
-        // Generate a unique application number
-        $applicationNo = 'APP' . strtoupper(uniqid());
-        $validatedData['application_no'] = $applicationNo;
-
-        // Insert data into the database
-        $customerApplication = CustomerApplicationDetail::create($validatedData);
-        $applicationId = $customerApplication->id;
-        $message = 'Customer application details saved successfully.';
-    }
+    // Check if an existing application with the same auth_type and auth_code exists
+if ($existingApplication) {
+    $existingApplication->update($validatedData);
+    $applicationNo = $existingApplication->application_no ?? null;
+    $applicationId = $existingApplication->id ?? null;
+    $customerApplication = $existingApplication;
+    $message = 'Customer application details updated successfully.';
+} else {
+    $applicationNo = 'APP' . strtoupper(uniqid());
+    $validatedData['application_no'] = $applicationNo;
+    $customerApplication = CustomerApplicationDetail::create($validatedData);
+    $applicationId = $customerApplication->id;
+    $message = 'Customer application details saved successfully.';
+}
 
     return response()->json([
         'message' => $message,
