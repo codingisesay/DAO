@@ -5,7 +5,7 @@ import BankFacility from './5C';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
 const p2 = ({ onNext, onBack, formData, updateFormData }) => {
-    const [activeStep, setActiveStep] = useState(0);
+    const [activeStep, setActiveStep] = useState(2);
 
 
     const steps = [

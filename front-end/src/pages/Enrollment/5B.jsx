@@ -1514,7 +1514,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                                                 onClick={() => removeNominee(nominee.id)}
                                                 className="text-red-500 hover:text-red-700"
                                             >
-                                                Remove
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>

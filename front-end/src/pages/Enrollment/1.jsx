@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import {  createAccountService } from '../../services/apiServices';
+import {  createAccountService, pendingAccountData } from '../../services/apiServices';
 import { toast } from 'react-toastify';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
@@ -37,6 +37,130 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         agent_id: agent_id || '',
         state: formData.state || ''
     });
+      
+    
+        // Fetch details if application_id exists
+        const id = localStorage.getItem('application_id');
+        useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
+       
+
+        // clear local storage from below code
+        useEffect(() => {
+            const checkAndClearLocalStorage = async () => {
+                // Check for data in localStorage
+                const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
+                const hasNominationForm = !!localStorage.getItem('nominationFormData')?.length;
+                const hasDocuments = !!localStorage.getItem('documentData')?.length;
+
+                if (hasCustomerPhoto || hasNominationForm || hasDocuments) {
+                    const messages = [];
+                    if (hasCustomerPhoto) messages.push('Customer Photo Data');
+                    if (hasNominationForm) messages.push('Nomination Form Data');
+                    if (hasDocuments) messages.push('Document Data');
+                    
+                    // Show confirmation dialog
+                    const result = await Swal.fire({
+                        title: 'Clear Existing Data?',
+                        html: `We found existing data in your browser storage:<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, clear it!',
+                        // cancelButtonText: 'No, keep it',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                    });
+
+                    if (result.isConfirmed) {
+                        // Clear the items if user confirms
+                        localStorage.removeItem('customerPhotoData');
+                        localStorage.removeItem('nominationFormData');
+                        localStorage.removeItem('documentData');
+                        
+                        await Swal.fire(
+                            'Cleared!',
+                            'The existing data has been cleared.',
+                            'success'
+                        );
+                    } else {
+                        await Swal.fire(
+                            'Kept',
+                            'The existing data was not cleared.',
+                            'info'
+                        );
+                    }
+                }
+
+            };
+
+            checkAndClearLocalStorage();
+        }, []);
+        
+        const fetchAndShowDetails = async (id) => {
+            try {
+                // alert('called')
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS1(id);
+                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    const application = response.details || {};
+                     
+
+                    if (application.auth_type === 'Aadhar Card') {
+                    application.auth_code = application.adhar_card || '';
+                    application.verifynumber = application.adhar_card || '';
+                    } else if (application.auth_type === 'Pan Card') {
+                    application.auth_code = application.pan_card || '';
+                    application.verifynumber = application.pan_card || '';
+                    }
+ 
+                        if(application.auth_type && application.auth_code){
+                            setSelectedOption(application.auth_type)
+                        setLocalFormData({  ...application ,
+                        first_name: application.first_name || '',
+                        middle_name: application.middle_name || '',
+                        last_name: application.last_name || '',
+                        auth_type: application.auth_type || '',
+                        auth_code: application.auth_code || '',
+                        DOB: application.DOB || '',
+                        gender: application.gender || '',
+                        mobile: application.mobile || '',
+                        verifynumber: application.auth_code || '',
+
+                        complex_name: application.complex_name || '',
+                        flat_no: application.flat_no || '',
+                        area: application.area || '',
+                        landmark: application.landmark || '',
+                        country: application.country || '',
+                        pincode: application.pincode || '',
+                        city: application.city || '',
+                        district: application.district || '',
+                        state: application.state || '',
+
+                        agent_id: application.agent_id || '',
+                        admin_id: application.admin_id || '',
+                        status: application.status || '',
+                        application_id: application.application_id || '',
+                        application_no: application.application_no || '',
+                        salutation: application.salutation || '',
+                        religion: application.religion || '',
+                        caste: application.caste || '',
+                        marital_status: application.marital_status || '',
+                        alt_mob_no: application.alt_mob_no || '',
+                        email: application.email || '',
+                        adhar_card: application.adhar_card || '',
+                        pan_card: application.pan_card || '',
+                        passport: application.passport || '',
+                        driving_license: application.driving_license || '',
+                        voter_id: application.voter_id || ''
+                        });
+                        setShowData(true)
+                        }
+                    // alert(localFormData.photo);
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;

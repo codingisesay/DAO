@@ -449,6 +449,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.complexname.label}
                 name={`${prefix}_complex_name`}
                 value={formData[`${prefix}_complex_name`] || ''}
@@ -460,17 +461,18 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_complex_name`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.roomno.label}
                 name={`${prefix}_flat_no`}
                 value={formData[`${prefix}_flat_no`] || ''}
                 onChange={handleChange}
                 required
-                max={5}
-                validationType={'ALPHANUMERIC'}
+                max={5} 
                 disabled={disabled}
                 error={errors[`${prefix}_flat_no`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.area.label}
                 name={`${prefix}_area`}
                 value={formData[`${prefix}_area`] || ''}
@@ -481,6 +483,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_area`]}
             />
             <CommanInput
+                // validationType={'EVERYTHING'}
                 label={labels.landmark.label}
                 name={`${prefix}_landmark`}
                 value={formData[`${prefix}_landmark`] || ''}
@@ -492,6 +495,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_landmark`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.country.label}
                 name={`${prefix}_country`}
                 value={formData[`${prefix}_country`] || ''}
@@ -502,13 +506,13 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_country`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.pincode.label}
                 name={`${prefix}_pincode`}
                 value={formData[`${prefix}_pincode`] || ''}
                 onChange={handleChange}
                 required
-                max={6}
-                validationType="NUMBER_ONLY"
+                max={6} 
                 disabled={disabled}
                 error={errors[`${prefix}_pincode`]}
                 endAdornment={loading && (
@@ -516,6 +520,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 )}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.city.label}
                 name={`${prefix}_city`}
                 value={formData[`${prefix}_city`] || ''}
@@ -526,6 +531,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_city`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.district.label}
                 name={`${prefix}_district`}
                 value={formData[`${prefix}_district`] || ''}
@@ -536,6 +542,7 @@ function AddressSection({ formData, handleChange, prefix, extraInputData, errors
                 error={errors[`${prefix}_district`]}
             />
             <CommanInput
+                validationType={'EVERYTHING'}
                 label={labels.state.label}
                 name={`${prefix}_state`}
                 value={formData[`${prefix}_state`] || ''}
