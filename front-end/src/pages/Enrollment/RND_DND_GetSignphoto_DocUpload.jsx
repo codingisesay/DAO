@@ -458,14 +458,14 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                 <div className="mt-2 flex flex-col">
                                     <div className="flex justify-center gap-4">
                                         <button
-                                            className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 shadow-md"
+                                            className="text-green-500"
                                             onClick={() => triggerFileInput('identity', selectedIdentityProof, '')}
                                             title="Upload from device"
                                         >
                                             <Upload size={18} />
                                         </button>
                                         <button
-                                            className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 shadow-md"
+                                            className="text-green-500"
                                             onClick={() => startCamera('identity', selectedIdentityProof)}
                                             title="Take photo"
                                         >
@@ -508,14 +508,14 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                     <div className="flex flex-col">
                                         <div className="flex justify-center gap-4">
                                             <button
-                                                className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 shadow-md"
+                                                className="text-green-500"
                                                 onClick={() => triggerFileInput('address', selectedAddressProof, '')}
                                                 title="Upload from device"
                                             >
                                                 <Upload size={18} />
                                             </button>
                                             <button
-                                                className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 shadow-md"
+                                                className="text-green-500"
                                                 onClick={() => startCamera('address', selectedAddressProof)}
                                                 title="Take photo"
                                             >
@@ -552,14 +552,14 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                 <div className="mt-2 flex flex-col">
                                     <div className="flex justify-center gap-4">
                                         <button
-                                            className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 shadow-md"
+                                            className="text-green-500"
                                             onClick={() => triggerFileInput('signature', selectedSignatureProof, '')}
                                             title="Upload from device"
                                         >
                                             <Upload size={18} />
                                         </button>
                                         <button
-                                            className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 shadow-md"
+                                            className="text-green-500"
                                             onClick={() => startCamera('signature', selectedSignatureProof)}
                                             title="Take photo"
                                         >

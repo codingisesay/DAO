@@ -181,15 +181,22 @@ export const API_ENDPOINTS = {
     // /// By ankitka
     APPROVED_ENROLLMENT_LIST:'/dao/api/admin/approvedApplication',
     GET_DETAILS_BY_APPLICATION_ID:(id)=>`/dao/api/agent/full-application-details/${id}`,
+    // total application count by agent
+    REVIEW_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/reviewApplicationCount',
+    APPROVED_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/approvedApplicationCount',
     PENDING_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/pendingApplicationCount',
+    REJECTED_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/applications/rejected/count-by-agent', 
+    
+    KYC_REVIEW_APPLICATION_COUNT_BY_AGENT:'dao/api/kyc/review/count-by-agent',
+    KYC_APPROVED_APPLICATION_COUNT_BY_AGENT:'dao/api/kyc/approved/count-by-agent',
+    KYC_PENDING_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/kyc/pending/count-by-agent',
+    KYC_REJECTED_APPLICATION_COUNT_BY_AGENT:'dao/api/admin/kyc/rejected/count-by-agent', 
 
     //////////For DAshboard Admin
     MONTHLY_LINE_CHART: 'dao/api/admin/kyc-applications/approved/monthly',
     MONTHLY_AUTH_BARCHART:'dao/api/admin/applications/approved/monthly-auth',
     WEEKLY_AUTH_BARCHART:'dao/api/admin/applications/approved/weekly-auth',
     KYC_STATUS_FOR_CURRENT_YEAR:'dao/api/admin/kyc-applications/status-summary'
-
-
 
  
   },

@@ -24,8 +24,9 @@
     justify-content: end;
     position: absolute;
     bottom: 20px;
-    width: 100%;
+    width: 98%;
     right: 20px;
+    background-color: white;
 }
 
 .btn-next,

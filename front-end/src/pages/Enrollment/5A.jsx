@@ -235,9 +235,9 @@ useEffect(() => {
     }
 
     return (
-        <div className="max-w-screen-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+        <div className="max-w-screen-xl mx-auto mb-10" style={{marginTop:'-6px'}}>
+            <h2 className="text-xl font-bold mb-2">Personal Details</h2>
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
                 {/* Maiden Name Section */}
                 <CommanSelect
                     value={localFormData.maidenPrefixName}
@@ -391,8 +391,8 @@ useEffect(() => {
                 />
             </div>
 
-            <h2 className="text-2xl font-bold mt-2 mb-2">Occupation Details</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+            <h2 className="text-xl font-bold mt-2 mb-2">Occupation Details</h2>
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
                 <CommanInput
                     label={labels.occupationType.label}
                     name="occupationType"

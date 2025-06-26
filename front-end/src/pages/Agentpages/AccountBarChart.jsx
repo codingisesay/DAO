@@ -42,13 +42,14 @@ function AccountBarChart() {
         });
     };
 
+  const storedId = localStorage.getItem("userCode") || 0;
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
                 let response;
                 if (timePeriod === 'monthly') {
-                    response = await agentService.agentapplicationmonthly(1);
+                    response = await agentService.agentapplicationmonthly(storedId);
                     setChartData(transformData(response.data, true));
                 } else {
                     response = await agentService.agentapplicationyearly(1);

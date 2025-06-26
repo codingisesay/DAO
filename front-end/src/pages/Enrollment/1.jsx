@@ -65,7 +65,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonText: 'Yes, clear it!',
-                        // cancelButtonText: 'No, keep it',
+                        cancelButtonText: 'No, keep it',
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
                     });
@@ -75,12 +75,14 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                         localStorage.removeItem('customerPhotoData');
                         localStorage.removeItem('nominationFormData');
                         localStorage.removeItem('documentData');
+                        localStorage.removeItem('application_id');
                         
                         await Swal.fire(
                             'Cleared!',
                             'The existing data has been cleared.',
                             'success'
                         );
+                        window.location.reload();
                     } else {
                         await Swal.fire(
                             'Kept',

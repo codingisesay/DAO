@@ -293,7 +293,7 @@ import EnrollmentReviewTable from './Enrollment_Review'
 import Footer from "../../components/Footer";
 
 function StatusDashboard1() {
-  const storedId = localStorage.getItem("agent_id") || 1;
+  const storedId = localStorage.getItem("userCode") || 0;
   const [statusCounts, setStatusCounts] = useState({
     Pending: 0,
     Approved: 0,

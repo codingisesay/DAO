@@ -94,10 +94,10 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
 
     const submitPhoto = async (e) => { 
 
-        if(hasExistingPhoto){
+        if(apiPhotoData){
             Swal.fire({
                 icon: 'success',
-                title: response.data.message || 'Photo saved successfully',
+                title:  'Photo saved successfully',
                 showConfirmButton: false,
                 timer: 1500
             });

@@ -244,10 +244,23 @@ export const adminService = {
     apiService.post(API_ENDPOINTS.ADMIN.UPDATE_ACCOUNT_PERSONAL_DETAILS_STATUS, { id, status }),
   updateNomineesStatus: (id, status) =>
     apiService.post(API_ENDPOINTS.ADMIN.UPDATE_NOMINEES_STATUS, { id, status }),
-  // Clicking on the view button in the admin dashboard
-  getFullApplicationDetails: (id) =>
-    apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+
+
+  // applications count by agent
+  getFullApplicationDetails: (id) => apiService.get(API_ENDPOINTS.ADMIN.GET_FULL_APPLICATION_DETAILS(id)),
+  // pendingApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.PENDING_APPLICATION_COUNT_BY_AGENT), 
+  reviewApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.REVIEW_APPLICATION_COUNT_BY_AGENT),
+  approvedApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.APPROVED_APPLICATION_COUNT_BY_AGENT),
   pendingApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.PENDING_APPLICATION_COUNT_BY_AGENT),
+  rejectedApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.REJECTED_APPLICATION_COUNT_BY_AGENT),
+
+  kycReviewApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.KYC_REVIEW_APPLICATION_COUNT_BY_AGENT),
+  kycApprovedApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.KYC_APPROVED_APPLICATION_COUNT_BY_AGENT),
+  kycPendingApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.KYC_PENDING_APPLICATION_COUNT_BY_AGENT),
+  kycRejectedApplicationCountByAgent: apiService.get(API_ENDPOINTS.ADMIN.KYC_REJECTED_APPLICATION_COUNT_BY_AGENT),
+
+
+
 
   /// dashobard charts
   monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),

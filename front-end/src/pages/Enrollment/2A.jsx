@@ -44,42 +44,46 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             fetchAndShowDetails(id);
         }
     }, []);
-    
     const fetchAndShowDetails = async (id) => {
-        try { 
-            if (id) {
-                const response = await pendingAccountData.getDetailsS2A(id);
-                const application = response.details || {}; 
+    try { 
+        if (id) {
+            const response1 = await pendingAccountData.getDetailsS1(id);
+            const response2 = await pendingAccountData.getDetailsS2A(id);
+            const application1 = response1.details || {};
+            const application2 = response2.details || {}; 
 
-                if(application){
-                    const verificationMethod = application.auth_type;
-                    setLocalFormData({
-                        salutation: application.salutation || '',
-                        first_name: application.first_name || '',
-                        middle_name: application.middle_name || '',
-                        last_name: application.last_name || '',
-                        DOB: application.DOB || '',
-                        gender: application.gender || '',
-                        religion: application.religion || '',
-                        caste: application.caste || '',
-                        maritalStatus: application.marital_status || '',
-                        mobile: application.mobile || '',
-                        alt_mob_no: application.alt_mob_no || '',
-                        email: application.email || '',
-                        adhar_card: application.adhar_card || (verificationMethod === 'Aadhar Card' ? application.auth_code : ''),
-                        pannumber: application.pan_card || (verificationMethod === 'Pan Card' ? application.auth_code : ''),
-                        driving_license: application.driving_license || '',
-                        voterid: application.voter_id || '',
-                        passport: application.passport || '',
-                        status: application.status || 'Pending'
-                    });
-                }
+            // Use application1 as base, then overwrite with application2 values if they exist
+            const application = { ...application1, ...application2 };
+            const verificationMethod = application.auth_type;
+
+            if (application) {
+                setLocalFormData({
+                    salutation: application.salutation || '',
+                    first_name: application.first_name || '',
+                    middle_name: application.middle_name || '',
+                    last_name: application.last_name || '',
+                    DOB: application.DOB || '',
+                    gender: application.gender || '',
+                    religion: application.religion || '',
+                    caste: application.caste || '',
+                    maritalStatus: application.marital_status || '',
+                    mobile: application.mobile || '',
+                    alt_mob_no: application.alt_mob_no || '',
+                    email: application.email || '',
+                    adhar_card: application.adhar_card || (verificationMethod === 'Aadhar Card' ? application.auth_code : ''),
+                    pannumber: application.pan_card || (verificationMethod === 'Pan Card' ? application.auth_code : ''),
+                    driving_license: application.driving_license || '',
+                    voterid: application.voter_id || '',
+                    passport: application.passport || '',
+                    status: application.status || 'Pending'
+                });
             }
-        } catch (error) {
-            console.error('Failed to fetch application details:', error);
-            toast.error('Failed to load personal details');
         }
-    };
+    } catch (error) {
+        console.error('Failed to fetch application details:', error);
+        toast.error('Failed to load personal details');
+    }
+};
 
     const validateForm = () => {
         const errors = {};
@@ -222,7 +226,13 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
 
             const response = await createAccountService.personalDetails_s2a(payload);
             
-            toast.success(response.data.message || 'Personal details saved successfully');
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.data.message || 'Personal details saved successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // handleNext();
             onNext();
 
         } catch (error) {
@@ -469,7 +479,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                     )}
                 </CommonButton>
             </div>
-            <ToastContainer position="top-right" autoClose={5000} />
+            {/* <ToastContainer position="top-right" autoClose={5000} /> */}
         </form>
     );
 }
