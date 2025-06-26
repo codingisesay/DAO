@@ -479,7 +479,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                     )}
                 </CommonButton>
             </div>
-            {/* <ToastContainer position="top-right" autoClose={5000} /> */}
+            <ToastContainer position="top-right" autoClose={5000} />
         </form>
     );
 }

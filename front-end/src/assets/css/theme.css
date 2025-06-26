@@ -410,3 +410,17 @@ h2 {
 .rdrDateDisplayWrapper {
     display: none;
 }
+
+.print-tbl td, .print-tbl table{border: none !important;box-shadow: none !important;}
+
+.no-break {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: keep-all;
+}
+
+.page-break {
+  page-break-before: always;  /* or page-break-after: always */
+  break-before: page;         /* modern syntax */
+}

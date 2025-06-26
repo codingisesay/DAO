@@ -161,13 +161,13 @@ const ViewApplicationForm = () => {
                     ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
                     : "",
 
-                    signaturedoc: customerdoc?.find(doc => doc.document_type.includes('Signature_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('Signature_JPG')).file_path
+                    signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
                     : "",
-
+ 
                     photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
-
+                    console.log(response)
                 }
             } catch (error) {
                 console.log(error)
@@ -837,7 +837,7 @@ const ViewApplicationForm = () => {
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
                     <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6">
-                        <div> 
+                      
                             {formData.photo ? (
                                 <>
                                 <img
@@ -848,12 +848,10 @@ const ViewApplicationForm = () => {
                            
                               </>
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                        </div>
-                 
-
-                            <div> 
+                        
+                  
                             {formData.signaturedoc ? (
                                 <img
                                     src={typeof formData.signaturedoc === 'string' ? formData.signaturedoc : URL.createObjectURL(formData.signaturedoc)}
@@ -861,13 +859,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                     
-                   
-                            <div> 
+                            
                             {formData.passportdoc ? (
                                 <img
                                     src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
@@ -875,11 +869,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.aadhaarFrontdoc ? (
                                 <img
                                     src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
@@ -887,11 +879,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.aadhaarBackdoc ? (
                                 <img
                                     src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
@@ -899,11 +889,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.pancarddoc ? (
                                 <img
                                     src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
@@ -911,11 +899,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.voteridoc ? (
                                 <img
                                     src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
@@ -923,11 +909,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.drivinglicensedoc ? (
                                 <img
                                     src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
@@ -935,11 +919,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.utilitybilldoc ? (
                                 <img
                                     src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
@@ -947,11 +929,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.rentagreementdoc ? (
                                 <img
                                     src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
@@ -959,11 +939,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.propertytaxdoc ? (
                                 <img
                                     src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
@@ -971,11 +949,9 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
+                               <></>
                             )}
-                            </div>
-
-                            <div> 
+                            
                             {formData.bankstatementdoc ? (
                                 <img
                                     src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
@@ -983,11 +959,8 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span></span>
-                            )}
-                            </div>
-
-
+                               <></>
+                            )} 
                     </div>
                 </div>
             </div>
