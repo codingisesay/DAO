@@ -848,7 +848,7 @@ const ViewApplicationForm = () => {
                            
                               </>
                             ) : (
-                                <span>No photo uploaded</span>
+                                <span></span>
                             )}
                         </div>
                  
@@ -861,7 +861,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Signature uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -875,7 +875,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No passport uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -887,7 +887,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Aadhaar Front uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -899,7 +899,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Aadhaar Back uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -911,7 +911,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No PAN uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -923,7 +923,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Voter ID uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -935,7 +935,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Driving License uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -947,7 +947,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Utility Bill uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -959,7 +959,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Rent Agreement uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -971,7 +971,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Property Tax Receipt uploaded</span>
+                                <span></span>
                             )}
                             </div>
 
@@ -983,7 +983,7 @@ const ViewApplicationForm = () => {
                                     className="w-50 h-40"
                                 />
                             ) : (
-                                <span>No Bank Statement uploaded</span>
+                                <span></span>
                             )}
                             </div>
 

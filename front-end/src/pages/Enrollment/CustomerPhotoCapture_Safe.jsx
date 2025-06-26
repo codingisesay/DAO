@@ -360,7 +360,7 @@ const ImageCaptureValidator = ({
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2 text-center">
+      <h1 className="text-2xl font-bold mb-6 text-center">
         Image Capture Validation
       </h1>
 
@@ -583,7 +583,15 @@ export default ImageCaptureValidator;
 
 
 
-//  import React, { useState, useRef, useEffect } from "react";
+
+
+
+
+
+
+
+
+// import React, { useState, useRef, useEffect } from "react";
 // import scan_face from "../../assets/imgs/scan_face.gif";
 // import scan_ray from "../../assets/imgs/scan_ray.gif";
 // import instruction from "../../assets/imgs/photo_instructions.png";
@@ -595,32 +603,23 @@ export default ImageCaptureValidator;
 //   onCapture,
 //   photoType = "customer",
 //   showLocation = true,
-//   initialPhoto = null,
-//   hasExistingPhoto = false
 // }) => {
 //   const webcamRef = useRef(null);
-//   const [imgSrc, setImgSrc] = useState(initialPhoto?.previewUrl || null);
+//   const [imgSrc, setImgSrc] = useState(null);
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [isCameraActive, setIsCameraActive] = useState(false);
 //   const [isWebcamReady, setIsWebcamReady] = useState(false);
 //   const [webcamError, setWebcamError] = useState(null);
-//   const [validation, setValidation] = useState(
-//     initialPhoto?.metadata?.validation || {
-//       hasFace: false,
-//       lightingOk: false,
-//       singlePerson: false,
-//     }
-//   );
-  
-//   const [hints, setHints] = useState(
-//     hasExistingPhoto ? "Existing photo loaded" : "Please align your face below instructions"
-//   );
+//   const [validation, setValidation] = useState({
+//     hasFace: false,
+//     lightingOk: false,
+//     singlePerson: false,
+//   });
+//   const [hints, setHints] = useState("Position your face in the frame");
 //   const [personCount, setPersonCount] = useState(0);
-//   const [location, setLocation] = useState(
-//     initialPhoto?.metadata?.location || null
-//   );
+//   const [location, setLocation] = useState(null);
 //   const [locationError, setLocationError] = useState(null);
-//   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
+//   const [address, setAddress] = useState(null);
 //   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
 
 //   // Check browser support
@@ -676,7 +675,7 @@ export default ImageCaptureValidator;
 
 //   // Get geolocation if enabled
 //   useEffect(() => {
-//     if (!showLocation || location) return;
+//     if (!showLocation) return;
 
 //     const getLocation = async () => {
 //       if (navigator.geolocation) {
@@ -712,7 +711,7 @@ export default ImageCaptureValidator;
 //     };
 
 //     getLocation();
-//   }, [showLocation, location]);
+//   }, [showLocation]);
 
 //   // Camera control functions
 //   const startCamera = () => {
@@ -723,7 +722,6 @@ export default ImageCaptureValidator;
 //     setIsCameraActive(true);
 //     setImgSrc(null);
 //     setWebcamError(null);
-//     setHints("Please align your face below instructions");
 //   };
 
 //   const stopCamera = () => {
@@ -943,10 +941,28 @@ export default ImageCaptureValidator;
 
 //   return (
 //     <div className="container mx-auto p-4 max-w-4xl">
-//       <div className="flex flex-col md:flex-row gap-8">
+//       <h1 className="text-2xl font-bold mb-6 text-center">
+//         Image Capture Validation
+//       </h1>
+
+//       {webcamError && (
+//         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+//           {webcamError}. Please try another browser or upload a photo instead.
+//         </div>
+//       )}
+
+//       <div className="flex flex-col md:flex-row gap-6">
 //         {/* Camera/Image Preview */}
 //         <div className="flex-1">
-//           <div className="border rounded-lg overflow-hidden bg-white">
+//           <div
+//             className={`border-2 rounded-lg overflow-hidden transition-all ${
+//               imgSrc
+//                 ? "border-gray-300"
+//                 : allValid()
+//                 ? "border-green-500"
+//                 : "border-red-500"
+//             }`}
+//           >
 //             {imgSrc ? (
 //               <div className="relative" style={{ aspectRatio: "4/3" }}>
 //                 <img
@@ -954,6 +970,13 @@ export default ImageCaptureValidator;
 //                   alt="Captured"
 //                   className="w-full h-full object-cover"
 //                 />
+//                 {/* {showLocation && location && (
+//                   <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2 text-xs">
+//                     <div>Lat: {location.latitude.toFixed(5)}</div>
+//                     <div>Lng: {location.longitude.toFixed(5)}</div>
+//                     {address && <div>Address: {address}</div>}
+//                   </div>
+//                 )} */}
 //               </div>
 //             ) : isCameraActive && isWebcamSupported() ? (
 //               <div className="relative" style={{ aspectRatio: "4/3" }}>
@@ -976,15 +999,15 @@ export default ImageCaptureValidator;
 //               </div>
 //             ) : (
 //               <div
-//                 className="flex flex-col items-center justify-center bg-gray-50 p-8 h-full"
+//                 className="flex flex-col items-center justify-center bg-gray-100 p-8 h-full"
 //                 style={{ aspectRatio: "4/3" }}
 //               >
 //                 {!isWebcamSupported() ? (
 //                   <>
-//                     <p className="mb-4 text-center text-gray-600">
+//                     <p className="mb-4 text-center">
 //                       Webcam not supported in your browser
 //                     </p>
-//                     <label className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded cursor-pointer">
+//                     <label className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg cursor-pointer">
 //                       Upload Photo
 //                       <input
 //                         type="file"
@@ -998,7 +1021,7 @@ export default ImageCaptureValidator;
 //                   <button
 //                     onClick={startCamera}
 //                     disabled={isLoading}
-//                     className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded disabled:opacity-50"
+//                     className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg disabled:opacity-50"
 //                   >
 //                     {isLoading ? "Loading..." : "Start Camera"}
 //                   </button>
@@ -1007,29 +1030,29 @@ export default ImageCaptureValidator;
 //             )}
 //           </div>
 
-//           <div className="mt-4 text-center">
+//           <div className="mt-4">
 //             {imgSrc ? (
 //               <button
 //                 onClick={retake}
-//                 className="w-full py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded font-medium"
+//                 className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium"
 //               >
-//                 Recapture
+//                 Retake Photo
 //               </button>
 //             ) : isCameraActive && isWebcamSupported() ? (
 //               <button
 //                 onClick={capture}
 //                 disabled={!allValid() || isLoading}
-//                 className={`w-full py-2 rounded font-medium ${
+//                 className={`w-full py-3 rounded-lg font-medium transition-colors ${
 //                   allValid() && !isLoading
-//                     ? "bg-blue-600 hover:bg-blue-700 text-white"
+//                     ? "bg-green-600 hover:bg-green-700 text-white"
 //                     : "bg-gray-300 text-gray-500 cursor-not-allowed"
 //                 }`}
 //               >
-//                 {isLoading ? "Processing..." : "Capture"}
+//                 {isLoading ? "Processing..." : "Capture Photo"}
 //               </button>
 //             ) : (
 //               !isWebcamSupported() && (
-//                 <label className="w-full block py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-medium text-center cursor-pointer">
+//                 <label className="w-full block py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-center cursor-pointer">
 //                   Upload Photo
 //                   <input
 //                     type="file"
@@ -1043,81 +1066,105 @@ export default ImageCaptureValidator;
 //           </div>
 //         </div>
 
-//         {/* Instructions Panel */}
+//         {/* Validation Panel */}
 //         <div className="flex-1">
-//           <div className="bg-white p-6 rounded-lg border">
+//           <div className="text-center">
+//             {/* <h2 className="text-xl font-semibold mb-4">Validation Requirements</h2> */}
+         
 //             {showLocation && location && imgSrc ? (
-//               <div>
-//                 <h3 className="font-bold mb-4">Photo Details</h3>
-//                 <div className="space-y-2 text-sm">
-//                   <div><span className="font-medium">Latitude:</span> {location.latitude.toFixed(5)}</div>
-//                   <div><span className="font-medium">Longitude:</span> {location.longitude.toFixed(5)}</div>
-//                   {address && <div><span className="font-medium">Address:</span> {address}</div>}
-//                 </div>
+//               <div className=" text-start"><br />
+//                 <div> <i class="bi bi-send"></i> Latitude : {location.latitude.toFixed(5)}</div><br />
+//                 <div> <i class="bi bi-send"></i> Longitude : {location.longitude.toFixed(5)}</div><br />
+//                  {address && <div> <i class="bi bi-geo-alt"></i> Address : {address}</div>} 
 
-//                 {photoType === 'customer' && (
-//                   <div className="mt-6">
-//                     <h3 className="font-bold mb-4">Validation Results</h3>
-//                     <div className="space-y-2 text-sm">
-//                       <div className={`p-2 rounded ${validation.lightingOk ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-//                         {validation.lightingOk ? '✓' : '✗'} Good lighting
-//                       </div>
-//                       <div className={`p-2 rounded ${validation.singlePerson ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-//                         {validation.singlePerson ? '✓' : '✗'} Single person detected
-//                       </div>
-//                     </div>
+//                  <hr />
+                 
+//             <div className="space-y-3">
+//               {photoType === 'customer' && (
+//                 <>
+//                   {/* <div className={`flex items-center p-3 rounded ${
+//                     validation.hasFace ? 'bg-green-100' : 'bg-red-100'
+//                   }`}>
+//                     <span className="font-medium mr-2">
+//                       {validation.hasFace ? '✓' : '✗'} Face detected:
+//                     </span>
+//                     {personCount} person(s) in frame
+//                   </div> */} <br />
+//                   <div className={`flex items-center p-3 rounded ${
+//                     validation.lightingOk ? 'bg-green-100' : 'bg-red-100'
+//                   }`}>
+//                     <span className="font-medium mr-2">
+//                       {validation.lightingOk ? '✓' : '✗'} Good lighting
+//                     </span>
 //                   </div>
-//                 )}
+//                   <div className={`flex items-center p-3 rounded ${
+//                     validation.singlePerson ? 'bg-green-100' : 'bg-red-100'
+//                   }`}>
+//                     <span className="font-medium mr-2">
+//                       {validation.singlePerson ? '✓' : '✗'} Person in frame
+//                     </span>
+//                   </div>
+//                 </>
+//               )}
+//               {photoType === 'agent' && (
+//                 <>
+//                   <div className="flex items-center p-3 rounded bg-gray-100">
+//                     <span className="font-medium mr-2">Agent face clearly visible</span>
+//                   </div>
+//                   <div className="flex items-center p-3 rounded bg-gray-100">
+//                     <span className="font-medium mr-2">ID badge visible</span>
+//                   </div>
+//                   <div className="flex items-center p-3 rounded bg-gray-100">
+//                     <span className="font-medium mr-2">Plain background preferred</span>
+//                   </div>
+//                 </>
+//               )}
+//               {/* {showLocation && (
+//                 <div className={`flex items-center p-3 rounded ${
+//                   location ? 'bg-green-100' : 'bg-red-100'
+//                 }`}>
+//                   <span className="font-medium mr-2">
+//                     {location ? '✓' : '✗'} Location captured
+//                   </span>
+//                   {isFetchingAddress ? (
+//                     <span className="text-yellow-500 text-sm">Fetching address...</span>
+//                   ) : locationError ? (
+//                     <span className="text-red-500 text-sm">Error: {locationError}</span>
+//                   ) : location ? (
+//                     <div className="text-green-500 text-sm">
+//                       <div>{location.latitude.toFixed(5)}, {location.longitude.toFixed(5)}</div>
+//                       {address && <div>{address}</div>}
+//                     </div>
+//                   ) : (
+//                     <span className="text-yellow-500 text-sm">Acquiring location...</span>
+//                   )}
+//                 </div>
+//               )} */}
+//             </div>
 //               </div>
 //             ) : (
-//               <div className="text-center">
-//                 {hasExistingPhoto ? (
-//                   <>
-//                     <div className="mb-4">
-//                       <img 
-//                         className="border rounded-lg h-[200px] w-[200px] mx-auto object-cover" 
-//                         src={`data:image/jpeg;base64,${hasExistingPhoto.path}`} 
-//                         alt="Existing photo"
-//                       />
-//                     </div>
-//                     <div className="space-y-2 text-sm">
-//                       <div><span className="font-medium">Latitude:</span> {hasExistingPhoto.latitude}</div>
-//                       <div><span className="font-medium">Longitude:</span> {hasExistingPhoto.longitude}</div>
-//                     </div>
-//                   </>
-//                 ) : (
-//                   <>
-//                     <div className="mb-6">
-//                       <h3 className="font-bold mb-2">Instructions</h3>
-//                       <p className="text-gray-600 mb-4">Please align your face below</p>
-                      
-//                       <div className="relative py-8 w-[160px] mx-auto">
-//                         <img
-//                           src={scan_face}
-//                           className="absolute top-0 w-[130px] h-[130px]"
-//                           alt="scan"
-//                         />
-//                         <img
-//                           src={scan_ray}
-//                           className="absolute top-0 w-[130px] h-[130px]"
-//                           alt="scan"
-//                         />
-//                       </div>
-                      
-//                       <img 
-//                         src={instruction} 
-//                         className="mt-4 mx-auto max-w-full" 
-//                         alt="alignment instructions"
-//                       />
-//                     </div>
-                    
-//                     <div className="p-3 bg-gray-50 rounded text-sm text-gray-600">
-//                       {hints}
-//                     </div>
-//                   </>
-//                 )}
+//               <div className="">
+//                    <div className="relative py-8 w-[160px] mx-auto">
+//               <img
+//                 src={scan_face}
+//                 className="absolute top-0 w-[130px] h-[130px]"
+//                 alt="scan"
+//               />
+//               <img
+//                 src={scan_ray}
+//                 className="absolute top-0 w-[130px] h-[130px]"
+//                 alt="scan"
+//               />
+//             </div>
+//             <img src={instruction} className="  mt-20 mx-auto" />
+
+//             <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded mt-3">
+//               {hints}
+//             </div>
+
 //               </div>
 //             )}
+
 //           </div>
 //         </div>
 //       </div>

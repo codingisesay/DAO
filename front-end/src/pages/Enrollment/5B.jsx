@@ -1285,7 +1285,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
     return (
         <div className="max-w-screen-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
+            <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
             {/* Nominee Form */}
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
                 <SelectField
@@ -1376,7 +1376,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 </div>
             </div>
 
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-6">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 ">
                 <InputField
                     label="Complex Name"
                     name="nomineeComplexName"
@@ -1465,9 +1465,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             <div className="flex justify-end mb-6">
                 <CommonButton
                     onClick={addNominee}
-                    className="px-4 py-2 bg-blue-500 text-white rounded"
+                    className="border border-green-500 rounded-md text-green-500 px-3 py-1"
                 >
-                    Add to Table
+                    Add Nominiee
                 </CommonButton>
             </div>
 
@@ -1514,7 +1514,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                                                 onClick={() => removeNominee(nominee.id)}
                                                 className="text-red-500 hover:text-red-700"
                                             >
-                                                Remove
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </td>
                                     </tr>
