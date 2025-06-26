@@ -629,7 +629,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                                 <img
                                                     src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
                                                     alt="Photograph"
-                                                    className="w-24 h-auto rounded-md object-contain shadow-sm"
+                                                    className="w-auto h-[50px] rounded-md object-contain shadow-sm"
                                                 />
                                             ) : '-'}
                                         </td>
