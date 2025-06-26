@@ -61,7 +61,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     // Show confirmation dialog
                     const result = await Swal.fire({
                         title: 'Clear Existing Data?',
-                        html: `We found existing data in your browser storage:<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
+                        // html: `We found existing data in your browser storage:<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
+                        html:'Your From Contains Data',
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonText: 'Yes, clear it!',

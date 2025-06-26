@@ -856,7 +856,7 @@ const ViewApplicationForm = () => {
                                 <img
                                     src={typeof formData.signaturedoc === 'string' ? formData.signaturedoc : URL.createObjectURL(formData.signaturedoc)}
                                     alt="Signature"
-                                    className="w-50 h-40"
+                                    className="w-auto h-15"
                                 />
                             ) : (
                                <></>
