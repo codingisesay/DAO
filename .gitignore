@@ -16,7 +16,7 @@
 /fornt-end/nohup.out
 
 #signaling server
-/signaling_server/node_modules
+/signaling-server/node_modules
 
 # General
 *.log
