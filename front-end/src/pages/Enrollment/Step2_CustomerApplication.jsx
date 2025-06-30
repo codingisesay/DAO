@@ -1,21 +1,19 @@
 
 import React, { useState } from 'react';
-import AddressForm from './2B';
-import PersonalDetailsForm from './2A';
-import CameraCapture from './2C';
+import AddressForm from './Step2B_AddressDetails';
+import PersonalDetailsForm from './Step2A_PersonalDetails';
+import CameraCapture from './Step2C_CustoemerLivePhoto';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
+import { createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
-import { pendingAccountStatusUpdate } from '../../services/apiServices';
-import { useParams } from 'react-router-dom';
-import { a } from 'framer-motion/client';
-
+import { form } from 'framer-motion/client';
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { id } = useParams();
-    
+
     const steps = [
         { label: 'Personal Details', icon: 'bi bi-person', component: PersonalDetailsForm },
         { label: 'Address Details', icon: 'bi bi-geo-alt', component: AddressForm },
@@ -40,7 +38,103 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
-         handleNext();
+        setIsSubmitting(true);
+
+        try {
+            if (activeStep === 0) {
+                console.log('2A formadta : ', formData.personalDetails)
+                const pd = formData.personalDetails || {};
+                if (
+                    /\d/.test(pd.first_name) ||
+                    /\d/.test(pd.middle_name) ||
+                    /\d/.test(pd.last_name)
+                ) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Only alphabets allowed. Numbers are not allowed in name fields.',
+                    });
+                    return;
+                }
+
+             let missingFields = [];
+
+            if (!pd.email) missingFields.push("Email");
+            if (!pd.caste) missingFields.push("Caste");
+            if (!pd.religion) missingFields.push("Religion");
+
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Required Fields',
+                    html: 'Please fill the following fields:<br><b>' + missingFields.join('</b><br><b>') + '</b>',
+                });
+                return;
+            }
+
+
+                else if (pd.mobile.length != 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Mobile Number ',
+                    }); return
+                }
+                else if (pd.alt_mob_no.length != 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: '10 Digit Must for Alternate Mobile Number ',
+                    }); return
+                }
+                else if (pd.pannumber.length != 10) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: 'Invalid PAN Number',
+                    }); return
+                }
+
+                const payload = {
+                    application_id: formData.application_id,
+                    salutation: pd.salutation,
+                    religion: pd.religion,
+                    caste: pd.caste,
+                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                    alt_mob_no: pd.alt_mob_no,
+                    email: pd.email,
+                    adhar_card: pd.adhar_card,
+                    pan_card: pd.pannumber,
+                    passport: pd.passport,
+                    driving_license: pd.driving_license,
+                    voter_id: pd.voterid,
+                    status: 'Pending'
+                };
+
+                try {
+                    let response = await createAccountService.personalDetails_s2a(payload);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.data.message || 'Personal details saved successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    handleNext();
+
+                } catch (error) {
+                    console.error("Error saving personal details:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error saving personal details',
+                        text: error.response?.data?.message || 'Required field contains invalid data.',
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Submission error:", err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const CurrentStepComponent = steps[activeStep].component;

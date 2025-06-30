@@ -408,7 +408,7 @@
 //     }, [nominees, currentNominee]);
 //     return (
 //         <div className="max-w-screen-xl mx-auto">
-//             <h2 className="text-2xl font-bold mb-4">Add Nominee Details</h2>
+//             <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
 //             {/* Nominee Form */}
 //             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
 //                 <SelectField
@@ -592,7 +592,7 @@
 //             {/* Nominees Table */}
 //             {nominees.length > 0 && (
 //                 <div className="mb-8">
-//                     <h2 className="text-2xl font-bold mb-4">Nominees List</h2>
+//                     <h2 className="text-xl font-bold mb-4">Nominees List</h2>
 //                     <div className="overflow-x-auto">
 //                         <table className="min-w-full bg-white border border-gray-200">
 //                             <thead className="bg-gray-100">
@@ -1474,7 +1474,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             {/* Nominees Table */}
             {nominees.length > 0 && (
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold mb-4">Nominees List</h2>
+                    <h2 className="text-xl font-bold mb-4">Nominees List</h2>
                     <div className="overflow-x-auto">
                         <table className="min-w-full bg-white border border-gray-200">
                             <thead className="bg-gray-100">

@@ -378,7 +378,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     return (
         <div className="document-upload-container p-4 mx-auto">
-            <h2 className="text-2xl font-bold mb-1">Upload Documents</h2>
+            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
                 <i className="bi bi-info-circle"></i>&nbsp;
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>
@@ -591,7 +591,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-bold">Take Photo</h3>
                             <button onClick={stopCamera} className="text-gray-500 hover:text-gray-700">
-                                <span className="bi bi-x text-2xl"></span>
+                                <span className="bi bi-x text-xl"></span>
                             </button>
                         </div>
                         <div className="mb-4">

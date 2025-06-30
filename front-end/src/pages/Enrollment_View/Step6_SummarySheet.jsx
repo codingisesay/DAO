@@ -1,12 +1,13 @@
 import React, { act, useState } from "react";
-import PersonalDetailsForm from "./6A";
-import CameraCapture from "./6B";
+import { useNavigate } from "react-router-dom";
+import PersonalDetailsForm from "./Step6A_SummaryPrint";
+import CameraCapture from "./Step6B_AgentLivePhoto";
 import "../../assets/css/StepperForm.css"; // Import your CSS file here
 import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";
 const p6 = ({ onNext, onBack }) => {
   const [activeStep, setActiveStep] = useState(0);
-
+  const navigate =useNavigate();
   const [formData, setFormData] = useState({
     // Personal Details
     firstName: "",
@@ -85,7 +86,10 @@ const p6 = ({ onNext, onBack }) => {
 
   const CurrentStepComponent = steps[activeStep].component;
 
-  const CreateAccount = () => {   window.location.href = "/agentdashboard";  };
+  const CreateAccount = () => {  
+    //  window.location.href = "/agentdashboard";
+        navigate(-1);
+      };
   return (
     <div className="">
       <div className="stepper-header">

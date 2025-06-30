@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import AddressForm from './2B';
-import PersonalDetailsForm from './2A';
-import CameraCapture from './2C';
+import AddressForm from './Step2B_AddressDetails';
+import PersonalDetailsForm from './Step2A_PersonalDetails';
+import CameraCapture from './Step2C_CustoemerLivePhoto';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { createAccountService } from '../../services/apiServices';

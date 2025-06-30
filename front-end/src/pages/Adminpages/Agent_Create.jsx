@@ -169,7 +169,7 @@ const AgentRegisterForm = () => {
                     <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
                     <h2>Welcome to FinAcctz</h2>
                 </div>
-                <h2 className="text-2xl font-bold mb-2"> Agent Registration</h2>
+                <h2 className="text-xl font-bold mb-2"> Agent Registration</h2>
                 <div className="text-right">
                     <div className='flex items-center'>
                         <i className="mx-2 bi  bi-bell"></i>

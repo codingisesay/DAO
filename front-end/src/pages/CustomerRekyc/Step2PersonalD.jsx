@@ -244,7 +244,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
 
   return (
     <div className="customer-details-container">
-      <h1 className="text-2xl font-bold flex justify-between text-gray-800 mb-6">
+      <h1 className="text-xl font-bold flex justify-between text-gray-800 mb-6">
         Customer Details
         {/* <small className="text-gray-500">
           <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" /> Select all
