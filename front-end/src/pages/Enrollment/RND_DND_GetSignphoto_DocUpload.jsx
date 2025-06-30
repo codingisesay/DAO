@@ -106,9 +106,17 @@ function toTitleCase(str) {
 
     const signatureProofOption = { value: 'SIGNATURE', label: 'Signature' };
 
-    const isDocumentUploaded = (documentValue) => {
-        return document.some(doc => doc.type.includes(documentValue));
-    };
+ // ...existing code...
+const isDocumentUploaded = (documentValue) => {
+    if (documentValue === 'AADHAAR_CARD_FRONT') {
+        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+    }
+    if (documentValue === 'AADHAAR_BACK') {
+        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+    }
+    return document.some(doc => doc.type.includes(documentValue));
+};
+// ...existing code...
 
     const isAadhaarFrontUploaded = () => {
         return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');

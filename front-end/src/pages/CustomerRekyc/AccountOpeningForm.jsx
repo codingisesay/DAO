@@ -262,12 +262,12 @@ function CustomerForm() {
         }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Form submitted:", formData);
-        setProgress({ ...progress, 5: "completed" });
-        alert("Form submitted successfully!");
-    };
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log("Form submitted:", formData);
+    //     setProgress({ ...progress, 5: "completed" });
+    //     alert("Form submitted successfully!");
+    // };
  
 
     // Add this handler
@@ -297,7 +297,7 @@ function CustomerForm() {
                 {/* {currentStep} */}
                     <div className='work-area dark:bg-gray-900'>
                         <div className="form-container">
-                            <form onSubmit={handleSubmit}>
+                            <form >
                                 {currentStep === 1 && (
                                     <Step1PersonalInfo
                                         formData={formData}

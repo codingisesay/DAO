@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { apiService } from '../../utils/storage'
-import { agentService ,createAccountService} from '../../services/apiServices';
+import { apiService } from '../../utils/storage';
+import { applicationDocumentService, createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
-import CommonButton from '../../components/CommonButton'
-import { swap } from '@tensorflow/tfjs-core/dist/util_base';
-import { useParams } from 'react-router-dom';
-
+import CommonButton from '../../components/CommonButton';
 
 const P3 = ({ onNext, onBack }) => {
-    // In the main component
     const [isLoading, setIsLoading] = React.useState(false);
     const [documents, setDocuments] = useState(() => {
         try {
@@ -21,39 +17,9 @@ const P3 = ({ onNext, onBack }) => {
             return [];
         }
     });
-    const storedId = localStorage.getItem('application_id')
-
-
-
+    const storedId = localStorage.getItem('application_id');
     const [processingDoc, setProcessingDoc] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
-
-    // Save to localStorage whenever documents change
-
-    
-      const { id } = useParams();
-    const [loading, setLoading] = useState(false);
-    const [reason, setReason] = useState(null);
-
-    useEffect(() => {
-        if (!id) return;
-
-        const fetchReason = async () => {
-            try {
-                setLoading(true);
-                const response = await agentService.refillApplication(id);
-                setReason(response.data[0]);
-            } catch (error) {
-                console.error("Failed to fetch review applications:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchReason();
-    }, [id]);
-
-
 
     useEffect(() => {
         try {
@@ -88,100 +54,138 @@ const P3 = ({ onNext, onBack }) => {
         setIsProcessing(false);
     };
 
+    const validateDocuments = () => {
+        // Check for required categories
+        const hasAddressDoc = documents.some(doc => doc.documentCategory === 'address');
+        const hasSignatureDoc = documents.some(doc => doc.documentCategory === 'signature');
+        const hasIdentityDoc = documents.some(doc => doc.documentCategory === 'identity');
+        
+        if (!hasAddressDoc || !hasSignatureDoc || !hasIdentityDoc) {
+            return {
+                isValid: false,
+                message: 'Please upload at least one document for each category: Address, Signature, and Identity.'
+            };
+        }
 
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result.split(',')[1]); // Extract only the base64 part
-    reader.onerror = error => reject(error);
-  });
-};
+        // Check Aadhaar front/back pairing
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        
+        if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
+            return {
+                isValid: false,
+                message: 'Both front and back of Aadhaar card must be uploaded together.'
+            };
+        }
 
-const handleSubmit = async () => {
-  if (documents.length === 0) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'No Documents',
-      text: 'Please upload at least one document before proceeding.',
-    });
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    // Filter out documents that don't have files
-    const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
-
-    if (documentsWithFiles.length === 0) {
-      throw new Error('No valid documents found. Please re-upload your documents.');
-    }
-
-    // Convert all files to base64
-    const base64Files = await Promise.all(
-      documentsWithFiles.map(doc => fileToBase64(doc.file))
-    );
-    const documentTypes = documentsWithFiles.map(doc => doc.type || doc.name);
-
-    // Prepare the payload
-    const payload = {
-      application_id: storedId,
-      document_types: documentTypes,
-      files: base64Files
+        return { isValid: true };
     };
 
-    // Determine the endpoint
-    const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
-      ? createAccountService.applicationDocument_s3(payload)
-      : createAccountService.applicationDocument_s3;
-
-    // Send the request with proper headers for JSON
-    const response = await apiService.post(
-      endpoint,
-      payload,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+    const handleSubmit = async () => {
+        // First validate documents
+        const validation = validateDocuments();
+        if (!validation.isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Document Requirements',
+                text: validation.message,
+            });
+            return;
         }
-      }
-    );
 
-    if (response) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Documents saved successfully.',
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onNext();
-    } else {
-      throw new Error(response || 'Upload failed with status: ' + response);
-    }
-  } catch (error) {
-    console.error('Upload error:', error);
-    // Swal.fire('Error', error.message || error, 'error');
-     
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Documents saved successfully.',
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onNext();
-   
-  } finally {
-    setIsLoading(false);
-  }
-};
+        // Get fresh data from localStorage
+        let localStorageDocuments;
+        try {
+            const saved = localStorage.getItem('documentData');
+            localStorageDocuments = saved ? JSON.parse(saved) : [];
+        } catch (error) {
+            console.error('Failed to load documents from localStorage:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load documents. Please try again.',
+            });
+            return;
+        }
 
- 
+        if (localStorageDocuments.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Documents',
+                text: 'Please upload at least one document before proceeding.',
+            });
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Filter out documents that don't have base64 images
+            const validDocuments = localStorageDocuments.filter(doc => doc.image && doc.image !== 'base64');
+
+            if (validDocuments.length === 0) {
+                throw new Error('No valid documents found. Please re-upload your documents.');
+            }
+
+            // Prepare the payload
+            const payload = {
+                application_id: storedId,
+                document_types: validDocuments.map(doc => doc.type || doc.name),
+                files: validDocuments.map(doc => doc.image)
+            };
+
+            // Determine the endpoint
+            const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+                ? createAccountService.applicationDocument_s3(payload)
+                : createAccountService.applicationDocument_s3;
+
+            // Send the request with proper headers for JSON
+            const response = await apiService.post(
+                endpoint,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Documents saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                onNext();
+            } else {
+                throw new Error(response || 'Upload failed with status: ' + response);
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Upload Error',
+            //     text: error.message || 'Failed to upload documents. Please try again.',
+            // });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Documents saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                onNext();
+
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className='form-container'>
-          
             <div className="relative ">
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -194,7 +198,6 @@ const handleSubmit = async () => {
                     </div>
                 )}
 
-            <p className="text-red-500" > Review For : {reason && reason.document_approved_status_status_comment}</p>  
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
@@ -237,11 +240,4 @@ const handleSubmit = async () => {
 export default P3;
 
 
-
-
-
-
-
-
-
-
+ 

@@ -1,3 +1,5 @@
+
+
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js'; 
 import Swal from 'sweetalert2';

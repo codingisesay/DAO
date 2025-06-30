@@ -37,7 +37,7 @@ const ViewApplicationForm = () => {
                         setNominees(account_nominees);
                     }
                     setFormData({
-                    application_id: applicationId || "",
+                    application_id: applicationId ,
 
                     // Authentication
                     auth_type: application.auth_type || "",
@@ -167,7 +167,7 @@ const ViewApplicationForm = () => {
  
                     photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
-                    console.log(response)
+                    // console.log(response)
                 }
             } catch (error) {
                 console.log(error)
@@ -184,8 +184,7 @@ const ViewApplicationForm = () => {
 
     const handlePrint = () => {
         // Store form data in localStorage to access on the print page
-        localStorage.setItem('printData', JSON.stringify(formData));
-        // Navigate to print page
+        // localStorage.setItem('printData', JSON.stringify(formData)); 
         // navigate('/print-application');
         window.open('/print-application', '_blank');
     };
