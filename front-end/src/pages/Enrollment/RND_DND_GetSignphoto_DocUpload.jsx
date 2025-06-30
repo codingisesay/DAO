@@ -89,7 +89,7 @@ function toTitleCase(str) {
 }
 
     const identityProofOptions = [
-        { value: 'PAN_CARD', label: 'PAN Card' },
+        { value: 'PAN_CARD', label: 'Pan Card' },
         { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
         { value: 'PASSPORT', label: 'Passport' },
         { value: 'DRIVING_LICENSE', label: 'Driving License' },
@@ -99,8 +99,8 @@ function toTitleCase(str) {
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
         { value: 'UTILITY_BILL', label: 'Utility Bill (Electricity/Water/Gas Bill recent)' },
-        { value: 'RENT_AGREEMENT', label: 'Registered Rent Agreement' },
-        { value: 'BANK_STATEMENT', label: 'Bank Account Statement (recent)' },
+        { value: 'RENT_AGREEMENT', label: 'Rent Agreement' },
+        { value: 'BANK_STATEMENT', label: 'Bank Statement (recent)' },
         { value: 'PROPERTY_TAX_RECEIPT', label: 'Property Tax Receipt' },
     ];
 
@@ -272,22 +272,42 @@ function toTitleCase(str) {
 
         showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
 
-        if (!documentValue.includes('AADHAAR')) {
-            if (documentType === 'identity') setSelectedIdentityProof('');
-            if (documentType === 'address') setSelectedAddressProof('');
-            if (documentType === 'signature') setSelectedSignatureProof('');
-        } else {
-            const frontUploaded = isAadhaarFrontUploaded();
-            const backUploaded = isAadhaarBackUploaded();
+        // if (!documentValue.includes('AADHAAR')) {
+        //     if (documentType === 'identity') setSelectedIdentityProof('');
+        //     if (documentType === 'address') setSelectedAddressProof('');
+        //     if (documentType === 'signature') setSelectedSignatureProof('');
+        // } else {
+        //     const frontUploaded = isAadhaarFrontUploaded();
+        //     const backUploaded = isAadhaarBackUploaded();
 
-            if (frontUploaded && backUploaded) {
-                setSelectedAddressProof('');
-            } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
-                setTimeout(() => {
-                    showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
-                }, 1000);
-            }
-        }
+        //     if (frontUploaded && backUploaded) {
+        //         setSelectedAddressProof('');
+        //     } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
+        //         setTimeout(() => {
+        //             showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
+        //         }, 1000);
+        //     }
+        // }
+
+// ...existing code...
+if (!documentValue.includes('AADHAAR')) {
+    // if (documentType === 'identity') setSelectedIdentityProof('');
+    // if (documentType === 'address') setSelectedAddressProof('');
+    // if (documentType === 'signature') setSelectedSignatureProof('');
+} else {
+    const frontUploaded = isAadhaarFrontUploaded();
+    const backUploaded = isAadhaarBackUploaded();
+
+    if (frontUploaded && backUploaded) {
+        // setSelectedAddressProof('');
+    } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
+        setTimeout(() => {
+            showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
+        }, 1000);
+    }
+}
+// ...existing code...
+
 
         return true;
     };
