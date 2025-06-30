@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
 import { pendingAccountData, createAccountService, applicationDetailsService } from '../../services/apiServices';
@@ -175,12 +175,12 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
     const fetchAddressByPinCode = async (pincode) => {
         if (!pincode || pincode.length !== 6) return;
-        
+
         setIsFetchingPincode(true);
         try {
             const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
             const data = await response.json();
-            
+
             if (data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
                 const postOffice = data[0].PostOffice[0];
                 setCurrentNominee(prev => ({
@@ -384,7 +384,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             });
             return;
         }
-   
+
         try {
             // Prepare nominees array for API
             const nomineesPayload = nominees.map(nominee => ({
@@ -436,14 +436,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     const handleSameAddressToggle = async (e) => {
         const isChecked = e.target.checked;
         setIsSameAsPermanent(isChecked);
-        
+
         if (isChecked) {
             try {
                 const response = await applicationDetailsService.getFullDetails(storedId);
                 if (response.data) {
                     const { application_addresss } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    
+
                     setCurrentNominee(prev => ({
                         ...prev,
                         address: {
@@ -570,10 +570,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             <div className='flex items-center mb-2'>
                 <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
                 <div className="flex items-center">
-                    <input 
-                        type="checkbox" 
-                        id="sameAsPermanent" 
-                        className="me-2" 
+                    <input
+                        type="checkbox"
+                        id="sameAsPermanent"
+                        className="me-2"
                         checked={isSameAsPermanent}
                         onChange={handleSameAddressToggle}
                     />
@@ -672,7 +672,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     onClick={addNominee}
                     className="border border-green-500 rounded-md text-green-500 px-3 py-1"
                 >
-                    Add Nominiee
+                    Add Nominee
                 </CommonButton>
             </div>
 
@@ -745,143 +745,143 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 export default NominationForm;
 
 const InputField = ({
-  label,
-  name,
-  type = 'text',
-  value,
-  onChange,
-  required = false,
-  max,
-  error,
-  disabled = false,
-  validationType,
-  ...rest
+    label,
+    name,
+    type = 'text',
+    value,
+    onChange,
+    required = false,
+    max,
+    error,
+    disabled = false,
+    validationType,
+    ...rest
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [touched, setTouched] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [touched, setTouched] = useState(false);
 
-  const shouldFloat = isFocused || value;
+    const shouldFloat = isFocused || value;
 
-  const handleBlur = () => {
-    setIsFocused(false);
-    setTouched(true);
-  };
+    const handleBlur = () => {
+        setIsFocused(false);
+        setTouched(true);
+    };
 
-  return (
-    <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        onFocus={() => setIsFocused(true)}
-        onBlur={handleBlur}
-        required={required}
-        className={clsx(
-          'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
-          'transition-all',
-          {
-            'border-red-500': error && touched,
-            'bg-gray-100 cursor-not-allowed': disabled
-          }
-        )}
-        placeholder={label}
-        maxLength={max}
-        disabled={disabled}
-        {...rest}
-      />
-      <label
-        htmlFor={name}
-        className={clsx(
-          'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
-          {
-            'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-            'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
-          }
-        )}
-      >
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
+    return (
+        <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+            <input
+                id={name}
+                name={name}
+                type={type}
+                value={value}
+                onChange={onChange}
+                onFocus={() => setIsFocused(true)}
+                onBlur={handleBlur}
+                required={required}
+                className={clsx(
+                    'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+                    'transition-all',
+                    {
+                        'border-red-500': error && touched,
+                        'bg-gray-100 cursor-not-allowed': disabled
+                    }
+                )}
+                placeholder={label}
+                maxLength={max}
+                disabled={disabled}
+                {...rest}
+            />
+            <label
+                htmlFor={name}
+                className={clsx(
+                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+                    {
+                        'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+                    }
+                )}
+            >
+                {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+            </label>
 
-      {error && touched && (
-        <p className="mt-1 text-xs text-red-500">
-          {error}
-        </p>
-      )}
-    </div>
-  );
+            {error && touched && (
+                <p className="mt-1 text-xs text-red-500">
+                    {error}
+                </p>
+            )}
+        </div>
+    );
 };
 
 const SelectField = ({
-  label,
-  name,
-  value,
-  onChange,
-  required = false,
-  options,
-  error,
-  disabled = false,
-  ...rest
+    label,
+    name,
+    value,
+    onChange,
+    required = false,
+    options,
+    error,
+    disabled = false,
+    ...rest
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [touched, setTouched] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [touched, setTouched] = useState(false);
 
-  const shouldFloat = isFocused || value;
+    const shouldFloat = isFocused || value;
 
-  const handleBlur = () => {
-    setIsFocused(false);
-    setTouched(true);
-  };
+    const handleBlur = () => {
+        setIsFocused(false);
+        setTouched(true);
+    };
 
-  return (
-    <div className={clsx(' floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onFocus={() => setIsFocused(true)}
-        onBlur={handleBlur}
-        required={required}
-        className={clsx(
-          'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
-          'transition-all',
-          {
-            'border-red-500': error && touched,
-            'bg-gray-100 cursor-not-allowed': disabled
-          }
-        )}
-        disabled={disabled}
-        {...rest}
-      >
-        <option value="">Select {label}</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <label
-        htmlFor={name}
-        className={clsx(
-          'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
-          {
-            'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-            'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
-          }
-        )}
-      >
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
+    return (
+        <div className={clsx(' floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+            <select
+                id={name}
+                name={name}
+                value={value}
+                onChange={onChange}
+                onFocus={() => setIsFocused(true)}
+                onBlur={handleBlur}
+                required={required}
+                className={clsx(
+                    'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+                    'transition-all',
+                    {
+                        'border-red-500': error && touched,
+                        'bg-gray-100 cursor-not-allowed': disabled
+                    }
+                )}
+                disabled={disabled}
+                {...rest}
+            >
+                <option value="">Select {label}</option>
+                {options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
+            </select>
+            <label
+                htmlFor={name}
+                className={clsx(
+                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+                    {
+                        'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+                    }
+                )}
+            >
+                {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+            </label>
 
-      {error && touched && (
-        <p className="mt-1 text-xs text-red-500">
-          {error}
-        </p>
-      )}
-    </div>
-  );
+            {error && touched && (
+                <p className="mt-1 text-xs text-red-500">
+                    {error}
+                </p>
+            )}
+        </div>
+    );
 };
 
 

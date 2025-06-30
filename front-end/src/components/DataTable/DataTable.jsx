@@ -1,4 +1,4 @@
- 
+
 
 
 import React, { useEffect, useState } from 'react';
@@ -26,15 +26,15 @@ const DataTable = ({
   showActions = true,
   showEditButton = true,
   showViewButton = true,
-  editButtonDisabled ,
-  viewButtonDisabled ,
+  editButtonDisabled,
+  viewButtonDisabled,
 }) => {
   const [page, setPage] = useState(data.number);
   const [pageSize, setPageSize] = useState(data.size);
 
   useEffect(() => {
     setPage(data.number);
-    setPageSize(data.size); 
+    setPageSize(data.size);
   }, [data]);
 
   const getActionPath = (row) => primaryKeys.map((key) => row[key]).join('/');
@@ -193,4 +193,3 @@ const DataTable = ({
 
 export default DataTable;
 
- 
