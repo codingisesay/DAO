@@ -248,9 +248,9 @@ function toTitleCase(str) {
         const newDocument = {
             id: Date.now(),
             type: docType,
-       name: documentValue.includes('AADHAAR') ?
-    `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
-    `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
+            name: documentValue.includes('AADHAAR') ?
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
 
             image: imageData,
             file: file,
@@ -588,7 +588,7 @@ function toTitleCase(str) {
                 <div className="preview-section my-1">
                     <div className="text-center p-1 rounded">
                         {previewImage ?
-                            (<>  <small> Accepted </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
+                            (<>  <small>  </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
                             : (<><img src={workingman} alt="logo"  className="h-[200px] w-auto mx-auto "/></>)}
                     </div>
                 </div>
