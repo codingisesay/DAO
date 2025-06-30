@@ -8,11 +8,11 @@ const gender = [
     { value: 'OTHER', label: 'Other' },
 ];
 const salutation = [
-    { value: 'MR', label: 'Mr' },
-    { value: 'MRS', label: 'Mrs' },
-    { value: 'MS', label: 'Ms' },
-    { value: 'DR', label: 'Dr' },
-    { value: 'PROF', label: 'Prof' },
+    { value: 'Mr', label: 'Mr' },
+    { value: 'Mrs', label: 'Mrs' },
+    { value: 'Ms', label: 'Ms' },
+    { value: 'Dr', label: 'Dr' },
+    { value: 'Prof', label: 'Prof' },
     // { value: 'MASTER', label: 'Master' },
     { value: 'MISS', label: 'Miss' },
     // { value: 'MX', label: 'Mx' },
@@ -68,15 +68,15 @@ const caste = [
 ];
 
 const relation = [
-    { value: 'FATHER', label: 'Father' },
-    { value: 'MOTHER', label: 'Mother' },
-    { value: 'SPOUSE', label: 'Spouse' },
-    { value: 'SON', label: 'Son' },
-    { value: 'DAUGHTER', label: 'Daughter' },
-    { value: 'BROTHER', label: 'Brother' },
-    { value: 'SISTER', label: 'Sister' },
-    { value: 'GUARDIAN', label: 'Guardian' },
-    { value: 'OTHER', label: 'Other' },
+    { value: 'Father', label: 'Father' },
+    { value: 'Mother', label: 'Mother' },
+    { value: 'Spouse', label: 'Spouse' },
+    { value: 'Son', label: 'Son' },
+    { value: 'Daughter', label: 'Daughter' },
+    { value: 'Brother', label: 'Brother' },
+    { value: 'Sister', label: 'Sister' },
+    { value: 'Guardian', label: 'Guardian' },
+    { value: 'Other', label: 'Other' },
 ];
 const salaryrange = [
     { value: 'Below ₹1,00,000', label: 'Below ₹1,00,000' },
