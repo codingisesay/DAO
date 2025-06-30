@@ -39,24 +39,24 @@ const Dashboard = () => {
   const helpRef = useRef();
   const profileRef = useRef();
   const notifyRef = useRef();
-useEffect(() => {
-  function handleClickOutside(event) {
-    // Help dropdown
-    if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
-      setShowHelp(false);
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // Help dropdown
+      if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+        setShowHelp(false);
+      }
+      // Profile dropdown
+      if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowProfile(false);
+      }
+      // Notification dropdown
+      if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+        setShowNotification(false);
+      }
     }
-    // Profile dropdown
-    if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
-      setShowProfile(false);
-    }
-    // Notification dropdown
-    if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
-      setShowNotification(false);
-    }
-  }
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, [showHelp, showProfile, showNotification]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showHelp, showProfile, showNotification]);
   const handleRedireact = () => {
     localStorage.removeItem("application_id"); // Clear any previous application ID
     navigate("/enrollmentform"); // Change to your route
@@ -293,7 +293,7 @@ import EnrollmentReviewTable from './Enrollment_Review'
 import Footer from "../../components/Footer";
 
 function StatusDashboard1() {
-  const storedId = localStorage.getItem("userCode") || 0;
+  const storedId = localStorage.getItem("userCode") || 1;
   const [statusCounts, setStatusCounts] = useState({
     Pending: 0,
     Approved: 0,

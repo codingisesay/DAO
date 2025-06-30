@@ -1,20 +1,61 @@
+
+
 import { useState, useRef, useEffect } from 'react';
-import Tesseract from 'tesseract.js'; 
-import Swal from 'sweetalert2';
+import Tesseract from 'tesseract.js';
+import { Upload, Camera, X, Trash2, Info } from 'lucide-react';
 import workingman from '../../assets/imgs/upload_placeholder.png';
 
-// Add this CSS to your styles or as a style tag
-const styles = `
-  .signature-display { 
-    height: auto;
-    width: 100px;
-    border-radius:4px
-  }
-  .thumbnail {
-    max-width: 150px;
-    max-height: 100px;
-  }
-`;
+// Custom Alert Modal Component
+const AlertModal = ({ show, title, message, type, onClose }) => {
+    if (!show) return null;
+
+    let bgColor, borderColor, textColor;
+    let icon;
+    switch (type) {
+        case 'success':
+            bgColor = 'bg-green-100';
+            borderColor = 'border-green-400';
+            textColor = 'text-green-700';
+            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>;
+            break;
+        case 'error':
+            bgColor = 'bg-red-100';
+            borderColor = 'border-red-400';
+            textColor = 'text-red-700';
+            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-circle"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
+            break;
+        case 'info':
+            bgColor = 'bg-blue-100';
+            borderColor = 'border-blue-400';
+            textColor = 'text-blue-700';
+            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
+            break;
+        default:
+            bgColor = 'bg-gray-100';
+            borderColor = 'border-gray-400';
+            textColor = 'text-gray-700';
+            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-alert-circle"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>;
+    }
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className={`rounded-lg shadow-lg p-6 ${bgColor} border ${borderColor} max-w-sm w-full relative flex items-start space-x-3`}>
+                <div className={`flex-shrink-0 ${textColor}`}>{icon}</div>
+                <div className="flex-grow">
+                    <h3 className={`text-lg font-bold mb-1 ${textColor}`}>{title}</h3>
+                    <p className={`text-sm ${textColor}`}>{message}</p>
+                </div>
+                <button
+                    onClick={onClose}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition-colors duration-200"
+                    aria-label="Close alert"
+                >
+                    <X size={20} />
+                </button>
+            </div>
+        </div>
+    );
+};
 
 const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
@@ -30,36 +71,59 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const [activeDocumentType, setActiveDocumentType] = useState('');
     const [activeDocumentValue, setActiveDocumentValue] = useState('');
     const [activeSide, setActiveSide] = useState('');
-    const [document, setDocuments ] =  useState();
+    const [document, setDocuments] = useState(documents || []);
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertConfig, setAlertConfig] = useState({ title: '', message: '', type: '' });
+
+    const showAlertMessage = (title, message, type, duration = 2000) => {
+        setAlertConfig({ title, message, type });
+        setShowAlert(true);
+        if (duration > 0) {
+            setTimeout(() => setShowAlert(false), duration);
+        }
+    };
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
     const identityProofOptions = [
-        { value: 'PAN', label: 'PAN Card' },
-        { value: 'VOTER_ID', label: 'Voter ID Card' },
+        { value: 'PAN_CARD', label: 'Pan Card' },
+        { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
         { value: 'PASSPORT', label: 'Passport' },
         { value: 'DRIVING_LICENSE', label: 'Driving License' },
     ];
 
     const addressProofOptions = [
-        { value: 'AADHAAR_FRONT', label: 'Aadhaar Card Front' },
+        { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
-        { value: 'UTILITY_BILL', label: 'Electricity/Water/Gas Bill (recent)' },
-        { value: 'RENT_AGREEMENT', label: 'Registered Rent Agreement' },
-        { value: 'BANK_STATEMENT', label: 'Bank Account Statement (recent)' },
+        { value: 'UTILITY_BILL', label: 'Utility Bill (Electricity/Water/Gas Bill recent)' },
+        { value: 'RENT_AGREEMENT', label: 'Rent Agreement' },
+        { value: 'BANK_STATEMENT', label: 'Bank Statement (recent)' },
         { value: 'PROPERTY_TAX_RECEIPT', label: 'Property Tax Receipt' },
     ];
 
     const signatureProofOption = { value: 'SIGNATURE', label: 'Signature' };
 
-    const isDocumentUploaded = (documentValue) => {
-        return documents.some(doc => doc.type.includes(documentValue));
-    };
+ // ...existing code...
+const isDocumentUploaded = (documentValue) => {
+    if (documentValue === 'AADHAAR_CARD_FRONT') {
+        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+    }
+    if (documentValue === 'AADHAAR_BACK') {
+        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+    }
+    return document.some(doc => doc.type.includes(documentValue));
+};
+// ...existing code...
 
     const isAadhaarFrontUploaded = () => {
-        return documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
     };
 
     const isAadhaarBackUploaded = () => {
-        return documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
     };
 
     const validateAadharCard = async (imageData, side) => {
@@ -71,14 +135,14 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
             const extractedText = result.data.text.toLowerCase();
             
-            if (side === 'front') {
+            if (side === 'FRONT') {
                 const hasGender = extractedText.includes('male') || extractedText.includes('female');
                 const hasAadhaarNumber = /\d{4}\s\d{4}\s\d{4}/.test(result.data.text);
                 const hasGovtIndia = /government of india/i.test(result.data.text);
                 const hasDOB = /\d{2}\/\d{2}\/\d{4}/.test(result.data.text);
 
                 if (!hasGender) {
-                    Swal.fire('Error', 'This does not appear to be a valid Aadhaar card front side (gender not found)', 'error');
+                    showAlertMessage('Error', 'This does not appear to be a valid Aadhaar card front side (gender not found)', 'error');
                     return { isValid: false };
                 }
 
@@ -94,11 +158,11 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 }
 
                 return { isValid: true };
-            } else if (side === 'back') {
+            } else if (side === 'BACK') {
                 const hasUIDAI = /Address/i.test(result.data.text);
 
                 if (!hasUIDAI) {
-                    Swal.fire('Error', 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)', 'error');
+                    showAlertMessage('Error', 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)', 'error');
                     return { isValid: false };
                 }
 
@@ -109,7 +173,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         } catch (error) {
             console.error("Aadhar validation error:", error);
-            Swal.fire('Error', 'Failed to process Aadhaar card image', 'error');
+            showAlertMessage('Error', 'Failed to process Aadhaar card image', 'error');
             return { isValid: false };
         } finally {
             setLoading(false);
@@ -130,12 +194,12 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             const hasGovtIndia = /GOVERNMENT OF INDIA/.test(extractedText);
 
             if (!hasIncomeText) {
-                Swal.fire('Error', 'This does not appear to be a valid PAN card ("INCOME" text not found)', 'error');
+                showAlertMessage('Error', 'This does not appear to be a valid PAN card ("INCOME" text not found)', 'error');
                 return { isValid: false };
             }
 
             if (!hasPANNumber) {
-                Swal.fire('Error', 'This does not appear to be a valid PAN card (PAN number format not found)', 'error');
+                showAlertMessage('Error', 'This does not appear to be a valid PAN card (PAN number format not found)', 'error');
                 return { isValid: false };
             }
 
@@ -153,7 +217,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         } catch (error) {
             console.error("PAN validation error:", error);
-            Swal.fire('Error', 'Failed to process PAN card image', 'error');
+            showAlertMessage('Error', 'Failed to process PAN card image', 'error');
             return { isValid: false };
         } finally {
             setLoading(false);
@@ -165,12 +229,12 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         let extractedInfo = null;
 
         if (!skipValidation) {
-            if (documentValue === 'AADHAAR_FRONT' || documentValue === 'AADHAAR_BACK') {
-                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
+            if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_BACK') {
+                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
             }
-            else if (documentValue === 'PAN') {
+            else if (documentValue === 'PAN_CARD') {
                 const validationResult = await validatePANCard(imageData);
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
@@ -182,7 +246,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             }
         }
 
-        let docType = documentValue === 'AADHAAR_FRONT' ? 'AADHAAR_FRONT_JPG' :
+        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_FRONT_JPG' :
             documentValue === 'AADHAAR_BACK' ? 'AADHAAR_BACK_JPG' :
                 `${documentValue}_JPG`;
 
@@ -193,8 +257,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             id: Date.now(),
             type: docType,
             name: documentValue.includes('AADHAAR') ?
-                `${documentValue.replace('_', ' ').toLowerCase()}` :
-                `${documentValue.replace('_', ' ').toUpperCase()} `,
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
+
             image: imageData,
             file: file,
             uploadedAt: new Date().toLocaleString(),
@@ -203,47 +268,54 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             ...(extractedInfo && { extractedInfo })
         };
 
-        const updatedDocuments = [...documents, newDocument];
+        const updatedDocuments = [...document, newDocument];
         setDocuments(updatedDocuments);
         if (onDocumentsUpdate) {
             onDocumentsUpdate(updatedDocuments);
         }
 
-        // Immediately trigger signature and photo extraction
         if (onProcessDocument) {
             onProcessDocument(newDocument);
         }
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Document Uploaded',
-            text: `${newDocument.name} has been successfully uploaded`,
-            timer: 2000,
-            showConfirmButton: false
-        });
+        showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
 
-        if (!documentValue.includes('AADHAAR')) {
-            if (documentType === 'identity') setSelectedIdentityProof('');
-            if (documentType === 'address') setSelectedAddressProof('');
-            if (documentType === 'signature') setSelectedSignatureProof('');
-        } else {
-            const frontUploaded = isAadhaarFrontUploaded();
-            const backUploaded = isAadhaarBackUploaded();
+        // if (!documentValue.includes('AADHAAR')) {
+        //     if (documentType === 'identity') setSelectedIdentityProof('');
+        //     if (documentType === 'address') setSelectedAddressProof('');
+        //     if (documentType === 'signature') setSelectedSignatureProof('');
+        // } else {
+        //     const frontUploaded = isAadhaarFrontUploaded();
+        //     const backUploaded = isAadhaarBackUploaded();
 
-            if (frontUploaded && backUploaded) {
-                setSelectedAddressProof('');
-            } else if (documentValue === 'AADHAAR_FRONT' && !backUploaded) {
-                setTimeout(() => {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Upload Back Side',
-                        text: 'Please upload the back side of your Aadhaar card to complete the process',
-                        timer: 3000,
-                        showConfirmButton: true
-                    });
-                }, 1000);
-            }
-        }
+        //     if (frontUploaded && backUploaded) {
+        //         setSelectedAddressProof('');
+        //     } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
+        //         setTimeout(() => {
+        //             showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
+        //         }, 1000);
+        //     }
+        // }
+
+// ...existing code...
+if (!documentValue.includes('AADHAAR')) {
+    // if (documentType === 'identity') setSelectedIdentityProof('');
+    // if (documentType === 'address') setSelectedAddressProof('');
+    // if (documentType === 'signature') setSelectedSignatureProof('');
+} else {
+    const frontUploaded = isAadhaarFrontUploaded();
+    const backUploaded = isAadhaarBackUploaded();
+
+    if (frontUploaded && backUploaded) {
+        // setSelectedAddressProof('');
+    } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
+        setTimeout(() => {
+            showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
+        }, 1000);
+    }
+}
+// ...existing code...
+
 
         return true;
     };
@@ -253,12 +325,12 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            Swal.fire('Error', 'File size must not exceed 5MB', 'error');
+            showAlertMessage('Error', 'File size must not exceed 5MB', 'error');
             return;
         }
 
         if (!['image/jpeg', 'image/png'].includes(file.type)) {
-            Swal.fire('Error', 'Only JPG/PNG files are allowed', 'error');
+            showAlertMessage('Error', 'Only JPG/PNG files are allowed', 'error');
             return;
         }
 
@@ -271,26 +343,28 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         reader.readAsDataURL(file);
     };
 
-    const startCamera = async (documentType, documentValue, side) => {
+    // Updated camera functions from RND_DND_GetSignphoto_DocUpload_ValidBeforeCameratest
+    const startCamera = (documentType, documentValue) => {
         setActiveDocumentType(documentType);
         setActiveDocumentValue(documentValue);
-        setActiveSide(side);
+        setShowCameraModal(true);
 
-        try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            });
-            setStream(mediaStream);
-            setShowCameraModal(true);
-
-            setTimeout(() => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = mediaStream;
-                }
-            }, 100);
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            Swal.fire('Error', 'Could not access the camera. Please check permissions.', 'error');
+        if (typeof window !== 'undefined' && navigator.mediaDevices) {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    setStream(stream);
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                    }
+                })
+                .catch(err => {
+                    console.error("Camera error:", err);
+                    showAlertMessage('Error', 'Could not access camera. Please ensure you have granted camera permissions.', 'error');
+                    setShowCameraModal(false);
+                });
+        } else {
+            showAlertMessage('Error', 'Camera access not supported in this environment.', 'error');
+            setShowCameraModal(false);
         }
     };
 
@@ -302,10 +376,14 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         setShowCameraModal(false);
     };
 
-    const capturePhoto = async () => {
-        if (!videoRef.current) return;
+    const capturePhoto = () => {
+        if (typeof window === 'undefined' || !window.document || !videoRef.current) {
+            console.error("Attempted to capture photo in a non-browser environment or without video stream.");
+            showAlertMessage('Error', 'Cannot capture photo: Browser environment or video stream not ready.', 'error');
+            return;
+        }
 
-        const canvas = document.createElement('canvas');
+        const canvas = window.document.createElement('canvas');
         canvas.width = videoRef.current.videoWidth;
         canvas.height = videoRef.current.videoHeight;
         const ctx = canvas.getContext('2d');
@@ -314,37 +392,33 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         const imageData = canvas.toDataURL('image/jpeg');
         setPreviewImage(imageData);
 
-        const success = await processImage(imageData, activeDocumentType, activeDocumentValue, activeSide, true);
-        if (success) {
-            stopCamera();
-        }
+        processImage(imageData, activeDocumentType, activeDocumentValue, '', true)
+            .then(success => {
+                if (success) {
+                    stopCamera();
+                }
+            });
     };
 
     const removeDocument = (id) => {
-        const docToRemove = documents.find(doc => doc.id === id);
-        const updatedDocuments = documents.filter(doc => doc.id !== id);
+        const docToRemove = document.find(doc => doc.id === id);
+        const updatedDocuments = document.filter(doc => doc.id !== id);
         setDocuments(updatedDocuments);
         if (onDocumentsUpdate) {
             onDocumentsUpdate(updatedDocuments);
         }
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Document Removed',
-            text: `${docToRemove.name} has been removed`,
-            timer: 2000,
-            showConfirmButton: false
-        });
+        showAlertMessage('Document Removed', `${docToRemove.name} has been removed`, 'success');
 
         if (docToRemove?.type.includes('AADHAAR')) {
             if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
-                setSelectedAddressProof('AADHAAR_FRONT');
+                setSelectedAddressProof('AADHAAR_CARD_FRONT');
             } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
                 setSelectedAddressProof('AADHAAR_BACK');
             }
         }
 
-        if (documents.length === 1) {
+        if (document.length === 1) {
             setPreviewImage(null);
         }
     };
@@ -353,7 +427,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         if (!documentValue || isDocumentUploaded(documentValue)) return;
 
         if (documentValue.includes('AADHAAR')) {
-            setUploadSide(documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
+            setUploadSide(documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
         }
 
         if (fileInputRef.current) {
@@ -377,11 +451,15 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         };
     }, [stream]);
 
+    useEffect(() => {
+        setDocuments(documents || []);
+    }, [documents]);
+
     return (
         <div className="document-upload-container p-4 mx-auto">
             <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
-                <i className="bi bi-info-circle"></i>&nbsp;
+                <Info size={16} className="mr-1" />
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>
             </div>
 
@@ -413,8 +491,20 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                             {selectedIdentityProof && !isDocumentUploaded(selectedIdentityProof) && (
                                 <div className="mt-2 flex flex-col">
                                     <div className="flex justify-center gap-4">
-                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('identity', selectedIdentityProof, '')}></span>
-                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('identity', selectedIdentityProof, '')}></span>
+                                        <button
+                                            className="text-green-500"
+                                            onClick={() => triggerFileInput('identity', selectedIdentityProof, '')}
+                                            title="Upload from device"
+                                        >
+                                            <Upload size={18} />
+                                        </button>
+                                        <button
+                                            className="text-green-500"
+                                            onClick={() => startCamera('identity', selectedIdentityProof)}
+                                            title="Take photo"
+                                        >
+                                            <Camera size={18} />
+                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -451,8 +541,20 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                 <div className="mt-2">
                                     <div className="flex flex-col">
                                         <div className="flex justify-center gap-4">
-                                            <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('address', selectedAddressProof, '')}></span>
-                                            <span className="bi bi-camera mr-2" onClick={() => startCamera('address', selectedAddressProof, '')}></span>
+                                            <button
+                                                className="text-green-500"
+                                                onClick={() => triggerFileInput('address', selectedAddressProof, '')}
+                                                title="Upload from device"
+                                            >
+                                                <Upload size={18} />
+                                            </button>
+                                            <button
+                                                className="text-green-500"
+                                                onClick={() => startCamera('address', selectedAddressProof)}
+                                                title="Take photo"
+                                            >
+                                                <Camera size={18} />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -483,8 +585,20 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                             {selectedSignatureProof && !isDocumentUploaded(selectedSignatureProof) && (
                                 <div className="mt-2 flex flex-col">
                                     <div className="flex justify-center gap-4">
-                                        <span className="bi bi-cloud-upload mr-2" onClick={() => triggerFileInput('signature', selectedSignatureProof, '')}></span>
-                                        <span className="bi bi-camera mr-2" onClick={() => startCamera('signature', selectedSignatureProof, '')}></span>
+                                        <button
+                                            className="text-green-500"
+                                            onClick={() => triggerFileInput('signature', selectedSignatureProof, '')}
+                                            title="Upload from device"
+                                        >
+                                            <Upload size={18} />
+                                        </button>
+                                        <button
+                                            className="text-green-500"
+                                            onClick={() => startCamera('signature', selectedSignatureProof)}
+                                            title="Take photo"
+                                        >
+                                            <Camera size={18} />
+                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -502,7 +616,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 <div className="preview-section my-1">
                     <div className="text-center p-1 rounded">
                         {previewImage ?
-                            (<>  <small> Accepted </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
+                            (<>  <small>  </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
                             : (<><img src={workingman} alt="logo"  className="h-[200px] w-auto mx-auto "/></>)}
                     </div>
                 </div>
@@ -521,8 +635,8 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                             </tr>
                         </thead>
                         <tbody>
-                            {documents.length > 0 ? (
-                                documents.map((doc) => (
+                            {document.length > 0 ? (
+                                document.map((doc) => (
                                     <tr key={doc.id} className="border">
                                         <td className="border p-2">{doc.name}</td>
                                         <td className="border p-2">
@@ -535,32 +649,31 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                             )}
                                         </td> 
                                          
-                                            <style>{styles}</style>
-                                            
-                                            <td className="border p-2">
-                                            {doc.signatures && doc.signatures.length > 0 ? (
-                                                <img
-                                                src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
-                                                alt="Signature"
-                                                className="signature-display"
-                                                />
-                                            ) : '-'}
-                                            </td>
+                                        <td className="border p-2">
+                                        {doc.signatures && doc.signatures.length > 0 ? (
+                                            <img
+                                            src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
+                                            alt="Signature"
+                                            className="w-24 h-auto rounded-md object-contain shadow-sm"
+                                            />
+                                        ) : '-'}
+                                        </td>
                                         <td className="border p-2">
                                             {doc.photographs && doc.photographs.length > 0 ? (
                                                 <img
                                                     src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
                                                     alt="Photograph"
-                                                    className="thumbnail max-w-xs max-h-15"
+                                                    className="w-auto h-[50px] rounded-md object-contain shadow-sm"
                                                 />
                                             ) : '-'}
                                         </td>
                                         <td className="border p-2">
                                             <button
                                                 onClick={() => removeDocument(doc.id)}
-                                                className="text-red-500 hover:text-red-700"
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors duration-200"
+                                                title="Remove Document"
                                             >
-                                                <i className="bi bi-trash"></i>
+                                                <Trash2 size={18} />
                                             </button>
                                         </td>
                                     </tr>
@@ -577,36 +690,48 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 </div>
             </div>
 
+            {/* Camera Modal - Updated from RND_DND_GetSignphoto_DocUpload_ValidBeforeCameratest */}
             {showCameraModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 rounded-lg max-w-md w-full">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-lg font-bold">Take Photo</h3>
-                            <button onClick={stopCamera} className="text-gray-500 hover:text-gray-700">
-                                <span className="bi bi-x text-xl"></span>
+                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg max-w-md w-full shadow-xl p-6">
+                        <div className="flex justify-between items-center mb-4 border-b pb-3">
+                            <h3 className="text-lg font-bold text-gray-900">Take Photo</h3>
+                            <button onClick={stopCamera} className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition-colors duration-200" aria-label="Close camera">
+                                <X size={24} />
                             </button>
                         </div>
-                        <div className="mb-4">
+                        <div className="mb-6 aspect-video overflow-hidden rounded-lg bg-black flex items-center justify-center">
                             <video
                                 ref={videoRef}
                                 autoPlay
                                 playsInline
-                                className="w-full h-auto border rounded"
+                                className="w-full h-full object-cover"
                             />
                         </div>
                         <div className="flex justify-center">
                             <button
                                 onClick={capturePhoto}
-                                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-full"
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
                             >
-                                <span className="bi bi-camera text-xl"></span>
+                                <Camera size={20} /> Capture
                             </button>
                         </div>
                         <div className="mt-4 text-sm text-gray-600 text-center">
-                            Position the document clearly in the frame and click the camera button
+                            Position the document clearly in the frame and click Capture
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Custom Alert Modal */}
+            {showAlert && (
+                <AlertModal
+                    show={showAlert}
+                    title={alertConfig.title}
+                    message={alertConfig.message}
+                    type={alertConfig.type}
+                    onClose={() => setShowAlert(false)}
+                />
             )}
         </div>
     );

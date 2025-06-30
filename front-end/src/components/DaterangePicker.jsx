@@ -50,7 +50,7 @@ const DateRangePicker = ({ onChange }) => {
 
 
 function StatusDashboard1() {
-  const storedId = localStorage.getItem("agent_id") || 1;
+  const storedId = localStorage.getItem("userCode") || 1;
   const [statusCounts, setStatusCounts] = useState({
     Pending: 0,
     Approved: 0,
@@ -65,6 +65,9 @@ function StatusDashboard1() {
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
 
   useEffect(() => {
+
+    fetchDetails();
+  }, [storedId]);
     const fetchDetails = async () => {
       try {
         const response = await agentService.applicationcountbyagent(storedId);
@@ -90,9 +93,6 @@ function StatusDashboard1() {
         });
       }
     };
-    fetchDetails();
-  }, [storedId]);
-
   return (
     <div className="dashboard-top-caard-collection flex flex-wrap my-1">
       {/* Review Card */}

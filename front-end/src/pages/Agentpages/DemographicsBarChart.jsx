@@ -19,7 +19,7 @@ const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'];
 function DemographicsBarChart() {
     const [loading, setLoading] = useState(true);
     const [chartData, setChartData] = useState([]);
-    const storedId = localStorage.getItem('agent_id') || 1;
+    const storedId = localStorage.getItem('userCode') || 1;
     
     useEffect(() => {
         const fetchKYCData = async () => {

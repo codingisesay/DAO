@@ -33,36 +33,36 @@ const ViewApplicationForm = () => {
                  setFormData({
                     application_id: applicationId,
                     // Authentication
-                    auth_type: application.auth_type,
-                    auth_code: application.auth_code,
-                    status: application.auth_status,
+                    auth_type: application.auth_type || '',
+                    auth_code: application.auth_code || '',
+                    status: application.auth_status || '',
 
                     // Personal Info
-                    salutation: personal_details?.salutation,
-                    first_name: application.first_name,
-                    middle_name: application.middle_name,
-                    last_name: application.last_name,
-                    DOB: application.DOB,
-                    gender: application.gender,
-                    religion: personal_details?.religion,
-                    caste: personal_details?.caste,
-                    marital_status: personal_details?.marital_status,
+                    salutation: personal_details?.salutation || '',
+                    first_name: application.first_name || '',
+                    middle_name: application.middle_name || '',
+                    last_name: application.last_name || '',
+                    DOB: application.DOB || '',
+                    gender: application.gender || '',
+                    religion: personal_details?.religion || '',
+                    caste: personal_details?.caste || '',
+                    marital_status: personal_details?.marital_status || '',
 
                     // Contact
-                    mobile: application.mobile,
-                    alt_mob_no: personal_details?.alt_mob_no,
-                    email: personal_details?.email,
+                    mobile: application.mobile || '',
+                    alt_mob_no: personal_details?.alt_mob_no || '',
+                    email: personal_details?.email || '',
 
                     // Permanent Address (from application object)
-                    complex_name: application.complex_name,
-                    flat_no: application.flat_no,
-                    area: application.area,
-                    landmark: application.landmark, // Fixed typo from 'lankmark' to 'landmark'
-                    country: application.country,
-                    pincode: application.pincode,
-                    city: application.city,
-                    district: application.district,
-                    state: application.state,
+                    complex_name: application.complex_name || '',
+                    flat_no: application.flat_no || '',
+                    area: application.area || '',
+                    landmark: application.landmark || '', // Fixed typo from 'lankmark' to 'landmark'
+                    country: application.country || '',
+                    pincode: application.pincode || '',
+                    city: application.city || '',
+                    district: application.district || '',
+                    state: application.state || '',
 
                     // Correspondence Address (from application_addresss array - using first item)
                     per_complex_name: address.per_complex_name || '',
@@ -93,26 +93,26 @@ const ViewApplicationForm = () => {
                     voter_id: personal_details?.voter_id,
 
                     // Family Details
-                    father_prefix_name: account_personal_details?.father_prefix_name,
-                    father_first_name: account_personal_details?.father_first_name,
-                    father_middle_name: account_personal_details?.father_middle_name,
-                    father_last_name: account_personal_details?.father_last_name,
-                    mother_prefix_name: account_personal_details?.mother_prefix_name,
-                    mother_first_name: account_personal_details?.mother_first_name,
-                    mother_middle_name: account_personal_details?.mother_middle_name,
-                    mother_last_name: account_personal_details?.mother_last_name,
-                    birth_place: account_personal_details?.birth_place,
-                    birth_country: account_personal_details?.birth_country,
+                    father_prefix_name: account_personal_details?.father_prefix_name || '',
+                    father_first_name: account_personal_details?.father_first_name || '',
+                    father_middle_name: account_personal_details?.father_middle_name || '',
+                    father_last_name: account_personal_details?.father_last_name || '',
+                    mother_prefix_name: account_personal_details?.mother_prefix_name || '',
+                    mother_first_name: account_personal_details?.mother_first_name || '',
+                    mother_middle_name: account_personal_details?.mother_middle_name || '',
+                    mother_last_name: account_personal_details?.mother_last_name || '',
+                    birth_place: account_personal_details?.birth_place || '',
+                    birth_country: account_personal_details?.birth_country || '',
 
                     // Occupation Details
-                    occoupation_type: account_personal_details?.occoupation_type,
-                    occupation_name: account_personal_details?.occupation_name,
-                    if_salaryed: account_personal_details?.if_salaryed,
-                    designation: account_personal_details?.designation,
-                    nature_of_occoupation: account_personal_details?.nature_of_occoupation,
-                    qualification: account_personal_details?.qualification,
-                    anual_income: account_personal_details?.anual_income,
-                    remark: account_personal_details?.remark,
+                    occoupation_type: account_personal_details?.occoupation_type || '',
+                    occupation_name: account_personal_details?.occupation_name || '',
+                    if_salaryed: account_personal_details?.if_salaryed || '',
+                    designation: account_personal_details?.designation || '',
+                    nature_of_occoupation: account_personal_details?.nature_of_occoupation || '',
+                    qualification: account_personal_details?.qualification || '',
+                    anual_income: account_personal_details?.anual_income || '',
+                    remark: account_personal_details?.remark || '',
 
                     // Documents
                     signature: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE')) 

@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
-import DAOExtraction from '../Enrollment/RND_DND_GetSignphoto_abstraction';
+// import DAOExtraction from '../Enrollment/RND_DND_GetSignphoto_abstraction';
 
 function p3({ onNext, onBack }) {
     const [localFormData, setLocalFormData] = useState([]);
@@ -190,11 +190,11 @@ function p3({ onNext, onBack }) {
                 extractedData={extractedData} 
             />
 
-            <DAOExtraction 
+            {/* <DAOExtraction 
                 document={currentDocument}
                 onClose={() => setCurrentDocument(null)}
                 onExtractionComplete={handleExtractionComplete}
-            />
+            /> */}
 
             {/* ... (keep your button section unchanged) */}
             

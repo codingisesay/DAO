@@ -52,7 +52,7 @@ const Step4VideoCall = ({
 
       <VideoKYCInstructions />
 
-
+{/* 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
         <div className="img-container">
           <img
@@ -76,16 +76,14 @@ const Step4VideoCall = ({
           >
             Skip V-KYC & Next
           </CommonButton>
-          {/* <button type="button" onClick={skipStep} className="skip-button"> Skip        </button> */}
-
-
+        
           <CommonButton
             className="btn-login my-3 w-[200px]"
           >
             Assisted V-KYC
           </CommonButton>
         </div>
-      </div>
+      </div> */}
 
 
       <div className="next-back-btns z-10">
