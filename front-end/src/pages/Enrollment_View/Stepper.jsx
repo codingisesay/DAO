@@ -38,7 +38,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
                 </li>
             </ul>
             <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
-            <p className='my-3'> Account Opening</p>
+            <p className='mb-2 ps-11'> Account Opening</p>
 
             <div className="sidebar-stepper-container">
                 <div className="vertical-stepper">
@@ -69,7 +69,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
                         alt="profile"
                         className="rounded-full object-cover mx-2"
                     />
-                    <span className='font-bold'>{username} <br /><small className='font-normal'> - {userrole}</small></span>
+                    <span className='font-bold'>{username} <br /><small className='font-normal'> {userrole}</small></span>
                 </div>
                 {/* <div className="flex items-center justify-between footer-icon-collection">
                     <ThemeToggle />
