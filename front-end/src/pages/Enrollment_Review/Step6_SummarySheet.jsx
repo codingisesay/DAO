@@ -1,6 +1,6 @@
 import React, { act, useState } from "react";
-import PersonalDetailsForm from "./6A";
-import CameraCapture from "./6B";
+import PersonalDetailsForm from "./Step6A_SummaryPrint";
+import CameraCapture from "./Step6B_AgentLivePhoto";
 import "../../assets/css/StepperForm.css"; // Import your CSS file here
 import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";
@@ -93,7 +93,7 @@ const p6 = ({ onNext, onBack }) => {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = "/agentdashboard"; // Redirect to the desired page
+        window.location.href = "/admindashboard"; // Redirect to the desired page
       }
     });
   };

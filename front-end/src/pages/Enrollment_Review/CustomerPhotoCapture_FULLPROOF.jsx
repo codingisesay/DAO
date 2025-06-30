@@ -217,7 +217,7 @@ const ImageCaptureValidator = ({ onCapture, photoType = 'customer', showLocation
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6 text-center">Image Capture Validation</h1>
+      <h1 className="text-xl font-bold mb-6 text-center">Image Capture Validation</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         {/* Camera/Image Preview */}

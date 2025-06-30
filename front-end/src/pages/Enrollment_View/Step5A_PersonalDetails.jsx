@@ -103,7 +103,7 @@ useEffect(() => {
  
     return (
         <div className="max-w-screen-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
+            <h2 className="text-xl font-bold mb-4">Personal Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
                 {/* Maiden Name Section */}
                 <CommanSelect
@@ -240,7 +240,7 @@ useEffect(() => {
                 />
             </div>
 
-            <h2 className="text-2xl font-bold mt-2 mb-2">Occupation Details</h2>
+            <h2 className="text-xl font-bold mt-2 mb-2">Occupation Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
                 <CommanInput
                     label={labels.occupationType.label}
