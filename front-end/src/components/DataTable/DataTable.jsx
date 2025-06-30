@@ -86,7 +86,7 @@ const DataTable = ({
   if (showActions) {
     muiColumns.push({
       name: 'actions',
-      label: 'ACTIONS',
+      label: 'Actions',
       options: {
         filter: false,
         sort: false,
