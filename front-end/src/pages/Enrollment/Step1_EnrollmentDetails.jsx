@@ -198,6 +198,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             setIsSubmitting(true);
             if (selectedOption === 'Aadhar Card') {
                 if (validateAadhaar(localFormData.verifynumber)) {
+                    
                     Swal.fire({
                         icon: 'success',
                         title: 'Aadhar Card verified!',

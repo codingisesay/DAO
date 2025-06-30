@@ -234,7 +234,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
  
   return (
     <div className="customer-details-container form-container">
-      <h1 className="text-2xl font-bold flex justify-between text-gray-800 mb-0">
+      <h1 className="text-xl font-bold flex justify-between text-gray-800 mb-0">
         Pending application 
       </h1>
       <div className="details-sections">

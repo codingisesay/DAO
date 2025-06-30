@@ -121,7 +121,7 @@ function PersonalOccupationForm() {
 
     return (
         <div className="max-w-screen-xl mx-auto">
-            <h2 className="text-2xl font-bold mb-4">Personal Details</h2>
+            <h2 className="text-xl font-bold mb-4">Personal Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
                 <CommanInput label={labels.maidenPrefixName.label} name="maidenPrefixName" value={formData.maidenPrefixName || ''} onChange={handleChange} readOnly={true} />
                 <CommanInput label={labels.maidenFirstName.label} name="maidenFirstName" value={formData.maidenFirstName || ''} onChange={handleChange} readOnly={true} />
@@ -146,7 +146,7 @@ function PersonalOccupationForm() {
                 <CommanInput label={labels.caste.label} name="caste" value={formData.caste || ''} onChange={handleChange} required readOnly={true} />
             </div>
 
-            <h2 className="text-2xl font-bold mt-8 mb-4">Occupation Details</h2>
+            <h2 className="text-xl font-bold mt-8 mb-4">Occupation Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
                 <CommanInput label={labels.occupationType.label} name="occupationType" value={formData.occupationType || ''} onChange={handleChange} readOnly={true} />
                 <CommanInput label={labels.businessName.label} name="businessName" value={formData.businessName || ''} onChange={handleChange} readOnly={true} />

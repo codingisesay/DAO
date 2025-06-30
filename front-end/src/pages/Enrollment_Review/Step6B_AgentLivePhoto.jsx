@@ -86,7 +86,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
                     localStorage.removeItem('customerPhotoData');
                     localStorage.removeItem('agentPhotoData');
                     localStorage.removeItem('documentData');
-                    window.location.href = '/agentdashboard'; // Redirect to the desired page
+                    window.location.href = '/admindashboard'; // Redirect to the desired page
                 }
             });
 

@@ -82,18 +82,23 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             setTimeout(() => setShowAlert(false), duration);
         }
     };
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
 
     const identityProofOptions = [
-        { value: 'PAN', label: 'PAN Card' },
-        { value: 'VOTER_ID', label: 'Voter ID Card' },
+        { value: 'PAN_CARD', label: 'PAN Card' },
+        { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
         { value: 'PASSPORT', label: 'Passport' },
         { value: 'DRIVING_LICENSE', label: 'Driving License' },
     ];
 
     const addressProofOptions = [
-        { value: 'AADHAAR_FRONT', label: 'Aadhaar Card Front' },
+        { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
-        { value: 'UTILITY_BILL', label: 'Electricity/Water/Gas Bill (recent)' },
+        { value: 'UTILITY_BILL', label: 'Utility Bill (Electricity/Water/Gas Bill recent)' },
         { value: 'RENT_AGREEMENT', label: 'Registered Rent Agreement' },
         { value: 'BANK_STATEMENT', label: 'Bank Account Statement (recent)' },
         { value: 'PROPERTY_TAX_RECEIPT', label: 'Property Tax Receipt' },
@@ -122,7 +127,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
             const extractedText = result.data.text.toLowerCase();
             
-            if (side === 'front') {
+            if (side === 'FRONT') {
                 const hasGender = extractedText.includes('male') || extractedText.includes('female');
                 const hasAadhaarNumber = /\d{4}\s\d{4}\s\d{4}/.test(result.data.text);
                 const hasGovtIndia = /government of india/i.test(result.data.text);
@@ -145,7 +150,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 }
 
                 return { isValid: true };
-            } else if (side === 'back') {
+            } else if (side === 'BACK') {
                 const hasUIDAI = /Address/i.test(result.data.text);
 
                 if (!hasUIDAI) {
@@ -216,12 +221,12 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         let extractedInfo = null;
 
         if (!skipValidation) {
-            if (documentValue === 'AADHAAR_FRONT' || documentValue === 'AADHAAR_BACK') {
-                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
+            if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_BACK') {
+                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
             }
-            else if (documentValue === 'PAN') {
+            else if (documentValue === 'PAN_CARD') {
                 const validationResult = await validatePANCard(imageData);
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
@@ -233,7 +238,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             }
         }
 
-        let docType = documentValue === 'AADHAAR_FRONT' ? 'AADHAAR_FRONT_JPG' :
+        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_FRONT_JPG' :
             documentValue === 'AADHAAR_BACK' ? 'AADHAAR_BACK_JPG' :
                 `${documentValue}_JPG`;
 
@@ -243,9 +248,10 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         const newDocument = {
             id: Date.now(),
             type: docType,
-            name: documentValue.includes('AADHAAR') ?
-                `${documentValue.replace('_', ' ').toLowerCase()}` :
-                `${documentValue.replace('_', ' ').toUpperCase()} `,
+       name: documentValue.includes('AADHAAR') ?
+    `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
+    `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
+
             image: imageData,
             file: file,
             uploadedAt: new Date().toLocaleString(),
@@ -276,7 +282,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
             if (frontUploaded && backUploaded) {
                 setSelectedAddressProof('');
-            } else if (documentValue === 'AADHAAR_FRONT' && !backUploaded) {
+            } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
                 setTimeout(() => {
                     showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
                 }, 1000);
@@ -378,7 +384,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         if (docToRemove?.type.includes('AADHAAR')) {
             if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
-                setSelectedAddressProof('AADHAAR_FRONT');
+                setSelectedAddressProof('AADHAAR_CARD_FRONT');
             } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
                 setSelectedAddressProof('AADHAAR_BACK');
             }
@@ -393,7 +399,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         if (!documentValue || isDocumentUploaded(documentValue)) return;
 
         if (documentValue.includes('AADHAAR')) {
-            setUploadSide(documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
+            setUploadSide(documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
         }
 
         if (fileInputRef.current) {
@@ -423,7 +429,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     return (
         <div className="document-upload-container p-4 mx-auto">
-            <h2 className="text-2xl font-bold mb-1">Upload Documents</h2>
+            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
                 <Info size={16} className="mr-1" />
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>

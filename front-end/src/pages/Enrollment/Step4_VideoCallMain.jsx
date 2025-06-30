@@ -1,6 +1,6 @@
 import React from 'react';
 // import LivePhoto from './2C';
-import VideoKYCInstructions from './4A';
+import VideoKYCInstructions from './Step4A_VideoCallScreen';
 import CommonButton from '../../components/CommonButton';
 function p4({ onNext, onBack }) {
 

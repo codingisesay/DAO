@@ -32,7 +32,7 @@ const NominationDetailsTable = () => {
 
     return (
         <div className="p-4 max-w-6xl mx-auto">
-            <h1 className="text-2xl font-bold mb-6">Nomination Details</h1>
+            <h1 className="text-xl font-bold mb-6">Nomination Details</h1>
             <div className="overflow-x-auto">
                 <table className="min-w-full border border-gray-200">
                     <thead className="bg-gray-100">

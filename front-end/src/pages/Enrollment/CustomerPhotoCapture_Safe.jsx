@@ -360,7 +360,7 @@ const ImageCaptureValidator = ({
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6 text-center">
+      <h1 className="text-xl font-bold mb-6 text-center">
         Image Capture Validation
       </h1>
 
@@ -941,7 +941,7 @@ export default ImageCaptureValidator;
 
 //   return (
 //     <div className="container mx-auto p-4 max-w-4xl">
-//       <h1 className="text-2xl font-bold mb-6 text-center">
+//       <h1 className="text-xl font-bold mb-6 text-center">
 //         Image Capture Validation
 //       </h1>
 
