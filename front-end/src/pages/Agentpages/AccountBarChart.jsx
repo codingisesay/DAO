@@ -44,6 +44,9 @@ function AccountBarChart() {
 
   const storedId = localStorage.getItem("userCode") || 0;
     useEffect(() => {
+        fetchData();
+    }, [timePeriod]);
+
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -61,9 +64,6 @@ function AccountBarChart() {
                 setLoading(false);
             }
         };
-
-        fetchData();
-    }, [timePeriod]);
 
     return (
         <Box sx={{ width: '100%', maxWidth: '1000px', margin: 'auto' }}>

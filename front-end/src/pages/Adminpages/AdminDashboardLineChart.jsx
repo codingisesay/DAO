@@ -1,3 +1,5 @@
+ 
+
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { adminService } from '../../services/apiServices';
@@ -5,9 +7,10 @@ import Swal from 'sweetalert2';
 
 const MonthlyAccountTrends = () => {
     const [data, setData] = useState([]);
+    const admin_id= localStorage.getItem('userCode')
    
-    useEffect(() => {
         const fetchDetails = async () => {
+        
             try {
                 const response = await adminService.monthlyLineChart;
                 console.log('API Response:', response); // For debugging
@@ -23,15 +26,18 @@ const MonthlyAccountTrends = () => {
                 }
             } catch (error) {
                 console.error('Error fetching Monthly Trends:', error);
-                // Swal.fire({
-                //     icon: 'error',
-                //     title: 'Error',
-                //     text: error?.response?.data?.message || 'Failed to load chart data'
-                // });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.response?.data?.message || 'Failed to load chart data'
+                });
             }
+     
+
         };
-        fetchDetails();
-    }, []);
+    useEffect(() => {
+            if (admin_id){        fetchDetails(admin_id);}
+    }, [admin_id]);
 
     return (
         <div style={{ width: '100%', height: 340, fontFamily: 'Arial, sans-serif' }}>

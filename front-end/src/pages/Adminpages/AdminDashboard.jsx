@@ -15,7 +15,8 @@ import Footer from '../../components/Footer';
 import Swal from 'sweetalert2'; 
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
-import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard';
+import Google_Translater from '../../components/GoogleTranslet/Google_Translater'
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
     const { logout } = useAuth();
     const navigate = useNavigate();
 
+    const [showTranslator, setShowTranslator] =useState()
     const username= localStorage.getItem('userName');
     const userrole =localStorage.getItem('roleName');
     // localStorage.getItem('approveStatusArray').remove;
@@ -35,10 +37,13 @@ const AdminDashboard = () => {
     };
 
 
-    useEffect(() => {
+    useEffect(() => { 
+        if(username){ fetchDetails();}
+       
+    }, [username]);
         const fetchDetails = async () => {
             try {
-                const response = await accountsStatusListService.getList();
+                const response = await accountsStatusListService.getList;
                 if (response) {
                     console.log(response)
                 }
@@ -51,11 +56,7 @@ const AdminDashboard = () => {
                 });
             }
         };
-        fetchDetails();
-    }, []);
-
-
-
+ 
 
     const handleDateChange = (range) => {
         console.log("Selected Range:", range);
@@ -135,15 +136,30 @@ const AdminDashboard = () => {
                   </div>
                 )}
                 </div>
-                <div className="inline-block relative">
-              
-                <i
-                  className="mx-2 bi bi-globe2" 
-                  style={{ cursor: "pointer" }}
-                />
-             
-            {/* <LanguageSwitcher/> */}
-              </div> 
+           <div className="inline-block relative">
+  <i
+    className="mx-2 bi bi-globe2"
+    style={{ cursor: "pointer" }}
+    onClick={() => setShowTranslator((prev) => !prev)}
+    title="Translate"
+  />
+  {showTranslator && (
+    <div
+      style={{
+        position: "absolute",
+        top: "30px",
+        right: 0,
+        zIndex: 9999,
+        background: "#fff",
+        borderRadius: "8px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        padding: "8px",
+      }}
+    >
+      <Google_Translater key={Date.now()} /> {/* Add key to force remount */}
+    </div>
+  )}
+</div>
               <i
                 className="mx-2 bi  bi-box-arrow-right md:w-right"
                 onClick={handleLogout}
@@ -263,8 +279,11 @@ function StatusDashboard1() {
     const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
     const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
     const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
-
+    const admin_id=localStorage.getItem('userCode')
     useEffect(() => {
+        if(admin_id){        fetchDetails();}
+    }, [admin_id]);
+
         const fetchDetails = async () => {
             try {
                 const response = await accountsStatusListService.getList();
@@ -291,9 +310,6 @@ function StatusDashboard1() {
                 });
             }
         };
-        fetchDetails();
-    }, []);
-
     return (
         <div className="dashboard-top-caard-collection flex my-1">
             {/* Review Card with Modal */}
@@ -413,8 +429,11 @@ function StatusDashboard2() {
     const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
     const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
     const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
-
+    const admin_id=localStorage.getItem('userCode');
     useEffect(() => {
+        if(admin_id){ fetchDetails();}
+    }, [admin_id]);
+
         const fetchDetails = async () => {
             try {
                 const response = await kycaccountsStatusListService.getList();
@@ -441,9 +460,6 @@ function StatusDashboard2() {
                 });
             }
         };
-        fetchDetails();
-    }, []);
-
     return (
         <div className="dashboard-top-caard-collection flex my-1">
             {/* Review Card with Modal */}

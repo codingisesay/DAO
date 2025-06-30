@@ -14,7 +14,6 @@ const KYCgue = () => {
 
     const storedId = localStorage.getItem('agent_id') || 1;
 
-    useEffect(() => {
         const fetchKYCData = async () => {
             try {
                 setLoading(true);
@@ -64,6 +63,7 @@ const KYCgue = () => {
                 setLoading(false);
             }
         };
+    useEffect(() => {
 
         fetchKYCData();
     }, [storedId, timePeriod]);

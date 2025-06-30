@@ -10,7 +10,6 @@ const KYCVerificationChart = () => {
 
     const COLORS = ['#20C475', '#FFA726', '#FF5252'];
 
-    useEffect(() => {
         const fetchKYCStatus = async () => {
             try {
                 const response = await adminService.kycstatusperyear;
@@ -26,11 +25,11 @@ const KYCVerificationChart = () => {
                 }
             } catch (error) {
                 console.error('Error fetching KYC status:', error);
-                // Swal.fire({
-                //     icon: 'error',
-                //     title: 'Error',
-                //     text: error?.response?.data?.message || 'Failed to load KYC status data'
-                // });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: JSON.stringify(error) || 'Failed to load KYC status data'
+                });
                 // Fallback to empty data if API fails
                 setData([
                     { name: 'Verified', value: 0 },
@@ -42,7 +41,8 @@ const KYCVerificationChart = () => {
             }
         };
 
-        fetchKYCStatus();
+    useEffect(() => {
+        if(admin_id){ fetchKYCStatus();}
     }, [admin_id]);
 
     const renderCustomizedLabel = ({

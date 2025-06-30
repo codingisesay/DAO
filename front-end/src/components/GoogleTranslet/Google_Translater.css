@@ -1,0 +1,66 @@
+/* General styling for the container */
+.google_div {
+    height: fit-content;
+    margin-top: 16px;
+    width: 30px;
+}
+
+/* Modern dropdown styling */
+.goog-te-gadget .goog-te-combo {
+    border-radius: 30px; /* More rounded for a modern look */
+    background-image: url('./globe.png');
+    background-size: 18px;
+  background-repeat: no-repeat; 
+  background-position: center; 
+    background-color: var(--primary-color);
+    color: rgba(255, 255, 255, 0);
+    height: 30px !important;
+    width: 30px;
+    /* border: 1px solid #ccc; Thin border for definition */
+    padding: 5px;
+    font-size: 14px;
+    /* color: #333; Neutral text color */
+    /* background: linear-gradient(145deg, #ffffff, #f1f1f1); Soft gradient */
+    /* box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); Inset shadow for depth */
+    transition: all 0.3s ease; /* Smooth transitions */
+    border: none;
+}
+
+/* .goog-te-gadget .goog-te-combo:hover {
+    background: linear-gradient(145deg, #f1f1f1, #e9e9e9); /* Hover effect */
+    /* border-color: #aaa; Slightly darker border on hover */
+/* }  */
+
+/* Hide the Google Translate gadget text */
+.goog-te-gadget {
+    color: transparent !important; /* Make text completely invisible */
+}
+
+/* Remove Google Translate icon */
+/* .goog-te-gadget img {
+    display: none;
+} */
+
+/* Styling for Google Translate links to completely hide */
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd:link,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd:visited,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd:hover,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd:active {
+    color: transparent !important;
+    text-decoration: none;
+}
+
+/* Dropdown option styling */
+option {
+    background-color: #f9f9f9; /* Clean background */
+    border: none;
+    color: #333; /* Dark text for contrast */
+    font-size: 14px;
+}
+
+/* Add a hover effect to options if supported */
+option:hover {
+    background-color: #e0e0e0; /* Light hover effect */
+    color: #000;
+}
