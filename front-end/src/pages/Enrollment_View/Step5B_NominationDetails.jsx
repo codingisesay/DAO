@@ -8,9 +8,7 @@ const NominationDetailsTable = () => {
     const [formData, setFormData] = useState([]); // Keep this as array
 
     const { id } = useParams();
-
-    useEffect(() => {
-        const fetchAndStoreDetails = async () => {
+  const fetchAndStoreDetails = async () => {
             try {
                 if (id) {
                     const response = await pendingAccountData.getDetailsS5B(id);
@@ -26,7 +24,7 @@ const NominationDetailsTable = () => {
                 console.error('Failed to fetch nomination details:', error);
             }
         };
-
+    useEffect(() => { 
         fetchAndStoreDetails();
     }, [id]);
 

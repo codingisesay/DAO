@@ -133,8 +133,8 @@ const ViewApplicationForm = () => {
                     ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
                     : "",
 
-                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_JPG')).file_path
+                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
                     : "",
 
                     voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_JPG'))

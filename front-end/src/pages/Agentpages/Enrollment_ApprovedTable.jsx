@@ -25,8 +25,8 @@ function ApprovedTable() {
     { ...COLUMN_DEFINITIONS.customer_no, field: "customer_no", type: "date" },
     { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
     { ...COLUMN_DEFINITIONS.approved_by, field: "approved_by", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
+    // { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
   ];
 
 

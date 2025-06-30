@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { pendingAccountData, applicationDetailsService ,createAccountService} from '../../services/apiServices';
+import { pendingAccountData, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
@@ -9,52 +9,52 @@ import Swal from 'sweetalert2';
 import { salutation, religion, caste, salaryrange } from '../../data/data';
 
 function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
-    
+
     const applicationId = localStorage.getItem('application_id');
     const [localFormData, setLocalFormData] = useState({
         application_id: applicationId,
-         maidenPrefixName: '',
-        maidenFirstName:  '',
-        maidenMiddleName:   '',
+        maidenPrefixName: '',
+        maidenFirstName: '',
+        maidenMiddleName: '',
         maidenLastName: '',
-        fatherSpousePrefixName:  '',
-        fatherSpouseFirstName:   '',
-        fatherSpouseMiddleName:   '',
-        fatherSpouseLastName:  '',
-        motherPrefixName:   '',
-        motherFirstName:  '',
-        motherMiddleName:  '',
-        motherLastName:   '',
-        birthPlaceCity:  '',
-        birthPlaceCountry:  'India',
-        maritalStatus:   '',
+        fatherSpousePrefixName: '',
+        fatherSpouseFirstName: '',
+        fatherSpouseMiddleName: '',
+        fatherSpouseLastName: '',
+        motherPrefixName: '',
+        motherFirstName: '',
+        motherMiddleName: '',
+        motherLastName: '',
+        birthPlaceCity: '',
+        birthPlaceCountry: 'India',
+        maritalStatus: '',
         nationality: 'Indian',
-        religion:  '',
+        religion: '',
         caste: '',
-        occupationType:  '',
+        occupationType: '',
         businessName: '',
-        salariedWith:   '',
-        designation:  '',
-        organisationNature:  '',
-        educationQualification:  '',
-        annualIncome:   '',
-        remark:   ''
+        salariedWith: '',
+        designation: '',
+        organisationNature: '',
+        educationQualification: '',
+        annualIncome: '',
+        remark: ''
     });
 
-    useEffect(() => { 
+    useEffect(() => {
         const fetchAndStoreDetails = async () => {
             try {
                 // alert('called')
                 if (applicationId) {
-                    const response = await pendingAccountData.getDetailsS1(applicationId); 
-                    const application = response.details || {}; 
-                   setLocalFormData(prevData => ({
-                        ...prevData, 
-                        motherLastName:  application.last_name || '',
-                        fatherSpouseLastName:  application.last_name || '',
-                        maidenLastName:  application.last_name || '',
-                        fatherSpouseFirstName : application.middle_name || '',
-                       
+                    const response = await pendingAccountData.getDetailsS1(applicationId);
+                    const application = response.details || {};
+                    setLocalFormData(prevData => ({
+                        ...prevData,
+                        motherLastName: application.last_name || '',
+                        fatherSpouseLastName: application.last_name || '',
+                        maidenLastName: application.last_name || '',
+                        fatherSpouseFirstName: application.middle_name || '',
+
                     }));
 
                     // alert(localFormData.photo);
@@ -78,64 +78,64 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         });
     };
 
-    
-    
-useEffect(() => {
-    const fetchDetails = async () => {
-        try {
-            const response = await applicationDetailsService.getFullDetails(applicationId);
-            if (response && response.data) {
-                const { personal_details, account_personal_details } = response.data;
-                
-                setLocalFormData(prev => ({
-                    ...prev,
-                    // Maiden details (from account_personal_details)
-                    maidenPrefixName: account_personal_details?.maiden_prefix || prev.maidenPrefixName,
-                    maidenFirstName: account_personal_details?.maiden_first_name || prev.maidenFirstName,
-                    maidenMiddleName: account_personal_details?.maiden_middle_name || prev.maidenMiddleName,
-                    maidenLastName: account_personal_details?.maiden_last_name || prev.maidenLastName,
-                    
-                    // Father/Spouse details (from account_personal_details)
-                    fatherSpousePrefixName: account_personal_details?.father_prefix_name || prev.fatherSpousePrefixName,
-                    fatherSpouseFirstName: account_personal_details?.father_first_name || prev.fatherSpouseFirstName,
-                    fatherSpouseMiddleName: account_personal_details?.father_middle_name || prev.fatherSpouseMiddleName,
-                    fatherSpouseLastName: account_personal_details?.father_last_name || prev.fatherSpouseLastName,
-                    
-                    // Mother details (from account_personal_details)
-                    motherPrefixName: account_personal_details?.mother_prefix_name || prev.motherPrefixName,
-                    motherFirstName: account_personal_details?.mother_first_name || prev.motherFirstName,
-                    motherMiddleName: account_personal_details?.mother_middle_name || prev.motherMiddleName,
-                    motherLastName: account_personal_details?.mother_last_name || prev.motherLastName,
-                    
-                    // Birth details (from account_personal_details)
-                    birthPlaceCity: account_personal_details?.birth_place || prev.birthPlaceCity,
-                    birthPlaceCountry: account_personal_details?.birth_country || prev.birthPlaceCountry,
-                    
-                    // Personal details (from personal_details with fallback to account_personal_details)
-                    maritalStatus: personal_details?.marital_status || prev.maritalStatus,
-                    religion: personal_details?.religion || prev.religion,
-                    caste: personal_details?.caste || prev.caste,
-                    
-                    // Occupation details (from account_personal_details)
-                    occupationType: account_personal_details?.occoupation_type || prev.occupationType,
-                    businessName: account_personal_details?.occupation_name || prev.businessName,
-                    salariedWith: account_personal_details?.if_salaryed || prev.salariedWith,
-                    designation: account_personal_details?.designation || prev.designation,
-                    organisationNature: account_personal_details?.nature_of_occoupation || prev.organisationNature,
-                    educationQualification: account_personal_details?.qualification || prev.educationQualification,
-                    annualIncome: account_personal_details?.anual_income || prev.annualIncome,
-                    remark: account_personal_details?.remark || prev.remark
-                }));
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
-    if (applicationId) {
-        fetchDetails();
-    }
-}, [applicationId]);
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const response = await applicationDetailsService.getFullDetails(applicationId);
+                if (response && response.data) {
+                    const { personal_details, account_personal_details } = response.data;
+
+                    setLocalFormData(prev => ({
+                        ...prev,
+                        // Maiden details (from account_personal_details)
+                        maidenPrefixName: account_personal_details?.maiden_prefix || prev.maidenPrefixName,
+                        maidenFirstName: account_personal_details?.maiden_first_name || prev.maidenFirstName,
+                        maidenMiddleName: account_personal_details?.maiden_middle_name || prev.maidenMiddleName,
+                        maidenLastName: account_personal_details?.maiden_last_name || prev.maidenLastName,
+
+                        // Father/Spouse details (from account_personal_details)
+                        fatherSpousePrefixName: account_personal_details?.father_prefix_name || prev.fatherSpousePrefixName,
+                        fatherSpouseFirstName: account_personal_details?.father_first_name || prev.fatherSpouseFirstName,
+                        fatherSpouseMiddleName: account_personal_details?.father_middle_name || prev.fatherSpouseMiddleName,
+                        fatherSpouseLastName: account_personal_details?.father_last_name || prev.fatherSpouseLastName,
+
+                        // Mother details (from account_personal_details)
+                        motherPrefixName: account_personal_details?.mother_prefix_name || prev.motherPrefixName,
+                        motherFirstName: account_personal_details?.mother_first_name || prev.motherFirstName,
+                        motherMiddleName: account_personal_details?.mother_middle_name || prev.motherMiddleName,
+                        motherLastName: account_personal_details?.mother_last_name || prev.motherLastName,
+
+                        // Birth details (from account_personal_details)
+                        birthPlaceCity: account_personal_details?.birth_place || prev.birthPlaceCity,
+                        birthPlaceCountry: account_personal_details?.birth_country || prev.birthPlaceCountry,
+
+                        // Personal details (from personal_details with fallback to account_personal_details)
+                        maritalStatus: personal_details?.marital_status || prev.maritalStatus,
+                        religion: personal_details?.religion || prev.religion,
+                        caste: personal_details?.caste || prev.caste,
+
+                        // Occupation details (from account_personal_details)
+                        occupationType: account_personal_details?.occoupation_type || prev.occupationType,
+                        businessName: account_personal_details?.occupation_name || prev.businessName,
+                        salariedWith: account_personal_details?.if_salaryed || prev.salariedWith,
+                        designation: account_personal_details?.designation || prev.designation,
+                        organisationNature: account_personal_details?.nature_of_occoupation || prev.organisationNature,
+                        educationQualification: account_personal_details?.qualification || prev.educationQualification,
+                        annualIncome: account_personal_details?.anual_income || prev.annualIncome,
+                        remark: account_personal_details?.remark || prev.remark
+                    }));
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        if (applicationId) {
+            fetchDetails();
+        }
+    }, [applicationId]);
 
 
     const submitpd = async () => {
@@ -152,32 +152,32 @@ useEffect(() => {
             mother_first_name: localFormData.motherFirstName,
             mother_middle_name: localFormData.motherMiddleName,
             mother_last_name: localFormData.motherLastName,
-            };
-    const errors = [];
+        };
+        const errors = [];
 
-    Object.entries(nameFields).forEach(([key, value]) => {
-    if (/\d/.test(value)) {
-        // Format key to show friendly error
-        const fieldName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        errors.push(`${fieldName} should not contain numbers.`);
-    }
-    });
+        Object.entries(nameFields).forEach(([key, value]) => {
+            if (/\d/.test(value)) {
+                // Format key to show friendly error
+                const fieldName = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                errors.push(`${fieldName} should not contain numbers.`);
+            }
+        });
 
-    if (errors.length > 0) {
-        // alert(errors.join('\n'));
-            
-  Swal.fire({
+        if (errors.length > 0) {
+            // alert(errors.join('\n'));
+
+            Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: errors.join('\n') || 'Failed to save details'
             });
 
 
-        return; // Stop submission
-    }
+            return; // Stop submission
+        }
         try {
             // Validate required fields before submission
-            if ( 
+            if (
                 !localFormData.birthPlaceCity ||
                 !localFormData.birthPlaceCountry ||
                 !localFormData.maritalStatus ||
@@ -188,7 +188,7 @@ useEffect(() => {
             }
 
             const payload = {
-                application_id: formData.application_id ||  localFormData.application_id,
+                application_id: formData.application_id || localFormData.application_id,
                 maiden_prefix: localFormData.maidenPrefixName,
                 maiden_first_name: localFormData.maidenFirstName,
                 maiden_middle_name: localFormData.maidenMiddleName,
@@ -235,7 +235,7 @@ useEffect(() => {
     }
 
     return (
-        <div className="max-w-screen-xl mx-auto mb-10" style={{marginTop:'-6px'}}>
+        <div className="max-w-screen-xl mx-auto mb-10" style={{ marginTop: '-6px' }}>
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
                 {/* Maiden Name Section */}
@@ -423,7 +423,7 @@ useEffect(() => {
                     value={localFormData.designation}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={50}
                 />
                 <CommanInput
                     label={labels.organisationNature.label}

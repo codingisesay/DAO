@@ -361,13 +361,13 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                     <CommanInput
                         onChange={handleChange}
                         label={labels.alt_mob_no.label}
-                        // type="number"
+                        type="number"
                         name="alt_mob_no"
                         value={localFormData.alt_mob_no}
                         onBlur={comapremobileno}
                         required
                         max={10} min={10}
-                        validationType="PHONE"
+                        validationType="NUMBER_ONLY"
                     />
 
                     {/* Email - Email validation */}
