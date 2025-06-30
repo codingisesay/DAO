@@ -156,7 +156,7 @@ const ApplicationPdf = () => {
                             ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
                             : "",
                          
-                        photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
+                        // photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
                 }
             } catch (error) {

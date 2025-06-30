@@ -38,7 +38,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
                 </li>
             </ul>
             <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
-            <p className='my-3'> Account Opening</p>
+            {/* <p className='my-3'> Account Opening</p> */}
 
             <div className="sidebar-stepper-container">
                 <div className="vertical-stepper">

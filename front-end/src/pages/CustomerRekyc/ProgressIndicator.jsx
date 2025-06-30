@@ -8,6 +8,10 @@ import { useNavigate } from 'react-router-dom';
 
 const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
      const navigate = useNavigate(); const { logout } = useAuth();
+     
+    const username= localStorage.getItem('userName');
+    const userrole =localStorage.getItem('roleName');
+
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -23,7 +27,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
         </li>
       </ul>
       <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
-      <p className='my-3'> Account Opening</p>
+      {/* <p className='my-3'> Account Opening</p> */}
 
       <div className="sidebar-stepper-container">
         <div className="vertical-stepper">
@@ -67,21 +71,21 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
       </div>
 
       <div className="stepper-footer">
-        <div className="flex bg-green-100 p-2 rounded-md items-center">
+        <div className="flex bg-green-100 p-2 rounded-md items-center mb-2">
           <img height='40px' width='40px'
             src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
             alt="profile"
             className="rounded-full object-cover mx-2"
           />
-          <span className='font-bold'>Agent Name <br /><small className='font-normal'> - Agent</small></span>
+          <span className='font-bold'>{username} <br /><small className='font-normal'> {userrole}</small></span>
         </div>
-        <div className="flex items-center justify-between footer-icon-collection">
+        {/* <div className="flex items-center justify-between footer-icon-collection">
           <ThemeToggle />
           <i className="mx-2 bi  bi-bell"></i>
           <i className="mx-2 bi  bi-question-circle"></i>
           <i className="mx-2 bi  bi-globe2"></i>
           <i className="mx-2 bi  bi-box-arrow-right" onClick={handleLogout}></i>
-        </div>
+        </div> */}
       </div>
     </div >
   );
