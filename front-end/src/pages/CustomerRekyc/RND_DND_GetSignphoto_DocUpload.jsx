@@ -1,11 +1,9 @@
 
-
 import { useState, useRef, useEffect } from 'react';
-import Tesseract from 'tesseract.js'; 
-import Swal from 'sweetalert2';
+import Tesseract from 'tesseract.js';
+import { Upload, Camera, X, Trash2, Info } from 'lucide-react';
 import workingman from '../../assets/imgs/upload_placeholder.png';
 
-// Add this CSS to your styles or as a style tag
 const styles = `
   .signature-display { 
     height: auto;
@@ -17,7 +15,6 @@ const styles = `
     max-height: 100px;
   }
 `;
-
 const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
     const [selectedAddressProof, setSelectedAddressProof] = useState('');
@@ -32,7 +29,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const [activeDocumentType, setActiveDocumentType] = useState('');
     const [activeDocumentValue, setActiveDocumentValue] = useState('');
     const [activeSide, setActiveSide] = useState('');
-    const [document, setDocuments ] =  useState();
+    const [document, setDocuments] = useState(documents || []);
 
     const identityProofOptions = [
         { value: 'PAN', label: 'PAN Card' },
@@ -51,17 +48,13 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     ];
 
     const signatureProofOption = { value: 'SIGNATURE', label: 'Signature' };
-
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, (txt) =>
+    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  );
+}
     const isDocumentUploaded = (documentValue) => {
-        return documents.some(doc => doc.type.includes(documentValue));
-    };
-
-    const isAadhaarFrontUploaded = () => {
-        return documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-    };
-
-    const isAadhaarBackUploaded = () => {
-        return documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        return document.some(doc => doc.type.includes(documentValue));
     };
 
     const validateAadharCard = async (imageData, side) => {
@@ -80,39 +73,30 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 const hasDOB = /\d{2}\/\d{2}\/\d{4}/.test(result.data.text);
 
                 if (!hasGender) {
-                    Swal.fire('Error', 'This does not appear to be a valid Aadhaar card front side (gender not found)', 'error');
-                    return { isValid: false };
+                    return { isValid: false, error: 'This does not appear to be a valid Aadhaar card front side (gender not found)' };
                 }
 
-                if (hasGovtIndia && hasAadhaarNumber && hasDOB || false) {
+                if (hasGovtIndia && hasAadhaarNumber && hasDOB) {
                     const extractedInfo = {
                         name: result.data.text.match(/([A-Z][a-z]+(\s[A-Z][a-z]+)+)/)?.[0] || 'Not found',
                         dob: result.data.text.match(/\d{2}\/\d{2}\/\d{4}/)?.[0] || 'Not found',
                         gender: hasGender ? (extractedText.includes('female') ? 'FEMALE' : 'MALE') : 'Not found',
                         aadhaarNumber: result.data.text.match(/\d{4}\s\d{4}\s\d{4}/)?.[0] || 'Not found'
                     };
-
                     return { isValid: true, extractedInfo };
                 }
-
-                return { isValid: true };
             } else if (side === 'back') {
                 const hasUIDAI = /Address/i.test(result.data.text);
-
                 if (!hasUIDAI) {
-                    Swal.fire('Error', 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)', 'error');
-                    return { isValid: false };
+                    return { isValid: false, error: 'This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)' };
                 }
-
-                return { isValid: true };
             }
 
             return { isValid: true };
 
         } catch (error) {
             console.error("Aadhar validation error:", error);
-            Swal.fire('Error', 'Failed to process Aadhaar card image', 'error');
-            return { isValid: false };
+            return { isValid: false, error: 'Failed to process Aadhaar card image' };
         } finally {
             setLoading(false);
         }
@@ -132,13 +116,11 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             const hasGovtIndia = /GOVERNMENT OF INDIA/.test(extractedText);
 
             if (!hasIncomeText) {
-                Swal.fire('Error', 'This does not appear to be a valid PAN card ("INCOME" text not found)', 'error');
-                return { isValid: false };
+                return { isValid: false, error: 'This does not appear to be a valid PAN card ("INCOME" text not found)' };
             }
 
             if (!hasPANNumber) {
-                Swal.fire('Error', 'This does not appear to be a valid PAN card (PAN number format not found)', 'error');
-                return { isValid: false };
+                return { isValid: false, error: 'This does not appear to be a valid PAN card (PAN number format not found)' };
             }
 
             if (hasPANNumber && hasIncomeText && (hasTaxText || hasGovtIndia)) {
@@ -147,7 +129,6 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                     panNumber: panNumberMatch ? panNumberMatch[0] : 'Not found',
                     name: extractedText.match(/[A-Z]+ [A-Z]+/)?.[0] || 'Not found'
                 };
-
                 return { isValid: true, extractedInfo };
             }
 
@@ -155,8 +136,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         } catch (error) {
             console.error("PAN validation error:", error);
-            Swal.fire('Error', 'Failed to process PAN card image', 'error');
-            return { isValid: false };
+            return { isValid: false, error: 'Failed to process PAN card image' };
         } finally {
             setLoading(false);
         }
@@ -165,28 +145,32 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const processImage = async (imageData, documentType, documentValue, side, skipValidation = false) => {
         let isValid = true;
         let extractedInfo = null;
+        let errorMessage = '';
 
         if (!skipValidation) {
+            let validationResult;
             if (documentValue === 'AADHAAR_FRONT' || documentValue === 'AADHAAR_BACK') {
-                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
-                isValid = validationResult.isValid;
-                extractedInfo = validationResult.extractedInfo;
+                validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_FRONT' ? 'front' : 'back');
             }
             else if (documentValue === 'PAN') {
-                const validationResult = await validatePANCard(imageData);
+                validationResult = await validatePANCard(imageData);
+            }
+
+            if (validationResult) {
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
+                errorMessage = validationResult.error;
             }
 
             if (!isValid) {
                 setPreviewImage(null);
-                return false;
+                return { success: false, error: errorMessage };
             }
         }
 
         let docType = documentValue === 'AADHAAR_FRONT' ? 'AADHAAR_FRONT_JPG' :
-            documentValue === 'AADHAAR_BACK' ? 'AADHAAR_BACK_JPG' :
-                `${documentValue}_JPG`;
+                     documentValue === 'AADHAAR_BACK' ? 'AADHAAR_BACK_JPG' :
+                     `${documentValue}_JPG`;
 
         const blob = await fetch(imageData).then(res => res.blob());
         const file = new File([blob], `${documentValue}.jpg`, { type: 'image/jpeg' });
@@ -195,8 +179,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             id: Date.now(),
             type: docType,
             name: documentValue.includes('AADHAAR') ?
-                `${documentValue.replace('_', ' ').toLowerCase()}` :
-                `${documentValue.toLowerCase()} document`,
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
+                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
+
             image: imageData,
             file: file,
             uploadedAt: new Date().toLocaleString(),
@@ -205,49 +190,17 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             ...(extractedInfo && { extractedInfo })
         };
 
-        const updatedDocuments = [...documents, newDocument];
+        const updatedDocuments = [...document, newDocument];
         setDocuments(updatedDocuments);
         if (onDocumentsUpdate) {
             onDocumentsUpdate(updatedDocuments);
         }
 
-        // Immediately trigger signature and photo extraction
         if (onProcessDocument) {
             onProcessDocument(newDocument);
         }
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Document Uploaded',
-            text: `${newDocument.name} has been successfully uploaded`,
-            timer: 2000,
-            showConfirmButton: false
-        });
-
-        if (!documentValue.includes('AADHAAR')) {
-            if (documentType === 'identity') setSelectedIdentityProof('');
-            if (documentType === 'address') setSelectedAddressProof('');
-            if (documentType === 'signature') setSelectedSignatureProof('');
-        } else {
-            const frontUploaded = isAadhaarFrontUploaded();
-            const backUploaded = isAadhaarBackUploaded();
-
-            if (frontUploaded && backUploaded) {
-                setSelectedAddressProof('');
-            } else if (documentValue === 'AADHAAR_FRONT' && !backUploaded) {
-                setTimeout(() => {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Upload Back Side',
-                        text: 'Please upload the back side of your Aadhaar card to complete the process',
-                        timer: 3000,
-                        showConfirmButton: true
-                    });
-                }, 1000);
-            }
-        }
-
-        return true;
+        return { success: true };
     };
 
     const handleFileChange = async (e, documentType, documentValue, side) => {
@@ -255,44 +208,44 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         if (!file) return;
 
         if (file.size > 5 * 1024 * 1024) {
-            Swal.fire('Error', 'File size must not exceed 5MB', 'error');
-            return;
+            return { success: false, error: 'File size must not exceed 5MB' };
         }
 
         if (!['image/jpeg', 'image/png'].includes(file.type)) {
-            Swal.fire('Error', 'Only JPG/PNG files are allowed', 'error');
-            return;
+            return { success: false, error: 'Only JPG/PNG files are allowed' };
         }
 
         const reader = new FileReader();
         reader.onload = async () => {
             const imageData = reader.result;
             setPreviewImage(imageData);
-            await processImage(imageData, documentType, documentValue, side);
+            const result = await processImage(imageData, documentType, documentValue, side);
+            if (!result.success) {
+                // Handle error
+            }
         };
         reader.readAsDataURL(file);
     };
 
-    const startCamera = async (documentType, documentValue, side) => {
+    const startCamera = (documentType, documentValue) => {
         setActiveDocumentType(documentType);
         setActiveDocumentValue(documentValue);
-        setActiveSide(side);
+        setShowCameraModal(true);
 
-        try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            });
-            setStream(mediaStream);
-            setShowCameraModal(true);
-
-            setTimeout(() => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = mediaStream;
-                }
-            }, 100);
-        } catch (err) {
-            console.error("Error accessing camera:", err);
-            Swal.fire('Error', 'Could not access the camera. Please check permissions.', 'error');
+        if (typeof window !== 'undefined' && navigator.mediaDevices) {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                .then(stream => {
+                    setStream(stream);
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                    }
+                })
+                .catch(err => {
+                    console.error("Camera error:", err);
+                    return { success: false, error: 'Could not access camera. Please ensure you have granted camera permissions.' };
+                });
+        } else {
+            return { success: false, error: 'Camera access not supported in this environment.' };
         }
     };
 
@@ -304,10 +257,13 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         setShowCameraModal(false);
     };
 
-    const capturePhoto = async () => {
-        if (!videoRef.current) return;
+    const capturePhoto = () => {
+        if (typeof window === 'undefined' || !window.document || !videoRef.current) {
+            console.error("Attempted to capture photo in a non-browser environment or without video stream.");
+            return { success: false, error: 'Cannot capture photo: Browser environment or video stream not ready.' };
+        }
 
-        const canvas = document.createElement('canvas');
+        const canvas = window.document.createElement('canvas');
         canvas.width = videoRef.current.videoWidth;
         canvas.height = videoRef.current.videoHeight;
         const ctx = canvas.getContext('2d');
@@ -316,37 +272,23 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         const imageData = canvas.toDataURL('image/jpeg');
         setPreviewImage(imageData);
 
-        const success = await processImage(imageData, activeDocumentType, activeDocumentValue, activeSide, true);
-        if (success) {
-            stopCamera();
-        }
+        processImage(imageData, activeDocumentType, activeDocumentValue, '', true)
+            .then(result => {
+                if (result.success) {
+                    stopCamera();
+                }
+            });
     };
 
     const removeDocument = (id) => {
-        const docToRemove = documents.find(doc => doc.id === id);
-        const updatedDocuments = documents.filter(doc => doc.id !== id);
+        const docToRemove = document.find(doc => doc.id === id);
+        const updatedDocuments = document.filter(doc => doc.id !== id);
         setDocuments(updatedDocuments);
         if (onDocumentsUpdate) {
             onDocumentsUpdate(updatedDocuments);
         }
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Document Removed',
-            text: `${docToRemove.name} has been removed`,
-            timer: 2000,
-            showConfirmButton: false
-        });
-
-        if (docToRemove?.type.includes('AADHAAR')) {
-            if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
-                setSelectedAddressProof('AADHAAR_FRONT');
-            } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
-                setSelectedAddressProof('AADHAAR_BACK');
-            }
-        }
-
-        if (documents.length === 1) {
+        if (document.length === 1) {
             setPreviewImage(null);
         }
     };
@@ -378,6 +320,10 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             }
         };
     }, [stream]);
+
+    useEffect(() => {
+        setDocuments(documents || []);
+    }, [documents]);
 
     return (
         <div className="document-upload-container p-4 mx-auto">
@@ -504,7 +450,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                 <div className="preview-section my-1">
                     <div className="text-center p-1 rounded">
                         {previewImage ?
-                            (<>  <small> Accepted </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
+                            (<>  <small>  </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
                             : (<><img src={workingman} alt="logo"  className="h-[200px] w-auto mx-auto "/></>)}
                     </div>
                 </div>
@@ -544,7 +490,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                                 <img
                                                 src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                                 alt="Signature"
-                                                className="signature-display"
+                                                className="signature-display max-w-xs max-h-15"
                                                 />
                                             ) : '-'}
                                             </td>
@@ -614,4 +560,6 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     );
 };
 
+
 export default DocumentUpload;
+

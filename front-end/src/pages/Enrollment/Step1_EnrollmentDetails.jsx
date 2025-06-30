@@ -39,10 +39,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     });
       
     
-        // Fetch details if application_id exists
-        const id = localStorage.getItem('application_id');
-        useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
-       
+    // Fetch details if application_id exists
+    const id = localStorage.getItem('application_id');
+    useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
+    
 
         // clear local storage from below code
         useEffect(() => {
