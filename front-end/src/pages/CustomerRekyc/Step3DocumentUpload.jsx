@@ -5,7 +5,7 @@ import { apiService } from '../../utils/storage';
 import { kycService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton';
- 
+
 function base64ToFile(base64, filename, mimeType = 'image/jpeg') {
     const arr = base64.split(',');
     const mime = arr[0].match(/:(.*?);/)[1] || mimeType;
@@ -17,7 +17,7 @@ function base64ToFile(base64, filename, mimeType = 'image/jpeg') {
     }
     return new File([u8arr], filename, { type: mime });
 }
- 
+
 const P3 = ({ nextStep, prevStep }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [documents, setDocuments] = useState(() => {
@@ -78,7 +78,7 @@ const P3 = ({ nextStep, prevStep }) => {
         const hasAddressDoc = documents.some(doc => doc.documentCategory === 'address');
         const hasSignatureDoc = documents.some(doc => doc.documentCategory === 'signature');
         const hasIdentityDoc = documents.some(doc => doc.documentCategory === 'identity');
- 
+
         if (!hasAddressDoc || !hasSignatureDoc || !hasIdentityDoc) {
             return {
                 isValid: false,
@@ -88,7 +88,7 @@ const P3 = ({ nextStep, prevStep }) => {
  
         const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
         const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
- 
+
         if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
             return {
                 isValid: false,
@@ -161,7 +161,7 @@ const P3 = ({ nextStep, prevStep }) => {
                 timer: 1500
             });
             nextStep();
- 
+
         } catch (error) {
             console.error('Upload error:', error);
             Swal.fire({
@@ -227,5 +227,6 @@ const P3 = ({ nextStep, prevStep }) => {
 };
  
 export default P3;
- 
- 
+
+
+
