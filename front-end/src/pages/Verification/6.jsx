@@ -22,7 +22,7 @@ const p6 = ({ onNext, onBack }) => {
 
         // Check if it contains 'Review' or 'Reject'
         const containsReviewOrReject = storedArray.some(
-            (status) => status === "Review" || status === "Reject"
+            (status) => status == "Review" || status == "Reject"
         );
 
         // Set button disabled state
