@@ -6,9 +6,9 @@ export const API_ENDPOINTS = {
   BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN, 
   AUTH: {
     LOGIN: "/auth/api/login",
-    FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
+    FORGOTPASS: (id) => `/auth/api/forgot-password?identifier=${id}`,
     OTPVERIFY: (id, id1) =>
-      `/dao/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
+      `/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
     SETPASS: (id, id1) =>
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",

@@ -42,9 +42,9 @@ import ViewForm from './pages/Enrollment_View/Enrollmentform';
 import Enrollment_Review_Edit from './pages/Enrollment_Review/Enrollmentform';
 import AgentList from './pages/Adminpages/Agent_Table'; 
 
-// import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
-// import OtpVerification from "./pages/ForgotPassword/OtpVerification";
-// import ChangePassword from "./pages/ForgotPassword/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import OtpVerification from "./pages/ForgotPassword/OtpVerification";
+import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 
 
 /// kyc_pending kyc_approved kyc_review
@@ -81,13 +81,15 @@ export const App = () => {
     <div className="App">
       <Router>
 
-{/* 
-    <Route path="/forgotpassword" element={<ForgotPassword />} errorElement={<NotFoundPage />} />
-    <Route path="/otpvarification" element={<OtpVerification />} errorElement={<NotFoundPage />} />
-    <Route path="/changepass" element={<ChangePassword />} errorElement={<NotFoundPage />} />
- */}
-
         <Routes>
+          
+ 
+    <Route path="/forgotpassword" element={<ForgotPassword />}   />
+    <Route path="/otpvarification" element={<OtpVerification />} />
+    <Route path="/changepass" element={<ChangePassword />}   />
+  
+
+  
           {/* Public routes */}
           <Route path="/login" element={
             <PublicRoute>

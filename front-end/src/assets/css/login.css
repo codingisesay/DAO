@@ -84,3 +84,72 @@
  .swal2-container button {
      background-color: var(--foreground-color) !important;
  }
+
+ /* forget password below */
+
+ /* General Styles */
+.password-wrapper {
+  position: relative;
+  width: 300px;
+}
+
+/* 🟢 Floating Validation Box */
+.validation-box {
+  position: absolute;
+  right: 100%;
+  background: #2d5c41;
+  color: white;
+  border-radius: 8px;
+  padding: 12px;
+  width: 240px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  
+}
+
+/* List inside validation box */
+.validation-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.validation-box li {
+  margin: 6px 0;
+  opacity: 0.6;
+  font-weight: normal;
+  transition: opacity 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* ✅ Make valid rules turn green */
+.validation-box li.valid {
+  opacity: 1;
+  color: white;
+  font-weight: bold;
+}
+
+/* 🔑 Password Input */
+.password-input {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 6px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.3s ease-in-out;
+}
+
+.password-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.password-input .toggle-password {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 10px;
+  color: white;
+}
