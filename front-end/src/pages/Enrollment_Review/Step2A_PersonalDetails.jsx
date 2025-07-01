@@ -129,43 +129,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         fetchAndStoreDetails();
         fetchReason(id);
     }, [id]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
     const handleChange = (e) => {
