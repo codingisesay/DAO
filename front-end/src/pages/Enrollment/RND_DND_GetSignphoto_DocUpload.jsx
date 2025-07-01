@@ -51,7 +51,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const addressProofOptions = [
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
-        { value: 'UTILITY_BILL', label: 'Utility Bill(Electricity/Water/Gas Bill recent)' },
+        { value: 'UTILITY_BILL', label: 'Utility Bill(Electricity/Water/Gas Bill)' },
         { value: 'RENT_AGREEMENT', label: 'Rent Agreement' },
         { value: 'BANK_STATEMENT', label: 'Bank Statement (recent)' },
         { value: 'PROPERTY_TAX_RECEIPT', label: 'Property Tax Receipt' },
@@ -234,7 +234,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             onProcessDocument(newDocument);
         }
 
-        showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
+        // showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
 
         if (!documentValue.includes('AADHAAR')) {
             // Reset selection if not Aadhaar
