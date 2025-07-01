@@ -39,7 +39,7 @@ export const agentService = {
 
   applicationcountbyagent: (id) =>
     apiService.get(API_ENDPOINTS.AGENT.GET_APPLICATION_COUNT(id)),
-  kycapplicationstatus: (id) =>  
+  kycapplicationstatus: (id) =>
     apiService.get(API_ENDPOINTS.AGENT.KYC_APPLICATION_STATUS(id)),
   approvedAccounts: (id) =>
     apiService.get(API_ENDPOINTS.AGENT.APPROVED_ACCOUNTS(id)),
@@ -49,16 +49,16 @@ export const agentService = {
     apiService.get(API_ENDPOINTS.AGENT.REVIEW_ACCOUNTS(id)),
   rejectAccounts: (id) =>
     apiService.get(API_ENDPOINTS.AGENT.REJECT_ACCOUNTS(id)),
-  
-    
-  demographicReport:(id)=> apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id)),
 
-  vkycpendingtable:(id) => apiService.get(API_ENDPOINTS.AGENT.VKYC_PENDING_TABLE(id)),
 
-  refillApplication:(id)=> apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id)),
+  demographicReport: (id) => apiService.get(API_ENDPOINTS.AGENT.DEMOGRAPHIC_AGE_GRAPH(id)),
 
-  agentapplicationmonthly:(id)=> apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_MONTHLY(id)),
-  agentapplicationyearly:(id)=> apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_YEARLY(id)),
+  vkycpendingtable: (id) => apiService.get(API_ENDPOINTS.AGENT.VKYC_PENDING_TABLE(id)),
+
+  refillApplication: (id) => apiService.get(API_ENDPOINTS.AGENT.APPLICATION_REWORK(id)),
+
+  agentapplicationmonthly: (id) => apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_MONTHLY(id)),
+  agentapplicationyearly: (id) => apiService.get(API_ENDPOINTS.AGENT.AGENT_APPLICATION_YEARLY(id)),
 }
 
 export const personalDetailsService = {
@@ -190,12 +190,12 @@ export const pendingAccountStatusUpdate = {
   updateS6B: (id, data) =>
     apiService.post(API_ENDPOINTS.PENDING_ACCOUNT_STATUS_UPDATE.UPDATE_S6B(id), data),
 };
-export const getsignabstract={ 
-    upload: (formData) =>
+export const getsignabstract = {
+  upload: (formData) =>
     apiService.post(API_ENDPOINTS.DOCUMENT_SIGN_ABSTRACTION.UPLOAD_DOC, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
-    
+
 }
 
 
@@ -263,12 +263,12 @@ export const adminService = {
 
 
   /// dashobard charts
-  monthlyLineChart:  apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),
+  monthlyLineChart: apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_LINE_CHART),
   monthlyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.MONTHLY_AUTH_BARCHART),
   weeklyauthbarchart: apiService.get(API_ENDPOINTS.ADMIN.WEEKLY_AUTH_BARCHART),
   kycstatusperyear: apiService.get(API_ENDPOINTS.ADMIN.KYC_STATUS_FOR_CURRENT_YEAR),
-   
- 
+
+
 };
 // om data above
 
@@ -286,21 +286,21 @@ export const kycService = {
 };
 
 
-export const pendingKyc= {
-  pedingKyc1: ( id) =>
+export const pendingKyc = {
+  pedingKyc1: (id) =>
     apiService.get(API_ENDPOINTS.PENDING_KYC.GET_DATAILS_KYC1(id)),
-  pendingKyc2: ( id) =>
-    apiService.get(API_ENDPOINTS.PENDING_KYC.GET_DATAILS_KYC2(id)), 
+  pendingKyc2: (id) =>
+    apiService.get(API_ENDPOINTS.PENDING_KYC.GET_DATAILS_KYC2(id)),
 };
 
 
 export const pendingKycStusUpdate = {
-  updateKyc1: ( data) =>
+  updateKyc1: (data) =>
     apiService.post(API_ENDPOINTS.PENDING_KYC_UPDATE.UPDATE_KYC1, data),
-  updateKyc2: ( data) =>
-    apiService.post(API_ENDPOINTS.PENDING_KYC_UPDATE.UPDATE_KYC2, data), 
-  updateKyc3: ( data) =>
-    apiService.post(API_ENDPOINTS.PENDING_KYC_UPDATE.update_KYC3, data), 
+  updateKyc2: (data) =>
+    apiService.post(API_ENDPOINTS.PENDING_KYC_UPDATE.UPDATE_KYC2, data),
+  updateKyc3: (data) =>
+    apiService.post(API_ENDPOINTS.PENDING_KYC_UPDATE.update_KYC3, data),
 };
 
 
@@ -323,7 +323,7 @@ export const forgotpass = {
 
   setpass: (identifier, newPassword) =>
     apiService.post(API_ENDPOINTS.AUTH.SETPASS(identifier, newPassword)),
-  
+
 };
 
 export const branchService = {
@@ -404,7 +404,7 @@ export const userService = {
     return apiService.get(searchURL);
   },
 };
- 
+
 export const accountService = {
   getAccountNoformat: (productCode, effectiveDate, schemeCode) =>
     apiService.get(
@@ -469,7 +469,7 @@ export const accountService = {
 
   moduletype: (id) =>
     apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
-}; 
+};
 
 
 
@@ -496,4 +496,3 @@ export const accountService = {
 
 
 
- 
