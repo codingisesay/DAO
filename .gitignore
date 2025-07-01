@@ -14,6 +14,7 @@
 /front-end/build
 /front-end/.env
 /fornt-end/nohup.out
+/front-end/vite.config.js
 
 #signaling server
 /signaling-server/node_modules

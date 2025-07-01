@@ -25,7 +25,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         gender: formData.personalDetails.gender || formData.gender || '',
         religion: formData.personalDetails.religion || formData.religion || '',
         caste: formData.personalDetails.caste || formData.caste || '',
-        maritalStatus: formData.personalDetails.maritalStatus || formData.maritalStatus || '',
+        marital_status: formData.personalDetails.maritalStatus || formData.maritalStatus || '',
         mobile: formData.personalDetails.mobile || formData.mobile || '',
         alt_mob_no: formData.personalDetails.alt_mob_no || formData.alt_mob_no || '',
         email: formData.personalDetails.email || formData.email || '',
@@ -47,13 +47,6 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         state: formData.personalDetails.state || formData.state || '',
         status: 'Pending'
     });
- 
-
-
-
-
-
-    
   
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
@@ -71,7 +64,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                 gender: formData.personalDetails?.gender || formData.gender || '',
                 religion: formData.personalDetails?.religion || formData.religion || '',
                 caste: formData.personalDetails?.caste || formData.caste || '',
-                marital_status: formData.personalDetails?.maritalStatus || formData.maritalStatus || '',
+                marital_status: formData.personalDetails?.marital_status || formData.marital_status || '',
                 mobile: formData.personalDetails?.mobile || formData.mobile || '',
                 alt_mob_no: formData.personalDetails?.alt_mob_no || formData.alt_mob_no || '',
                 email: formData.personalDetails?.email || formData.email || '',
@@ -136,43 +129,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         fetchAndStoreDetails();
         fetchReason(id);
     }, [id]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
     const handleChange = (e) => {
@@ -309,8 +266,8 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     <CommanSelect
                         onChange={handleChange}
                         label={labels.maritalStatus.label}
-                        name="maritalStatus"
-                        value={localFormData.maritalStatus}
+                        name="marital_status"
+                        value={localFormData.marital_status}
                         options={maritalStatusOptions} required
                     />
 
