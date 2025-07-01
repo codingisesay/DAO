@@ -13,7 +13,7 @@ const MonthlyAccountTrends = () => {
         
             try {
                 const response = await adminService.monthlyLineChart;
-                console.log('API Response:', response); // For debugging
+                // console.log('API Response:', response); // For debugging
                 
                 if (response && response.labels && response.data) {
                     // Transform the API response into the format needed by the chart

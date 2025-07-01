@@ -27,7 +27,12 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   first_name: {
-    header: "First Name",
+    header: "Customer Name",
+    sortable: true,
+    filterable: true,
+  },
+  cust_no: {
+    header: "Customer No.",
     sortable: true,
     filterable: true,
   },
@@ -94,6 +99,11 @@ export const COLUMN_DEFINITIONS = {
   },
   account_open_date:{
     header: "Account Open Date",
+    sortable: true,
+    filterable: true,
+  },
+  approved_by:{
+    header: "Approved By",
     sortable: true,
     filterable: true,
   }
