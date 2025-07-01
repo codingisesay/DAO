@@ -1,5 +1,3 @@
-
-
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import { Upload, Camera, X, Trash2, Info } from 'lucide-react';
@@ -82,11 +80,12 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             setTimeout(() => setShowAlert(false), duration);
         }
     };
-function toTitleCase(str) {
-  return str.replace(/\w\S*/g, (txt) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
+
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, (txt) =>
+            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        );
+    }
 
     const identityProofOptions = [
         { value: 'PAN_CARD', label: 'Pan Card' },
@@ -106,26 +105,15 @@ function toTitleCase(str) {
 
     const signatureProofOption = { value: 'SIGNATURE', label: 'Signature' };
 
- // ...existing code...
- const isDocumentUploaded = (documentValue) => {
-    if (documentValue === 'AADHAAR_CARD_FRONT') {
-        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-    }
-    if (documentValue === 'AADHAAR_BACK') {
-        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
-    }
-    return document.some(doc => doc.type && doc.type.includes(documentValue));
-};
-// const isDocumentUploaded = (documentValue) => {
-//     if (documentValue === 'AADHAAR_CARD_FRONT') {
-//         return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-//     }
-//     if (documentValue === 'AADHAAR_BACK') {
-//         return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
-//     }
-//     return document.some(doc => doc.type.includes(documentValue));
-// };
-// ...existing code...
+    const isDocumentUploaded = (documentValue) => {
+        if (documentValue === 'AADHAAR_CARD_FRONT') {
+            return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+        }
+        if (documentValue === 'AADHAAR_BACK') {
+            return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        }
+        return document.some(doc => doc.type.includes(documentValue));
+    };
 
     const isAadhaarFrontUploaded = () => {
         return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
@@ -237,7 +225,13 @@ function toTitleCase(str) {
         let isValid = true;
         let extractedInfo = null;
 
-        if (!skipValidation) {
+        // Skip validation only for non-PAN and non-Aadhaar documents
+        const shouldValidate = !skipValidation && 
+            (documentValue === 'PAN_CARD' || 
+             documentValue === 'AADHAAR_CARD_FRONT' || 
+             documentValue === 'AADHAAR_BACK');
+
+        if (shouldValidate) {
             if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_BACK') {
                 const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
                 isValid = validationResult.isValid;
@@ -266,9 +260,8 @@ function toTitleCase(str) {
             id: Date.now(),
             type: docType,
             name: documentValue.includes('AADHAAR') ?
-                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}` :
-                `${ toTitleCase(  documentValue.replace(/_/g, ' '))}`,
-
+                `${toTitleCase(documentValue.replace(/_/g, ' '))}` :
+                `${toTitleCase(documentValue.replace(/_/g, ' '))}`,
             image: imageData,
             file: file,
             uploadedAt: new Date().toLocaleString(),
@@ -289,42 +282,20 @@ function toTitleCase(str) {
 
         showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
 
-        // if (!documentValue.includes('AADHAAR')) {
-        //     if (documentType === 'identity') setSelectedIdentityProof('');
-        //     if (documentType === 'address') setSelectedAddressProof('');
-        //     if (documentType === 'signature') setSelectedSignatureProof('');
-        // } else {
-        //     const frontUploaded = isAadhaarFrontUploaded();
-        //     const backUploaded = isAadhaarBackUploaded();
+        if (!documentValue.includes('AADHAAR')) {
+            // Reset selection if not Aadhaar
+        } else {
+            const frontUploaded = isAadhaarFrontUploaded();
+            const backUploaded = isAadhaarBackUploaded();
 
-        //     if (frontUploaded && backUploaded) {
-        //         setSelectedAddressProof('');
-        //     } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
-        //         setTimeout(() => {
-        //             showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
-        //         }, 1000);
-        //     }
-        // }
-
-// ...existing code...
-if (!documentValue.includes('AADHAAR')) {
-    // if (documentType === 'identity') setSelectedIdentityProof('');
-    // if (documentType === 'address') setSelectedAddressProof('');
-    // if (documentType === 'signature') setSelectedSignatureProof('');
-} else {
-    const frontUploaded = isAadhaarFrontUploaded();
-    const backUploaded = isAadhaarBackUploaded();
-
-    if (frontUploaded && backUploaded) {
-        // setSelectedAddressProof('');
-    } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
-        setTimeout(() => {
-            showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
-        }, 1000);
-    }
-}
-// ...existing code...
-
+            if (frontUploaded && backUploaded) {
+                // setSelectedAddressProof('');
+            } else if (documentValue === 'AADHAAR_CARD_FRONT' && !backUploaded) {
+                setTimeout(() => {
+                    showAlertMessage('Upload Back Side', 'Please upload the back side of your Aadhaar card to complete the process', 'info', 3000);
+                }, 1000);
+            }
+        }
 
         return true;
     };
@@ -352,7 +323,6 @@ if (!documentValue.includes('AADHAAR')) {
         reader.readAsDataURL(file);
     };
 
-    // Updated camera functions from RND_DND_GetSignphoto_DocUpload_ValidBeforeCameratest
     const startCamera = (documentType, documentValue) => {
         setActiveDocumentType(documentType);
         setActiveDocumentValue(documentValue);
@@ -385,7 +355,7 @@ if (!documentValue.includes('AADHAAR')) {
         setShowCameraModal(false);
     };
 
-    const capturePhoto = () => {
+    const capturePhoto = async () => {
         if (typeof window === 'undefined' || !window.document || !videoRef.current) {
             console.error("Attempted to capture photo in a non-browser environment or without video stream.");
             showAlertMessage('Error', 'Cannot capture photo: Browser environment or video stream not ready.', 'error');
@@ -401,12 +371,20 @@ if (!documentValue.includes('AADHAAR')) {
         const imageData = canvas.toDataURL('image/jpeg');
         setPreviewImage(imageData);
 
-        processImage(imageData, activeDocumentType, activeDocumentValue, '', true)
-            .then(success => {
-                if (success) {
-                    stopCamera();
-                }
-            });
+        // Only skip validation for non-PAN and non-Aadhaar documents
+        const skipValidation = !['PAN_CARD', 'AADHAAR_CARD_FRONT', 'AADHAAR_BACK'].includes(activeDocumentValue);
+        
+        const success = await processImage(
+            imageData, 
+            activeDocumentType, 
+            activeDocumentValue, 
+            '', 
+            skipValidation
+        );
+
+        if (success) {
+            stopCamera();
+        }
     };
 
     const removeDocument = (id) => {
@@ -466,7 +444,7 @@ if (!documentValue.includes('AADHAAR')) {
 
     return (
         <div className="document-upload-container p-4 mx-auto">
-            {/* <h2 className="text-xl font-bold mb-1">Upload Documents</h2> */}
+            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
                 <Info size={16} className="mr-1" />
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>
@@ -699,7 +677,7 @@ if (!documentValue.includes('AADHAAR')) {
                 </div>
             </div>
 
-            {/* Camera Modal - Updated from RND_DND_GetSignphoto_DocUpload_ValidBeforeCameratest */}
+            {/* Camera Modal */}
             {showCameraModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg max-w-md w-full shadow-xl p-6">
@@ -747,3 +725,4 @@ if (!documentValue.includes('AADHAAR')) {
 };
 
 export default DocumentUpload;
+ 
