@@ -224,45 +224,7 @@ const Dashboard = () => {
               <div className="text-center">
                 <DateRangePicker onChange={handleDateChange} />
               </div>
-
-              {/* <div className="dashboard-top-caard-collection flex flex-wrap my-1">
-                <div className="w-1/2">
-                  <div className="approved-card">
-                    <i className="bi bi-clipboard2-check"></i>
-                    <div className="card-text">
-                      <span className="dashboard-card-count">100+</span>
-                      <small>Approved</small>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-1/2">
-                  <div className="pending-card">
-                    <i className="bi bi-clipboard2-minus"></i>
-                    <div className="card-text">
-                      <span className="dashboard-card-count">200+</span>
-                      <small>Pending</small>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-1/2">
-                  <div className="rejected-card">
-                    <i className="bi bi-clipboard2-x"></i>
-                    <div className="card-text">
-                      <span className="dashboard-card-count">50+</span>
-                      <small>Rejected</small>
-                    </div>
-                  </div>
-                </div>
-                <div className="w-1/2">
-                  <div className="recent-applyed-card">
-                    <i className="bi bi-clipboard2-plus"></i>
-                    <div className="card-text">
-                      <span className="dashboard-card-count">350+</span>
-                      <small>Recent </small>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
+ 
             </div>
           </div>
 
@@ -308,6 +270,8 @@ function StatusDashboard1() {
   const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
 
   useEffect(() => {
+    fetchDetails();
+  }, [storedId]);
     const fetchDetails = async () => {
       try {
         const response = await agentService.applicationcountbyagent(storedId);
@@ -333,8 +297,6 @@ function StatusDashboard1() {
         });
       }
     };
-    fetchDetails();
-  }, [storedId]);
 
   return (
     <div className="dashboard-top-caard-collection flex my-1">

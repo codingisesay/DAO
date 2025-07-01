@@ -15,6 +15,7 @@ function ValidationBarChart() {
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
     const role=localStorage.getItem('roleName')
+    const admin_id= localStorage.getItem('userCode')
 
     const handleTimeChange = (event) => {
         setTimePeriod(event.target.value);
@@ -42,7 +43,6 @@ function ValidationBarChart() {
         DigiLocker: '#FFA726'
     };
 
-    useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -76,18 +76,19 @@ function ValidationBarChart() {
                 }
             } catch (error) {
                 console.error('Error fetching chart data:', error);
-                // Swal.fire({
-                //     icon: 'error',
-                //     title: 'Error',
-                //     text: error?.response?.data?.message || 'Failed to load chart data'
-                // });
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.response?.data?.message || 'Failed to load chart data'
+                });
             } finally {
                 setLoading(false);
             }
         };
 
+    useEffect(() => {
         fetchData();
-    }, [timePeriod, role]);
+    }, [timePeriod, admin_id]);
 
     const getXAxisKey = () => 'label';
 

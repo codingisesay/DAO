@@ -1,0 +1,49 @@
+/* Main container */
+.google-translate-container {
+  position: relative;
+  z-index: 9999;
+  min-width: 150px;
+}
+
+/* Dropdown styling */
+.goog-te-combo {
+  color: #333 !important;
+  background-color: white !important;
+  border: 1px solid #ddd !important;
+  border-radius: 4px !important;
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+  height: auto !important;
+  width: auto !important;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+/* Dropdown options */
+.goog-te-menu-frame {
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  z-index: 10000 !important;
+}
+
+/* Hide Google branding */
+.goog-logo-link, 
+.goog-te-gadget span {
+  display: block !important;
+}
+
+/* Fix for dropdown visibility */
+.goog-te-menu-value span {
+  color: #333 !important;
+}
+
+/* Dropdown arrow */
+.goog-te-combo::after {
+  content: "▼";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666;
+  font-size: 10px;
+}

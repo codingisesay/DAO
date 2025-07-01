@@ -637,3 +637,69 @@ tr:hover {
 }
 
 .css-53g0n7-MuiButtonBase-root-MuiIconButton-root.Mui-disabled{display: none;}
+
+.goog-te-combo {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: white;
+    color: black;
+}
+
+/* Add this to your CSS file */
+#google_translate_element {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.goog-te-menu-value span {
+  color: inherit !important;
+}
+
+.goog-te-menu-value {
+  display: flex !important;
+  align-items: center !important;
+}
+
+
+
+/* working langugae below */
+/* Google Translate styles */
+/* #google_translate_element {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.goog-te-menu-value {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.goog-te-menu-value span {
+  color: inherit !important;
+  font-size: 0 !important;
+}
+
+.goog-te-menu-value:before {
+  content: none !important;
+} */

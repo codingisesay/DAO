@@ -11,6 +11,8 @@ const KYCpendingTbl = () => {
     const storedId = localStorage.getItem('agent_id') || 1;
     
     useEffect(() => {
+        fetchKYCData();
+    }, [storedId]);
         const fetchKYCData = async () => {
             try {
                 setLoading(true);
@@ -32,8 +34,6 @@ const KYCpendingTbl = () => {
             }
         };
 
-        fetchKYCData();
-    }, [storedId]);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);

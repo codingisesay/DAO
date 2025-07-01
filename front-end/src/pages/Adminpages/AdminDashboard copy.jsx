@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../auth/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
@@ -24,65 +24,79 @@ const AdminDashboard = () => {
     const navigate = useNavigate(); 
     const username= localStorage.getItem('userName');
     const userrole =localStorage.getItem('roleName');
-  
-    const [translateReady, setTranslateReady] = useState(false);
 
-// const googleTranslateElementInit = useCallback(() => {
-//   if (window.google && window.google.translate) {
-//     try {
-//       new window.google.translate.TranslateElement(
-//         {
-//           pageLanguage: "en",
-//           autoDisplay: false,
-//           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-//         },
-//         "google_translate_element"
-//       );
-//       setTranslateReady(true);
-//     } catch (error) {
-//       console.error("Google Translate initialization failed:", error);
-//     }
-//   }
-// }, []);
+       // Google Translate initialization
+       
+    const [showTranslator, setShowTranslator] =useState()
+    const [translatorLoading, setTranslatorLoading] = useState(false);
+    const translatorInitialized = useRef(false);
+  useEffect(() => {
+        if (!showTranslator) {
+            // Cleanup when hiding the translator
+            const dropdown = document.getElementById('google_translate_element');
+            if (dropdown) dropdown.innerHTML = '';
+            return;
+        }
 
-// useEffect(() => {
-//   // Check if already initialized
-//   if (window.google && window.google.translate) {
-//     googleTranslateElementInit();
-//     return;
-//   }
+        setTranslatorLoading(true);
+        
+        const timer = setTimeout(() => {
+            // If already initialized, just show it
+            if (translatorInitialized.current) {
+                setTranslatorLoading(false);
+                return;
+            }
 
-//   // Check if script already exists
-//   const existingScript = document.querySelector('script[src*="translate.google.com"]');
-//   if (existingScript) return;
+            const initializeGoogleTranslate = () => {
+                if (!window.google || !window.google.translate) {
+                    // Load the script if not already loaded
+                    const scriptId = 'google-translate-script';
+                    if (!document.getElementById(scriptId)) {
+                        const script = document.createElement('script');
+                        script.id = scriptId;
+                        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+                        script.async = true;
+                        script.onerror = () => {
+                            setTranslatorLoading(false);
+                            console.error('Failed to load Google Translate script');
+                        };
+                        document.body.appendChild(script);
+                    }
+                } else {
+                    // If already loaded, initialize directly
+                    window.googleTranslateElementInit();
+                }
+            };
 
-//   const addScript = document.createElement("script");
-//   addScript.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-//   addScript.async = true;
-//   addScript.className = "google-translate-script";
-  
-//   // Add error handling
-//   addScript.onerror = () => {
-//     console.error("Failed to load Google Translate script");
-//     setTranslateReady(false);
-//   };
-  
-//   document.body.appendChild(addScript);
+            window.googleTranslateElementInit = () => {
+                try {
+                    new window.google.translate.TranslateElement({
+                        pageLanguage: 'en',
+                        includedLanguages: 'en,es,fr,de,it,pt,ru,zh-CN,ja,ar,hi',
+                        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+                    
+                    translatorInitialized.current = true;
+                    setTranslatorLoading(false);
+                } catch (error) {
+                    console.error('Google Translate initialization failed:', error);
+                    setTranslatorLoading(false);
+                }
+            };
 
-//   // Store our init function
-//   window.googleTranslateElementInit = googleTranslateElementInit;
+            initializeGoogleTranslate();
+        }, 300);
 
-//   return () => {
-//     const script = document.querySelector('.google-translate-script');
-//     if (script) {
-//       document.body.removeChild(script);
-//     }
-//     // Clean up our function if it's still ours
-//     if (window.googleTranslateElementInit === googleTranslateElementInit) {
-//       window.googleTranslateElementInit = undefined;
-//     }
-//   };
-// }, [googleTranslateElementInit]);
+        return () => {
+            clearTimeout(timer);
+            // Cleanup function
+            const dropdown = document.getElementById('google_translate_element');
+            if (dropdown) dropdown.innerHTML = '';
+        };
+    }, [showTranslator]);
+
+
 
     // localStorage.getItem('approveStatusArray').remove;
     const handleRedireact = () => {
@@ -195,25 +209,40 @@ const AdminDashboard = () => {
                 </div>
          
          
-                    <div className="inline-block relative">
+            <div className="inline-block relative">
                     <i
                         className="mx-2 bi bi-globe2"
-                        style={{ cursor: "pointer" }} 
+                        style={{ cursor: "pointer" }}
+                        onClick={() => setShowTranslator((prev) => !prev)}
                         title="Translate"
-                        onClick={() => {
-                        if (translateReady) {
-                            const googleTranslateElement = document.querySelector('.goog-te-menu-value');
-                            if (googleTranslateElement) {
-                            googleTranslateElement.click();
-                            }
-                        }
-                        }}
                     />
-                    <div id="google_translate_element" style={{
-                        display: 'inline-block',
-                        verticalAlign: 'middle'
-                    }}></div>
-                    </div>
+                    {showTranslator && (
+                        <div
+                            id="google_translate_element"
+                            style={{
+                                position: "absolute",
+                                top: "30px",
+                                right: 0,
+                                zIndex: 9999,
+                                background: isDark ? "#2d3748" : "#fff",
+                                borderRadius: "8px",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                                padding: "8px",
+                                minWidth: "150px",
+                                minHeight: translatorLoading ? "40px" : "auto"
+                            }}
+                        >
+                            {translatorLoading && (
+                                <div className="flex items-center justify-center">
+                                    <span className="mr-2">Loading translator...</span>
+                                    <div className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" role="status">
+                                        <span className="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
 
 
 

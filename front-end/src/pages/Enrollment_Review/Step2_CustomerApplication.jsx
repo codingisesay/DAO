@@ -44,6 +44,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             if (activeStep === 0) {
                 // console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};
+                
+                console.log('GET MEEE : ' , pd)
                 if (
                     /\d/.test(pd.first_name) ||
                     /\d/.test(pd.middle_name) ||
@@ -55,7 +57,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     });
                     return;
                 }
-
 
                 else if (pd.mobile.length !== 10) {
                     Swal.fire({
