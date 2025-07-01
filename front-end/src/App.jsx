@@ -11,7 +11,6 @@ import "./assets/css/theme.css";
 import "./assets/css/form.css";
 import './App.css'
 import Login from "./pages/Login/Login";
-import { useAuth } from "./auth/AuthContext";
 
  
 import Verificationform from './pages/Verification/Enrollmentform';
@@ -47,6 +46,7 @@ import OtpVerification from "./pages/ForgotPassword/OtpVerification";
 import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 
 
+import { useAuth } from "./auth/AuthContext";
 /// kyc_pending kyc_approved kyc_review
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();

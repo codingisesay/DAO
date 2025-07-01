@@ -1,4 +1,5 @@
- 
+
+
 
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -9,8 +10,7 @@ const MonthlyAccountTrends = () => {
     const [data, setData] = useState([]);
     const admin_id= localStorage.getItem('userCode')
    
-        const fetchDetails = async () => {
-        
+        const fetchDetails = async () => { 
             try {
                 const response = await adminService.monthlyLineChart;
                 // console.log('API Response:', response); // For debugging
@@ -29,14 +29,13 @@ const MonthlyAccountTrends = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: error?.response?.data?.message || 'Failed to load chart data'
+                    text: JSON.stringify(error)
                 });
-            }
-     
-
+            } 
         };
     useEffect(() => {
-            if (admin_id){        fetchDetails(admin_id);}
+            if (!admin_id){return}
+             fetchDetails(admin_id);
     }, [admin_id]);
 
     return (

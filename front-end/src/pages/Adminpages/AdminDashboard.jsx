@@ -92,8 +92,7 @@ const AdminDashboard = () => {
         logout();
         navigate('/login');
     };
-
-
+ 
     useEffect(() => { 
         if(username){ fetchDetails();}
        
@@ -157,108 +156,108 @@ const AdminDashboard = () => {
                         <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
                         <h2>Welcome to FinAcctz</h2>
                     </div>
-          <div className="text-right">
-            <div className="flex items-center">
-              <ThemeToggle /> 
-                <div className="inline-block relative"> 
-                <i
-                  className="mx-2 bi bi-bell"
-                  onClick={() => {
-                    setShowProfile(false);
-                    setShowHelp(false);
-                    setShowNotification(!showNotification)
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                {showNotification && (
-                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
-                    <NotificationDd />
-                  </div>
-                )}
-              </div> 
-                {/* Help Icon */}
-                <div className="inline-block relative">
-                <i
-                  className="mx-2 bi bi-question-circle"
-                  onClick={() => {
-                    setShowHelp(!showHelp);
-                    setShowProfile(false); 
-                    setShowNotification(false); // hide profile if open
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                {showHelp && (
-                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
-                    <Help />
-                  </div>
-                )}
-                </div>
-         
-         
-                    <div className="inline-block relative">
-                    <i
-                        className="mx-2 bi bi-globe2"
-                        style={{ cursor: "pointer" }} 
-                        title="Translate"
-                        onClick={() => {
-                        if (translateReady) {
-                            const googleTranslateElement = document.querySelector('.goog-te-menu-value');
-                            if (googleTranslateElement) {
-                            googleTranslateElement.click();
-                            }
-                        }
-                        }}
-                    />
-                    <div id="google_translate_element" style={{
-                        display: 'inline-block',
-                        verticalAlign: 'middle'
-                    }}></div>
+                    <div className="text-right">
+                        <div className="flex items-center">
+                        <ThemeToggle /> 
+                            <div className="inline-block relative"> 
+                            <i
+                            className="mx-2 bi bi-bell"
+                            onClick={() => {
+                                setShowProfile(false);
+                                setShowHelp(false);
+                                setShowNotification(!showNotification)
+                            }}
+                            style={{ cursor: "pointer" }}
+                            />
+                            {showNotification && (
+                            <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
+                                <NotificationDd />
+                            </div>
+                            )}
+                        </div> 
+                            {/* Help Icon */}
+                            <div className="inline-block relative">
+                            <i
+                            className="mx-2 bi bi-question-circle"
+                            onClick={() => {
+                                setShowHelp(!showHelp);
+                                setShowProfile(false); 
+                                setShowNotification(false); // hide profile if open
+                            }}
+                            style={{ cursor: "pointer" }}
+                            />
+                            {showHelp && (
+                            <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
+                                <Help />
+                            </div>
+                            )}
+                            </div>
+                    
+                    
+                                <div className="inline-block relative">
+                                <i
+                                    className="mx-2 bi bi-globe2"
+                                    style={{ cursor: "pointer" }} 
+                                    title="Translate"
+                                    onClick={() => {
+                                    if (translateReady) {
+                                        const googleTranslateElement = document.querySelector('.goog-te-menu-value');
+                                        if (googleTranslateElement) {
+                                        googleTranslateElement.click();
+                                        }
+                                    }
+                                    }}
+                                />
+                                <div id="google_translate_element" style={{
+                                    display: 'inline-block',
+                                    verticalAlign: 'middle'
+                                }}></div>
+                                </div>
+
+
+
+
+
+
+                        <i
+                            className="mx-2 bi  bi-box-arrow-right md:w-right"
+                            onClick={handleLogout}
+                        ></i>
+
+                        
+                            <div className="inline-block relative">
+                            {/* Profile Icon */}
+
+                            <div className="flex">
+                            <img
+                            height="40px"
+                            width="40px"
+                            src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                            alt="profile"
+                            className="rounded-full object-cover mx-2 my-auto"
+                                onClick={() => {
+                                setShowProfile(!showProfile);
+                                setShowHelp(false); // hide help if open
+                                setShowNotification(false)
+                                }}
+                            />
+                            <span className="font-bold">  
+                            {toTitleCase( username )}
+                            <br />
+                            <small className="font-normal"> -  {toTitleCase( userrole )} </small>
+                            </span>
+                                </div>
+            
+                            {showProfile && (
+                            <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
+                                <Profilecard />
+                            </div>
+                            )}
+                        </div>
+            
+
+                        </div>
                     </div>
-
-
-
-
-
-
-              <i
-                className="mx-2 bi  bi-box-arrow-right md:w-right"
-                onClick={handleLogout}
-              ></i>
-
-              
-                <div className="inline-block relative">
-                {/* Profile Icon */}
-
-                  <div className="flex">
-                <img
-                  height="40px"
-                  width="40px"
-                  src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                  alt="profile"
-                  className="rounded-full object-cover mx-2 my-auto"
-                    onClick={() => {
-                      setShowProfile(!showProfile);
-                      setShowHelp(false); // hide help if open
-                      setShowNotification(false)
-                    }}
-                />
-                <span className="font-bold">  
-                  {toTitleCase( username )}
-                  <br />
-                  <small className="font-normal"> -  {toTitleCase( userrole )} </small>
-                </span>
-                    </div>
- 
-                {showProfile && (
-                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
-                    <Profilecard />
-                  </div>
-                )}
-              </div>
- 
-
-            </div>
-          </div>
                 </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>

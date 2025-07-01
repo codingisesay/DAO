@@ -222,8 +222,21 @@ export const adminService = {
     apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_REVIEW_APPLICATIONS),
   getReviewApplicationsAgentCount: () =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_AGENT_COUNT),
-  getReviewApplicationsDetailsByAgent: (agentId) =>
+  
+///////////////agent accounts list above
+    getReviewApplicationsDetailsByAgent: (agentId) =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+
+  getApprovedApplicationsDetailsByAgent: (agentId) =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+
+  getPendingApplicationsDetailsByAgent: (agentId) =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_PENDING_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+
+  getRejectedApplicationsDetailsByAgent: (agentId) =>
+    apiService.get(API_ENDPOINTS.ADMIN.GET_REJECTED_APPLICATIONS_DETAILS_BY_AGENT(agentId)),
+///////////////agent accounts list above
+
   //  Add these for kycreview applicationss
   getAllKycReviewApplications: () =>
     apiService.get(API_ENDPOINTS.ADMIN.GET_ALL_KYC_REVIEW_APPLICATIONS),
