@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
 import { apiService } from '../../utils/storage';
-import { applicationDocumentService, createAccountService } from '../../services/apiServices';
+import { agentService , pendingAccountData, createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
+import DocView from './Step3A_DocumentUpload'
 import CommonButton from '../../components/CommonButton';
+import { useParams } from 'react-router-dom';
 
 const P3 = ({ onNext, onBack }) => {
     const [isLoading, setIsLoading] = React.useState(false);
+    const [Loading, setLoading] = React.useState(false);
+    const [localFormData, setLocalFormData]=useState([]);
     const [documents, setDocuments] = useState(() => {
+
         try {
             const saved = localStorage.getItem('documentData');
             return saved ? JSON.parse(saved) : [];
@@ -17,7 +22,45 @@ const P3 = ({ onNext, onBack }) => {
             return [];
         }
     });
-    const storedId = localStorage.getItem('application_id');
+    const {id} = useParams();
+      const [reason, setReason] = useState(null);
+
+    // Fetch reason data (unchanged)
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchReason = async () => {
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id);
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+ const fetchAndStoreDetails = async () => {
+    try {
+        if (id) {
+            const response = await pendingAccountData.getDetailsS3(id);
+            const documents = response.documents || [];
+            // Save only the documents array to localStorage
+            localStorage.setItem('documentData', JSON.stringify(documents));
+            setDocuments(documents); // Update state for DocUpload
+            setLocalFormData(documents); // Optional, if you use localFormData elsewhere
+        }
+    } catch (error) {
+        console.error('Failed to fetch application details:', error);
+    }
+};
+        
+                fetchAndStoreDetails();
+
+        fetchReason();
+    }, [id]);
+    // const id = localStorage.getItem('application_id');
     const [processingDoc, setProcessingDoc] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
@@ -125,11 +168,10 @@ const P3 = ({ onNext, onBack }) => {
 
             if (validDocuments.length === 0) {
                 throw new Error('No valid documents found. Please re-upload your documents.');
-            }
-
+            } 
             // Prepare the payload
             const payload = {
-                application_id: storedId,
+                application_id: id,
                 document_types: validDocuments.map(doc => doc.type || doc.name),
                 files: validDocuments.map(doc => doc.image)
             };
@@ -197,11 +239,14 @@ const P3 = ({ onNext, onBack }) => {
                         </div>
                     </div>
                 )}
-
+                
+                <DocView />
+                
+            <p className="text-red-500"> {reason && ( 'Review Reason : ', reason.applicant_live_photos_status_comment )}</p> 
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
-                    documents={documents}
+                    // documents={documents}
                 />
                 {processingDoc && (
                     <DAOExtraction
