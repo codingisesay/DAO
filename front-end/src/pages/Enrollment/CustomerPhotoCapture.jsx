@@ -534,11 +534,12 @@ useEffect(() => {
         <i className="bi bi-send text-green-500"></i>
         <p><strong className="inline-block w-15 text-start">Longitude:</strong> {hasExistingPhoto.longitude}</p>
       </div>
-
+{tempAddress &&
       <div className="flex text-start gap-2">
         <i className="bi bi-geo-alt text-green-500"></i>
-        <p><strong className="inline-block w-15 text-start">Address:</strong> {tempAddress}</p>
+        <p><strong className="inline-block w-15 text-start">Address:</strong>  {tempAddress}</p>
       </div>
+}
     </div>
   </div>
 </>

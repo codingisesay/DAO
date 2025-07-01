@@ -277,7 +277,13 @@ const validateForm = () => {
 
         } catch (error) {
             console.error("Error saving personal details:", error);
-            toast.error(error.response?.data?.message || 'Failed to save personal details');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: error?.data?.message || 'Failed to save personal details',
+                confirmButtonText: 'OK',
+                });
+
         } finally {
             setIsSubmitting(false);
         }
