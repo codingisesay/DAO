@@ -354,7 +354,7 @@ public function getRejectedApplicationsDetailsAgentById($agentId,$status)
         ->select(
           
             'customer_application_details.*',
-          'customer_appliction_status.status as full_application_status',
+            'customer_appliction_status.status as full_application_status',
             'account_personal_details.status as account_personal_details_status',
              'account_personal_details.status_comment as account_personal_details_status_comment',
              'application_address_details.status as application_address_details_status',

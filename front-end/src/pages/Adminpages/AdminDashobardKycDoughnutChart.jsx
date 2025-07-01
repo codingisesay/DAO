@@ -6,43 +6,43 @@ import Swal from 'sweetalert2';
 const KYCVerificationChart = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const admin_id= localStorage.getItem('userCode')
+    const admin_id = localStorage.getItem('userCode')
 
     const COLORS = ['#20C475', '#FFA726', '#FF5252'];
 
-        const fetchKYCStatus = async () => {
-            try {
-                const response = await adminService.kycstatusperyear;
-                
-                if (response) {
-                    // Transform the API response into the format needed by the chart
-                    const chartData = [
-                        { name: 'Verified', value: response.Approved || 0 },
-                        { name: 'Pending Verification', value: response.Pending || 0 },
-                        { name: 'Rejected', value: response.Reject || 0 }
-                    ];
-                    setData(chartData);
-                }
-            } catch (error) {
-                console.error('Error fetching KYC status:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: JSON.stringify(error) || 'Failed to load KYC status data'
-                });
-                // Fallback to empty data if API fails
-                setData([
-                    { name: 'Verified', value: 0 },
-                    { name: 'Pending Verification', value: 0 },
-                    { name: 'Rejected', value: 0 }
-                ]);
-            } finally {
-                setLoading(false);
+    const fetchKYCStatus = async () => {
+        try {
+            const response = await adminService.kycstatusperyear;
+
+            if (response) {
+                // Transform the API response into the format needed by the chart
+                const chartData = [
+                    { name: 'Verified', value: response.Approved || 0 },
+                    { name: 'Pending Verification', value: response.Pending || 0 },
+                    { name: 'Rejected', value: response.Reject || 0 }
+                ];
+                setData(chartData);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching KYC status:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: JSON.stringify(error) || 'Failed to load KYC status data'
+            });
+            // Fallback to empty data if API fails
+            setData([
+                { name: 'Verified', value: 0 },
+                { name: 'Pending Verification', value: 0 },
+                { name: 'Rejected', value: 0 }
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        if(admin_id){ fetchKYCStatus();}
+        if (admin_id) { fetchKYCStatus(); }
     }, [admin_id]);
 
     const renderCustomizedLabel = ({
@@ -75,13 +75,13 @@ const KYCVerificationChart = () => {
     return (
         <div style={{ width: '100%', height: 300 }}>
             {/* <h2 className="text-xl font-bold mb-4 text-center">KYC Verification Status</h2> */}
-            
+
             {loading ? (
-                <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    height: '100%' 
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100%'
                 }}>
                     <p>Loading KYC data...</p>
                 </div>
@@ -129,4 +129,3 @@ const KYCVerificationChart = () => {
 
 export default KYCVerificationChart;
 
- 

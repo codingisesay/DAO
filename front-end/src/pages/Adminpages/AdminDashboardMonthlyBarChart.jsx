@@ -14,8 +14,8 @@ function ValidationBarChart() {
     const [selectedValidation, setSelectedValidation] = useState('all');
     const [chartData, setChartData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const role=localStorage.getItem('roleName')
-    const admin_id= localStorage.getItem('userCode')
+    const role = localStorage.getItem('roleName')
+    const admin_id = localStorage.getItem('userCode')
 
     const handleTimeChange = (event) => {
         setTimePeriod(event.target.value);
@@ -43,48 +43,48 @@ function ValidationBarChart() {
         DigiLocker: '#FFA726'
     };
 
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                let response;
-                if (timePeriod === 'monthly') {
-                    response = await adminService.monthlyauthbarchart;
-                } else {
-                    response = await adminService.weeklyauthbarchart;
-                }
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            let response;
+            if (timePeriod === 'monthly') {
+                response = await adminService.monthlyauthbarchart;
+            } else {
+                response = await adminService.weeklyauthbarchart;
+            }
 
-                if (response && response.labels && response.data) {
-                    // Transform the API response into the format needed by the chart
-                    const transformedData = response.labels.map((timeLabel, index) => {
-                        const dataPoint = {
-                            label: timePeriod === 'monthly' 
-                                ? timeLabel.substring(0, 3) // Shorten month names
-                                : timeLabel // Keep full week names
-                        };
+            if (response && response.labels && response.data) {
+                // Transform the API response into the format needed by the chart
+                const transformedData = response.labels.map((timeLabel, index) => {
+                    const dataPoint = {
+                        label: timePeriod === 'monthly'
+                            ? timeLabel.substring(0, 3) // Shorten month names
+                            : timeLabel // Keep full week names
+                    };
 
-                        response.data.forEach(validationType => {
-                            const key = validationType.label === 'Aadhar Card' ? 'Aadhaar' 
-                                       : validationType.label === 'Pan Card' ? 'PAN' 
-                                       : 'DigiLocker';
-                            dataPoint[key] = validationType.data[index] || 0;
-                        });
-
-                        return dataPoint;
+                    response.data.forEach(validationType => {
+                        const key = validationType.label === 'Aadhar Card' ? 'Aadhaar'
+                            : validationType.label === 'Pan Card' ? 'PAN'
+                                : 'DigiLocker';
+                        dataPoint[key] = validationType.data[index] || 0;
                     });
 
-                    setChartData(transformedData);
-                }
-            } catch (error) {
-                console.error('Error fetching chart data:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message || 'Failed to load chart data'
+                    return dataPoint;
                 });
-            } finally {
-                setLoading(false);
+
+                setChartData(transformedData);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching chart data:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to load chart data'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -117,7 +117,7 @@ function ValidationBarChart() {
                     />
                 </Box>
             </Box>
-            
+
             {loading ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 300 }}>
                     <Typography>Loading chart data...</Typography>
@@ -153,4 +153,3 @@ function ValidationBarChart() {
 
 export default ValidationBarChart;
 
- 
