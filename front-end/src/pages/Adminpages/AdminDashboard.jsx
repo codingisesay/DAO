@@ -12,78 +12,21 @@ import CommonButton from '../../components/CommonButton';
 import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
 import Footer from '../../components/Footer';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
-import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'; 
+import NotificationDd from '../DashboardHeaderComponents/NotificationCard';
+import Google_Translater from '../../components/GoogleTranslet/Google_Translater'
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const { logout } = useAuth();
-    const navigate = useNavigate(); 
-    const username= localStorage.getItem('userName');
-    const userrole =localStorage.getItem('roleName');
-  
-    const [translateReady, setTranslateReady] = useState(false);
+    const navigate = useNavigate();
 
-// const googleTranslateElementInit = useCallback(() => {
-//   if (window.google && window.google.translate) {
-//     try {
-//       new window.google.translate.TranslateElement(
-//         {
-//           pageLanguage: "en",
-//           autoDisplay: false,
-//           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
-//         },
-//         "google_translate_element"
-//       );
-//       setTranslateReady(true);
-//     } catch (error) {
-//       console.error("Google Translate initialization failed:", error);
-//     }
-//   }
-// }, []);
-
-// useEffect(() => {
-//   // Check if already initialized
-//   if (window.google && window.google.translate) {
-//     googleTranslateElementInit();
-//     return;
-//   }
-
-//   // Check if script already exists
-//   const existingScript = document.querySelector('script[src*="translate.google.com"]');
-//   if (existingScript) return;
-
-//   const addScript = document.createElement("script");
-//   addScript.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-//   addScript.async = true;
-//   addScript.className = "google-translate-script";
-  
-//   // Add error handling
-//   addScript.onerror = () => {
-//     console.error("Failed to load Google Translate script");
-//     setTranslateReady(false);
-//   };
-  
-//   document.body.appendChild(addScript);
-
-//   // Store our init function
-//   window.googleTranslateElementInit = googleTranslateElementInit;
-
-//   return () => {
-//     const script = document.querySelector('.google-translate-script');
-//     if (script) {
-//       document.body.removeChild(script);
-//     }
-//     // Clean up our function if it's still ours
-//     if (window.googleTranslateElementInit === googleTranslateElementInit) {
-//       window.googleTranslateElementInit = undefined;
-//     }
-//   };
-// }, [googleTranslateElementInit]);
-
+    const [showTranslator, setShowTranslator] = useState()
+    const username = localStorage.getItem('userName');
+    const userrole = localStorage.getItem('roleName');
     // localStorage.getItem('approveStatusArray').remove;
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
@@ -92,61 +35,62 @@ const AdminDashboard = () => {
         logout();
         navigate('/login');
     };
- 
-    useEffect(() => { 
-        if(username){ fetchDetails();}
-       
+
+
+    useEffect(() => {
+        if (username) { fetchDetails(); }
+
     }, [username]);
-        const fetchDetails = async () => {
-            try {
-                const response = await accountsStatusListService.getList;
-                if (response) {
-                    console.log(response)
-                }
-            } catch (error) {
-                console.log(error)
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message
-                });
+    const fetchDetails = async () => {
+        try {
+            const response = await accountsStatusListService.getList;
+            if (response) {
+                console.log(response)
             }
-        };
- 
+        } catch (error) {
+            console.log(error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message
+            });
+        }
+    };
+
 
     const handleDateChange = (range) => {
         console.log("Selected Range:", range);
     };
-    
-      const [showHelp, setShowHelp] = useState(false);
-      const [showProfile, setShowProfile] = useState(false);
-      const [showNotification, setShowNotification] = useState(false);
-      const helpRef = useRef();
-      const profileRef = useRef();
-      const notifyRef = useRef();
+
+    const [showHelp, setShowHelp] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [showNotification, setShowNotification] = useState(false);
+    const helpRef = useRef();
+    const profileRef = useRef();
+    const notifyRef = useRef();
     useEffect(() => {
-      function handleClickOutside(event) {
-        // Help dropdown
-        if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
-          setShowHelp(false);
+        function handleClickOutside(event) {
+            // Help dropdown
+            if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+                setShowHelp(false);
+            }
+            // Profile dropdown
+            if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfile(false);
+            }
+            // Notification dropdown
+            if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+                setShowNotification(false);
+            }
         }
-        // Profile dropdown
-        if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
-          setShowProfile(false);
-        }
-        // Notification dropdown
-        if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
-          setShowNotification(false);
-        }
-      }
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showHelp, showProfile, showNotification]);
-      function toTitleCase(str) {
-  return str.replace(/\w\S*/g, (txt) =>
-    txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-  );
-}
+    function toTitleCase(str) {
+        return str.replace(/\w\S*/g, (txt) =>
+            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        );
+    }
     return (
         <>
             <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
@@ -158,103 +102,100 @@ const AdminDashboard = () => {
                     </div>
                     <div className="text-right">
                         <div className="flex items-center">
-                        <ThemeToggle /> 
-                            <div className="inline-block relative"> 
-                            <i
-                            className="mx-2 bi bi-bell"
-                            onClick={() => {
-                                setShowProfile(false);
-                                setShowHelp(false);
-                                setShowNotification(!showNotification)
-                            }}
-                            style={{ cursor: "pointer" }}
-                            />
-                            {showNotification && (
-                            <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
-                                <NotificationDd />
+                            <ThemeToggle />
+                            <div className="inline-block relative">
+                                <i
+                                    className="mx-2 bi bi-bell"
+                                    onClick={() => {
+                                        setShowProfile(false);
+                                        setShowHelp(false);
+                                        setShowNotification(!showNotification)
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                {showNotification && (
+                                    <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
+                                        <NotificationDd />
+                                    </div>
+                                )}
                             </div>
-                            )}
-                        </div> 
                             {/* Help Icon */}
                             <div className="inline-block relative">
-                            <i
-                            className="mx-2 bi bi-question-circle"
-                            onClick={() => {
-                                setShowHelp(!showHelp);
-                                setShowProfile(false); 
-                                setShowNotification(false); // hide profile if open
-                            }}
-                            style={{ cursor: "pointer" }}
-                            />
-                            {showHelp && (
-                            <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
-                                <Help />
+                                <i
+                                    className="mx-2 bi bi-question-circle"
+                                    onClick={() => {
+                                        setShowHelp(!showHelp);
+                                        setShowProfile(false);
+                                        setShowNotification(false); // hide profile if open
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                {showHelp && (
+                                    <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
+                                        <Help />
+                                    </div>
+                                )}
                             </div>
-                            )}
-                            </div>
-                    
-                    
-                                <div className="inline-block relative">
+                            <div className="inline-block relative">
                                 <i
                                     className="mx-2 bi bi-globe2"
-                                    style={{ cursor: "pointer" }} 
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setShowTranslator((prev) => !prev)}
                                     title="Translate"
-                                    onClick={() => {
-                                    if (translateReady) {
-                                        const googleTranslateElement = document.querySelector('.goog-te-menu-value');
-                                        if (googleTranslateElement) {
-                                        googleTranslateElement.click();
-                                        }
-                                    }
-                                    }}
                                 />
-                                <div id="google_translate_element" style={{
-                                    display: 'inline-block',
-                                    verticalAlign: 'middle'
-                                }}></div>
-                                </div>
-
-
-
-
-
-
-                        <i
-                            className="mx-2 bi  bi-box-arrow-right md:w-right"
-                            onClick={handleLogout}
-                        ></i>
-
-                        
-                            <div className="inline-block relative">
-                            {/* Profile Icon */}
-
-                            <div className="flex">
-                            <img
-                            height="40px"
-                            width="40px"
-                            src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                            alt="profile"
-                            className="rounded-full object-cover mx-2 my-auto"
-                                onClick={() => {
-                                setShowProfile(!showProfile);
-                                setShowHelp(false); // hide help if open
-                                setShowNotification(false)
-                                }}
-                            />
-                            <span className="font-bold">  
-                            {toTitleCase( username )}
-                            <br />
-                            <small className="font-normal"> -  {toTitleCase( userrole )} </small>
-                            </span>
-                                </div>
-            
-                            {showProfile && (
-                            <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
-                                <Profilecard />
+                                {showTranslator && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "30px",
+                                            right: 0,
+                                            zIndex: 9999,
+                                            background: "#fff",
+                                            borderRadius: "8px",
+                                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                                            padding: "8px",
+                                        }}
+                                    >
+                                        <Google_Translater key={Date.now()} /> {/* Add key to force remount */}
+                                    </div>
+                                )}
                             </div>
-                            )}
-                        </div>
-            
+                            <i
+                                className="mx-2 bi  bi-box-arrow-right md:w-right"
+                                onClick={handleLogout}
+                            ></i>
+
+
+                            <div className="inline-block relative">
+                                {/* Profile Icon */}
+
+                                <div className="flex">
+                                    <img
+                                        height="40px"
+                                        width="40px"
+                                        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                                        alt="profile"
+                                        className="rounded-full object-cover mx-2 my-auto"
+                                        onClick={() => {
+                                            setShowProfile(!showProfile);
+                                            setShowHelp(false); // hide help if open
+                                            setShowNotification(false)
+                                        }}
+                                    />
+                                    <span className="font-bold">
+                                        {toTitleCase(username)}
+                                        <br />
+                                        <small className="font-normal"> -  {toTitleCase(userrole)} </small>
+                                    </span>
+                                </div>
+
+                                {showProfile && (
+                                    <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
+                                        <Profilecard />
+                                    </div>
+                                )}
+                            </div>
+
 
                         </div>
                     </div>
@@ -270,11 +211,11 @@ const AdminDashboard = () => {
                 <div className="mx-auto flex flex-wrap">
                     <div className="md:w-1/2 flex  flex-wrap justify-between">
                         <div className='w-full sm:w-full p-1'>
-                            <StatusDashboard1 /> 
+                            <StatusDashboard1 />
                         </div>
                         <h2 className="text-xl font-bold mb-2">Re-KYC</h2>
-                        <div className='w-full sm:w-full p-1'> 
-                            <StatusDashboard2 /> 
+                        <div className='w-full sm:w-full p-1'>
+                            <StatusDashboard2 />
                         </div>
                     </div>
 
@@ -308,7 +249,7 @@ const AdminDashboard = () => {
 
 
             </div >
-   <Footer />
+            <Footer />
 
         </>
     );
@@ -321,8 +262,8 @@ import KycPendingTable from './Kyc_PendingTable'
 import KycApprovedTable from './Kyc_ApprovedTable'
 import Enrollment_PendingTable from './Enrollment_PendingTable';
 import Enrollment_ReviewTable from './Enrollment_Review';
-import Enrollment_ApprovedTable from './Enrollment_ApprovedTable'; 
-import Enrollment_Reject from './Enrollment_Reject'; 
+import Enrollment_ApprovedTable from './Enrollment_ApprovedTable';
+import Enrollment_Reject from './Enrollment_Reject';
 
 
 function StatusDashboard1() {
@@ -338,37 +279,37 @@ function StatusDashboard1() {
     const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
     const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
     const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
-    const admin_id=localStorage.getItem('userCode')
+    const admin_id = localStorage.getItem('userCode')
     useEffect(() => {
-        if(admin_id){        fetchDetails();}
+        if (admin_id) { fetchDetails(); }
     }, [admin_id]);
 
-        const fetchDetails = async () => {
-            try {
-                const response = await accountsStatusListService.getList();
-                if (response && response.data) {
-                    // Count the statuses
-                    const counts = response.data.reduce((acc, item) => {
-                        acc[item.status] = (acc[item.status] || 0) + 1;
-                        return acc;
-                    }, {});
+    const fetchDetails = async () => {
+        try {
+            const response = await accountsStatusListService.getList();
+            if (response && response.data) {
+                // Count the statuses
+                const counts = response.data.reduce((acc, item) => {
+                    acc[item.status] = (acc[item.status] || 0) + 1;
+                    return acc;
+                }, {});
 
-                    setStatusCounts({
-                        Pending: counts.Pending || 0,
-                        Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
-                        Review: counts.Review || 0
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message
+                setStatusCounts({
+                    Pending: counts.Pending || 0,
+                    Approved: counts.Approved || 0,
+                    Rejected: counts.Rejected || 0,
+                    Review: counts.Review || 0
                 });
             }
-        };
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message
+            });
+        }
+    };
     return (
         <div className="dashboard-top-caard-collection flex my-1">
             {/* Review Card with Modal */}
@@ -466,7 +407,7 @@ function StatusDashboard1() {
                     </div>
                 </div>
             )}
-         
+
         </div>
     );
 }
@@ -488,37 +429,37 @@ function StatusDashboard2() {
     const [isApprovedModalOpen, setIsApprovedModalOpen] = useState(false);
     const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
     const [isRejectedModalOpen, setIsRejectedModalOpen] = useState(false);
-    const admin_id=localStorage.getItem('userCode');
+    const admin_id = localStorage.getItem('userCode');
     useEffect(() => {
-        if(admin_id){ fetchDetails();}
+        if (admin_id) { fetchDetails(); }
     }, [admin_id]);
 
-        const fetchDetails = async () => {
-            try {
-                const response = await kycaccountsStatusListService.getList();
-                if (response && response.data) {
-                    // Count the statuses
-                    const counts = response.data.reduce((acc, item) => {
-                        acc[item.status] = (acc[item.status] || 0) + 1;
-                        return acc;
-                    }, {});
+    const fetchDetails = async () => {
+        try {
+            const response = await kycaccountsStatusListService.getList();
+            if (response && response.data) {
+                // Count the statuses
+                const counts = response.data.reduce((acc, item) => {
+                    acc[item.status] = (acc[item.status] || 0) + 1;
+                    return acc;
+                }, {});
 
-                    setStatusCounts({
-                        Pending: counts.Pending || 0,
-                        Approved: counts.Approved || 0,
-                        Rejected: counts.Rejected || 0,
-                        Review: counts.Review || 0
-                    });
-                }
-            } catch (error) {
-                console.log(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message
+                setStatusCounts({
+                    Pending: counts.Pending || 0,
+                    Approved: counts.Approved || 0,
+                    Rejected: counts.Rejected || 0,
+                    Review: counts.Review || 0
                 });
             }
-        };
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message
+            });
+        }
+    };
     return (
         <div className="dashboard-top-caard-collection flex my-1">
             {/* Review Card with Modal */}

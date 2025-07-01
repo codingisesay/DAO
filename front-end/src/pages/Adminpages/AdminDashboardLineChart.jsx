@@ -1,6 +1,5 @@
 
 
-
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { adminService } from '../../services/apiServices';
@@ -8,34 +7,36 @@ import Swal from 'sweetalert2';
 
 const MonthlyAccountTrends = () => {
     const [data, setData] = useState([]);
-    const admin_id= localStorage.getItem('userCode')
-   
-        const fetchDetails = async () => { 
-            try {
-                const response = await adminService.monthlyLineChart;
-                // console.log('API Response:', response); // For debugging
-                
-                if (response && response.labels && response.data) {
-                    // Transform the API response into the format needed by the chart
-                    const chartData = response.labels.map((month, index) => ({
-                        month: month.substring(0, 3), // Use first 3 letters of month name
-                        accounts: response.data[index] || 0
-                    }));
-                    
-                    setData(chartData);
-                }
-            } catch (error) {
-                console.error('Error fetching Monthly Trends:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: JSON.stringify(error)
-                });
-            } 
-        };
+    const admin_id = localStorage.getItem('userCode')
+
+    const fetchDetails = async () => {
+
+        try {
+            const response = await adminService.monthlyLineChart;
+            // console.log('API Response:', response); // For debugging
+
+            if (response && response.labels && response.data) {
+                // Transform the API response into the format needed by the chart
+                const chartData = response.labels.map((month, index) => ({
+                    month: month.substring(0, 3), // Use first 3 letters of month name
+                    accounts: response.data[index] || 0
+                }));
+
+                setData(chartData);
+            }
+        } catch (error) {
+            console.error('Error fetching Monthly Trends:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to load chart data'
+            });
+        }
+
+
+    };
     useEffect(() => {
-            if (!admin_id){return}
-             fetchDetails(admin_id);
+        if (admin_id) { fetchDetails(admin_id); }
     }, [admin_id]);
 
     return (
@@ -97,4 +98,3 @@ const MonthlyAccountTrends = () => {
 };
 
 export default MonthlyAccountTrends;
- 
