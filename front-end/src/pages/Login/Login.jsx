@@ -9,10 +9,12 @@ import empicon from '../../assets/imgs/employee.png';
 import ThemeToggle from '../../components/Toggle';
 import Swal from 'sweetalert2';
 import { useAuth } from '../../auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import { loginUser } from '../../utils/endpoints';
+
+
 
 const roles = [
     { label: 'AGENT', icon: agenticon },
@@ -208,9 +210,9 @@ export default function LoginPage() {
                         >
                             Login
                         </CommonButton>
-                    </form>
-                        <p to="/forgotpassword" className="text-sm text-center mt-4 text-gray-400">Forgot Password?</p>
-                    {/* <Link to="/forgotpassword" className="text-sm text-center mt-4 text-gray-400">Forgot Password?</Link> */}
+                    </form> 
+                    <div className='text-center my-2'> <Link to="/forgotpassword" className="text-sm text-gray-400">Forgot Password?</Link></div>
+                   
                 </div>
             </div>
         </div>

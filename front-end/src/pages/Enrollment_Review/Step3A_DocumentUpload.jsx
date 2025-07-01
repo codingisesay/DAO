@@ -145,25 +145,7 @@ function p3({ onNext, onBack }) {
         <div className="form-container">
             <h2 className="text-xl font-bold mb-2">Upload Documents</h2>
             <DocumentDetailsTable documentslist={localFormData} />
-
-
-
-
-        <div className="next-back-btns mt-6">
-                 <CommonButton className="btn-back" onClick={onBack}>
-                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-                 <CommonButton
-                    className="btn-next"
-                    onClick={onNext} 
-                >
-                    
-                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                     
-                </CommonButton>
-            </div>
-
-
+ 
         </div>
     );
 }
@@ -186,10 +168,11 @@ const DocumentDetailsTable = ({ documentslist }) => {
     }, {});
 
     return (
-        <div className="p-4 max-w-4xl mx-auto">
-            {Object.entries(groupedDocs).map(([type, docs]) => (
-                <div key={type} className="mb-8">
-                    <h2 className="text-xl font-bold mb-4 capitalize">{type}</h2>
+        <div className="p-2 mx-auto">
+            {/* {Object.entries(groupedDocs).map(([type, docs]) => ( */}
+                <div className="mb-2">
+                    {/* <h2 className="text-xl font-bold mb-4 capitalize">Saved Document</h2> */}
+                    <span className="text-xs text-gray-500 ms-auto">Priviously submitted documents</span>
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
@@ -200,7 +183,8 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                              {Object.entries(groupedDocs).map(([type, docs]) => (
+                            <tbody key={type}>
                                 {docs.map((doc) => (
                                     <tr key={doc.id}>
                                         {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
@@ -214,24 +198,23 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                                 />
                                             {/* </a> */}
                                         </td>
-    <td className="py-2 px-4 border-b border-gray-200">
-    {(() => {
-        const date = new Date(doc.created_at);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
-    })()}
-    </td>
-
-
+                                        <td className="py-2 px-4 border-b border-gray-200">
+                                        {(() => {
+                                            const date = new Date(doc.created_at);
+                                            const day = String(date.getDate()).padStart(2, '0');
+                                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                                            const year = date.getFullYear();
+                                            return `${day}-${month}-${year}`;
+                                        })()}
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
+                              ))}
                         </table>
                     </div>
                 </div>
-            ))}
+            {/* // ))} */}
         </div>
     );
 };

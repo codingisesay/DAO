@@ -30,7 +30,7 @@ export const loginUser = async (userCode, password, loginBranchId) => {
 
     return response.data;
   } catch (error) {
-    throw error.message ||  error.response?.data || error;
+    throw error.data ||  error.response?.data || error;
   }
 };
 

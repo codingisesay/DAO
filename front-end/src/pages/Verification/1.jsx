@@ -13,6 +13,7 @@ import { daodocbase } from '../../data/data';
 import { pendingAccountStatusUpdate } from '../../services/apiServices';
 
 function P1({ onNext, onBack, updateFormData }) {
+    const admin_id= localStorage.getItem('userCode');
     const [localFormData, setLocalFormData] = useState({
         salutation: '',
         first_name: '',
@@ -110,7 +111,7 @@ function P1({ onNext, onBack, updateFormData }) {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS1(id, payload);
 
@@ -145,7 +146,7 @@ function P1({ onNext, onBack, updateFormData }) {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS1(id, payload);
             applicationStatus.push('Review');
@@ -164,7 +165,7 @@ function P1({ onNext, onBack, updateFormData }) {
                 application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             await pendingAccountStatusUpdate.updateS1(id, payload);
 

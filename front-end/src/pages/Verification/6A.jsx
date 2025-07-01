@@ -148,7 +148,7 @@ const ViewApplicationForm = () => {
                             <p className="text-gray-600">Application ID: {formData.application_id || 'N/A'}</p>
                             <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
                         </div>
-                        <button className='btn-login px-5' onClick={handlePrint} > Download </button>
+                        {/* <button className='btn-login px-5' onClick={handlePrint} > Download </button> */}
                     </div>
                 </div>
                 {/* Authentication Details */}

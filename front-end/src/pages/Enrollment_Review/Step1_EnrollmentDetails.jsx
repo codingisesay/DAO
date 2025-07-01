@@ -155,7 +155,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         application_no: response.application_no,
         application_id: response.application_id,
       });
-      localStorage.setItem("application_id", response.application_id);
+      // localStorage.setItem("application_id", response.application_id);
 
       Swal.fire({
         icon: "success",

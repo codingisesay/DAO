@@ -17,10 +17,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";     
-import Button from "../../Button/Button";
+import Button from "../../components/CommonButton";
 import { useForm, Controller } from "react-hook-form";
-import { forgotpass } from "../../../services/apiServices";
-import BackButton from "../../common/BackButton/BackButton";
+import { forgotpass } from "../../services/apiServices";
+import BackButton from "../../components/CommonButton";
 
 const OtpVerification = () => {
   const [otp, setOtp] = useState("");
@@ -189,15 +189,9 @@ const OtpVerification = () => {
 
   // ankita code above
   return (
-    <body className="Login-Border">
-      <div className="Login-Page-Main">
-        <div className="Home_Top">
+    <body className="flex items-center justify-center h-screen">
+      <div className="bg-white w-3/4 m-auto rounded-xl p-4 ">
        
-          <div className="Mid_portion">
-            <div className="Mid_portion_Internal"></div>
-          </div>
-          <div className="Top_right"></div>
-        </div>
         <div className="Login-Form-Bottom">
           <div
             className="Login-Page-Interal-div"
@@ -209,7 +203,7 @@ const OtpVerification = () => {
                 <BackButton to="/" />
               </div>
  
-              <h3 className="LogIn-Main-Heading">Verify your identity</h3>
+              <h3 className="text-2xl font-bold">Verify your identity</h3>
               <h6 className="LogIn-Heading">
                 We've just sent a text message with your security code on the
                 phone or email.
@@ -232,7 +226,7 @@ const OtpVerification = () => {
                       pattern="[0-9]*"
                       maxLength="1"
                       style={{
-                        width: "1%",
+                        width: "5%",
                         height: "30px",
                         textAlign: "center",
                         fontSize: "22px",
@@ -249,11 +243,21 @@ const OtpVerification = () => {
                   ))}
                 </div>
 
-                <Button
+                {/* <Button
                   type="submit"
                   text="Verify Code"
                   styleClass="green_btn Login-Button-Temp"
-                />
+                /> */}
+
+
+
+                <div className="text-center">
+                  <button type="submit" 
+                  className="bg-green-500 p-2 px-4 rounded text-white mt-10 mx-auto">SUBMIT</button>
+                </div>
+
+
+
               </form>
             </div>
           </div>

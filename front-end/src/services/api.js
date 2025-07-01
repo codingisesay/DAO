@@ -6,9 +6,9 @@ export const API_ENDPOINTS = {
   BASE_URL_LOGIN: import.meta.env.VITE_BASE_URL_LOGIN, 
   AUTH: {
     LOGIN: "/auth/api/login",
-    FORGOTPASS: (id) => `/dao/api/auth/api/forgot-password?identifier=${id}`,
+    FORGOTPASS: (id) => `/auth/api/forgot-password?identifier=${id}`,
     OTPVERIFY: (id, id1) =>
-      `/dao/api/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
+      `/auth/api/validate-otp?identifier=${id}&otp=${id1}`,
     SETPASS: (id, id1) =>
       `/auth/api/reset-password?identifier=${id}&newPassword=${id1}`,
     LOGOUT: "/auth/api/logout",
@@ -174,7 +174,15 @@ export const API_ENDPOINTS = {
     // Add these for Reviews applications
     GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/applications/rejected/Review',
     GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/dao/api/admin/reviewApplicationCount',
+    
     GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/reviewApplicationDetails/${agentId}`,
+    GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/approvedApplicationDetails/${agentId}`,
+    GET_PENDING_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/pendingApplicationDetails/${agentId}`,
+    GET_REJECTED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/applications/rejected/agent/${agentId}/rejected`,
+
+
+
+
     // Add these for kyc review applications
     GET_ALL_KYC_REVIEW_APPLICATIONS: '/dao/api/admin/kycReviewApplication',
 

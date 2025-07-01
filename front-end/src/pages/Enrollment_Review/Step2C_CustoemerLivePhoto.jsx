@@ -3,18 +3,20 @@ import ImageCaptureValidator from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { createAccountService, agentService } from '../../services/apiServices';
+import { createAccountService, agentService, pendingAccountData } from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
-    const [photoData, setPhotoData] = useState(null); 
+    const [photoData, setPhotoData] = useState(null);
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
-    const application_id = localStorage.getItem('application_id') || formData.application_id;
+    const [apiPhotoData, setApiPhotoData] = useState(null); 
     const storageKey = 'customerPhotoData';
 
-      const { id } = useParams();
+    const { id } = useParams();
+    const { application_id } = useParams();
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
 
+    // Fetch reason data (unchanged)
     useEffect(() => {
         if (!id) return;
 
@@ -33,23 +35,77 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         fetchReason();
     }, [id]);
 
+    // Photo handling logic (same as original)
+    useEffect(() => { 
+        if (id) { 
+            fetchAndShowDetails(id);
+        }
+    }, [id]);
+    
+    const fetchAndShowDetails = async (id) => {
+        try { 
+            if (id) {
+                const response = await pendingAccountData.getDetailsS2C(id);
+                console.log('photo to show : ', response);
+                const application = response.photos || null;
+                
+                if(application && application.length > 0) {
+                    setApiPhotoData(application[0]);
+                    
+                    // Convert API photo data to match our expected format
+                    const photoBlob = await fetch(application[0].path)
+                        .then(res => res.blob());
+                    
+                    const preparedPhotoData = {
+                        file: photoBlob,
+                        previewUrl: URL.createObjectURL(photoBlob),
+                        timestamp: application[0].created_at,
+                        metadata: {
+                            location: {
+                                longitude: application[0].longitude,
+                                latitude: application[0].latitude
+                            },
+                            validation: {
+                                hasFace: true,
+                                lightingOk: true,
+                                singlePerson: true
+                            }
+                        }
+                    };
+                    
+                    setPhotoData(preparedPhotoData);
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        previewUrl: preparedPhotoData.previewUrl,
+                        timestamp: preparedPhotoData.timestamp,
+                        metadata: preparedPhotoData.metadata
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch application details:', error);
+        }
+    };
+
     useEffect(() => {
-        // Load saved photo data from localStorage
-        const storedData = localStorage.getItem(storageKey);
-        if (storedData) {
-            try {
-                const parsedData = JSON.parse(storedData);
-                setPhotoData(parsedData);
-            } catch (error) {
-                console.error('Error parsing stored photo data:', error);
-                localStorage.removeItem(storageKey);
+        // Load saved photo data from localStorage only if no API data
+        if (!apiPhotoData) {
+            const storedData = localStorage.getItem(storageKey);
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    setPhotoData(parsedData);
+                } catch (error) {
+                    console.error('Error parsing stored photo data:', error);
+                    localStorage.removeItem(storageKey);
+                }
             }
         }
-    }, []);
+    }, [apiPhotoData]);
 
     const handlePhotoCapture = (capturedData) => {
         // Store the full captured data in state
         setPhotoData(capturedData);
+        setApiPhotoData(null); // Clear any API data when new photo is captured
 
         // Prepare the data for localStorage (without the file object)
         const storageData = {
@@ -61,44 +117,11 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
 
-    const submitPhoto = async (e) => {
-        onNext();
-        if (!photoData || !photoData.file) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please capture a photo before submitting'
-            });
-            return;
-        }
-
-        setLocalIsSubmitting(true);
-
-        // Use FormData for file upload
-        const submitFormData = new FormData();
-        submitFormData.append('application_id', formData.application_id || application_id);
-
-        // Add location data if available
-        if (photoData.metadata?.location) {
-            submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
-            submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
-        }
-
-        // Add validation data if available
-        if (photoData.metadata?.validation) {
-            submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
-        }
-
-        submitFormData.append('photo', photoData.file);
-        submitFormData.append('timestamp', photoData.timestamp);
-        submitFormData.append('status', 'Pending');
-
-        try {
-            const response = await createAccountService.livePhoto_s2c(submitFormData);
-
+    const submitPhoto = async (e) => { 
+        if(apiPhotoData){
             Swal.fire({
                 icon: 'success',
-                title: response.data.message || 'Photo saved successfully',
+                title: 'Photo saved successfully',
                 showConfirmButton: false,
                 timer: 1500
             });
@@ -111,22 +134,74 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
 
             // Proceed to next step after successful submission
             onNext();
-        } catch (error) {
-            console.error('Photo submission error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
-            });
-        } finally {
-            setLocalIsSubmitting(false);
+        }
+        else {
+            if (!photoData || !photoData.file) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please capture a photo before submitting'
+                });
+                return;
+            }
+
+            setLocalIsSubmitting(true);
+
+            // Use FormData for file upload
+            const submitFormData = new FormData();
+            submitFormData.append('application_id',   id);
+
+            // Add location data if available
+            if (photoData.metadata?.location) {
+                submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+                submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+            }
+
+            // Add validation data if available
+            if (photoData.metadata?.validation) {
+                submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+            }
+
+            submitFormData.append('photo', photoData.file);
+            submitFormData.append('timestamp', photoData.timestamp);
+            submitFormData.append('status', 'Pending');
+
+            try {
+                const response = await createAccountService.livePhoto_s2c(submitFormData);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: response.data.message || 'Photo saved successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                // Update parent component with the photo data
+                updateFormData({
+                    ...formData,
+                    photoData: photoData
+                });
+
+                // Proceed to next step after successful submission
+                onNext();
+            } catch (error) {
+                console.error('Photo submission error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+                });
+            } finally {
+                setLocalIsSubmitting(false);
+            }
         }
     };
 
     return (
         <div className="space-y-1">
+            {/* Reason display */}
+            <p className="text-red-500">Review For: {reason && reason.applicant_live_photos_status_comment}</p> 
             
-            <p className="text-red-500" > Review For : {reason && reason.applicant_live_photos_status_comment}</p> 
             {/* Loading overlay */}
             {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -138,6 +213,8 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                 onCapture={handlePhotoCapture}
                 photoType="customer"
                 showLocation={true}
+                initialPhoto={photoData}
+                hasExistingPhoto={apiPhotoData}
             />
 
             <div className="next-back-btns z-10">
@@ -157,7 +234,6 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
                     }}
                     variant="contained"
                     className="btn-next z-10"
-                    // disabled={ isSubmitting || localIsSubmitting}
                     type="button"
                 >
                     {(isSubmitting || localIsSubmitting) ? (
@@ -176,7 +252,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
     );
 };
 
-export default PhotoCaptureApp;
+export default PhotoCaptureApp; 
 
 
-
+ 

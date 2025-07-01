@@ -11,7 +11,6 @@ import "./assets/css/theme.css";
 import "./assets/css/form.css";
 import './App.css'
 import Login from "./pages/Login/Login";
-import { useAuth } from "./auth/AuthContext";
 
  
 import Verificationform from './pages/Verification/Enrollmentform';
@@ -42,11 +41,12 @@ import ViewForm from './pages/Enrollment_View/Enrollmentform';
 import Enrollment_Review_Edit from './pages/Enrollment_Review/Enrollmentform';
 import AgentList from './pages/Adminpages/Agent_Table'; 
 
-// import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
-// import OtpVerification from "./pages/ForgotPassword/OtpVerification";
-// import ChangePassword from "./pages/ForgotPassword/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import OtpVerification from "./pages/ForgotPassword/OtpVerification";
+import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 
 
+import { useAuth } from "./auth/AuthContext";
 /// kyc_pending kyc_approved kyc_review
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -81,13 +81,15 @@ export const App = () => {
     <div className="App">
       <Router>
 
-{/* 
-    <Route path="/forgotpassword" element={<ForgotPassword />} errorElement={<NotFoundPage />} />
-    <Route path="/otpvarification" element={<OtpVerification />} errorElement={<NotFoundPage />} />
-    <Route path="/changepass" element={<ChangePassword />} errorElement={<NotFoundPage />} />
- */}
-
         <Routes>
+          
+ 
+    <Route path="/forgotpassword" element={<ForgotPassword />}   />
+    <Route path="/otpvarification" element={<OtpVerification />} />
+    <Route path="/changepass" element={<ChangePassword />}   />
+  
+
+  
           {/* Public routes */}
           <Route path="/login" element={
             <PublicRoute>
