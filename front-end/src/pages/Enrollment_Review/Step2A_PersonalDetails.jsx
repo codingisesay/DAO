@@ -48,6 +48,15 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         status: 'Pending'
     });
   
+// Keep formData in sync with localFormData
+useEffect(() => {
+    updateFormData({
+        ...formData,
+        personalDetails: localFormData
+    });
+    // eslint-disable-next-line
+}, [localFormData]);
+
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
@@ -91,45 +100,47 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 
 
     const { id } = useParams();
-    
-    useEffect(() => {
-        const fetchAndStoreDetails = async () => {
-            try {
-                if (id) {
-                    const response = await pendingAccountData.getDetailsS2A(id);
-                    console.log(response);
-                    
-                    const updatedData = {
-                        ...localFormData,
-                        ...response.details,
-                        pannumber:response.details.pan_card, 
-                    };
-                    
-                    setLocalFormData(updatedData);
-                    // updateParentFormData(updatedData);
-                }
-            } catch (error) {
-                console.error('Failed to fetch application details:', error);
-            }
-        };
+     
+useEffect(() => {
+    const fetchAndStoreDetails = async () => {
+        try {
+            if (id) {
+                const response = await pendingAccountData.getDetailsS2A(id);
+                console.log(response);
 
-        const fetchReason = async (id) => { 
-            if (!id) return;
-            try {
-                setLoading(true);
-                const response = await agentService.refillApplication(id); 
-                setReason(response.data[0]);
-            } catch (error) {
-                console.error("Failed to fetch review applications:", error);
-            } finally {
-                setLoading(false);
+                // Use response.details for both updates
+                const updatedData = {
+                    ...localFormData,
+                    ...response.details,
+                    pannumber: response.details.pan_card || response.details.pannumber || '', // ensure correct mapping
+                };
+                updateFormData({
+                    ...formData,
+                    personalDetails: response.details, // update only with details
+                });
+                setLocalFormData(updatedData);
             }
-        };
+        } catch (error) {
+            console.error('Failed to fetch application details:', error);
+        }
+    };
 
-        fetchAndStoreDetails();
-        fetchReason(id);
-    }, [id]);
- 
+    const fetchReason = async (id) => { 
+        if (!id) return;
+        try {
+            setLoading(true);
+            const response = await agentService.refillApplication(id); 
+            setReason(response.data[0]);
+        } catch (error) {
+            console.error("Failed to fetch review applications:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchAndStoreDetails();
+    fetchReason(id);
+}, [id]); 
 
 
     const handleChange = (e) => {

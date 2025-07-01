@@ -85,7 +85,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     salutation: pd.salutation,
                     religion: pd.religion,
                     caste: pd.caste,
-                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                    marital_status: pd.marital_status ? pd.marital_status.toUpperCase() : undefined,
                     alt_mob_no: pd.alt_mob_no,
                     email: pd.email,
                     adhar_card: pd.adhar_card,
