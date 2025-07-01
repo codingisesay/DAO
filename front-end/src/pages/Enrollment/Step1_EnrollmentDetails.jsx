@@ -15,7 +15,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [showData, setShowData] = useState(!!formData.auth_code);
     const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const agent_id =localStorage.getItem('userCode')
+    const agent_id =localStorage.getItem('userCode');
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -226,6 +226,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
+                        ...userdummydata.aadhardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success
