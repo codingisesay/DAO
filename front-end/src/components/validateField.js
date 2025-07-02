@@ -59,7 +59,7 @@ export const VALIDATION_PATTERNS = {
     },
     ALPHABETS_AND_SPACE: {
         pattern: /^[A-Za-z\s]*$/,
-        message: "Only alphabets and spaces allowed",
+        message: "Only alphabets allowed",
     },
 
     GRADE: {

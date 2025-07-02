@@ -608,7 +608,7 @@ useEffect(() => {
                                             <img
                                             src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                             alt="Signature"
-                                            className="w-24 h-auto rounded-md object-contain shadow-sm"
+                                            className="w-10 h-auto rounded-md object-contain shadow-sm"
                                             />
                                         ) : '-'}
                                         </td>

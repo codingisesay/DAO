@@ -260,10 +260,10 @@ useEffect(() => {
     }
 
     return (
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-screen-xl mx-auto pb-20">
             <h2 className="text-xl font-bold mb-4">Personal Details</h2>
             <p className="text-red-500" > Review For : {reason && reason.account_personal_details_status_comment}</p>  <br />
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-6">
                 {/* Maiden Name Section */}
                 <CommanSelect
                     value={localFormData.maidenPrefixName}
