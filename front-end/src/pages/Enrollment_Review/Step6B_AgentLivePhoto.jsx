@@ -105,7 +105,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
 
         // Use FormData for file upload
         const submitFormData = new FormData();
-        submitFormData.append('application_id', formData.application_id || application_id);
+        submitFormData.append('application_id', id || application_id);
         
         // Add location data if available
         if (photoData.metadata?.location) {
@@ -137,7 +137,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
                     localStorage.removeItem('customerPhotoData');
                     localStorage.removeItem('agentPhotoData');
                     localStorage.removeItem('documentData');
-                    window.location.href = '/admindashboard'; // Redirect to the desired page
+                    window.location.href = '/agentdashboard'; // Redirect to the desired page
                 }
             });
 
