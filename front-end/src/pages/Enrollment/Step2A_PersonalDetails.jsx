@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { pendingAccountData, createAccountService } from '../../services/apiServices';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +16,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState({});
-    
+
     const [localFormData, setLocalFormData] = useState({
         salutation: formData.salutation || '',
         first_name: formData.first_name || '',
@@ -40,18 +40,18 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
 
     useEffect(() => {
         const id = localStorage.getItem('application_id');
-        if (id) { 
+        if (id) {
             fetchAndShowDetails(id);
         }
     }, []);
 
     const fetchAndShowDetails = async (id) => {
-        try { 
+        try {
             if (id) {
                 const response1 = await pendingAccountData.getDetailsS1(id);
                 const response2 = await pendingAccountData.getDetailsS2A(id);
                 const application1 = response1.details || {};
-                const application2 = response2.details || {}; 
+                const application2 = response2.details || {};
 
                 const application = { ...application1, ...application2 };
                 const verificationMethod = application.auth_type;
@@ -84,96 +84,103 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             toast.error('Failed to load personal details');
         }
     };
-const validateForm = () => {
-    const errors = {};
-    
-    // Required fields validation
-    const requiredFields = [
-        'salutation', 'first_name', 'last_name', 'DOB', 'gender','pan_card','adhar_card',   
-        'religion', 'caste', 'maritalStatus', 'mobile', 'email', 'alt_mob_no'
-    ];
+    const validateForm = () => {
+        const errors = {};
 
-    // Add PAN to required fields if verification method is Pan Card
-    if (verificationMethod === 'Pan Card') {
-        requiredFields.push('pan_card');
-    }
+        // Required fields validation
+        const requiredFields = [
+            'salutation', 'first_name', 'last_name', 'DOB', 'gender', 'pan_card', 'adhar_card',
+            'religion', 'caste', 'maritalStatus', 'mobile', 'email', 'alt_mob_no'
+        ];
 
-    requiredFields.forEach(field => {
-        if (!localFormData[field]) {
-            errors[field] = `${labels[field]?.label || field} is required`;
+        // Add PAN to required fields if verification method is Pan Card
+        if (verificationMethod === 'Pan Card') {
+            requiredFields.push('pan_card');
         }
-    });
 
-    // Mobile number validation
-    if (!localFormData.mobile || localFormData.mobile.length !== 10) {
-        errors.mobile = 'Mobile number must be 10 digits';
-    }
+        requiredFields.forEach(field => {
+            if (!localFormData[field]) {
+                errors[field] = `${labels[field]?.label || field} is required`;
+            }
+        });
 
-    // Alternate mobile number validation (only if provided)
-    if (localFormData.alt_mob_no) {
-        if (localFormData.alt_mob_no.length !== 10) {
-            errors.alt_mob_no = 'Alternate mobile must be 10 digits';
+        // Mobile number validation
+        if (!localFormData.mobile || localFormData.mobile.length !== 10) {
+            errors.mobile = 'Mobile number must be 10 digits';
         }
-        if (localFormData.alt_mob_no === localFormData.mobile) {
-            errors.alt_mob_no = 'Mobile numbers must be different';
+
+        // Alternate mobile number validation (only if provided)
+        if (localFormData.alt_mob_no) {
+            if (localFormData.alt_mob_no.length !== 10) {
+                errors.alt_mob_no = 'Alternate mobile must be 10 digits';
+            }
+            if (localFormData.alt_mob_no === localFormData.mobile) {
+                errors.alt_mob_no = 'Mobile numbers must be different';
+            }
         }
-    }
 
-    // PAN validation (if provided or required)
-    if (localFormData.pan_card || verificationMethod === 'Pan Card') {
-        const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+        // PAN validation (if provided or required)
+        if (localFormData.pan_card || verificationMethod === 'Pan Card') {
+            const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 
-        if (!localFormData.pan_card) {
-            errors.pan_card = 'PAN is required';
-        } else if (!panRegex.test(localFormData.pan_card.toUpperCase())) {
-            errors.pan_card = 'PAN format should be ABCDE1234F';
+            if (!localFormData.pan_card) {
+                errors.pan_card = 'PAN is required';
+            } else if (!panRegex.test(localFormData.pan_card.toUpperCase())) {
+                errors.pan_card = 'PAN format should be ABCDE1234F';
+            }
         }
-    }
 
 
-    // Email validation
-    if (localFormData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(localFormData.email)) {
-        errors.email = 'Invalid email format';
-    }
+        // Email validation
+        if (localFormData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(localFormData.email)) {
+            errors.email = 'Invalid email format';
+        }
 
-    // Name fields should not contain numbers
-    if (/\d/.test(localFormData.first_name)) {
-        errors.first_name = 'First name should not contain numbers';
-    }
+        // Name fields should not contain numbers
+        if (/\d/.test(localFormData.first_name)) {
+            errors.first_name = 'First name should not contain numbers';
+        }
 
-    if (localFormData.middle_name && /\d/.test(localFormData.middle_name)) {
-        errors.middle_name = 'Middle name should not contain numbers';
-    }
+        if (localFormData.middle_name && /\d/.test(localFormData.middle_name)) {
+            errors.middle_name = 'Middle name should not contain numbers';
+        }
 
-    if (/\d/.test(localFormData.last_name)) {
-        errors.last_name = 'Last name should not contain numbers';
-    }
+        if (/\d/.test(localFormData.last_name)) {
+            errors.last_name = 'Last name should not contain numbers';
+        }
 
-    // Voter ID validation (only if provided)
-    if (localFormData.voterid && localFormData.voterid.length !== 10) {
-        errors.voterid = 'Voter ID must be 10 characters';
-    }
+        // Voter ID validation (only if provided)
+        if (localFormData.voterid && localFormData.voterid.length !== 10) {
+            errors.voterid = 'Voter ID must be 10 characters';
+        }
 
-    // Passport validation (only if provided)
-    if (localFormData.passport && localFormData.passport.length !== 8) {
-        errors.passport = 'Passport must be 8 characters';
-    }
+        // Passport validation (only if provided)
+        // if (localFormData.passport && localFormData.passport.length !== 8) {
+        //     errors.passport = 'Passport must be 8 characters';
+        // }
+        if (localFormData.passport) {
+            if (localFormData.passport.length !== 8) {
+                errors.passport = 'Passport must be 8 characters';
+            } else if (!/^[A-PR-WYa-pr-wy][0-9]{7}$/.test(localFormData.passport)) {
+                errors.passport = 'Passport format should be 1 letter followed by 7 digits (e.g., A1234567)';
+            }
+        }
 
-    // Driving License validation (only if provided)
-    if (localFormData.driving_license && localFormData.driving_license.length !== 16) {
-        errors.driving_license = 'Driving License must be 16 characters';
-    }
+        // Driving License validation (only if provided)
+        if (localFormData.driving_license && localFormData.driving_license.length !== 16) {
+            errors.driving_license = 'Driving License must be 16 characters';
+        }
 
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-};
+        setValidationErrors(errors);
+        return Object.keys(errors).length === 0;
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         // Mark field as touched
         setTouchedFields(prev => ({ ...prev, [name]: true }));
-        
+
         // Special handling for date fields
         if (name === "DOB") {
             const selectedDate = new Date(value);
@@ -189,14 +196,14 @@ const validateForm = () => {
                 return;
             }
         }
-        
+
         const updatedLocalFormData = { ...localFormData, [name]: value };
         setLocalFormData(updatedLocalFormData);
         updateFormData({
             ...formData,
             personalDetails: updatedLocalFormData
         });
-        
+
         // Clear error when user starts typing
         if (validationErrors[name]) {
             setValidationErrors(prev => {
@@ -215,33 +222,33 @@ const validateForm = () => {
 
     const handleSubmit = async (e) => {
         if (e && e.preventDefault) e.preventDefault();
-         const allFields = {
-        salutation: true,
-        first_name: true,
-        middle_name: true,
-        last_name: true,
-        DOB: true,
-        gender: true,
-        religion: true,
-        caste: true,
-        maritalStatus: true,
-        mobile: true,
-        alt_mob_no: true,
-        email: true,
-        adhar_card: true,
-        pan_card: true,
-        driving_license: true,
-        voterid: true,
-        passport: true
-    };
-    setTouchedFields(allFields);
+        const allFields = {
+            salutation: true,
+            first_name: true,
+            middle_name: true,
+            last_name: true,
+            DOB: true,
+            gender: true,
+            religion: true,
+            caste: true,
+            maritalStatus: true,
+            mobile: true,
+            alt_mob_no: true,
+            email: true,
+            adhar_card: true,
+            pan_card: true,
+            driving_license: true,
+            voterid: true,
+            passport: true
+        };
+        setTouchedFields(allFields);
         // Mark all fields as touched to show all errors
         const allFieldsTouched = Object.keys(localFormData).reduce((acc, field) => {
             acc[field] = true;
             return acc;
         }, {});
         setTouchedFields(allFieldsTouched);
-        
+
         if (!validateForm()) {
             return;
         }
@@ -266,7 +273,7 @@ const validateForm = () => {
             };
 
             const response = await createAccountService.personalDetails_s2a(payload);
-            
+
             Swal.fire({
                 icon: 'success',
                 title: response.data.message || 'Personal details saved successfully.',
@@ -282,7 +289,7 @@ const validateForm = () => {
                 title: 'Oops...',
                 text: error?.data?.message || 'Failed to save personal details',
                 confirmButtonText: 'OK',
-                });
+            });
 
         } finally {
             setIsSubmitting(false);
@@ -317,7 +324,7 @@ const validateForm = () => {
                         <CommanInput
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            label={labels.firstname.label} 
+                            label={labels.firstname.label}
                             name="first_name"
                             value={localFormData.first_name}
                             required
@@ -335,7 +342,7 @@ const validateForm = () => {
                         <CommanInput
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            label={labels.middlename.label} 
+                            label={labels.middlename.label}
                             name="middle_name"
                             value={localFormData.middle_name}
                             max={30}
@@ -352,7 +359,7 @@ const validateForm = () => {
                         <CommanInput
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            label={labels.lastname.label} 
+                            label={labels.lastname.label}
                             name="last_name"
                             value={localFormData.last_name}
                             required
@@ -537,7 +544,7 @@ const validateForm = () => {
                             name="pan_card"
                             value={localFormData.pan_card}
                             required={true}
-                            max={10} 
+                            max={10}
                             validationType="PAN"
                             disabled={verificationMethod === 'Pan Card'}
                             onInput={(e) => {
@@ -550,8 +557,8 @@ const validateForm = () => {
                         )}
                     </div>
 
-                    {/* Passport */} 
-                             <div>
+                    {/* Passport */}
+                    <div>
                         <CommanInput
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -567,7 +574,7 @@ const validateForm = () => {
                             <p className="text-red-500 text-xs">{validationErrors.passport}</p>
                         )}
                     </div>
- 
+
 
                     {/* Voter ID */}
                     <div>
@@ -596,7 +603,7 @@ const validateForm = () => {
                             type="text"
                             name="driving_license"
                             value={localFormData.driving_license}
-                            max={16} 
+                            max={16}
                             validationType="driving_license"
                             className={validationErrors.driving_license && touchedFields.driving_license ? 'border-red-500' : ''}
                         />
@@ -651,4 +658,3 @@ export default PersonalDetailsForm;
 
 
 
- 

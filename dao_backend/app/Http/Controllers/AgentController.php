@@ -296,10 +296,10 @@ public function saveAgentLivePhoto(Request $request)
         ]
     );
 
-    $customerStaus = CustomerApplicationStatus::updateOrCreate([
-        'application_id' => $validated['application_id'],
-        'status' => 'Pending',
-    ]);
+   $customerStaus = CustomerApplicationStatus::updateOrCreate(
+    ['application_id' => $validated['application_id']],
+    ['status' => 'Pending']
+);
 
     if ($customerStaus) {
         return response()->json([
