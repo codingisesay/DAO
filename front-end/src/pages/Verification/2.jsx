@@ -80,7 +80,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
-
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);

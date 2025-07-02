@@ -172,7 +172,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
             {/* {Object.entries(groupedDocs).map(([type, docs]) => ( */}
                 <div className="mb-2">
                     {/* <h2 className="text-xl font-bold mb-4 capitalize">Saved Document</h2> */}
-                    <span className="text-xs text-gray-500 ms-auto">Priviously submitted documents</span>
+                    {/* <span className="text-xs text-gray-500 ms-auto">Priviously submitted docsuments</span> */}
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">

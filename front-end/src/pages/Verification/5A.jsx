@@ -120,7 +120,7 @@ function PersonalOccupationForm() {
     };
 
     return (
-        <div className="max-w-screen-xl mx-auto">
+        <div className="max-w-screen-xl mx-auto pb-20">
             <h2 className="text-xl font-bold mb-4">Personal Details</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
                 <CommanInput label={labels.maidenPrefixName.label} name="maidenPrefixName" value={formData.maidenPrefixName || ''} onChange={handleChange} readOnly={true} />

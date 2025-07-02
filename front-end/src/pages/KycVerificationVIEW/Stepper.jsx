@@ -11,7 +11,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
     const { logout } = useAuth();
     const [formData, setFormData] = useState({});
- 
+
     const username= localStorage.getItem('userName');
     const userrole =localStorage.getItem('roleName');
 
@@ -28,17 +28,17 @@ const Stepper = ({ currentStep, complete, steps }) => {
     };
 
     return (
-        <div className=' stepper-container max-w-md mx-auto p-5 relative ' >
+        <div className='stepper-container max-w-md mx-auto p-5 relative' data-theme={isDark ? "dark" : "light"}>
             <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
 
-            <ul className='max-w-md mx-auto my-3 dark:text-white'  onClick={() => navigate(-1)}>
+            <ul className='max-w-md mx-auto my-3'   onClick={() => navigate(-1)}>
                 <li>
                     <i className="bi bi-columns-gap"></i> &nbsp;
                     Back To Dashboard
                 </li>
             </ul>
             <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
-            <p className='mb-2 ps-11'> Account Opening</p>
+            {/* <p className='my-3'> Account Opening</p> */}
 
             <div className="sidebar-stepper-container">
                 <div className="vertical-stepper">
@@ -63,13 +63,13 @@ const Stepper = ({ currentStep, complete, steps }) => {
             </div>
 
             <div className="stepper-footer">
-                <div className="flex bg-green-100 dark:bg-green-900 p-2 rounded-md items-center ">
+                <div className="flex bg-green-100 p-2 rounded-md items-center ">
                     <img height='40px' width='40px'
                         src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
                         alt="profile"
                         className="rounded-full object-cover mx-2"
                     />
-                    <span className='font-bold'>{username} <br /><small className='font-normal'> {userrole}</small></span>
+                    <span className='font-bold'>{username} <br /><small className='font-normal'> - {userrole}</small></span>
                 </div>
                 <div className="flex items-center justify-between footer-icon-collection">
                     <ThemeToggle />

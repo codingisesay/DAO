@@ -44,7 +44,8 @@ import AgentList from './pages/Adminpages/Agent_Table';
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import OtpVerification from "./pages/ForgotPassword/OtpVerification";
 import ChangePassword from "./pages/ForgotPassword/ChangePassword";
-
+import KYCView from './pages/KycVerificationVIEW/Enrollmentform';
+import AgentReview from './pages/Adminpages/Agent_Account_List_Approved';
 
 import { useAuth } from "./auth/AuthContext";
 /// kyc_pending kyc_approved kyc_review
@@ -175,7 +176,7 @@ export const App = () => {
           } />
           <Route path="/kyc-verification/view/:id" element={
             <ProtectedRoute>
-              <Kycverification />
+              <KYCView />
             </ProtectedRoute>
           } />
 
@@ -208,6 +209,11 @@ export const App = () => {
           <Route path="/enrollment_review_tbl" element={
             <ProtectedRoute>
               <Enrollment_ReviewTable_Tbl />
+            </ProtectedRoute>
+          } />
+          <Route path="/agent/view/:id" element={
+            <ProtectedRoute>
+              <AgentReview />
             </ProtectedRoute>
           } />
           <Route path="/enrollment_approved_tbl" element={

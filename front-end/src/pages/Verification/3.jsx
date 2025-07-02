@@ -237,12 +237,35 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
         acc[type].push(doc);
         return acc;
     }, {});
+function toTitleCase(str) {
+    return str
+        .replace(/_?JPG$/i, '') // Remove trailing '_JPG' or 'JPG'
+        .replace(/_JPG/i, '')   // Remove '_JPG' in the middle if needed
+        .replace(/JPG$/i, '')   // Remove 'JPG' at the end if not preceded by underscore
+        .toLowerCase()
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .trim();
+}
+// Add this function above your return in DocumentDetailsTable
+function formatDate(dateString) {
+    if (!dateString) return '';
+    const date = new Date(dateString.replace(' ', 'T')); // ensures compatibility
+    if (isNaN(date)) return dateString; // fallback if invalid date
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// ...inside your <tbody> map...
 
     return (
         <div className="p-4 max-w-4xl mx-auto">
             {Object.entries(groupedDocs).map(([type, docs]) => (
                 <div key={type} className="mb-8">
-                    <h2 className="text-xl font-bold mb-4 capitalize">{type}</h2>
+                 <h2 className=" font-bold mb-4 capitalize">{toTitleCase(type)}</h2>
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
@@ -316,7 +339,9 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                                                     <span className="text-gray-400">No data extracted</span>
                                                 )}
                                             </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.created_at}</td>
+                                            <td className="py-2 px-4 border-b border-gray-200">
+                                                {formatDate(doc.created_at)}
+                                            </td>
                                         </tr>
                                     );
                                 })}

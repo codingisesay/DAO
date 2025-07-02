@@ -126,9 +126,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
       auth_code: localFormData.auth_code,
       first_name: localFormData.first_name,
       auth_status: "Pending",
-      adhar_card:
-        selectedOption === "Aadhar Card" ? localFormData.auth_code : "",
-      pan_card: selectedOption === "Pan Card" ? localFormData.auth_code : "",
+      auth_type: localFormData.auth_type,
       middle_name: localFormData.middle_name,
       last_name: localFormData.last_name,
       DOB: localFormData.DOB,
