@@ -4,14 +4,64 @@ import React, { useEffect, useState } from 'react';
 import ImageCaptureValidator from './AgentPhotoCapture';
 import CommonButton from '../../components/CommonButton'; 
 import Swal from 'sweetalert2';
-import { createAccountService } from '../../services/apiServices';
-
+import { createAccountService, pendingAccountData } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
 const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
+        const [apiPhotoData, setApiPhotoData] = useState(null); 
     const application_id = localStorage.getItem('application_id') || formData.application_id;
-    const storageKey = 'agentPhotoData';
-
+    const storageKey = 'agentPhotoData'; 
+    const { id } = useParams();
+    useEffect(() => { 
+        if (id) { 
+            fetchAndShowDetails(id);
+        }
+    }, [id]);
+    
+    const fetchAndShowDetails = async (id) => {
+        try { 
+            if (id) {
+                const response = await pendingAccountData.getDetailsS6B(id);
+                console.log('photo to show : ', response);
+                const application = response.photos || null;
+                
+                if(application && application.length > 0) {
+                    setApiPhotoData(application[0]);
+                    
+                    // Convert API photo data to match our expected format
+                    const photoBlob = await fetch(application[0].path)
+                        .then(res => res.blob());
+                    
+                    const preparedPhotoData = {
+                        file: photoBlob,
+                        previewUrl: URL.createObjectURL(photoBlob),
+                        timestamp: application[0].created_at,
+                        metadata: {
+                            location: {
+                                longitude: application[0].longitude,
+                                latitude: application[0].latitude
+                            },
+                            validation: {
+                                hasFace: true,
+                                lightingOk: true,
+                                singlePerson: true
+                            }
+                        }
+                    };
+                    
+                    setPhotoData(preparedPhotoData);
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        previewUrl: preparedPhotoData.previewUrl,
+                        timestamp: preparedPhotoData.timestamp,
+                        metadata: preparedPhotoData.metadata
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch application details:', error);
+        }
+    };
     useEffect(() => {
         // Load saved photo data from localStorage
         const storedData = localStorage.getItem(storageKey);
@@ -29,6 +79,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
     const handlePhotoCapture = (capturedData) => {
         // Store the full captured data in state
         setPhotoData(capturedData);
+        setApiPhotoData(null); // Clear any API data when new photo is captured
         
         // Prepare the data for localStorage (without the file object)
         const storageData = {
