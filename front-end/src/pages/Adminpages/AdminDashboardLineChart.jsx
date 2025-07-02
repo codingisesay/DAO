@@ -12,8 +12,8 @@ const MonthlyAccountTrends = () => {
     const fetchDetails = async () => {
 
         try {
-            const response = await adminService.monthlyLineChart;
-            // console.log('API Response:', response); // For debugging
+            const response = await adminService.monthlyLineChart();
+            console.log('API Response:', response); // For debugging
 
             if (response && response.labels && response.data) {
                 // Transform the API response into the format needed by the chart
@@ -35,9 +35,7 @@ const MonthlyAccountTrends = () => {
             });
         } 
     };
-    useEffect(() => {
-        if (admin_id) {  fetchDetails(admin_id); }
-    }, [admin_id]);
+    useEffect(() => {  fetchDetails();    }, [ ]);
 
     return (
         <div style={{ width: '100%', height: 340, fontFamily: 'Arial, sans-serif' }}>
