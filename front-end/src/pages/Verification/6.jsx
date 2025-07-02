@@ -293,7 +293,7 @@ const p6 = ({ onNext, onBack }) => {
                             >
                                 Review & Continue
                             </CommonButton>
-
+                            { !isDisabled &&
                             <CommonButton
                                 className="btn-next "
                                 onClick={handleNextStep}
@@ -301,6 +301,8 @@ const p6 = ({ onNext, onBack }) => {
                             >
                                 Accept & Continue
                             </CommonButton>
+
+                            }
                         </div>
                     </>
                 ) : (

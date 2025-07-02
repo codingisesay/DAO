@@ -23,7 +23,7 @@
     display: flex;
     justify-content: end;
     position: absolute;
-    bottom: 5px;
+    bottom: 10px;
     width: 95%;
     right: 20px;
     background-color: white;
