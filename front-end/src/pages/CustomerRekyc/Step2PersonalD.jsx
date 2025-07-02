@@ -90,11 +90,11 @@ const FloatingInput = ({
 
       {showToggle && (
         <button
-          className="absolute right-3 top-2 bg-gray-200 px-2 py-1 rounded text-xs"
+          className="absolute right-1 top-2 ps-2 py-1 rounded text-xs fw-bold text-2xl"
           onClick={onToggle}
           type="button"
         >
-          {useAadhaarValue ? "←" : "→"}
+          {useAadhaarValue ? "➜" : "➜"}
         </button>
       )}
 
@@ -314,7 +314,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
 
   return (
     <div className="customer-details-container">
-      <h1 className="text-xl font-bold flex justify-between text-gray-800 mb-6">
+      <h1 className="text-xl font-bold flex justify-between text-gray-800 ">
         Customer Details
         <small className="text-gray-500">
           <input 
@@ -330,7 +330,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
       <div className="details-sections">
         {/* Aadhaar Details Section - Uneditable */}
         <div className="details-section aadhaar-section">
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
             Aadhaar Details
           </h2>
           <img
@@ -501,18 +501,9 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
 
         {/* CBS Details Section - Editable */}
         <div className="details-section cbs-section">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-700">CBS Details</h2>
-            {/* <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="syncAll"
-                checked={allFieldsUsingAadhaar}
-                onChange={(e) => toggleAllFields(e.target.checked)}
-                className="mr-2"
-              />
-              <label htmlFor="syncAll">Sync All</label>
-            </div> */}
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-semibold text-gray-700 mb-0">CBS Details</h2>
+         
           </div>
           <img
             src={userphoto}
@@ -589,8 +580,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Flat No./Bldg Name"
               value={cbsData.kyc_cbs_flat_no}
               onChange={(value) => handleCbsChange("kyc_vscbs_flat_no", value)}
-              required
-              showToggle={true}
+              required 
               onToggle={() => toggleFieldValue("flat_no")}
               useAadhaarValue={useAadhaarValues.flat_no}
               isMatched={valuesMatch("flat_no")}
@@ -610,8 +600,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Nearby Landmark"
               value={cbsData.kyc_cbs_lankmark}
               onChange={(value) => handleCbsChange("kyc_vscbs_lankmark", value)}
-              required
-              showToggle={true}
+              required 
               onToggle={() => toggleFieldValue("lankmark")}
               useAadhaarValue={useAadhaarValues.lankmark}
               isMatched={valuesMatch("lankmark")}
@@ -622,8 +611,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Area"
               value={cbsData.kyc_cbs_area}
               onChange={(value) => handleCbsChange("kyc_vscbs_area", value)}
-              required
-              showToggle={true}
+              required 
               onToggle={() => toggleFieldValue("area")}
               useAadhaarValue={useAadhaarValues.area}
               isMatched={valuesMatch("area")}
@@ -661,8 +649,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="City"
               value={cbsData.kyc_cbs_city}
               onChange={(value) => handleCbsChange("kyc_vscbs_city", value)}
-              required
-              showToggle={true}
+              required 
               onToggle={() => toggleFieldValue("city")}
               useAadhaarValue={useAadhaarValues.city}
               isMatched={valuesMatch("city")}
