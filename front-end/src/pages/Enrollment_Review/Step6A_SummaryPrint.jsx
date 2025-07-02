@@ -193,7 +193,7 @@ const ViewApplicationForm = () => {
                     {/* <h1 className="text-3xl font-bold mb-2">Application Form</h1> */}
                     <div className='flex justify-between items-center mb-4'>
                         <div>
-                            <p className="text-gray-600">Application Number: {formData.application_id || 'N/A'}</p>
+                            <p className="text-gray-600">Application ID: {formData.application_id || 'N/A'}</p>
                             <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
                         </div>
                         <button className='btn-login px-5' onClick={handlePrint} > Download </button>

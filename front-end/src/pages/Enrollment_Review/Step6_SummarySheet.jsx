@@ -85,18 +85,18 @@ const p6 = ({ onNext, onBack }) => {
 
   const CurrentStepComponent = steps[activeStep].component;
 
-  // const CreateAccount = () => {
-  //   Swal.fire({
-  //     title: "Account Created Successfully!",
-  //     text: "Your account has been created successfully.",
-  //     icon: "success",
-  //     confirmButtonText: "OK",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       window.location.href = "/agentdashboard"; // Redirect to the desired page
-  //     }
-  //   });
-  // };
+  const CreateAccount = () => {
+    Swal.fire({
+      title: "Account Created Successfully!",
+      text: "Your account has been created successfully.",
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/agentdashboard"; // Redirect to the desired page
+      }
+    });
+  };
   return (
     <div className="">
       <div className="stepper-header">
@@ -157,8 +157,8 @@ const p6 = ({ onNext, onBack }) => {
 
             <CommonButton
               className="btn-next"
-              onClick={handleNext}
-              // onClick={activeStep === 1 ? CreateAccount : handleNext}
+              // onClick={CreateAccount}
+              onClick={activeStep === 1 ? CreateAccount : handleNext}
               iconRight={<i className="bi bi-chevron-double-right"></i>}
             >
               {activeStep === 1 ? (

@@ -213,11 +213,11 @@ function Enrollmentform() {
                         ]}
                     />
                 </div>
-                <form autoComplete='off' className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
+                <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
                     <div className='work-area dark:bg-gray-900'>
                         {renderCurrentPage()}
                     </div>
-                </form>
+                </div>
             </div>
         </div>
         <Footer />

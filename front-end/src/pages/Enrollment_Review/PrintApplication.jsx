@@ -300,7 +300,7 @@ const ApplicationPdf = () => {
                                     value={`${formData.first_name || ''} ${formData.middle_name || ''} ${formData.last_name || ''}`.trim()} 
                                     width="120px"
                                 />
-                                <KeyValueRow label="Application Number" value={formData.application_id} />
+                                <KeyValueRow label="Application ID" value={formData.application_id} />
                                 <KeyValueRow label="DOB" value={formData.DOB} />
                                 <KeyValueRow label="Gender" value={formData.gender} />
                                 <KeyValueRow label="Status" value={formData.status} />

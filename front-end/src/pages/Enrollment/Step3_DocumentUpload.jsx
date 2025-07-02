@@ -84,7 +84,7 @@ const P3 = ({ onNext, onBack }) => {
         if (!hasAddressDoc || !hasSignatureDoc || !hasIdentityDoc) {
             return {
                 isValid: false,
-                message: 'Please upload at least one document for each category: Address, Signature, and Identity.'
+                message: 'Please upload at least one document for each category: Identity, Address, and Signature.'
             };
         }
 

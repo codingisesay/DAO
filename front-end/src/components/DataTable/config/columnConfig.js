@@ -61,11 +61,20 @@ export const COLUMN_DEFINITIONS = {
     sortable: true,
     filterable: true,
   },
+  review_admin_id:{
+    header:'Review By',
+    sortable: true,
+    filterable: true,
+  },
   status_comment: {
     header: "Rejected Reason",
     sortable: true,
     filterable: true,
   },
+  review_status_comment:{
+    header: "Rejected Reason",
+    sortable: true,
+    filterable: true,},
   open_date:{
     header: "Account Open Date",
     sortable: true,
