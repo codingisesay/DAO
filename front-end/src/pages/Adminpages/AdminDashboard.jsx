@@ -27,7 +27,7 @@ const AdminDashboard = () => {
     const [showTranslator, setShowTranslator] = useState()
     const username = localStorage.getItem('userName');
     const userrole = localStorage.getItem('roleName');
-  localStorage.removeItem('approveStatusArray');
+    localStorage.removeItem('approveStatusArray');
 
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route

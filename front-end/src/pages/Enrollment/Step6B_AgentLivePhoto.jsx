@@ -13,24 +13,24 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
 
     useEffect(() => {
         const id = localStorage.getItem('application_id');
-        if (id) { 
+        if (id) {
             fetchAndShowDetails(id);
         }
     }, []);
-    
+
     const fetchAndShowDetails = async (id) => {
-        try { 
+        try {
             if (id) {
                 const response = await pendingAccountData.getDetailsS6B(id);
                 const application = response.photos || null;
-                
-                if(application && application.length > 0) {
+
+                if (application && application.length > 0) {
                     setApiPhotoData(application[0]);
-                    
+
                     // Convert API photo data to match our expected format
                     const photoBlob = await fetch(application[0].path)
                         .then(res => res.blob());
-                    
+
                     const preparedPhotoData = {
                         file: photoBlob,
                         previewUrl: URL.createObjectURL(photoBlob),
@@ -47,7 +47,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
                             }
                         }
                     };
-                    
+
                     setPhotoData(preparedPhotoData);
                     localStorage.setItem(storageKey, JSON.stringify({
                         previewUrl: preparedPhotoData.previewUrl,
@@ -93,10 +93,10 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
     };
 
     const submitPhoto = async (e) => {
-        if(apiPhotoData){
+        if (apiPhotoData) {
             Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : '+ application_id,
+                title: 'Application Created Successfully!',
+                text: 'Application Number : ' + application_id,
                 icon: 'success',
                 confirmButtonText: 'OK',
             }).then((result) => {
@@ -143,11 +143,11 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
 
             try {
                 const response = await createAccountService.agentLivePhoto_s6b(submitFormData);
-                let app_id = JSON.stringify(response.data.application_id); 
-                
+                let app_id = JSON.stringify(response.data.application_id);
+
                 Swal.fire({
-                    title: 'Application Created Successfully!', 
-                    text: 'Application Number : '+ app_id,
+                    title: 'Application Created Successfully!',
+                    text: 'Application Number : ' + app_id,
                     icon: 'success',
                     confirmButtonText: 'OK',
                 }).then((result) => {
@@ -174,9 +174,9 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
                     icon: 'error',
                     title: 'Error',
                     text: error?.data?.message || 'Failed to save photo. Please try again.'
-                }); 
+                });
             } finally {
-                setLocalIsSubmitting(false); 
+                setLocalIsSubmitting(false);
             }
         }
     };
@@ -199,9 +199,9 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
             />
 
             <div className="next-back-btns z-10">
-                <CommonButton 
-                    onClick={onBack} 
-                    variant="outlined" 
+                <CommonButton
+                    onClick={onBack}
+                    variant="outlined"
                     className="btn-back"
                     disabled={isSubmitting || localIsSubmitting}
                 >
