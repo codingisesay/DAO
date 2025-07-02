@@ -110,7 +110,49 @@ const ViewApplicationForm = () => {
                         remark: account_personal_details?.remark,
 
                         signature: daodocbase + signatureDoc.file_path || null,
-                        photo: customerpic ? daodocbase + customerpic[0].path : null,
+                        photo: customerpic ? daodocbase + customerpic[0].path : null, 
+    
+                    // Documents
+                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                    : "",
+    
+                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                    : "",
+    
+                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                    : "",
+    
+                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                    : "",
+    
+                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                    : "",
+    
+                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                    : "",
+    
+                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                    : "",
+    
+                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                    : "",
+    
+                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                    : "",
+    
+                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                    : "",
+                        
                     });
                 }
             } catch (error) {
@@ -148,7 +190,7 @@ const ViewApplicationForm = () => {
                             <p className="text-gray-600">Application ID: {formData.application_id || 'N/A'}</p>
                             <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
                         </div>
-                        {/* <button className='btn-login px-5' onClick={handlePrint} > Download </button> */}
+                        <button className='btn-login px-5' onClick={handlePrint} > Download </button>
                     </div>
                 </div>
                 {/* Authentication Details */}
@@ -765,6 +807,116 @@ const ViewApplicationForm = () => {
                                 <span>No signature uploaded</span>
                             )}
                         </div>
+                    </div>
+                </div>
+
+
+
+                
+                {/* File Uploads */}
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6"> 
+                          
+                            {formData.passportdoc ? (
+                                <img
+                                    src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
+                                    alt="Passport"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.aadhaarFrontdoc ? (
+                                <img
+                                    src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
+                                    alt="Aadhaar Front"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.aadhaarBackdoc ? (
+                                <img
+                                    src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
+                                    alt="Aadhaar Back"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.pancarddoc ? (
+                                <img
+                                    src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
+                                    alt="PAN"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.voteridoc ? (
+                                <img
+                                    src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
+                                    alt="Voter ID"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.drivinglicensedoc ? (
+                                <img
+                                    src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
+                                    alt="Driving License"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.utilitybilldoc ? (
+                                <img
+                                    src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
+                                    alt="Utility Bill"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.rentagreementdoc ? (
+                                <img
+                                    src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
+                                    alt="Rent Agreement"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.propertytaxdoc ? (
+                                <img
+                                    src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
+                                    alt="Property Tax Receipt"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.bankstatementdoc ? (
+                                <img
+                                    src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
+                                    alt="Bank Statement"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )} 
                     </div>
                 </div>
             </div>

@@ -23,7 +23,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
     const getStepStatus = (stepIndex) => {
         if (complete) return 'Completed';
         if (stepIndex + 1 < currentStep) return 'Completed';
-        if (stepIndex + 1 === currentStep) return 'In Progress';
+        if (stepIndex + 1 === currentStep) return 'In Review';
         return 'Pending';
     };
 

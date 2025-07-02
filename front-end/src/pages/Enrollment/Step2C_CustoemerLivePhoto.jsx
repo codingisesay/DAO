@@ -91,76 +91,78 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
 
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
-
-    const submitPhoto = async (e) => { 
-
-        if(apiPhotoData){
-            Swal.fire({
-                icon: 'success',
-                title:  'Photo saved successfully',
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            // Proceed to next step after successful submission
-            onNext();
-
-        }
-        else{
-        if (!photoData || !photoData.file) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Please capture a photo before submitting'
-            });
-            return;
-        }
-
-        setLocalIsSubmitting(true);
-
-        // Use FormData for file upload
-        const submitFormData = new FormData();
-        submitFormData.append('application_id', formData.application_id || application_id);
-
-        // Add location data if available
-        if (photoData.metadata?.location) {
-            submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
-            submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
-        }
-
-        // Add validation data if available
-        if (photoData.metadata?.validation) {
-            submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
-        }
-
-        submitFormData.append('photo', photoData.file);
-        submitFormData.append('timestamp', photoData.timestamp);
-        submitFormData.append('status', 'Pending');
-
-        try {
-            const response = await createAccountService.livePhoto_s2c(submitFormData);
-
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Photo saved successfully',
-                showConfirmButton: false,
-                timer: 1500
-            });
-
-            // Proceed to next step after successful submission
-            onNext();
-        } catch (error) {
-            console.error('Photo submission error:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
-            });
-        } finally {
-            setLocalIsSubmitting(false);
-        }
+    const submitPhoto = async (e) => {
+    // If photo already exists in API, proceed as before
+    if (apiPhotoData) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Photo saved successfully',
+            showConfirmButton: false,
+            timer: 1500
+        });
+        onNext();
+        return;
     }
-    };
+
+    // If no photo is captured, ask user if they want to skip
+    if (!photoData || !photoData.file) {
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: 'No Photo Captured',
+            text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Skip',
+            cancelButtonText: 'No, Go Back'
+        });
+        if (result.isConfirmed) {
+            onNext();
+        }
+        return;
+    }
+
+    setLocalIsSubmitting(true);
+
+    // Use FormData for file upload
+    const submitFormData = new FormData();
+    submitFormData.append('application_id', formData.application_id || application_id);
+
+    // Add location data if available
+    if (photoData.metadata?.location) {
+        submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+        submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+    }
+
+    // Add validation data if available
+    if (photoData.metadata?.validation) {
+        submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+    }
+
+    submitFormData.append('photo', photoData.file);
+    submitFormData.append('timestamp', photoData.timestamp);
+    submitFormData.append('status', 'Pending');
+
+    try {
+        const response = await createAccountService.livePhoto_s2c(submitFormData);
+
+        Swal.fire({
+            icon: 'success',
+            title: response.data.message || 'Photo saved successfully',
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+        onNext();
+    } catch (error) {
+        console.error('Photo submission error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+        });
+    } finally {
+        setLocalIsSubmitting(false);
+    }
+};
 
     return (
         <div className="space-y-8">

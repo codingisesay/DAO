@@ -517,32 +517,32 @@ useEffect(() => {
                       {hasExistingPhoto ?
                         ( 
                    <>
-  <div className="max-w-sm mx-auto overflow-hidden  space-y-4">
-    <img
-      className="h-52 w-52 object-cover border rounded-lg mx-auto"
-      src={`data:image/jpeg;base64,${hasExistingPhoto.path}`}
-      alt="Uploaded"
-    />
+                <div className="max-w-sm mx-auto overflow-hidden  space-y-4">
+                  <img
+                    className="h-52 w-52 object-cover border rounded-lg mx-auto"
+                    src={`data:image/jpeg;base64,${hasExistingPhoto.path}`}
+                    alt="Uploaded"
+                  />
 
-    <div className="text-gray-700 space-y-2">
-      <div className="flex  gap-2">
-        <i className="bi bi-send text-green-500" style={{transform:'rotate(-45deg)'}}></i>
-        <p><strong className="inline-block w-15 text-start">Latitude:</strong> {hasExistingPhoto.latitude}</p>
-      </div>
+                  <div className="text-gray-700 space-y-2">
+                    <div className="flex  gap-2">
+                      <i className="bi bi-send text-green-500" style={{transform:'rotate(-45deg)'}}></i>
+                      <p><strong className="inline-block w-15 text-start">Latitude:</strong> {hasExistingPhoto.latitude}</p>
+                    </div>
 
-      <div className="flex  gap-2">
-        <i className="bi bi-send text-green-500"></i>
-        <p><strong className="inline-block w-15 text-start">Longitude:</strong> {hasExistingPhoto.longitude}</p>
-      </div>
-{tempAddress &&
-      <div className="flex text-start gap-2">
-        <i className="bi bi-geo-alt text-green-500"></i>
-        <p><strong className="inline-block w-15 text-start">Address:</strong>  {tempAddress}</p>
-      </div>
-}
-    </div>
-  </div>
-</>
+                    <div className="flex  gap-2">
+                      <i className="bi bi-send text-green-500"></i>
+                      <p><strong className="inline-block w-15 text-start">Longitude:</strong> {hasExistingPhoto.longitude}</p>
+                    </div>
+              {tempAddress &&
+                    <div className="flex text-start gap-2">
+                      <i className="bi bi-geo-alt text-green-500"></i>
+                      <p><strong className="inline-block w-15 text-start">Address:</strong>  {tempAddress}</p>
+                    </div>
+              }
+                  </div>
+                </div>
+              </>
 
                       ):
                         (<>
