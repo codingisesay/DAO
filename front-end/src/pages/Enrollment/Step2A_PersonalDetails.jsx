@@ -150,8 +150,12 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         }
 
         // Voter ID validation (only if provided)
-        if (localFormData.voterid && localFormData.voterid.length !== 10) {
-            errors.voterid = 'Voter ID must be 10 characters';
+        if (localFormData.voterid) {
+            if (localFormData.voterid.length !== 10) {
+                errors.voterid = 'Voter ID must be 10 characters';
+            } else if (!/^[A-Z]{3}[0-9]{7}$/i.test(localFormData.voterid)) {
+                errors.voterid = 'Voter ID format should be 3 letters followed by 7 digits (e.g., ABC1234567)';
+            }
         }
 
         // Passport validation (only if provided)
@@ -486,7 +490,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                             type="number"
                             name="alt_mob_no"
                             value={localFormData.alt_mob_no}
-                            required
+                            // required
                             max={10} min={10}
                             validationType="NUMBER_ONLY"
                             className={validationErrors.alt_mob_no && touchedFields.alt_mob_no ? 'border-red-500' : ''}
