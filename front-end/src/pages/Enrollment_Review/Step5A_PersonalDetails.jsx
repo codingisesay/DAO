@@ -278,7 +278,7 @@ useEffect(() => {
                     value={localFormData.maidenFirstName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.maidenMiddleName.label}
@@ -286,7 +286,7 @@ useEffect(() => {
                     value={localFormData.maidenMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.maidenLastName.label}
@@ -294,7 +294,7 @@ useEffect(() => {
                     value={localFormData.maidenLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
 
                 {/* Father/Spouse Section */}
@@ -311,7 +311,7 @@ useEffect(() => {
                     value={localFormData.fatherSpouseFirstName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.fatherSpouseMiddleName.label}
@@ -319,7 +319,7 @@ useEffect(() => {
                     value={localFormData.fatherSpouseMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.fatherSpouseLastName.label}
@@ -327,7 +327,7 @@ useEffect(() => {
                     value={localFormData.fatherSpouseLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
 
                 {/* Mother Section */}
@@ -344,7 +344,7 @@ useEffect(() => {
                     value={localFormData.motherFirstName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.motherMiddleName.label}
@@ -352,7 +352,7 @@ useEffect(() => {
                     value={localFormData.motherMiddleName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.motherLastName.label}
@@ -360,7 +360,7 @@ useEffect(() => {
                     value={localFormData.motherLastName}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
 
                 {/* Birth and Personal Details */}
@@ -371,7 +371,7 @@ useEffect(() => {
                     onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.birthPlaceCountry.label}
@@ -380,7 +380,7 @@ useEffect(() => {
                     onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanSelect
                     label={labels.maritalStatus.label}
@@ -397,7 +397,7 @@ useEffect(() => {
                     onChange={handleChange}
                     required
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanSelect
                     label={labels.religion.label}
@@ -425,7 +425,7 @@ useEffect(() => {
                     value={localFormData.occupationType}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.businessName.label}
@@ -441,7 +441,7 @@ useEffect(() => {
                     value={localFormData.salariedWith}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.designation.label}
@@ -449,7 +449,7 @@ useEffect(() => {
                     value={localFormData.designation}
                     onChange={handleChange}
                     validationType="ALPHABETS_AND_SPACE"
-                    max={10}
+                    max={51}
                 />
                 <CommanInput
                     label={labels.organisationNature.label}
