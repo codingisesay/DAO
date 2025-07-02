@@ -27,6 +27,7 @@ const Dashboard = () => {
   const username = localStorage.getItem("userName");
   const userrole = localStorage.getItem("roleName");
   // Remove 'application_id' from localStorage
+   
   localStorage.removeItem("application_id"); 
   localStorage.removeItem('customerPhotoData');
   localStorage.removeItem('agentPhotoData');

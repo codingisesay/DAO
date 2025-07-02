@@ -13,7 +13,7 @@ function CustomerForm() {
     const [formData, setFormData] = useState({
         // Authentication Details
         begin_process: null,
-        auth_type: null, // 'Pan Card', 'Aadhar Card', 'Digilocker'
+        auth_type: '', // 'Pan Card', 'Aadhar Card', 'Digilocker'
         auth_code: '',
         status: 'pending',
 
@@ -266,7 +266,7 @@ function CustomerForm() {
         e.preventDefault();
         console.log("Form submitted:", formData);
         setProgress({ ...progress, 5: "completed" });
-        alert("Form submitted successfully!");
+        // alert("Form submitted successfully!");
     };
  
 
@@ -298,17 +298,21 @@ function CustomerForm() {
                     <div className='work-area dark:bg-gray-900'>
                         <div className="form-container">
                             <form onSubmit={handleSubmit}>
-                                {currentStep === 1 && (
-                                    <Step1PersonalInfo
-                                        formData={formData}
-                                        handleChange={handleChange}
-                                        onAadharDataFetched={handleAadharDataFetched} // <-- Pass handler
-                                    />
-                                )}
+                          {currentStep === 1 && (
+                            <Step1PersonalInfo
+                                formData={formData}
+                                handleChange={handleChange}
+                                setFormData={setFormData}
+                                onAadharDataFetched={handleAadharDataFetched}
+                                onNext={nextStep}
+                                onBack={prevStep}
+                            />
+                            )}
 
                                 {currentStep === 2 && (
                                     <Step2JobDetails
                                         formData={formData}
+                                        setFormData={setFormData}
                                         handleChange={handleChange} 
                                         subProgress={subProgress} 
                                         nextStep={nextStep}
