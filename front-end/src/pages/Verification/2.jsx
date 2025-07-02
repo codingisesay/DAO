@@ -80,7 +80,6 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
-
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
@@ -147,6 +146,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2C(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -171,6 +172,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 allowOutsideClick: false,
                 allowEscapeKey: false,
             });
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         }
         catch (error) {
@@ -208,6 +211,8 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS2C(id, payload);
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');

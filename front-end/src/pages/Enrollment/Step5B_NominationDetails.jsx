@@ -20,7 +20,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             nomineeMiddleName: '',
             nomineeLastName: '',
             nomineeRelation: '',
-            nomineePercentage: '100',
+            nomineePercentage: '',
             nomineeDOB: '',
             nomineeAge: ''
         },
@@ -364,7 +364,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             ...prev,
             details: {
                 ...prev.details,
-                nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
+                // nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
             }
         }));
     };

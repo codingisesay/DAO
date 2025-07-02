@@ -6,7 +6,7 @@ import { useAuth } from '../../auth/AuthContext';
     import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; 
     import React, { useState, useEffect } from "react";
 
-    function ReviewTable() {
+    function AgentReview() {
         const [tbldata, setTbldata] = React.useState([]);
         const { logout } = useAuth(); 
         const [countLoading, setCountLoading] = useState(false);
@@ -120,75 +120,48 @@ import { useAuth } from '../../auth/AuthContext';
         const handlePageChange = (page) => {
             setCurrentPage(page);
         };
-
-        const toggleView = (view) => {
-            setActiveView(view);
-        };
-
+ 
         return (
-            <div className="container mx-auto">
-                <br />
-                <div
-                    className="Usermaster-main-div"
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        borderRadius: "30px",
-                    }}
-                >
-                    {/* View Toggle Buttons */}
-                    <div className="flex mb-4">
-                        <button
-                            onClick={() => toggleView('applications')}
-                            className={`px-4 py-2 rounded ${activeView === 'applications' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                        >
-                            Application List
-                        </button>
-                        <button
-                            onClick={() => toggleView('agents')}
-                            className={`px-4 py-2 rounded ${activeView === 'agents' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
-                        >
-                            List by Agent
-                        </button>
+            <body className="Login-Border">
+            <div className="flex w-4/5 h-1/2  mx-auto justify-center h-screen">
+                <div className="container bg-white mx-auto my-4 rounded-lg p-4">
+                    <br />
+                    <div
+                        className="Usermaster-main-div"
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            borderRadius: "30px",
+                        }}
+                    >
+                <h2>Review Application By Agent : </h2>
+
+                        {/* Application List Table */}
+                    
+                            <div className="bank-master w-300px min-w-300px">
+                                <DataTable
+                                    data={data}
+                                    columns={columns}
+                                    basePath="/enrollment_review"
+                                    onSort={handleSort}
+                                    onFilter={handleFilter}
+                                    onPageChange={handlePageChange}
+                                    loading={loading}
+                                    primaryKeys={["id"]}
+                                    editButtonDisabled={true}
+                                    viewButtonDisabled={false}
+                                />
+                            </div>
+                    
+
+                    
                     </div>
-
-                    {/* Application List Table */}
-                    {activeView === 'applications' && (
-                        <div className="bank-master w-300px min-w-300px">
-                            <DataTable
-                                data={data}
-                                columns={columns}
-                                basePath="/enrollment_review"
-                                onSort={handleSort}
-                                onFilter={handleFilter}
-                                onPageChange={handlePageChange}
-                                loading={loading}
-                                primaryKeys={["id"]}
-                                editButtonDisabled={true}
-                                viewButtonDisabled={false}
-                            />
-                        </div>
-                    )}
-
-                    {/* Agent Count Table */}
-                    {activeView === 'agents' && (
-                        <div className="bank-master w-300px min-w-300px">
-                            <DataTable
-                                data={countData}
-                                columns={countColumns}
-                                basePath="/agent"
-                                loading={countLoading}
-                                primaryKeys={["agent_id"]}
-                                hidePagination={true}  
-                                // showActions={false} 
-                            />
-                        </div>
-                    )}
                 </div>
             </div>
+            </body>
         );
     }
 
-    export default ReviewTable;
+    export default AgentReview;
 
     

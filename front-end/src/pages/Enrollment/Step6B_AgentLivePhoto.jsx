@@ -96,7 +96,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
         if(apiPhotoData){
             Swal.fire({
                 title: 'Application Created Successfully!', 
-                text: 'Application Id : '+ application_id,
+                text: 'Application Number : '+ application_id,
                 icon: 'success',
                 confirmButtonText: 'OK',
             }).then((result) => {
@@ -147,7 +147,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onBack, isSubmitting }
                 
                 Swal.fire({
                     title: 'Application Created Successfully!', 
-                    text: 'Application Id : '+ app_id,
+                    text: 'Application Number : '+ app_id,
                     icon: 'success',
                     confirmButtonText: 'OK',
                 }).then((result) => {

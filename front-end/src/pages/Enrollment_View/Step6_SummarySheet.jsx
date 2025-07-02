@@ -116,13 +116,13 @@ const p6 = ({ onNext, onBack }) => {
               </div>
               <div className="step-title">Step {index + 1}</div>
               <div className="step-label">{step.label}</div>
-              <span
+              {/* <span
                 className={`badge badge-${status
                   .toLowerCase()
                   .replace(" ", "-")}`}
               >
                 {status}
-              </span>
+              </span> */}
             </div>
           );
         })}

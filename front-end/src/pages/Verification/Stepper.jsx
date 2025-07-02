@@ -23,7 +23,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
     const getStepStatus = (stepIndex) => {
         if (complete) return 'Completed';
         if (stepIndex + 1 < currentStep) return 'Completed';
-        if (stepIndex + 1 === currentStep) return 'In Progress';
+        if (stepIndex + 1 === currentStep) return 'In Review';
         return 'Pending';
     };
 
@@ -63,7 +63,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
             </div>
 
             <div className="stepper-footer">
-                <div className="flex bg-green-100 p-2 rounded-md items-center mb-2">
+                <div className="flex bg-green-100 p-2 rounded-md items-center ">
                     <img height='40px' width='40px'
                         src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
                         alt="profile"
@@ -71,13 +71,13 @@ const Stepper = ({ currentStep, complete, steps }) => {
                     />
                     <span className='font-bold'>{username} <br /><small className='font-normal'>  {userrole}</small></span>
                 </div>
-                {/* <div className="flex items-center justify-between footer-icon-collection">
+                <div className="flex items-center justify-between footer-icon-collection">
                     <ThemeToggle />
                     <i className="mx-2 bi  bi-bell"></i>
                     <i className="mx-2 bi  bi-question-circle"></i>
                     <i className="mx-2 bi  bi-globe2"></i>
                     <i className="mx-2 bi  bi-box-arrow-right" onClick={handleLogout}></i>
-                </div> */}
+                </div>
             </div>
         </div>
     );

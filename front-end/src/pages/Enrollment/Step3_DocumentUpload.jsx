@@ -1,13 +1,9 @@
 
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
 import { apiService } from '../../utils/storage';
-import { applicationDocumentService, createAccountService } from '../../services/apiServices';
+import { pendingAccountData, createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton';
 import DocView from './Step3A_DocumentUpload';

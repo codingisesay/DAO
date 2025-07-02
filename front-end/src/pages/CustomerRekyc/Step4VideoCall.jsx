@@ -13,21 +13,17 @@ const Step4VideoCall = ({
   // skipStep,
 }) => {
   const navigate = useNavigate();
-
+  const application_id =localStorage.getItem('application_id');
   const skipStep = () => {
     Swal.fire({
       title: 'Application Submitted without VideoKYC!',
-      text: 'You have chosen to skip VideoKYC.',
+      text: 'Application Number : '+ application_id,
       icon: 'info',
       confirmButtonText: 'OK'
     });
   };
   const handleCombinedSubmit = (e) => {
     e.preventDefault();
-    localStorage.removeItem('nominationFormData');
-    localStorage.removeItem('documentData');
-    localStorage.removeItem('application_id');
-
     // First show main submission message
     Swal.fire({
       title: 'Application Submitted!',
@@ -43,6 +39,11 @@ const Step4VideoCall = ({
         navigate('/agentDashboard');
       }
     });
+    
+    // localStorage.removeItem('nominationFormData');
+    // localStorage.removeItem('documentData');
+    // localStorage.removeItem('application_id');
+
   };
 
 
