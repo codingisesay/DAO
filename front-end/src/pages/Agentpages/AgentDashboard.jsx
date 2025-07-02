@@ -157,9 +157,9 @@ const Dashboard = () => {
                     }}
                 />
                 <span className="font-bold">  
-                  {toTitleCase( username )}
+                  { username }
                   <br />
-                  <small className="font-normal"> -  {toTitleCase( userrole )} </small>
+                  <small className="font-normal"> { userrole } </small>
                 </span>
                     </div>
  
