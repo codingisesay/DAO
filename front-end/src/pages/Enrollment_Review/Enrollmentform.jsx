@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 
 function Enrollmentform() {  
-    const [currentStep, setCurrentStep] = useState(6);
+    const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
@@ -213,11 +213,11 @@ function Enrollmentform() {
                         ]}
                     />
                 </div>
-                <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
+                <form autoComplete='off' className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
                     <div className='work-area dark:bg-gray-900'>
                         {renderCurrentPage()}
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <Footer />

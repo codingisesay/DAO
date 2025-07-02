@@ -41,7 +41,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     const identityProofOptions = [
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
-        { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
+        { value: 'AADHAAR_CARD_BACK', label: 'Aadhaar Card Back' },
         { value: 'PAN_CARD', label: 'Pan Card' },
         { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
         { value: 'PASSPORT', label: 'Passport' },
@@ -50,7 +50,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     const addressProofOptions = [
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
-        { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
+        { value: 'AADHAAR_CARD_BACK', label: 'Aadhaar Card Back' },
         { value: 'UTILITY_BILL', label: 'Utility Bill(Electricity/Water/Gas Bill)' },
         { value: 'RENT_AGREEMENT', label: 'Rent Agreement' },
         { value: 'BANK_STATEMENT', label: 'Bank Statement (recent)' },
@@ -63,7 +63,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         if (documentValue === 'AADHAAR_CARD_FRONT') {
             return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
         }
-        if (documentValue === 'AADHAAR_BACK') {
+        if (documentValue === 'AADHAAR_CARD_BACK') {
             return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
         }
         return document.some(doc => doc.type.includes(documentValue));
@@ -183,10 +183,10 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         const shouldValidate = !skipValidation && 
             (documentValue === 'PAN_CARD' || 
              documentValue === 'AADHAAR_CARD_FRONT' || 
-             documentValue === 'AADHAAR_BACK');
+             documentValue === 'AADHAAR_CARD_BACK');
 
         if (shouldValidate) {
-            if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_BACK') {
+            if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_CARD_BACK') {
                 const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
@@ -204,7 +204,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         }
 
         let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_FRONT_JPG' :
-            documentValue === 'AADHAAR_BACK' ? 'AADHAAR_BACK_JPG' :
+            documentValue === 'AADHAAR_CARD_BACK' ? 'AADHAAR_BACK_JPG' :
                 `${documentValue}_JPG`;
 
         const blob = await fetch(imageData).then(res => res.blob());
@@ -326,7 +326,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         setPreviewImage(imageData);
 
         // Only skip validation for non-PAN and non-Aadhaar documents
-        const skipValidation = !['PAN_CARD', 'AADHAAR_CARD_FRONT', 'AADHAAR_BACK'].includes(activeDocumentValue);
+        const skipValidation = !['PAN_CARD', 'AADHAAR_CARD_FRONT', 'AADHAAR_CARD_BACK'].includes(activeDocumentValue);
         
         const success = await processImage(
             imageData, 
@@ -355,7 +355,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
                 setSelectedAddressProof('AADHAAR_CARD_FRONT');
             } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
-                setSelectedAddressProof('AADHAAR_BACK');
+                setSelectedAddressProof('AADHAAR_CARD_BACK');
             }
         }
 
@@ -598,7 +598,7 @@ useEffect(() => {
                                                 <img
                                                     src={doc.image}
                                                     alt={doc.name}
-                                                    className="thumbnail max-w-xs max-h-15"
+                                                    className="thumbnail w-auto h-15"
                                                 />
                                             )}
                                         </td> 
@@ -608,7 +608,7 @@ useEffect(() => {
                                             <img
                                             src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                             alt="Signature"
-                                            className="w-10 h-auto rounded-md object-contain shadow-sm"
+                                            className="w-auto h-100 rounded-md object-contain shadow-sm"
                                             />
                                         ) : '-'}
                                         </td>
