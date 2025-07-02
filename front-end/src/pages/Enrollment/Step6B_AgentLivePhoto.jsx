@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ImageCaptureValidator from './AgentPhotoCapture';
+import ImageCaptureValidator from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { createAccountService, pendingAccountData } from '../../services/apiServices';

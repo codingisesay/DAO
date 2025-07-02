@@ -52,7 +52,7 @@ import { useAuth } from '../../auth/AuthContext';
             { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
             { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" }, 
             { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
-            { ...COLUMN_DEFINITIONS.admin_id, field: "admin_id", type: "text" },
+            { ...COLUMN_DEFINITIONS.review_admin_id, field: "admin_id", type: "text" },
             { 
                 header: "Review Comments", 
                 field: "review_comments", 
