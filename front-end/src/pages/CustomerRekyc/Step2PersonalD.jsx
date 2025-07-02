@@ -503,7 +503,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
         <div className="details-section cbs-section">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-700">CBS Details</h2>
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 type="checkbox"
                 id="syncAll"
@@ -512,7 +512,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
                 className="mr-2"
               />
               <label htmlFor="syncAll">Sync All</label>
-            </div>
+            </div> */}
           </div>
           <img
             src={userphoto}
