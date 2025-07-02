@@ -157,7 +157,6 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 errors.voterid = 'Voter ID format should be 3 letters followed by 7 digits (e.g., ABC1234567)';
             }
         }
-
         // Passport validation (only if provided)
         // if (localFormData.passport && localFormData.passport.length !== 8) {
         //     errors.passport = 'Passport must be 8 characters';
