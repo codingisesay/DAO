@@ -47,7 +47,7 @@ const CommanSelect = ({
                     }}
                     required={required}
                     className={clsx(
-                        'peer block w-full bg-transparent px-4 py-2 text-sm text-gray-900 dark:text-white',
+                        'peer block w-full bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white',
                         ' outline-none bg-transparent rounded-md',
                         {
                             'text-gray-400': !value,

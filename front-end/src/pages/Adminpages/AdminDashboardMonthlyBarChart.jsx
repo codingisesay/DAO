@@ -31,9 +31,9 @@ function ValidationBarChart() {
     ];
 
     const validationTypes = [
-        { value: 'aadhaar', label: 'Aadhaar Validate' },
-        { value: 'pan', label: 'PAN Validate' },
-        { value: 'digilocker', label: 'DigiLocker Validate' },
+        { value: 'aadhaar', label: 'Aadhaar Card' },
+        { value: 'pan', label: 'PAN Card' },
+        { value: 'digilocker', label: 'DigiLocker ' },
         { value: 'all', label: 'All Validations' },
     ];
 
@@ -100,20 +100,20 @@ function ValidationBarChart() {
                 <Box sx={{ display: 'flex', gap: 2, }}>
                     <CommanSelect
                         value={timePeriod}
-                        label="Time Period"
+                        label="Period"
                         name="timePeriod"
                         onChange={handleTimeChange}
                         required
                         options={timeOptions}
                     />
 
-                    <CommanSelect
+                    <CommanSelect 
                         value={selectedValidation}
                         label="Validation Type"
                         name="validationType"
                         onChange={handleValidationChange}
-                        required
-                        options={validationTypes}
+                        required  style={{ minWidth: 150 }}
+                        options={validationTypes}  
                     />
                 </Box>
             </Box>
