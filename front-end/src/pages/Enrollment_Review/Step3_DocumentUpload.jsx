@@ -23,9 +23,7 @@ const P3 = ({ onNext, onBack }) => {
         }
     });
     const {id} = useParams();
-      const [reason, setReason] = useState(null);
-
-    // Fetch reason data (unchanged)
+      const [reason, setReason] = useState(null); 
     useEffect(() => {
         if (!id) return;
 
@@ -34,6 +32,7 @@ const P3 = ({ onNext, onBack }) => {
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
+                console.log( reason.applicant_live_photos_status_comment)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -41,20 +40,21 @@ const P3 = ({ onNext, onBack }) => {
             }
         };
 
- const fetchAndStoreDetails = async () => {
-    try {
-        if (id) {
-            const response = await pendingAccountData.getDetailsS3(id);
-            const documents = response.documents || [];
-            // Save only the documents array to localStorage
-            localStorage.setItem('documentData', JSON.stringify(documents));
-            setDocuments(documents); // Update state for DocUpload
-            setLocalFormData(documents); // Optional, if you use localFormData elsewhere
-        }
-    } catch (error) {
-        console.error('Failed to fetch application details:', error);
-    }
-};
+        const fetchAndStoreDetails = async () => {
+            try {
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS3(id);
+                    const documents = response.documents || [];
+                    // Save only the documents array to localStorage
+                    localStorage.setItem('documentData', JSON.stringify(documents));
+                    setDocuments(documents); // Update state for DocUpload
+                    setLocalFormData(documents); // Optional, if you use localFormData elsewhere
+                  
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
         
                 fetchAndStoreDetails();
 
@@ -227,8 +227,9 @@ const P3 = ({ onNext, onBack }) => {
     };
 
     return (
-        <div className='form-container'>
-            <div className="relative ">
+        <div className='form-container  '>
+            <div className="  ">
+            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -240,10 +241,12 @@ const P3 = ({ onNext, onBack }) => {
                     </div>
                 )}
                 
-                <DocView />
-                
-            {reason &&  <p className="text-red-500">Review Reason : {reason.applicant_live_photos_status_comment }</p> }
-                <DocUpload
+             
+                {reason && reason.applicant_live_photos_status_comment ? (
+                    <>
+                <div>
+                     {reason &&  <p className="text-red-500">Review Reason : {reason.applicant_live_photos_status_comment}</p> }
+                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
                     // documents={documents}
@@ -259,25 +262,48 @@ const P3 = ({ onNext, onBack }) => {
                     />
                 )}
 
-            </div>
-            <div className="next-back-btns mt-6">
-                <CommonButton className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-                <CommonButton
-                    className="btn-next"
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        'Uploading...'
-                    ) : (
-                        <>
-                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                        </>
-                    )}
-                </CommonButton>
-            </div>
+                </div>
+                <div className="next-back-btns mt-6">
+                    <CommonButton className="btn-back" onClick={onBack}>
+                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    </CommonButton>
+                    <CommonButton
+                        className="btn-next"
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            'Uploading...'
+                        ) : (
+                            <>
+                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                            </>
+                        )}
+                    </CommonButton>
+                </div>
+                
+                
+                </> ): <>
+                
+                <DocView />
+                       <div className="next-back-btns mt-6">
+                    <CommonButton className="btn-back" onClick={onBack}>
+                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    </CommonButton>
+                    <CommonButton
+                        className="btn-next"
+                        onClick={onNext}
+                        disabled={isLoading}
+                    >
+                      
+                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                           
+                    </CommonButton>
+                </div>
+                
+                </>}
+           
+                        </div>
         </div>
     );
 };

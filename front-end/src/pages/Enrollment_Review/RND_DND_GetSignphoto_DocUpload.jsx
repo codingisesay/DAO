@@ -411,7 +411,6 @@ useEffect(() => {
 }, [showAlert]);
     return (
         <div className="document-upload-container p-4 mx-auto">
-            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
             <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
                 <Info size={16} className="mr-1" />
                 <span>All documents must be scanned copy in jpg/png format - size must not exceed 5mb</span>

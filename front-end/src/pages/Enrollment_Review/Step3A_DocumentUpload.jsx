@@ -142,10 +142,8 @@ function p3({ onNext, onBack }) {
 
 
     return (
-        <div className="form-container">
-            <h2 className="text-xl font-bold mb-2">Upload Documents</h2>
-            <DocumentDetailsTable documentslist={localFormData} />
- 
+        <div className="form-container"> 
+            <DocumentDetailsTable documentslist={localFormData} /> 
         </div>
     );
 }
@@ -169,7 +167,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
 
     return (
         <div className="p-2 mx-auto">
-            {/* {Object.entries(groupedDocs).map(([type, docs]) => ( */}
+           
                 <div className="mb-2">
                     {/* <h2 className="text-xl font-bold mb-4 capitalize">Saved Document</h2> */}
                     <span className="text-xs text-gray-500 ms-auto">Priviously submitted documents</span>
@@ -214,7 +212,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
                         </table>
                     </div>
                 </div>
-            {/* // ))} */}
+           
         </div>
     );
 };

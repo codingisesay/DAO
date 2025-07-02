@@ -121,6 +121,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     updateFormData(1, updatedData);
 
     const payload = {
+      application_id:id,
       auth_type: selectedOption,
       auth_code: localFormData.auth_code,
       first_name: localFormData.first_name,
@@ -155,7 +156,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         application_no: response.application_no,
         application_id: response.application_id,
       });
-      localStorage.setItem("application_id", response.application_id);
+      localStorage.setItem("application_id", id);
 
       // Swal.fire({
       //   icon: "success",
@@ -191,7 +192,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
               <h2 className="text-xl font-bold mb-2">Application Form : {id}</h2>
               
           {localFormData &&   <p className="text-red-500 mb-2" > Review For : {localFormData.status_comment}</p> } 
-              <div className="application-type-container">
+              {/* <div className="application-type-container">
                 <label className="application-type">
                   <input
                     type="radio"
@@ -204,7 +205,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     <span className="font-medium">New Customer</span>
                   </div>
                 </label>
-              </div>
+              </div> */}
 
               <div className="my-4">
                 <h2 className="text-xl font-bold mb-2">
@@ -341,37 +342,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             <br />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
               {/* First Name - Text only, 50 char limit */}
-              <CommanInput
-                onChange={handleChange}
-                label={labels.firstname.label}
-                name="first_name"
-                value={localFormData.first_name}
-                required
-                max={30}
-                validationType="TEXT_ONLY"
-              />
-
-              {/* Middle Name - Text only, 50 char limit */}
-              <CommanInput
-                onChange={handleChange}
-                label={labels.middlename.label}
-                name="middle_name"
-                value={localFormData.middle_name}
-                max={30}
-                validationType="TEXT_ONLY"
-              />
-
-              {/* Last Name - Text only, 50 char limit */}
-              <CommanInput
-                onChange={handleChange}
-                label={labels.lastname.label}
-                name="last_name"
-                value={localFormData.last_name}
-                required
-                max={30}
-                validationType="TEXT_ONLY"
-              />
-
+           
               <CommanInput
                 onChange={handleChange}
                 label={labels.firstname.label}
