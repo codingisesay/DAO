@@ -21,10 +21,10 @@ const Stepper = ({ currentStep, complete, steps }) => {
     };
 
     const getStepStatus = (stepIndex) => {
-        if (complete) return 'Completed';
-        if (stepIndex + 1 < currentStep) return 'Completed';
-        if (stepIndex + 1 === currentStep) return 'In Progress';
-        return 'Pending';
+        if (complete) return '';
+        if (stepIndex + 1 < currentStep) return '';
+        if (stepIndex + 1 === currentStep) return '';
+        return '';
     };
 
     return (
@@ -53,7 +53,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
                             <div className="ms-2">
                                 {/* <div className="stepper-subtitle">{step.subtitle}</div> */}
                                 <div className="stepper-title">{step.title}</div>
-                                <div className={`stepper-status text-xs ${getStepStatus(i).toLowerCase().replace(' ', '-')}`}>
+                                <div className={`stepper-status pb-1 text-xs ${getStepStatus(i).toLowerCase().replace(' ', '-')}`}>
                                     {getStepStatus(i)}
                                 </div>
                             </div>
