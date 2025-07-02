@@ -118,7 +118,28 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     const submitPhoto = async (e) => { 
         if(apiPhotoData){ 
             try {
-             await createAccountService.agentLivePhoto_s6b(submitFormData);
+                
+            setLocalIsSubmitting(true);
+
+            // Use FormData for file upload
+            const submitFormData = new FormData();
+            submitFormData.append('application_id', id || application_id);
+
+            // Add location data if available
+            if (photoData.metadata?.location) {
+                submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+                submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+            }
+
+            // Add validation data if available
+            if (photoData.metadata?.validation) {
+                submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+            }
+
+            submitFormData.append('photo', photoData.file);
+            submitFormData.append('timestamp', photoData.timestamp);
+            submitFormData.append('status', 'Pending');
+              createAccountService.agentLivePhoto_s6b(submitFormData);
 
               
             Swal.fire({
@@ -134,10 +155,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                     localStorage.removeItem('documentData');
                     // window.location.href = '/agentdashboard'; // Redirect to the desired page
                 }
-            });
-
- 
-
+            }); 
                 // Proceed to next step after successful submission
                 // onNext();
             } catch (error) {
