@@ -137,8 +137,8 @@ const ViewApplicationForm = () => {
                     ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
                     : "",
 
-                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_JPG')).file_path
+                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
                     : "",
 
                     drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
@@ -362,6 +362,62 @@ const ViewApplicationForm = () => {
                     </div>
                 </div>
 
+                {/* Identity Documents */}
+                <div className="pdf-section"> 
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.adhar_card.label}
+                            type="text"
+                            name="adhar_card"
+                            value={formData.adhar_card || ''}
+                            readOnly
+                            max={12}
+                            validationType="NUMBER_ONLY"
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.pannumber.label}
+                            type="text"
+                            name="pan_card"
+                            value={formData.pan_card || ''}
+                            readOnly
+                            max={10}
+                            validationType="PAN"
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.passportno.label}
+                            type="text"
+                            name="passport"
+                            value={formData.passport || ''}
+                            readOnly
+                            max={20}
+                            validationType="ALPHANUMERIC"
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.drivinglicence.label}
+                            type="text"
+                            name="driving_license"
+                            value={formData.driving_license || ''}
+                            readOnly
+                            max={20}
+                            validationType="REGISTRATION_NO"
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.voterid.label}
+                            type="text"
+                            name="voter_id"
+                            value={formData.voter_id || ''}
+                            readOnly
+                            max={20}
+                            validationType="REGISTRATION_NO"
+                        />
+                    </div>
+                </div>
+
                 {/* Permanent Address */}
              <div className="space-y-8">
                     {/* Permanent Address Section */}
@@ -536,6 +592,7 @@ const ViewApplicationForm = () => {
                     </div>
                 )}
                 
+                
                   {/* Nominee Details */}
                 {nominees.length > 0 && (
                 <div className="pdf-section mb-8">
@@ -584,63 +641,6 @@ const ViewApplicationForm = () => {
                 )}
 
 
-
-                {/* Identity Documents */}
-                <div className="pdf-section">
-                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Identity Documents</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.adhar_card.label}
-                            type="text"
-                            name="adhar_card"
-                            value={formData.adhar_card || ''}
-                            readOnly
-                            max={12}
-                            validationType="NUMBER_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.pannumber.label}
-                            type="text"
-                            name="pan_card"
-                            value={formData.pan_card || ''}
-                            readOnly
-                            max={10}
-                            validationType="PAN"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.passportno.label}
-                            type="text"
-                            name="passport"
-                            value={formData.passport || ''}
-                            readOnly
-                            max={20}
-                            validationType="ALPHANUMERIC"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.drivinglicence.label}
-                            type="text"
-                            name="driving_license"
-                            value={formData.driving_license || ''}
-                            readOnly
-                            max={20}
-                            validationType="REGISTRATION_NO"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.voterid.label}
-                            type="text"
-                            name="voter_id"
-                            value={formData.voter_id || ''}
-                            readOnly
-                            max={20}
-                            validationType="REGISTRATION_NO"
-                        />
-                    </div>
-                </div>
 
                 {/* Family Details */}
                 <div className="pdf-section">

@@ -15,7 +15,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [showData, setShowData] = useState(!!formData.auth_code);
     const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const agent_id =localStorage.getItem('userCode')
+    const agent_id =localStorage.getItem('userCode');
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -45,59 +45,55 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     
 
         // clear local storage from below code
-        useEffect(() => {
-            const checkAndClearLocalStorage = async () => {
-                // Check for data in localStorage
-                const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
-                const hasNominationForm = !!localStorage.getItem('nominationFormData')?.length;
-                const hasDocuments = !!localStorage.getItem('documentData')?.length;
+        // ...existing code...
+useEffect(() => {
+    const checkAndClearLocalStorage = async () => {
+        const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
+        const hasDocuments = !!localStorage.getItem('documentData');
+        console.log('Checking for existing data:', { hasCustomerPhoto, hasDocuments });
 
-                if (hasCustomerPhoto || hasNominationForm || hasDocuments) {
-                    const messages = [];
-                    if (hasCustomerPhoto) messages.push('Customer Photo Data');
-                    if (hasNominationForm) messages.push('Nomination Form Data');
-                    if (hasDocuments) messages.push('Document Data');
-                    
-                    // Show confirmation dialog
-                    const result = await Swal.fire({
-                        title: 'Clear Existing Data?',
-                        // html: `We found existing data in your browser storage:<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
-                        html:'Your From Contains Data',
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, clear it!',
-                        cancelButtonText: 'No, keep it',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                    });
+        if (hasCustomerPhoto || hasDocuments) {
+            const messages = [];
+            if (hasCustomerPhoto) messages.push('Customer Photo Data');
+            if (hasDocuments) messages.push('Document Data');
 
-                    if (result.isConfirmed) {
-                        // Clear the items if user confirms
-                        localStorage.removeItem('customerPhotoData');
-                        localStorage.removeItem('nominationFormData');
-                        localStorage.removeItem('documentData');
-                        localStorage.removeItem('application_id');
-                        
-                        await Swal.fire(
-                            'Cleared!',
-                            'The existing data has been cleared.',
-                            'success'
-                        );
-                        window.location.reload();
-                    } else {
-                        await Swal.fire(
-                            'Kept',
-                            'The existing data was not cleared.',
-                            'info'
-                        );
-                    }
-                }
+            console.log('About to show Swal');
+            const result = await Swal.fire({
+                title: 'Clear Existing Data?',
+                html: `Form Contains Data :<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, clear it!',
+                cancelButtonText: 'No, keep it',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            });
+            console.log('Swal result:', result);
 
-            };
+            if (result.isConfirmed) {
+                localStorage.removeItem('customerPhotoData'); 
+                localStorage.removeItem('documentData');
+                localStorage.removeItem('application_id');
+                await Swal.fire(
+                    'Cleared!',
+                    'The existing data has been cleared.',
+                    'success'
+                );
+                window.location.reload();
+            } else { console.log('no data cleared')
+                // await Swal.fire(
+                //     'Kept',
+                //     'The existing data was not cleared.',
+                //     'info'
+                // );
+            }
+        }
+    };
 
-            checkAndClearLocalStorage();
-        }, []);
-        
+    checkAndClearLocalStorage();
+}, []);
+// ...existing code...
+
         const fetchAndShowDetails = async (id) => {
             try {
                 // alert('called')
@@ -226,6 +222,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
+                        ...userdummydata.aadhardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success

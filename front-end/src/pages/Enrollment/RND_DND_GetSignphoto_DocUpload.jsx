@@ -1,59 +1,11 @@
+
+
 import { useState, useRef, useEffect } from 'react';
 import Tesseract from 'tesseract.js';
 import { Upload, Camera, X, Trash2, Info } from 'lucide-react';
 import workingman from '../../assets/imgs/upload_placeholder.png';
-
-// Custom Alert Modal Component
-const AlertModal = ({ show, title, message, type, onClose }) => {
-    if (!show) return null;
-
-    let bgColor, borderColor, textColor;
-    let icon;
-    switch (type) {
-        case 'success':
-            bgColor = 'bg-green-100';
-            borderColor = 'border-green-400';
-            textColor = 'text-green-700';
-            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>;
-            break;
-        case 'error':
-            bgColor = 'bg-red-100';
-            borderColor = 'border-red-400';
-            textColor = 'text-red-700';
-            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-x-circle"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>;
-            break;
-        case 'info':
-            bgColor = 'bg-blue-100';
-            borderColor = 'border-blue-400';
-            textColor = 'text-blue-700';
-            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
-            break;
-        default:
-            bgColor = 'bg-gray-100';
-            borderColor = 'border-gray-400';
-            textColor = 'text-gray-700';
-            icon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-alert-circle"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>;
-    }
-
-    return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className={`rounded-lg shadow-lg p-6 ${bgColor} border ${borderColor} max-w-sm w-full relative flex items-start space-x-3`}>
-                <div className={`flex-shrink-0 ${textColor}`}>{icon}</div>
-                <div className="flex-grow">
-                    <h3 className={`text-lg font-bold mb-1 ${textColor}`}>{title}</h3>
-                    <p className={`text-sm ${textColor}`}>{message}</p>
-                </div>
-                <button
-                    onClick={onClose}
-                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 transition-colors duration-200"
-                    aria-label="Close alert"
-                >
-                    <X size={20} />
-                </button>
-            </div>
-        </div>
-    );
-};
+import Swal from 'sweetalert2';
+ 
 
 const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => {
     const [selectedIdentityProof, setSelectedIdentityProof] = useState('');
@@ -88,6 +40,8 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     }
 
     const identityProofOptions = [
+        { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
+        { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
         { value: 'PAN_CARD', label: 'Pan Card' },
         { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
         { value: 'PASSPORT', label: 'Passport' },
@@ -97,7 +51,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const addressProofOptions = [
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_BACK', label: 'Aadhaar Card Back' },
-        { value: 'UTILITY_BILL', label: 'Utility Bill (Electricity/Water/Gas Bill recent)' },
+        { value: 'UTILITY_BILL', label: 'Utility Bill(Electricity/Water/Gas Bill)' },
         { value: 'RENT_AGREEMENT', label: 'Rent Agreement' },
         { value: 'BANK_STATEMENT', label: 'Bank Statement (recent)' },
         { value: 'PROPERTY_TAX_RECEIPT', label: 'Property Tax Receipt' },
@@ -280,7 +234,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             onProcessDocument(newDocument);
         }
 
-        showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
+        // showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
 
         if (!documentValue.includes('AADHAAR')) {
             // Reset selection if not Aadhaar
@@ -442,6 +396,19 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         setDocuments(documents || []);
     }, [documents]);
 
+    
+useEffect(() => {
+    if (showAlert) {
+        Swal.fire({
+            title: alertConfig.title,
+            text: alertConfig.message,
+            icon: alertConfig.type || 'info', // e.g., 'success', 'error', 'warning', 'info', 'question'
+            confirmButtonText: 'OK',
+        }).then(() => {
+            setShowAlert(false); // close alert after user clicks OK
+        });
+    }
+}, [showAlert]);
     return (
         <div className="document-upload-container p-4 mx-auto">
             <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
@@ -641,7 +608,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                                             <img
                                             src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                             alt="Signature"
-                                            className="w-24 h-auto rounded-md object-contain shadow-sm"
+                                            className="w-10 h-auto rounded-md object-contain shadow-sm"
                                             />
                                         ) : '-'}
                                         </td>
@@ -709,17 +676,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
                     </div>
                 </div>
             )}
-
-            {/* Custom Alert Modal */}
-            {showAlert && (
-                <AlertModal
-                    show={showAlert}
-                    title={alertConfig.title}
-                    message={alertConfig.message}
-                    type={alertConfig.type}
-                    onClose={() => setShowAlert(false)}
-                />
-            )}
+ 
         </div>
     );
 };

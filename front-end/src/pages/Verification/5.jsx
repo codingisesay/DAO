@@ -201,6 +201,9 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
+            
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -232,6 +235,9 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
+            
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -255,6 +261,9 @@ const p5 = ({ onNext, onBack }) => {
                 allowOutsideClick: false,
                 allowEscapeKey: false,
             });
+            
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
         }
         catch (error) {
@@ -293,6 +302,9 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: 1
             };
             await pendingAccountStatusUpdate.updateS5C(id, payload);
+            
+            applicationStatus.push('Reject');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -324,7 +336,9 @@ const p5 = ({ onNext, onBack }) => {
                 status_comment: result.value,
                 admin_id: 1
             };
-            await pendingAccountStatusUpdate.updateS5C(id, payload);
+            await pendingAccountStatusUpdate.updateS5C(id, payload);            
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
@@ -342,6 +356,9 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: 1
             }
             pendingAccountStatusUpdate.updateS5C(id, payload);
+            
+            applicationStatus.push('Approved');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
                 title: 'Banking Details Approved Successfully',

@@ -3,9 +3,9 @@
 
 const daodocbase = 'data:image/jpeg;base64,';
 const gender = [
-    { value: 'MALE', label: 'Male' },
-    { value: 'FEMALE', label: 'Female' },
-    { value: 'OTHER', label: 'Other' },
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Other', label: 'Other' },
 ];
 const salutation = [
     { value: 'Mr', label: 'Mr' },
@@ -18,8 +18,8 @@ const salutation = [
     // { value: 'MX', label: 'Mx' },
 ];
 const YN = [
-    { value: 'YES', label: 'Yes' },
-    { value: 'NO', label: 'No' },
+    { value: 'Yes', label: 'Yes' },
+    { value: 'No', label: 'No' },
 ];
 const maritalStatusOptions = [
     { value: 'Single', label: 'Single' },
@@ -46,25 +46,26 @@ const occupationTypeOptions = [
     { value: 'Business', label: 'Business' }
 ];
 const religion = [
-    { value: 'HINDU', label: 'Hindu' },
-    { value: 'MUSLIM', label: 'Muslim' },
-    { value: 'CHRISTIAN', label: 'Christian' },
-    { value: 'SIKH', label: 'Sikh' },
-    { value: 'BUDDHIST', label: 'Buddhist' },
-    { value: 'JAIN', label: 'Jain' },
-    { value: 'PARSI', label: 'Parsi' },
-    { value: 'JEWISH', label: 'Jewish' },
-    { value: 'OTHER', label: 'Other' },
-    { value: 'NOT_SPECIFIED', label: 'Prefer not to say' },
+    { value: 'Hindu', label: 'Hindu' },
+    { value: 'Muslim', label: 'Muslim' },
+    { value: 'Christian', label: 'Christian' },
+    { value: 'Sikh', label: 'Sikh' },
+    { value: 'Buddhist', label: 'Buddhist' },
+    { value: 'Jain', label: 'Jain' },
+    { value: 'Parsi', label: 'Parsi' },
+    { value: 'Jewish', label: 'Jewish' },
+    { value: 'Other', label: 'Other' },
+    { value: 'NotSpecified', label: 'Prefer not to say' },
 ];
+
 const caste = [
-    { value: 'GENERAL', label: 'General' },
-    { value: 'OBC', label: 'OBC (Other Backward Class)' },
-    { value: 'SC', label: 'SC (Scheduled Caste)' },
-    { value: 'ST', label: 'ST (Scheduled Tribe)' },
-    { value: 'EWS', label: 'EWS (Economically Weaker Section)' },
-    { value: 'OTHER', label: 'Other' },
-    { value: 'NOT_SPECIFIED', label: 'Prefer not to say' },
+    { value: 'General', label: 'General' },
+    { value: 'Obc', label: 'OBC (Other Backward Class)' },
+    { value: 'Sc', label: 'SC (Scheduled Caste)' },
+    { value: 'St', label: 'ST (Scheduled Tribe)' },
+    { value: 'Ews', label: 'EWS (Economically Weaker Section)' },
+    { value: 'Other', label: 'Other' },
+    { value: 'NotSpecified', label: 'Prefer not to say' },
 ];
 
 const relation = [

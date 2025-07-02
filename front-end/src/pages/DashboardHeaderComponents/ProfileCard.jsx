@@ -32,8 +32,8 @@ function toTitleCase(str) {
                     }}
                 />
         
-            <h2 className="text-xs font-semibold text-gray-700 mb-0">{toTitleCase(username)}</h2>
-            <p className="text-gray-500 text-xs">{toTitleCase(rolename)}</p>
+            <h2 className="text-xs font-semibold text-gray-700 mb-0">{username}</h2>
+            <p className="text-gray-500 text-xs">{rolename}</p>
       
           </div>
           

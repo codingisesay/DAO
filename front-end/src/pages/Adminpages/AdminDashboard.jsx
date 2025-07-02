@@ -27,7 +27,8 @@ const AdminDashboard = () => {
     const [showTranslator, setShowTranslator] = useState()
     const username = localStorage.getItem('userName');
     const userrole = localStorage.getItem('roleName');
-    // localStorage.getItem('approveStatusArray').remove;
+  localStorage.removeItem('approveStatusArray');
+
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };
@@ -183,9 +184,9 @@ const AdminDashboard = () => {
                                         }}
                                     />
                                     <span className="font-bold">
-                                        {toTitleCase(username)}
+                                        {username}
                                         <br />
-                                        <small className="font-normal"> -  {toTitleCase(userrole)} </small>
+                                        <small className="font-normal"> {userrole} </small>
                                     </span>
                                 </div>
 

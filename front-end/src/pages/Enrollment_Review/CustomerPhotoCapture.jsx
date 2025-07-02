@@ -341,8 +341,8 @@ const ImageCaptureValidator = ({
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2 text-center">
-        Image Capture Validation
+      <h1 className="text-xl font-bold mb-2 ">
+        Live Photo
       </h1>
 
       {webcamError && (

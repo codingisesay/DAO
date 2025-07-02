@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 
 function Enrollmentform() {  
-    const [currentStep, setCurrentStep] = useState(6);
+    const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
     const [loading, setLoading] = useState(false);
     const { id } = useParams();

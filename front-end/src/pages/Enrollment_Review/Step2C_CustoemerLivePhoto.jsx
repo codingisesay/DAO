@@ -200,7 +200,7 @@ const PhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmittin
     return (
         <div className="space-y-1">
             {/* Reason display */}
-            <p className="text-red-500">Review For: {reason && reason.applicant_live_photos_status_comment}</p> 
+           {reason &&  <p className="text-red-500">Review For: {reason.applicant_live_photos_status_comment}</p> }
             
             {/* Loading overlay */}
             {(isSubmitting || localIsSubmitting) && (

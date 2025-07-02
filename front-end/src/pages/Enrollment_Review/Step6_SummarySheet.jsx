@@ -93,7 +93,7 @@ const p6 = ({ onNext, onBack }) => {
       confirmButtonText: "OK",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = "/admindashboard"; // Redirect to the desired page
+        window.location.href = "/agentdashboard"; // Redirect to the desired page
       }
     });
   };

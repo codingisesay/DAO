@@ -1,3 +1,8 @@
+
+
+
+
+
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
@@ -5,6 +10,7 @@ import { apiService } from '../../utils/storage';
 import { applicationDocumentService, createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import CommonButton from '../../components/CommonButton';
+import DocView from './Step3A_DocumentUpload';
 
 const P3 = ({ onNext, onBack }) => {
     const [isLoading, setIsLoading] = React.useState(false);
@@ -20,6 +26,25 @@ const P3 = ({ onNext, onBack }) => {
     const storedId = localStorage.getItem('application_id');
     const [processingDoc, setProcessingDoc] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+        const fetchAndStoreDetails = async () => {
+            try {
+                // alert('called')
+                if (storedId) {
+                    const response = await pendingAccountData.getDetailsS3(storedId);
+                    localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    console.log('documants to show Via API :', response);
+                    const application = response.documents || {};
+                    setLocalFormData(application);
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+
+        fetchAndStoreDetails();
+    }, [storedId]);
 
     useEffect(() => {
         try {
@@ -197,7 +222,7 @@ const P3 = ({ onNext, onBack }) => {
                         </div>
                     </div>
                 )}
-
+                    {/* <DocView /> */}
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}

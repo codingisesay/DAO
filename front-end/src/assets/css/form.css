@@ -671,6 +671,10 @@ tr:hover {
   align-items: center !important;
 }
 
+div.border-red-500 select {
+    --tw-border-opacity: 1;
+    border-color: red !important;border: 1px solid red;
+}
 
 
 /* working langugae below */

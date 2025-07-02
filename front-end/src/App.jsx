@@ -237,9 +237,16 @@ export const App = () => {
           } />
 
           {/* Catch-all route */}
-          <Route path="*" element={
-            <Navigate to={user ? "/admindashboard" : "/login"} replace /> 
-          } />
+          <Route
+            path="*"
+            element={
+              user
+                ? user.roleName && user.roleName.toLowerCase().includes("admin")
+                  ? <Navigate to="/admindashboard" replace />
+                  : <Navigate to="/agentdashboard" replace />
+                : <Navigate to="/login" replace />
+            }
+          />
         </Routes>
       </Router>
       {/* <ToastContainer /> */}
