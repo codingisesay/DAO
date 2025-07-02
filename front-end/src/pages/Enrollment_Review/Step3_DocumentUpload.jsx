@@ -242,7 +242,7 @@ const P3 = ({ onNext, onBack }) => {
                 
                 <DocView />
                 
-            <p className="text-red-500"> {reason && ( 'Review Reason : ', reason.applicant_live_photos_status_comment )}</p> 
+            {reason &&  <p className="text-red-500">Review Reason : {reason.applicant_live_photos_status_comment }</p> }
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}

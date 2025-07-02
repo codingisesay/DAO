@@ -1,17 +1,21 @@
+ 
 
 import React, { useState, useEffect } from 'react'; 
 import clsx from 'clsx';
 import CommonButton from '../../components/CommonButton';
-import { pendingAccountData, createAccountService, applicationDetailsService } from '../../services/apiServices';
+import { pendingAccountData, createAccountService, applicationDetailsService, agentService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { salutation, relation } from '../../data/data';
+import InputField from '../../components/CommanInput';
+import SelectField from '../../components/CommanSelect';
 import { add } from '@tensorflow/tfjs-core/dist/engine';
 import { useParams } from 'react-router-dom';
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
-    // const id = localStorage.getItem('application_id');
     const {id} = useParams();
     const [nominees, setNominees] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null);
     const [currentNominee, setCurrentNominee] = useState({
         details: {
             nomineeSalutation: '',
@@ -37,14 +41,18 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     });
 
     const [errors, setErrors] = useState({});
+    const [touchedFields, setTouchedFields] = useState({
+        details: {},
+        address: {}
+    });
     const [isSameAsPermanent, setIsSameAsPermanent] = useState(false);
     const [isFetchingPincode, setIsFetchingPincode] = useState(false);
 
     const fetchAndStoreDetails = async () => {
-        try {
+        try { 
             if (id) {
                 const response = await pendingAccountData.getDetailsS5B(id);
-                
+                 
                 if (response?.documents?.length > 0) {
                     const formattedNominees = response.documents.map(nominee => ({
                         id: nominee.id,
@@ -73,12 +81,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                     
                     setNominees(formattedNominees);
                     
-                    // Calculate remaining percentage
                     const remainingPercentage = 100 - formattedNominees.reduce(
                         (sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage || 0), 0
                     );
                     
-                    // Set initial percentage for new nominee
                     setCurrentNominee(prev => ({
                         ...prev,
                         details: {
@@ -93,9 +99,24 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
     };
 
-    useEffect(() => { 
+    useEffect(() => {  
+        const fetchReason = async (id) => { 
+            if (!id) return; 
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchAndStoreDetails();
-    }, [id]);
+        fetchReason(id);
+    }, [id]); 
 
     const calculateAge = (dob) => {
         if (!dob) return '';
@@ -118,62 +139,164 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     };
 
     const validateNominee = (nominee) => {
-        const errors = {};
+        const newErrors = {};
 
         // Details validation
-        if (!nominee.details.nomineeSalutation) 
-            errors.nomineeSalutation = 'Required';
-        if (!nominee.details.nomineeFirstName) 
-            errors.nomineeFirstName = 'Required';
-        else if (nominee.details.nomineeFirstName.length > 50) 
-            errors.nomineeFirstName = 'Max 50 chars';
-        if (nominee.details.nomineeMiddleName && nominee.details.nomineeMiddleName.length > 50) 
-            errors.nomineeMiddleName = 'Max 50 chars';
-        if (!nominee.details.nomineeLastName) 
-            errors.nomineeLastName = 'Required';
-        else if (nominee.details.nomineeLastName.length > 50) 
-            errors.nomineeLastName = 'Max 50 chars';
-        if (!nominee.details.nomineeRelation) 
-            errors.nomineeRelation = 'Required';
-
-        // Percentage validation
-        const percentage = parseFloat(nominee.details.nomineePercentage);
-        if (isNaN(percentage)) {
-            errors.nomineePercentage = 'Must be a number';
-        } else if (percentage <= 0 || percentage > 100) {
-            errors.nomineePercentage = 'Must be between 1-100';
+        if (!nominee.details.nomineeSalutation) {
+            newErrors.nomineeSalutation = 'Salutation is required';
         }
-
+        if (!nominee.details.nomineeFirstName) {
+            newErrors.nomineeFirstName = 'First name is required';
+        } else if (/\d/.test(nominee.details.nomineeFirstName)) {
+            newErrors.nomineeFirstName = 'First name cannot contain numbers';
+        }
+        if (nominee.details.nomineeMiddleName && /\d/.test(nominee.details.nomineeMiddleName)) {
+            newErrors.nomineeMiddleName = 'Middle name cannot contain numbers';
+        }
+        if (!nominee.details.nomineeLastName) {
+            newErrors.nomineeLastName = 'Last name is required';
+        } else if (/\d/.test(nominee.details.nomineeLastName)) {
+            newErrors.nomineeLastName = 'Last name cannot contain numbers';
+        }
+        if (!nominee.details.nomineeRelation) {
+            newErrors.nomineeRelation = 'Relation is required';
+        }
+        if (!nominee.details.nomineePercentage) {
+            newErrors.nomineePercentage = 'Percentage is required';
+        } else if (isNaN(nominee.details.nomineePercentage) || parseFloat(nominee.details.nomineePercentage) <= 0) {
+            newErrors.nomineePercentage = 'Percentage must be greater than 0';
+        } else if (parseFloat(nominee.details.nomineePercentage) > 100) {
+            newErrors.nomineePercentage = 'Percentage cannot exceed 100';
+        }
         if (!nominee.details.nomineeDOB) {
-            errors.nomineeDOB = 'Required';
+            newErrors.nomineeDOB = 'Date of birth is required';
         } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
-            errors.nomineeDOB = 'Future date not allowed';
+            newErrors.nomineeDOB = 'Future date not allowed';
         }
 
-        // Address validation
-        if (!nominee.address.nomineeComplexName) 
-            errors.nomineeComplexName = 'Required';
-        else if (nominee.address.nomineeComplexName.length > 50) 
-            errors.nomineeComplexName = 'Max 50 chars';
-        if (!nominee.address.nomineeBuildingName) 
-            errors.nomineeBuildingName = 'Required';
-        else if (nominee.address.nomineeBuildingName.length > 20) 
-            errors.nomineeBuildingName = 'Max 20 chars';
-        if (!nominee.address.nomineeArea) 
-            errors.nomineeArea = 'Required';
-        else if (nominee.address.nomineeArea.length > 50) 
-            errors.nomineeArea = 'Max 50 chars';
-        if (!nominee.address.nomineeCountry) 
-            errors.nomineeCountry = 'Required';
-        else if (nominee.address.nomineeCountry.length > 30) 
-            errors.nomineeCountry = 'Max 30 chars';
-        if (!nominee.address.nomineePinCode) 
-            errors.nomineePinCode = 'Required';
-        else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) 
-            errors.nomineePinCode = 'Must be 6 digits';
+        // Address validation (only if not same as permanent)
+        if (!isSameAsPermanent) {
+            if (!nominee.address.nomineeComplexName) {
+                newErrors.nomineeComplexName = 'Complex name is required';
+            }
+            if (!nominee.address.nomineeBuildingName) {
+                newErrors.nomineeBuildingName = 'Building name is required';
+            }
+            if (!nominee.address.nomineeArea) {
+                newErrors.nomineeArea = 'Area is required';
+            }
+            if (!nominee.address.nomineeCountry) {
+                newErrors.nomineeCountry = 'Country is required';
+            }
+            if (!nominee.address.nomineePinCode) {
+                newErrors.nomineePinCode = 'Pin code is required';
+            }  
+            if (!nominee.address.nomineeCity) {
+                newErrors.nomineeCity = 'City  is required';
+            }else if (/\d/.test(nominee.address.nomineeCity)) {
+            newErrors.nomineeCity = 'City cannot contain numbers';
+            }
+            if (!nominee.address.nomineeDistrict) {
+                newErrors.nomineeDistrict = 'District is required';
+            }else if (/\d/.test(nominee.address.nomineeDistrict)) {
+            newErrors.nomineeDistrict = 'District cannot contain numbers';
+             }
+            if (!nominee.address.nomineeState) {
+                newErrors.nomineeState = 'State is required';
+            }else if (/\d/.test(nominee.address.nomineeState)) {
+            newErrors.nomineeState = 'State cannot contain numbers';
+             }
+            
+            
+            else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) {
+                newErrors.nomineePinCode = 'Pin code must be 6 digits';
+            }
+        }
 
-        return errors;
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
+    const handleChange = (section, e) => {
+        const { name, value } = e.target;
+
+        if (name === 'nomineePercentage') {
+            let processedValue = value;
+            processedValue = processedValue.replace(/[^0-9]/g, '');
+            if (processedValue.length > 3) processedValue = processedValue.slice(0, 3);
+            if (parseFloat(processedValue) > 100) processedValue = '100';
+
+            setCurrentNominee(prev => ({
+                ...prev,
+                details: {
+                    ...prev.details,
+                    [name]: processedValue
+                }
+            }));
+            return;
+        }
+
+        if (name === "nomineeDOB") {
+            const selectedDate = new Date(value);
+            const today = new Date();
+
+            selectedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (selectedDate > today) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Future dates are not allowed.',
+                });
+                return;
+            }
+        }
+
+        if (name === 'nomineeDOB') {
+            const age = calculateAge(value);
+            setCurrentNominee(prev => ({
+                ...prev,
+                details: {
+                    ...prev.details,
+                    [name]: value,
+                    nomineeAge: age
+                }
+            }));
+        } else {
+            setCurrentNominee(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [name]: value
+                }
+            }));
+
+            if (name === 'nomineePinCode' && value.length === 6 && !isSameAsPermanent) {
+                fetchAddressByPinCode(value);
+            }
+        }
+
+        // Clear error when user starts typing
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+    };
+
+    const handleBlur = (section, e) => {
+        const { name } = e.target;
+        setTouchedFields(prev => ({
+            ...prev,
+            [section]: {
+                ...prev[section],
+                [name]: true
+            }
+        }));
+        validateNominee(currentNominee);
+    };
+
 
     const fetchAddressByPinCode = async (pincode) => {
         if (!pincode || pincode.length !== 6) return;
@@ -203,95 +326,22 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
     };
 
-    const handleChange = (section, e) => {
-        const { name, value } = e.target;
-
-        // Special handling for percentage field
-        if (name === 'nomineePercentage') {
-            let processedValue = value;
-            processedValue = processedValue.replace(/[^0-9]/g, '');
-            if (processedValue.length > 3) processedValue = processedValue.slice(0, 3);
-            if (parseFloat(processedValue) > 100) processedValue = '100';
-
-            setCurrentNominee(prev => ({
-                ...prev,
-                details: {
-                    ...prev.details,
-                    [name]: processedValue
-                }
-            }));
-            return;
-        }
-
-        // Check if the input is for the date of birth
-        if (name === "nomineeDOB") {
-            const selectedDate = new Date(value);
-            const today = new Date();
-
-            selectedDate.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-
-            if (selectedDate > today) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Future dates are not allowed.',
-                });
-                return;
-            }
-        }
-
-        // If DOB is being changed, calculate age
-        if (name === 'nomineeDOB') {
-            const age = calculateAge(value);
-            setCurrentNominee(prev => ({
-                ...prev,
-                details: {
-                    ...prev.details,
-                    [name]: value,
-                    nomineeAge: age
-                }
-            }));
-        } else {
-            setCurrentNominee(prev => ({
-                ...prev,
-                [section]: {
-                    ...prev[section],
-                    [name]: value
-                }
-            }));
-
-            // Auto-fetch address when pincode is entered
-            if (name === 'nomineePinCode' && value.length === 6 && !isSameAsPermanent) {
-                fetchAddressByPinCode(value);
-            }
-        }
-    };
-
+  
     const addNominee = () => {
-        // First check for numbers in name fields
-        if (/\d/.test(currentNominee.details.nomineeFirstName) ||
-            /\d/.test(currentNominee.details.nomineeMiddleName) ||
-            /\d/.test(currentNominee.details.nomineeLastName)
-        ) {
-            Swal.fire({
-                icon: 'error',
-                text: 'Nominee name fields should contain only alphabets. Numbers are not allowed.',
-            });
-            return;
-        }
+        // Mark all fields as touched
+        const allTouched = {
+            details: {},
+            address: {}
+        };
+        Object.keys(currentNominee.details).forEach(field => {
+            allTouched.details[field] = true;
+        });
+        Object.keys(currentNominee.address).forEach(field => {
+            allTouched.address[field] = true;
+        });
+        setTouchedFields(allTouched);
 
-        // Then check for validation errors
-        const errors = validateNominee(currentNominee);
-        setErrors(errors);
-
-        if (Object.keys(errors).length > 0) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validation Error',
-                text: 'Please fix the errors in the form before adding nominee.'
-            });
-            return;
-        }
+        if (!validateNominee(currentNominee)) {  return;  }
 
         const remainingPercentage = getRemainingPercentage();
         const currentPercentage = parseFloat(currentNominee.details.nomineePercentage);
@@ -323,10 +373,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         resetForm();
     };
 
+
     const removeNominee = (id) => {
         setNominees(prev => prev.filter(nominee => nominee.id !== id));
         
-        // Update the remaining percentage in the form after removal
         const remainingPercentage = getRemainingPercentage();
         setCurrentNominee(prev => ({
             ...prev,
@@ -363,6 +413,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             }
         });
         setErrors({});
+        setTouchedFields({ details: {}, address: {} });
         setIsSameAsPermanent(false);
     };
 
@@ -376,7 +427,6 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             return;
         }
 
-        // Check if total percentage is exactly 100
         const totalPercentage = nominees.reduce((sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage), 0);
         if (totalPercentage !== 100) {
             Swal.fire({
@@ -388,9 +438,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         }
 
         try {
-            // Prepare nominees array for API
             const nomineesPayload = nominees.map(nominee => ({
-                id: nominee.id, // Include existing ID for updates
+                id: nominee.id,
                 salutation: nominee.details.nomineeSalutation,
                 first_name: nominee.details.nomineeFirstName,
                 middle_name: nominee.details.nomineeMiddleName,
@@ -411,7 +460,6 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 status: "APPROVED"
             }));
 
-            // Send all nominees in one request
             await createAccountService.accountNominee_s5b({
                 application_id: id,
                 nominees: nomineesPayload
@@ -441,11 +489,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
         if (isChecked) {
             try {
-                const response = await applicationDetailsService.getFullDetails(id);
+                const response = await applicationDetailsService.getFullDetails(id);  
                 if (response.data) {
                     const { application_addresss } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-
                     setCurrentNominee(prev => ({
                         ...prev,
                         address: {
@@ -471,7 +518,6 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 });
             }
         } else {
-            // Clear address fields when unchecked
             setCurrentNominee(prev => ({
                 ...prev,
                 address: {
@@ -492,193 +538,308 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
     return (
         <div className="max-w-screen-xl mx-auto">
-            <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
-            {/* Nominee Form */}
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
-                <SelectField
-                    label="Salutation"
-                    name="nomineeSalutation"
-                    value={currentNominee.details.nomineeSalutation}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    options={salutation}
-                    error={errors.nomineeSalutation}
-                />
-                <InputField
-                    label="First Name"
-                    name="nomineeFirstName"
-                    value={currentNominee.details.nomineeFirstName}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    max={50}
-                    error={errors.nomineeFirstName}
-                />
-                <InputField
-                    label="Middle Name"
-                    name="nomineeMiddleName"
-                    value={currentNominee.details.nomineeMiddleName}
-                    onChange={(e) => handleChange('details', e)}
-                    max={50}
-                    error={errors.nomineeMiddleName}
-                />
-                <InputField
-                    label="Last Name"
-                    name="nomineeLastName"
-                    value={currentNominee.details.nomineeLastName}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    max={50}
-                    error={errors.nomineeLastName}
-                />
-                <SelectField
-                    label="Relation"
-                    name="nomineeRelation"
-                    value={currentNominee.details.nomineeRelation}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    options={relation}
-                    error={errors.nomineeRelation}
-                />
-                <InputField
-                    label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
-                    name="nomineePercentage"
-                    value={currentNominee.details.nomineePercentage}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    max={3}
-                    error={errors.nomineePercentage}
-                />
-                <InputField
-                    label="Date of Birth"
-                    name="nomineeDOB"
-                    type="date"
-                    value={currentNominee.details.nomineeDOB}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    error={errors.nomineeDOB}
-                />
-                <InputField
-                    label="Age"
-                    name="nomineeAge"
-                    value={currentNominee.details.nomineeAge}
-                    onChange={(e) => handleChange('details', e)}
-                    required
-                    max={3}
-                    error={errors.nomineeAge}
-                    disabled={true}
-                />
-            </div>
+            <h2 className="text-xl font-bold mb-2">Add Nominee Details</h2>
+           {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.account_personal_details_status_comment}</p> }
+          <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
+    <div>
+        <SelectField
+            label="Salutation"
+            name="nomineeSalutation"
+            value={currentNominee.details.nomineeSalutation}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            options={salutation}
+            className={errors.nomineeSalutation && touchedFields.details?.nomineeSalutation ? 'border-red-500' : ''}
+        />
+        {errors.nomineeSalutation && touchedFields.details?.nomineeSalutation && (
+            <p className="text-red-500 text-xs">{errors.nomineeSalutation}</p>
+        )}
+    </div>
 
-            <div className='flex items-center mb-2'>
-                <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
-                <div className="flex items-center">
-                    <input
-                        type="checkbox"
-                        id="sameAsPermanent"
-                        className="me-2"
-                        checked={isSameAsPermanent}
-                        onChange={handleSameAddressToggle}
-                    />
-                    <label htmlFor="sameAsPermanent">Same as permanent address</label>
-                </div>
-            </div>
+    <div>
+        <InputField
+            label="First Name"
+            name="nomineeFirstName"
+            value={currentNominee.details.nomineeFirstName}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            max={50}
+            className={errors.nomineeFirstName && touchedFields.details?.nomineeFirstName ? 'border-red-500' : ''}
+        />
+        {errors.nomineeFirstName && touchedFields.details?.nomineeFirstName && (
+            <p className="text-red-500 text-xs">{errors.nomineeFirstName}</p>
+        )}
+    </div>
 
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 ">
-                <InputField
-                    label="Complex Name"
-                    name="nomineeComplexName"
-                    value={currentNominee.address.nomineeComplexName}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    max={50}
-                    error={errors.nomineeComplexName}
-                    disabled={isSameAsPermanent}
-                />
-                <InputField
-                    label="Building Name"
-                    name="nomineeBuildingName"
-                    value={currentNominee.address.nomineeBuildingName}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    max={20}
-                    error={errors.nomineeBuildingName}
-                    disabled={isSameAsPermanent}
-                />
-                <InputField
-                    label="Area"
-                    name="nomineeArea"
-                    value={currentNominee.address.nomineeArea}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    max={50}
-                    error={errors.nomineeArea}
-                    disabled={isSameAsPermanent}
-                />
-                <InputField
-                    label="Landmark"
-                    name="nomineeLandmark"
-                    value={currentNominee.address.nomineeLandmark}
-                    onChange={(e) => handleChange('address', e)}
-                    max={50}
-                    error={errors.nomineeLandmark}
-                    disabled={isSameAsPermanent}
-                />
-                <InputField
-                    label="Country"
-                    name="nomineeCountry"
-                    value={currentNominee.address.nomineeCountry}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    max={30}
-                    error={errors.nomineeCountry}
-                    disabled={isSameAsPermanent}
-                />
-                <InputField
-                    label="Pin Code"
-                    name="nomineePinCode"
-                    value={currentNominee.address.nomineePinCode}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    max={6}
-                    error={errors.nomineePinCode}
-                    disabled={isSameAsPermanent || isFetchingPincode}
-                />
-                <InputField
-                    label="State"
-                    name="nomineeState"
-                    value={currentNominee.address.nomineeState}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    disabled={true}
-                />
-                <InputField
-                    label="City"
-                    name="nomineeCity"
-                    value={currentNominee.address.nomineeCity}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    disabled={true}
-                />
-                <InputField
-                    label="District"
-                    name="nomineeDistrict"
-                    value={currentNominee.address.nomineeDistrict}
-                    onChange={(e) => handleChange('address', e)}
-                    required
-                    disabled={true}
-                />
-            </div>
+    <div>
+        <InputField
+            label="Middle Name"
+            name="nomineeMiddleName"
+            value={currentNominee.details.nomineeMiddleName}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            max={50}
+            className={errors.nomineeMiddleName && touchedFields.details?.nomineeMiddleName ? 'border-red-500' : ''}
+        />
+        {errors.nomineeMiddleName && touchedFields.details?.nomineeMiddleName && (
+            <p className="text-red-500 text-xs">{errors.nomineeMiddleName}</p>
+        )}
+    </div>
 
-            <div className="flex justify-end mb-6 mt-3">
-                <CommonButton
-                    onClick={addNominee}
-                    className="border border-green-500 rounded-md text-green-500 px-3 py-1"
-                >
-                    Add Nominee
-                </CommonButton>
-            </div>
+    <div>
+        <InputField
+            label="Last Name"
+            name="nomineeLastName"
+            value={currentNominee.details.nomineeLastName}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            max={50}
+            className={errors.nomineeLastName && touchedFields.details?.nomineeLastName ? 'border-red-500' : ''}
+        />
+        {errors.nomineeLastName && touchedFields.details?.nomineeLastName && (
+            <p className="text-red-500 text-xs">{errors.nomineeLastName}</p>
+        )}
+    </div>
 
-            {/* Nominees Table */}
+    <div>
+        <SelectField
+            label="Relation"
+            name="nomineeRelation"
+            value={currentNominee.details.nomineeRelation}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            options={relation}
+            className={errors.nomineeRelation && touchedFields.details?.nomineeRelation ? 'border-red-500' : ''}
+        />
+        {errors.nomineeRelation && touchedFields.details?.nomineeRelation && (
+            <p className="text-red-500 text-xs">{errors.nomineeRelation}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
+            name="nomineePercentage"
+            value={currentNominee.details.nomineePercentage}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            max={3}
+            className={errors.nomineePercentage && touchedFields.details?.nomineePercentage ? 'border-red-500' : ''}
+        />
+        {errors.nomineePercentage && touchedFields.details?.nomineePercentage && (
+            <p className="text-red-500 text-xs">{errors.nomineePercentage}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Date of Birth"
+            name="nomineeDOB"
+            type="date"
+            value={currentNominee.details.nomineeDOB}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            className={errors.nomineeDOB && touchedFields.details?.nomineeDOB ? 'border-red-500' : ''}
+        />
+        {errors.nomineeDOB && touchedFields.details?.nomineeDOB && (
+            <p className="text-red-500 text-xs">{errors.nomineeDOB}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Age"
+            name="nomineeAge"
+            value={currentNominee.details.nomineeAge}
+            onChange={(e) => handleChange('details', e)}
+            onBlur={(e) => handleBlur('details', e)}
+            required
+            max={3}
+            disabled={true}
+        />
+    </div>
+</div>
+
+<div className='flex items-center mb-2'>
+    <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
+    <div className="flex items-center">
+        <input
+            type="checkbox"
+            id="sameAsPermanent"
+            className="me-2"
+            checked={isSameAsPermanent}
+            onChange={handleSameAddressToggle}
+        />
+        <label htmlFor="sameAsPermanent">Same as permanent address</label>
+    </div>
+</div>
+
+<div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
+    <div>
+        <InputField
+            label="Complex Name"
+            name="nomineeComplexName"
+            value={currentNominee.address.nomineeComplexName}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            max={50}
+            disabled={isSameAsPermanent}
+            className={errors.nomineeComplexName && touchedFields.address?.nomineeComplexName ? 'border-red-500' : ''}
+        />
+        {errors.nomineeComplexName && touchedFields.address?.nomineeComplexName && (
+            <p className="text-red-500 text-xs">{errors.nomineeComplexName}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Building Name"
+            name="nomineeBuildingName"
+            value={currentNominee.address.nomineeBuildingName}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            max={20}
+            disabled={isSameAsPermanent}
+            className={errors.nomineeBuildingName && touchedFields.address?.nomineeBuildingName ? 'border-red-500' : ''}
+        />
+        {errors.nomineeBuildingName && touchedFields.address?.nomineeBuildingName && (
+            <p className="text-red-500 text-xs">{errors.nomineeBuildingName}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Area"
+            name="nomineeArea"
+            value={currentNominee.address.nomineeArea}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            max={50}
+            disabled={isSameAsPermanent}
+            className={errors.nomineeArea && touchedFields.address?.nomineeArea ? 'border-red-500' : ''}
+        />
+        {errors.nomineeArea && touchedFields.address?.nomineeArea && (
+            <p className="text-red-500 text-xs">{errors.nomineeArea}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Landmark"
+            name="nomineeLandmark"
+            value={currentNominee.address.nomineeLandmark}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            max={50}
+            disabled={isSameAsPermanent}
+            className={errors.nomineeLandmark && touchedFields.address?.nomineeLandmark ? 'border-red-500' : ''}
+        />
+        {errors.nomineeLandmark && touchedFields.address?.nomineeLandmark && (
+            <p className="text-red-500 text-xs">{errors.nomineeLandmark}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Country"
+            name="nomineeCountry"
+            value={currentNominee.address.nomineeCountry}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            max={30}
+            disabled={isSameAsPermanent}
+            className={errors.nomineeCountry && touchedFields.address?.nomineeCountry ? 'border-red-500' : ''}
+        />
+        {errors.nomineeCountry && touchedFields.address?.nomineeCountry && (
+            <p className="text-red-500 text-xs">{errors.nomineeCountry}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="Pin Code"
+            name="nomineePinCode"
+            value={currentNominee.address.nomineePinCode}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            max={6}
+            disabled={isSameAsPermanent || isFetchingPincode}
+            className={errors.nomineePinCode && touchedFields.address?.nomineePinCode ? 'border-red-500' : ''}
+        />
+        {errors.nomineePinCode && touchedFields.address?.nomineePinCode && (
+            <p className="text-red-500 text-xs">{errors.nomineePinCode}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="State"
+            name="nomineeState"
+            value={currentNominee.address.nomineeState}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            disabled={isSameAsPermanent || isFetchingPincode}
+            className={errors.nomineeState && touchedFields.address?.nomineeState ? 'border-red-500' : ''}
+        />
+        {errors.nomineeState && touchedFields.address?.nomineeState && (
+            <p className="text-red-500 text-xs">{errors.nomineeState}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="City"
+            name="nomineeCity"
+            value={currentNominee.address.nomineeCity}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required
+            disabled={isSameAsPermanent || isFetchingPincode}
+            className={errors.nomineeCity && touchedFields.address?.nomineeCity ? 'border-red-500' : ''} 
+        />
+        {errors.nomineeCity && touchedFields.address?.nomineeCity && (
+            <p className="text-red-500 text-xs">{errors.nomineeCity}</p>
+        )}
+    </div>
+
+    <div>
+        <InputField
+            label="District"
+            name="nomineeDistrict"
+            value={currentNominee.address.nomineeDistrict}
+            onChange={(e) => handleChange('address', e)}
+            onBlur={(e) => handleBlur('address', e)}
+            required 
+            disabled={isSameAsPermanent || isFetchingPincode}
+            className={errors.nomineeDistrict && touchedFields.address?.nomineeDistrict ? 'border-red-500' : ''}
+        />
+        {errors.nomineeDistrict && touchedFields.address?.nomineeDistrict && (
+            <p className="text-red-500 text-xs">{errors.nomineeDistrict}</p>
+        )}
+    </div>
+</div>
+
+<div className="flex justify-end mb-6 mt-3">
+    <CommonButton
+        onClick={addNominee}
+        className="border border-green-500 rounded-md text-green-500 px-3 py-1"
+    >
+        Add Nominee
+    </CommonButton>
+</div>
+
             {nominees.length > 0 && (
                 <div className="mb-8">
                     <h2 className="text-xl font-bold mb-4">Nominees List</h2>
@@ -746,144 +907,893 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
 export default NominationForm;
 
-const InputField = ({
-    label,
-    name,
-    type = 'text',
-    value,
-    onChange,
-    required = false,
-    max,
-    error,
-    disabled = false,
-    validationType,
-    ...rest
-}) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [touched, setTouched] = useState(false);
 
-    const shouldFloat = isFocused || value;
 
-    const handleBlur = () => {
-        setIsFocused(false);
-        setTouched(true);
-    };
+// import React, { useState, useEffect } from 'react'; 
+// import clsx from 'clsx';
+// import CommonButton from '../../components/CommonButton';
+// import { pendingAccountData, createAccountService, applicationDetailsService } from '../../services/apiServices';
+// import Swal from 'sweetalert2';
+// import { salutation, relation } from '../../data/data';
+// import { add } from '@tensorflow/tfjs-core/dist/engine';
+// import { useParams } from 'react-router-dom';
 
-    return (
-        <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
-            <input
-                id={name}
-                name={name}
-                type={type}
-                value={value}
-                onChange={onChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={handleBlur}
-                required={required}
-                className={clsx(
-                    'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
-                    'transition-all',
-                    {
-                        'border-red-500': error && touched,
-                        'bg-gray-100 cursor-not-allowed': disabled
-                    }
-                )}
-                placeholder={label}
-                maxLength={max}
-                disabled={disabled}
-                {...rest}
-            />
-            <label
-                htmlFor={name}
-                className={clsx(
-                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
-                    {
-                        'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
-                    }
-                )}
-            >
-                {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
+// function NominationForm({ formData, updateFormData, onBack, onNext }) {
+//     // const id = localStorage.getItem('application_id');
+//     const {id} = useParams();
+//     const [nominees, setNominees] = useState([]);
+//     const [currentNominee, setCurrentNominee] = useState({
+//         details: {
+//             nomineeSalutation: '',
+//             nomineeFirstName: '',
+//             nomineeMiddleName: '',
+//             nomineeLastName: '',
+//             nomineeRelation: '',
+//             nomineePercentage: '100',
+//             nomineeDOB: '',
+//             nomineeAge: ''
+//         },
+//         address: {
+//             nomineeComplexName: '',
+//             nomineeBuildingName: '',
+//             nomineeArea: '',
+//             nomineeLandmark: '',
+//             nomineeCountry: '',
+//             nomineePinCode: '',
+//             nomineeCity: '',
+//             nomineeDistrict: '',
+//             nomineeState: ''
+//         }
+//     });
 
-            {error && touched && (
-                <p className="mt-1 text-xs text-red-500">
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-};
+//     const [errors, setErrors] = useState({});
+//     const [isSameAsPermanent, setIsSameAsPermanent] = useState(false);
+//     const [isFetchingPincode, setIsFetchingPincode] = useState(false);
 
-const SelectField = ({
-    label,
-    name,
-    value,
-    onChange,
-    required = false,
-    options,
-    error,
-    disabled = false,
-    ...rest
-}) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [touched, setTouched] = useState(false);
+//     const fetchAndStoreDetails = async () => {
+//         try {
+//             if (id) {
+//                 const response = await pendingAccountData.getDetailsS5B(id);
+                
+//                 if (response?.documents?.length > 0) {
+//                     const formattedNominees = response.documents.map(nominee => ({
+//                         id: nominee.id,
+//                         details: {
+//                             nomineeSalutation: nominee.salutation,
+//                             nomineeFirstName: nominee.first_name,
+//                             nomineeMiddleName: nominee.middle_name,
+//                             nomineeLastName: nominee.last_name,
+//                             nomineeRelation: nominee.relationship,
+//                             nomineePercentage: nominee.percentage,
+//                             nomineeDOB: nominee.dob,
+//                             nomineeAge: nominee.age.toString()
+//                         },
+//                         address: {
+//                             nomineeComplexName: nominee.nom_complex_name,
+//                             nomineeBuildingName: nominee.nom_flat_no,
+//                             nomineeArea: nominee.nom_area,
+//                             nomineeLandmark: nominee.nom_landmark || '',
+//                             nomineeCountry: nominee.nom_country,
+//                             nomineePinCode: nominee.nom_pincode,
+//                             nomineeCity: nominee.nom_city,
+//                             nomineeDistrict: nominee.nom_district,
+//                             nomineeState: nominee.nom_state
+//                         }
+//                     }));
+                    
+//                     setNominees(formattedNominees);
+                    
+//                     // Calculate remaining percentage
+//                     const remainingPercentage = 100 - formattedNominees.reduce(
+//                         (sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage || 0), 0
+//                     );
+                    
+//                     // Set initial percentage for new nominee
+//                     setCurrentNominee(prev => ({
+//                         ...prev,
+//                         details: {
+//                             ...prev.details,
+//                             nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
+//                         }
+//                     }));
+//                 }
+//             }
+//         } catch (error) {
+//             console.error('Failed to fetch nomination details:', error);
+//         }
+//     };
 
-    const shouldFloat = isFocused || value;
+//     useEffect(() => { 
+//         fetchAndStoreDetails();
+//     }, [id]);
 
-    const handleBlur = () => {
-        setIsFocused(false);
-        setTouched(true);
-    };
+//     const calculateAge = (dob) => {
+//         if (!dob) return '';
 
-    return (
-        <div className={clsx(' floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
-            <select
-                id={name}
-                name={name}
-                value={value}
-                onChange={onChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={handleBlur}
-                required={required}
-                className={clsx(
-                    'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
-                    'transition-all',
-                    {
-                        'border-red-500': error && touched,
-                        'bg-gray-100 cursor-not-allowed': disabled
-                    }
-                )}
-                disabled={disabled}
-                {...rest}
-            >
-                <option value="">Select {label}</option>
-                {options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
-            <label
-                htmlFor={name}
-                className={clsx(
-                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
-                    {
-                        'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
-                    }
-                )}
-            >
-                {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
+//         const birthDate = new Date(dob);
+//         const today = new Date();
+//         let age = today.getFullYear() - birthDate.getFullYear();
+//         const monthDiff = today.getMonth() - birthDate.getMonth();
 
-            {error && touched && (
-                <p className="mt-1 text-xs text-red-500">
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-};
+//         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+//             age--;
+//         }
+
+//         return age.toString();
+//     };
+
+//     const getRemainingPercentage = () => {
+//         const totalUsed = nominees.reduce((sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage || 0), 0);
+//         return 100 - totalUsed;
+//     };
+
+//     const validateNominee = (nominee) => {
+//         const errors = {};
+
+//         // Details validation
+//         if (!nominee.details.nomineeSalutation) 
+//             errors.nomineeSalutation = 'Required';
+//         if (!nominee.details.nomineeFirstName) 
+//             errors.nomineeFirstName = 'Required';
+//         else if (nominee.details.nomineeFirstName.length > 50) 
+//             errors.nomineeFirstName = 'Max 50 chars';
+//         if (nominee.details.nomineeMiddleName && nominee.details.nomineeMiddleName.length > 50) 
+//             errors.nomineeMiddleName = 'Max 50 chars';
+//         if (!nominee.details.nomineeLastName) 
+//             errors.nomineeLastName = 'Required';
+//         else if (nominee.details.nomineeLastName.length > 50) 
+//             errors.nomineeLastName = 'Max 50 chars';
+//         if (!nominee.details.nomineeRelation) 
+//             errors.nomineeRelation = 'Required';
+
+//         // Percentage validation
+//         const percentage = parseFloat(nominee.details.nomineePercentage);
+//         if (isNaN(percentage)) {
+//             errors.nomineePercentage = 'Must be a number';
+//         } else if (percentage <= 0 || percentage > 100) {
+//             errors.nomineePercentage = 'Must be between 1-100';
+//         }
+
+//         if (!nominee.details.nomineeDOB) {
+//             errors.nomineeDOB = 'Required';
+//         } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
+//             errors.nomineeDOB = 'Future date not allowed';
+//         }
+
+//         // Address validation
+//         if (!nominee.address.nomineeComplexName) 
+//             errors.nomineeComplexName = 'Required';
+//         else if (nominee.address.nomineeComplexName.length > 50) 
+//             errors.nomineeComplexName = 'Max 50 chars';
+//         if (!nominee.address.nomineeBuildingName) 
+//             errors.nomineeBuildingName = 'Required';
+//         else if (nominee.address.nomineeBuildingName.length > 20) 
+//             errors.nomineeBuildingName = 'Max 20 chars';
+//         if (!nominee.address.nomineeArea) 
+//             errors.nomineeArea = 'Required';
+//         else if (nominee.address.nomineeArea.length > 50) 
+//             errors.nomineeArea = 'Max 50 chars';
+//         if (!nominee.address.nomineeCountry) 
+//             errors.nomineeCountry = 'Required';
+//         else if (nominee.address.nomineeCountry.length > 30) 
+//             errors.nomineeCountry = 'Max 30 chars';
+//         if (!nominee.address.nomineePinCode) 
+//             errors.nomineePinCode = 'Required';
+//         else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) 
+//             errors.nomineePinCode = 'Must be 6 digits';
+
+//         return errors;
+//     };
+
+//     const fetchAddressByPinCode = async (pincode) => {
+//         if (!pincode || pincode.length !== 6) return;
+
+//         setIsFetchingPincode(true);
+//         try {
+//             const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+//             const data = await response.json();
+
+//             if (data[0]?.Status === "Success" && data[0]?.PostOffice?.length > 0) {
+//                 const postOffice = data[0].PostOffice[0];
+//                 setCurrentNominee(prev => ({
+//                     ...prev,
+//                     address: {
+//                         ...prev.address,
+//                         nomineeState: postOffice.State,
+//                         nomineeDistrict: postOffice.District,
+//                         nomineeCity: postOffice.Name || postOffice.Block || postOffice.Division,
+//                         nomineeCountry: 'India'
+//                     }
+//                 }));
+//             }
+//         } catch (error) {
+//             console.error('Error fetching address by PIN code:', error);
+//         } finally {
+//             setIsFetchingPincode(false);
+//         }
+//     };
+
+//     const handleChange = (section, e) => {
+//         const { name, value } = e.target;
+
+//         // Special handling for percentage field
+//         if (name === 'nomineePercentage') {
+//             let processedValue = value;
+//             processedValue = processedValue.replace(/[^0-9]/g, '');
+//             if (processedValue.length > 3) processedValue = processedValue.slice(0, 3);
+//             if (parseFloat(processedValue) > 100) processedValue = '100';
+
+//             setCurrentNominee(prev => ({
+//                 ...prev,
+//                 details: {
+//                     ...prev.details,
+//                     [name]: processedValue
+//                 }
+//             }));
+//             return;
+//         }
+
+//         // Check if the input is for the date of birth
+//         if (name === "nomineeDOB") {
+//             const selectedDate = new Date(value);
+//             const today = new Date();
+
+//             selectedDate.setHours(0, 0, 0, 0);
+//             today.setHours(0, 0, 0, 0);
+
+//             if (selectedDate > today) {
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Future dates are not allowed.',
+//                 });
+//                 return;
+//             }
+//         }
+
+//         // If DOB is being changed, calculate age
+//         if (name === 'nomineeDOB') {
+//             const age = calculateAge(value);
+//             setCurrentNominee(prev => ({
+//                 ...prev,
+//                 details: {
+//                     ...prev.details,
+//                     [name]: value,
+//                     nomineeAge: age
+//                 }
+//             }));
+//         } else {
+//             setCurrentNominee(prev => ({
+//                 ...prev,
+//                 [section]: {
+//                     ...prev[section],
+//                     [name]: value
+//                 }
+//             }));
+
+//             // Auto-fetch address when pincode is entered
+//             if (name === 'nomineePinCode' && value.length === 6 && !isSameAsPermanent) {
+//                 fetchAddressByPinCode(value);
+//             }
+//         }
+//     };
+
+//     const addNominee = () => {
+//         // First check for numbers in name fields
+//         if (/\d/.test(currentNominee.details.nomineeFirstName) ||
+//             /\d/.test(currentNominee.details.nomineeMiddleName) ||
+//             /\d/.test(currentNominee.details.nomineeLastName)
+//         ) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 text: 'Nominee name fields should contain only alphabets. Numbers are not allowed.',
+//             });
+//             return;
+//         }
+
+//         // Then check for validation errors
+//         const errors = validateNominee(currentNominee);
+//         setErrors(errors);
+
+//         if (Object.keys(errors).length > 0) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Validation Error',
+//                 text: 'Please fix the errors in the form before adding nominee.'
+//             });
+//             return;
+//         }
+
+//         const remainingPercentage = getRemainingPercentage();
+//         const currentPercentage = parseFloat(currentNominee.details.nomineePercentage);
+
+//         if (remainingPercentage <= 0) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Percentage Exhausted',
+//                 text: 'All your percentage value (100%) has been used'
+//             });
+//             return;
+//         }
+
+//         if (currentPercentage > remainingPercentage) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Invalid Percentage',
+//                 text: `You can only allocate up to ${remainingPercentage}% for this nominee`
+//             });
+//             return;
+//         }
+
+//         const newNominee = {
+//             id: nominees.length > 0 ? Math.max(...nominees.map(n => n.id)) + 1 : 1,
+//             ...currentNominee
+//         };
+
+//         setNominees(prev => [...prev, newNominee]);
+//         resetForm();
+//     };
+
+//     const removeNominee = (id) => {
+//         setNominees(prev => prev.filter(nominee => nominee.id !== id));
+        
+//         // Update the remaining percentage in the form after removal
+//         const remainingPercentage = getRemainingPercentage();
+//         setCurrentNominee(prev => ({
+//             ...prev,
+//             details: {
+//                 ...prev.details,
+//                 nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
+//             }
+//         }));
+//     };
+
+//     const resetForm = () => {
+//         const remainingPercentage = getRemainingPercentage();
+//         setCurrentNominee({
+//             details: {
+//                 nomineeSalutation: '',
+//                 nomineeFirstName: '',
+//                 nomineeMiddleName: '',
+//                 nomineeLastName: '',
+//                 nomineeRelation: '',
+//                 nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0',
+//                 nomineeDOB: '',
+//                 nomineeAge: ''
+//             },
+//             address: {
+//                 nomineeComplexName: '',
+//                 nomineeBuildingName: '',
+//                 nomineeArea: '',
+//                 nomineeLandmark: '',
+//                 nomineeCountry: '',
+//                 nomineePinCode: '',
+//                 nomineeCity: '',
+//                 nomineeDistrict: '',
+//                 nomineeState: ''
+//             }
+//         });
+//         setErrors({});
+//         setIsSameAsPermanent(false);
+//     };
+
+//     const submitnomini = async () => {
+//         if (nominees.length === 0) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Error',
+//                 text: 'Please add at least one nominee'
+//             });
+//             return;
+//         }
+
+//         // Check if total percentage is exactly 100
+//         const totalPercentage = nominees.reduce((sum, nominee) => sum + parseFloat(nominee.details.nomineePercentage), 0);
+//         if (totalPercentage !== 100) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Invalid Total Percentage',
+//                 text: `Total percentage must be exactly 100% (current: ${totalPercentage}%)`
+//             });
+//             return;
+//         }
+
+//         try {
+//             // Prepare nominees array for API
+//             const nomineesPayload = nominees.map(nominee => ({
+//                 id: nominee.id, // Include existing ID for updates
+//                 salutation: nominee.details.nomineeSalutation,
+//                 first_name: nominee.details.nomineeFirstName,
+//                 middle_name: nominee.details.nomineeMiddleName,
+//                 last_name: nominee.details.nomineeLastName,
+//                 relationship: nominee.details.nomineeRelation,
+//                 percentage: nominee.details.nomineePercentage,
+//                 dob: nominee.details.nomineeDOB,
+//                 age: nominee.details.nomineeAge,
+//                 nom_complex_name: nominee.address.nomineeComplexName,
+//                 nom_flat_no: nominee.address.nomineeBuildingName,
+//                 nom_area: nominee.address.nomineeArea,
+//                 nom_landmark: nominee.address.nomineeLandmark,
+//                 nom_country: nominee.address.nomineeCountry,
+//                 nom_pincode: nominee.address.nomineePinCode,
+//                 nom_city: nominee.address.nomineeCity,
+//                 nom_district: nominee.address.nomineeDistrict,
+//                 nom_state: nominee.address.nomineeState,
+//                 status: "APPROVED"
+//             }));
+
+//             // Send all nominees in one request
+//             await createAccountService.accountNominee_s5b({
+//                 application_id: id,
+//                 nominees: nomineesPayload
+//             });
+
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Nominee(s) saved successfully!',
+//                 showConfirmButton: false,
+//                 timer: 1500
+//             });
+
+//             if (onNext) onNext();
+
+//         } catch (error) {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Error',
+//                 text: error?.response?.data?.message || 'Failed to save nominee(s)'
+//             });
+//         }
+//     };
+
+//     const handleSameAddressToggle = async (e) => {
+//         const isChecked = e.target.checked;
+//         setIsSameAsPermanent(isChecked);
+
+//         if (isChecked) {
+//             try {
+//                 const response = await applicationDetailsService.getFullDetails(id);
+//                 if (response.data) {
+//                     const { application_addresss } = response.data;
+//                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
+
+//                     setCurrentNominee(prev => ({
+//                         ...prev,
+//                         address: {
+//                             ...prev.address,
+//                             nomineeComplexName: address.per_complex_name,
+//                             nomineeBuildingName: address.per_flat_no,
+//                             nomineeArea: address.per_area,
+//                             nomineeLandmark: address.per_landmark || '',
+//                             nomineeCountry: address.per_country,
+//                             nomineePinCode: address.per_pincode,
+//                             nomineeCity: address.per_city,
+//                             nomineeDistrict: address.per_district,
+//                             nomineeState: address.per_state
+//                         }
+//                     }));
+//                 }
+//             } catch (error) {
+//                 console.error('Error fetching address details:', error);
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Error',
+//                     text: 'Failed to fetch permanent address details'
+//                 });
+//             }
+//         } else {
+//             // Clear address fields when unchecked
+//             setCurrentNominee(prev => ({
+//                 ...prev,
+//                 address: {
+//                     ...prev.address,
+//                     nomineeComplexName: '',
+//                     nomineeBuildingName: '',
+//                     nomineeArea: '',
+//                     nomineeLandmark: '',
+//                     nomineeCountry: '',
+//                     nomineePinCode: '',
+//                     nomineeCity: '',
+//                     nomineeDistrict: '',
+//                     nomineeState: ''
+//                 }
+//             }));
+//         }
+//     };
+
+//     return (
+//         <div className="max-w-screen-xl mx-auto">
+//             <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
+//             {/* Nominee Form */}
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
+//                 <SelectField
+//                     label="Salutation"
+//                     name="nomineeSalutation"
+//                     value={currentNominee.details.nomineeSalutation}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     options={salutation}
+//                     error={errors.nomineeSalutation}
+//                 />
+//                 <InputField
+//                     label="First Name"
+//                     name="nomineeFirstName"
+//                     value={currentNominee.details.nomineeFirstName}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     max={50}
+//                     error={errors.nomineeFirstName}
+//                 />
+//                 <InputField
+//                     label="Middle Name"
+//                     name="nomineeMiddleName"
+//                     value={currentNominee.details.nomineeMiddleName}
+//                     onChange={(e) => handleChange('details', e)}
+//                     max={50}
+//                     error={errors.nomineeMiddleName}
+//                 />
+//                 <InputField
+//                     label="Last Name"
+//                     name="nomineeLastName"
+//                     value={currentNominee.details.nomineeLastName}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     max={50}
+//                     error={errors.nomineeLastName}
+//                 />
+//                 <SelectField
+//                     label="Relation"
+//                     name="nomineeRelation"
+//                     value={currentNominee.details.nomineeRelation}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     options={relation}
+//                     error={errors.nomineeRelation}
+//                 />
+//                 <InputField
+//                     label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
+//                     name="nomineePercentage"
+//                     value={currentNominee.details.nomineePercentage}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     max={3}
+//                     error={errors.nomineePercentage}
+//                 />
+//                 <InputField
+//                     label="Date of Birth"
+//                     name="nomineeDOB"
+//                     type="date"
+//                     value={currentNominee.details.nomineeDOB}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     error={errors.nomineeDOB}
+//                 />
+//                 <InputField
+//                     label="Age"
+//                     name="nomineeAge"
+//                     value={currentNominee.details.nomineeAge}
+//                     onChange={(e) => handleChange('details', e)}
+//                     required
+//                     max={3}
+//                     error={errors.nomineeAge}
+//                     disabled={true}
+//                 />
+//             </div>
+
+//             <div className='flex items-center mb-2'>
+//                 <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
+//                 <div className="flex items-center">
+//                     <input
+//                         type="checkbox"
+//                         id="sameAsPermanent"
+//                         className="me-2"
+//                         checked={isSameAsPermanent}
+//                         onChange={handleSameAddressToggle}
+//                     />
+//                     <label htmlFor="sameAsPermanent">Same as permanent address</label>
+//                 </div>
+//             </div>
+
+//             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 ">
+//                 <InputField
+//                     label="Complex Name"
+//                     name="nomineeComplexName"
+//                     value={currentNominee.address.nomineeComplexName}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     max={50}
+//                     error={errors.nomineeComplexName}
+//                     disabled={isSameAsPermanent}
+//                 />
+//                 <InputField
+//                     label="Building Name"
+//                     name="nomineeBuildingName"
+//                     value={currentNominee.address.nomineeBuildingName}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     max={20}
+//                     error={errors.nomineeBuildingName}
+//                     disabled={isSameAsPermanent}
+//                 />
+//                 <InputField
+//                     label="Area"
+//                     name="nomineeArea"
+//                     value={currentNominee.address.nomineeArea}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     max={50}
+//                     error={errors.nomineeArea}
+//                     disabled={isSameAsPermanent}
+//                 />
+//                 <InputField
+//                     label="Landmark"
+//                     name="nomineeLandmark"
+//                     value={currentNominee.address.nomineeLandmark}
+//                     onChange={(e) => handleChange('address', e)}
+//                     max={50}
+//                     error={errors.nomineeLandmark}
+//                     disabled={isSameAsPermanent}
+//                 />
+//                 <InputField
+//                     label="Country"
+//                     name="nomineeCountry"
+//                     value={currentNominee.address.nomineeCountry}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     max={30}
+//                     error={errors.nomineeCountry}
+//                     disabled={isSameAsPermanent}
+//                 />
+//                 <InputField
+//                     label="Pin Code"
+//                     name="nomineePinCode"
+//                     value={currentNominee.address.nomineePinCode}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     max={6}
+//                     error={errors.nomineePinCode}
+//                     disabled={isSameAsPermanent || isFetchingPincode}
+//                 />
+//                 <InputField
+//                     label="State"
+//                     name="nomineeState"
+//                     value={currentNominee.address.nomineeState}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     disabled={true}
+//                 />
+//                 <InputField
+//                     label="City"
+//                     name="nomineeCity"
+//                     value={currentNominee.address.nomineeCity}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     disabled={true}
+//                 />
+//                 <InputField
+//                     label="District"
+//                     name="nomineeDistrict"
+//                     value={currentNominee.address.nomineeDistrict}
+//                     onChange={(e) => handleChange('address', e)}
+//                     required
+//                     disabled={true}
+//                 />
+//             </div>
+
+//             <div className="flex justify-end mb-6 mt-3">
+//                 <CommonButton
+//                     onClick={addNominee}
+//                     className="border border-green-500 rounded-md text-green-500 px-3 py-1"
+//                 >
+//                     Add Nominee
+//                 </CommonButton>
+//             </div>
+
+//             {/* Nominees Table */}
+//             {nominees.length > 0 && (
+//                 <div className="mb-8">
+//                     <h2 className="text-xl font-bold mb-4">Nominees List</h2>
+//                     <div className="overflow-x-auto">
+//                         <table className="min-w-full bg-white border border-gray-200">
+//                             <thead className="bg-gray-100">
+//                                 <tr>
+//                                     <th className="py-2 px-4 border-b">Name of the Nominee</th>
+//                                     <th className="py-2 px-4 border-b">Address</th>
+//                                     <th className="py-2 px-4 border-b">Relationship</th>
+//                                     <th className="py-2 px-4 border-b">Date of Birth</th>
+//                                     <th className="py-2 px-4 border-b">Age</th>
+//                                     <th className="py-2 px-4 border-b">Percentage</th>
+//                                     <th className="py-2 px-4 border-b">Action</th>
+//                                 </tr>
+//                             </thead>
+//                             <tbody>
+//                                 {nominees.map((nominee) => (
+//                                     <tr key={nominee.id} className="hover:bg-gray-50">
+//                                         <td className="py-2 px-4 border-b">
+//                                             {nominee.details.nomineeSalutation} {nominee.details.nomineeFirstName} {nominee.details.nomineeLastName}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             {nominee.address.nomineeComplexName}, {nominee.address.nomineeBuildingName}, {nominee.address.nomineeArea}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             {nominee.details.nomineeRelation}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             {new Date(nominee.details.nomineeDOB).toLocaleDateString()}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             {nominee.details.nomineeAge}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             {nominee.details.nomineePercentage}%
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b">
+//                                             <button
+//                                                 onClick={() => removeNominee(nominee.id)}
+//                                                 className="text-red-500 hover:text-red-700"
+//                                             >
+//                                                 <i className="bi bi-trash"></i>
+//                                             </button>
+//                                         </td>
+//                                     </tr>
+//                                 ))}
+//                             </tbody>
+//                         </table>
+//                     </div>
+//                 </div>
+//             )}
+
+//             <div className="next-back-btns z-10">
+//                 <CommonButton onClick={onBack} variant="outlined" className="btn-back">
+//                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+//                 </CommonButton>
+//                 <CommonButton onClick={submitnomini} variant="contained" className="btn-next">
+//                     Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+//                 </CommonButton>
+//             </div>
+//         </div>
+//     );
+// }
+
+// export default NominationForm;
+
+// const InputField = ({
+//     label,
+//     name,
+//     type = 'text',
+//     value,
+//     onChange,
+//     required = false,
+//     max,
+//     error,
+//     disabled = false,
+//     validationType,
+//     ...rest
+// }) => {
+//     const [isFocused, setIsFocused] = useState(false);
+//     const [touched, setTouched] = useState(false);
+
+//     const shouldFloat = isFocused || value;
+
+//     const handleBlur = () => {
+//         setIsFocused(false);
+//         setTouched(true);
+//     };
+
+//     return (
+//         <div className={clsx('floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+//             <input
+//                 id={name}
+//                 name={name}
+//                 type={type}
+//                 value={value}
+//                 onChange={onChange}
+//                 onFocus={() => setIsFocused(true)}
+//                 onBlur={handleBlur}
+//                 required={required}
+//                 className={clsx(
+//                     'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+//                     'transition-all',
+//                     {
+//                         'border-red-500': error && touched,
+//                         'bg-gray-100 cursor-not-allowed': disabled
+//                     }
+//                 )}
+//                 placeholder={label}
+//                 maxLength={max}
+//                 disabled={disabled}
+//                 {...rest}
+//             />
+//             <label
+//                 htmlFor={name}
+//                 className={clsx(
+//                     'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+//                     {
+//                         'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+//                         'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+//                     }
+//                 )}
+//             >
+//                 {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+//             </label>
+
+//             {error && touched && (
+//                 <p className="mt-1 text-xs text-red-500">
+//                     {error}
+//                 </p>
+//             )}
+//         </div>
+//     );
+// };
+
+// const SelectField = ({
+//     label,
+//     name,
+//     value,
+//     onChange,
+//     required = false,
+//     options,
+//     error,
+//     disabled = false,
+//     ...rest
+// }) => {
+//     const [isFocused, setIsFocused] = useState(false);
+//     const [touched, setTouched] = useState(false);
+
+//     const shouldFloat = isFocused || value;
+
+//     const handleBlur = () => {
+//         setIsFocused(false);
+//         setTouched(true);
+//     };
+
+//     return (
+//         <div className={clsx(' floating-input-height relative w-full border border-gray-300 dark:border-gray-700 rounded-md')}>
+//             <select
+//                 id={name}
+//                 name={name}
+//                 value={value}
+//                 onChange={onChange}
+//                 onFocus={() => setIsFocused(true)}
+//                 onBlur={handleBlur}
+//                 required={required}
+//                 className={clsx(
+//                     'peer block w-full bg-transparent px-4 py-2 text-sm rounded-md',
+//                     'transition-all',
+//                     {
+//                         'border-red-500': error && touched,
+//                         'bg-gray-100 cursor-not-allowed': disabled
+//                     }
+//                 )}
+//                 disabled={disabled}
+//                 {...rest}
+//             >
+//                 <option value="">Select {label}</option>
+//                 {options.map((option) => (
+//                     <option key={option.value} value={option.value}>
+//                         {option.label}
+//                     </option>
+//                 ))}
+//             </select>
+//             <label
+//                 htmlFor={name}
+//                 className={clsx(
+//                     'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-300 transition-all duration-200 pointer-events-none',
+//                     {
+//                         'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+//                         'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+//                     }
+//                 )}
+//             >
+//                 {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+//             </label>
+
+//             {error && touched && (
+//                 <p className="mt-1 text-xs text-red-500">
+//                     {error}
+//                 </p>
+//             )}
+//         </div>
+//     );
+// };
 
  

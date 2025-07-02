@@ -155,15 +155,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         application_no: response.application_no,
         application_id: response.application_id,
       });
-      // localStorage.setItem("application_id", response.application_id);
+      localStorage.setItem("application_id", response.application_id);
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Your data has been saved successfully.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      // Swal.fire({
+      //   icon: "success",
+      //   title: "Success!",
+      //   text: "Your data has been saved successfully.",
+      //   showConfirmButton: false,
+      //   timer: 1500,
+      // });
       onNext();
     } catch (error) {
       Swal.fire({
@@ -189,6 +189,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
           <div className="flex flex-wrap items-top">
             <div className="lg:w-1/2 md:full sm:w-full my-4">
               <h2 className="text-xl font-bold mb-2">Application Form : {id}</h2>
+              
+          {localFormData &&   <p className="text-red-500 mb-2" > Review For : {localFormData.status_comment}</p> } 
               <div className="application-type-container">
                 <label className="application-type">
                   <input
@@ -336,7 +338,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
           </div>
 
           <> 
-            <p className="text-red-500" > Review For : {localFormData && localFormData.status_comment}</p> 
             <br />
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
               {/* First Name - Text only, 50 char limit */}

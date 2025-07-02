@@ -185,8 +185,8 @@ useEffect(() => {
 
     return (
         <div className="personal-details-form">
-            <h2 className="text-xl font-bold mb-2">Personal Details</h2>
-            <p className="text-red-500" > Review For : {reason && reason.account_personal_details_status_comment}</p> <br />
+            <h2 className="text-xl font-bold mb-1">Personal Details</h2>
+           {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.account_personal_details_status_comment}</p> }
             <div className='block sm:flex'>
                 <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-4">
 
