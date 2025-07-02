@@ -55,7 +55,7 @@ function AccountBarChart() {
                     response = await agentService.agentapplicationmonthly(storedId);
                     setChartData(transformData(response.data, true));
                 } else {
-                    response = await agentService.agentapplicationyearly(1);
+                    response = await agentService.agentapplicationyearly(storedId);
                     setChartData(transformData(response.data, false));
                 }
             } catch (error) {
