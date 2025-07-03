@@ -61,20 +61,20 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     const isDocumentUploaded = (documentValue) => {
         if (documentValue === 'AADHAAR_CARD_FRONT') {
-            return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+            return document.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
         }
         if (documentValue === 'AADHAAR_CARD_BACK') {
-            return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+            return document.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         }
         return document.some(doc => doc.type.includes(documentValue));
     };
 
     const isAadhaarFrontUploaded = () => {
-        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
     };
 
     const isAadhaarBackUploaded = () => {
-        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_CARD_BACK');
     };
 
     const validateAadharCard = async (imageData, side) => {
@@ -203,9 +203,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             }
         }
 
-        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_FRONT_JPG' :
-            documentValue === 'AADHAAR_CARD_BACK' ? 'AADHAAR_BACK_JPG' :
-                `${documentValue}_JPG`;
+        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_CARD_FRONT' :
+            documentValue === 'AADHAAR_CARD_BACK' ? 'AADHAAR_CARD_BACK' :
+                `${documentValue}`;
 
         const blob = await fetch(imageData).then(res => res.blob());
         const file = new File([blob], `${documentValue}.jpg`, { type: 'image/jpeg' });
@@ -352,9 +352,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         showAlertMessage('Document Removed', `${docToRemove.name} has been removed`, 'success');
 
         if (docToRemove?.type.includes('AADHAAR')) {
-            if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
+            if (docToRemove.type === 'AADHAAR_CARD_FRONT') {
                 setSelectedAddressProof('AADHAAR_CARD_FRONT');
-            } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
+            } else if (docToRemove.type === 'AADHAAR_CARD_BACK') {
                 setSelectedAddressProof('AADHAAR_CARD_BACK');
             }
         }
