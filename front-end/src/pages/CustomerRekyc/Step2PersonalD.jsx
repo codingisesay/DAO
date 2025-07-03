@@ -130,23 +130,42 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
   });
 
   // CBS data (right side) - editable
+  // const [cbsData, setCbsData] = useState({
+  //   kyc_cbs_salutation: "Mrs",
+  //   kyc_cbs_middle_name: "Subhash",
+  //   kyc_cbs_first_name: "Sushant",
+  //   kyc_cbs_last_name: "Nikam",
+  //   kyc_cbs_date_of_birth: "1992-12-12",
+  //   kyc_cbs_mobile_no: "8433843848",
+  //   kyc_cbs_flat_no: "Kalpgreen G4/106/02",
+  //   kyc_cbs_lankmark: "Kattap Pada, Kulgoan",
+  //   kyc_cbs_pincode: "400070",
+  //   kyc_cbs_district: "Thane",
+  //   kyc_cbs_gender: "Male",
+  //   kyc_cbs_complex_name: "Kalpcity Phase 2",
+  //   kyc_cbs_area: "Near Old Petrol Pump",
+  //   kyc_cbs_country: "India",
+  //   kyc_cbs_city: "Badlapur",
+  //   kyc_cbs_state: "Maharashtra",
+  // });
+  // CBS data (right side) - editable
   const [cbsData, setCbsData] = useState({
-    kyc_cbs_salutation: "Mrs",
-    kyc_cbs_middle_name: "Subhash",
-    kyc_cbs_first_name: "Sushant",
-    kyc_cbs_last_name: "Nikam",
-    kyc_cbs_date_of_birth: "1992-12-12",
-    kyc_cbs_mobile_no: "8433843848",
-    kyc_cbs_flat_no: "Kalpgreen G4/106/02",
-    kyc_cbs_lankmark: "Kattap Pada, Kulgoan",
-    kyc_cbs_pincode: "400070",
-    kyc_cbs_district: "Thane",
-    kyc_cbs_gender: "Male",
-    kyc_cbs_complex_name: "Kalpcity Phase 2",
-    kyc_cbs_area: "Near Old Petrol Pump",
-    kyc_cbs_country: "India",
-    kyc_cbs_city: "Badlapur",
-    kyc_cbs_state: "Maharashtra",
+    kyc_cbs_salutation: "1",
+    kyc_cbs_middle_name: "2",
+    kyc_cbs_first_name: "3",
+    kyc_cbs_last_name: "4",
+    kyc_cbs_date_of_birth: "5",
+    kyc_cbs_mobile_no: "6",
+    kyc_cbs_flat_no: "7 G4/106/02",
+    kyc_cbs_lankmark: "8 Pada, Kulgoan",
+    kyc_cbs_pincode: "9",
+    kyc_cbs_district: "10",
+    kyc_cbs_gender: "11",
+    kyc_cbs_complex_name: "12 Phase 2",
+    kyc_cbs_area: "13 Old Petrol Pump",
+    kyc_cbs_country: "14",
+    kyc_cbs_city: "15",
+    kyc_cbs_state: "16",
   });
 
   // After VS CBS data - will store modified CBS data
