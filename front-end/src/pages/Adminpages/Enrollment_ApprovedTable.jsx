@@ -1,7 +1,7 @@
-import { useAuth } from '../../auth/AuthContext';
-import { adminService } from '../../services/apiServices';
-import DataTable from '../../components/DataTable';
-import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
+import { useAuth } from "../../auth/AuthContext";
+import { adminService } from "../../services/apiServices";
+import DataTable from "../../components/DataTable";
+import { COLUMN_DEFINITIONS } from "../../components/DataTable/config/columnConfig";
 import React, { useState, useEffect } from "react";
 
 function ApprovedTable() {
@@ -14,20 +14,28 @@ function ApprovedTable() {
   const [currentPage, setCurrentPage] = useState(0);
   const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
   const [filters, setFilters] = useState({});
-  const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
+  const [activeView, setActiveView] = useState("applications"); // 'applications' or 'agents'
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.application_id, field: "application_id", type: "text" },
+    {
+      ...COLUMN_DEFINITIONS.application_id,
+      field: "application_id",
+      type: "text",
+    },
     { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
     { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
     { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
-    { ...COLUMN_DEFINITIONS.account_open_date, field: "account_open_date", type: "date" },
+    {
+      ...COLUMN_DEFINITIONS.account_open_date,
+      field: "account_open_date",
+      type: "date",
+    },
     { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
   ];
 
   const countColumns = [
     { header: "Agent ID", field: "agent_id", type: "text" },
-    { header: "Approved Count", field: "approved_count", type: "text" }
+    { header: "Approved Count", field: "approved_count", type: "text" },
   ];
 
   const fetchData = async () => {
@@ -95,21 +103,29 @@ function ApprovedTable() {
         {/* View Toggle Buttons */}
         <div className="flex mb-4">
           <button
-            onClick={() => toggleView('applications')}
-            className={`px-4 py-2 rounded ${activeView === 'applications' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => toggleView("applications")}
+            className={`px-4 py-2 rounded ${
+              activeView === "applications"
+                ? "bg-green-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             Application List
           </button>
           <button
-            onClick={() => toggleView('agents')}
-            className={`px-4 py-2 rounded ${activeView === 'agents' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => toggleView("agents")}
+            className={`px-4 py-2 rounded ${
+              activeView === "agents"
+                ? "bg-green-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
-            List by Agent
+            List by Agent j
           </button>
         </div>
 
         {/* Application List Table */}
-        {activeView === 'applications' && (
+        {activeView === "applications" && (
           <div className="bank-master w-300px min-w-300px">
             <DataTable
               data={data}
@@ -126,7 +142,7 @@ function ApprovedTable() {
         )}
 
         {/* Agent Count Table */}
-        {activeView === 'agents' && (
+        {activeView === "agents" && (
           <div className="bank-master w-300px min-w-300px">
             <DataTable
               data={countData}
@@ -134,7 +150,7 @@ function ApprovedTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true}
             />
           </div>
         )}
@@ -145,24 +161,12 @@ function ApprovedTable() {
 
 export default ApprovedTable;
 
-
-
-
-
-
-
-
-
-
-
 // import { useAuth } from '../../auth/AuthContext';
 // import { adminService } from '../../services/apiServices'; // <-- Import your service
 // import DataTable from '../../components/DataTable';
 // import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
 
 // import React, { useState, useEffect } from "react"; // Import necessary hooks from React
-
-
 
 // function ApprovedTable() {
 
@@ -176,7 +180,6 @@ export default ApprovedTable;
 //   const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
 //   const [filters, setFilters] = useState({});
 
-
 //   const columns = [
 //     { ...COLUMN_DEFINITIONS.application_id, field: "application_id", type: "text" },
 //     { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
@@ -185,7 +188,6 @@ export default ApprovedTable;
 //     { ...COLUMN_DEFINITIONS.account_open_date, field: "account_open_date", type: "date" },
 //     { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
 //   ];
-
 
 //   const countColumns = [
 //     { header: "Agent ID", field: "agent_id", type: "text" },
@@ -209,7 +211,6 @@ export default ApprovedTable;
 //     }
 //   };
 
-  
 //     const fetchDataCount = async () => {
 //       try {
 //         setCountLoading(true);
@@ -222,11 +223,10 @@ export default ApprovedTable;
 //         setCountLoading(false);
 //       }
 //     };
-  
 
 //   /*
 //   The `useEffect` hook is used to perform side effects in the component.
-//   In this case, it ensures that `fetchBranches()` is called whenever 
+//   In this case, it ensures that `fetchBranches()` is called whenever
 //   certain dependencies change.
 // */
 
@@ -251,7 +251,6 @@ export default ApprovedTable;
 //   const handlePageChange = (page) => {
 //     setCurrentPage(page);
 //   };
-
 
 //   return (
 //     <>
@@ -302,10 +301,7 @@ export default ApprovedTable;
 //         </div>
 //       </div>
 
-
-
 //     </>);
 // }
 
 // export default ApprovedTable;
-
