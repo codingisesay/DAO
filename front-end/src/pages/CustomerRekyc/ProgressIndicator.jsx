@@ -1,29 +1,37 @@
-import "./style.css"; import React, { useState } from 'react';
-import payvanceLogo from '../../assets/imgs/payvance_dark_logo.png';
-import ThemeToggle from '../../components/Toggle';
-import { useAuth } from '../../auth/AuthContext';
+import "./style.css";
+import React, { useState } from "react";
+import payvanceLogo from "../../assets/imgs/payvance_dark_logo.png";
+import ThemeToggle from "../../components/Toggle";
+import { useAuth } from "../../auth/AuthContext";
 import useLocalStorage from "use-local-storage";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
-     const navigate = useNavigate(); const { logout } = useAuth();
-     
-    const username= localStorage.getItem('userName');
-    const userrole =localStorage.getItem('roleName');
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const username = localStorage.getItem("userName");
+  const userrole = localStorage.getItem("roleName");
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
   return (
-    <div className='stepper-container max-w-md mx-auto p-5 relative'>
-      <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo mx-auto" />
+    <div className="stepper-container max-w-md mx-auto p-5 relative">
+      <img
+        src={payvanceLogo}
+        alt="PayVance Logo"
+        className="payvance-logo mx-auto"
+      />
 
-      <ul className='max-w-md mx-auto my-3'  onClick={() => navigate(-1)}>
-        <li className="">
-          <i className="bi bi-columns-gap"></i> &nbsp;
-          Back To Dashboard
+      <ul className="max-w-md mx-auto my-3" onClick={() => navigate(-1)}>
+        <li
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-green-500 font-semibold cursor-pointer
+             hover:text-green-600 hover:bg-green-50 transition-all duration-300"
+        >
+          <i className="bi bi-columns-gap p-2 rounded-full text-green-500"></i>
+          <span className="text-glow-pulse">Back To Dashboard</span>
         </li>
       </ul>
       <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
@@ -31,16 +39,20 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
 
       <div className="sidebar-stepper-container">
         <div className="vertical-stepper">
-          {[1, 2, 3, 4,].map((step) => (
+          {[1, 2, 3, 4].map((step) => (
             <div
               key={step}
-              className={`stepper-item ${currentStep === step ? "active" : ""
-                } ${progress[step] === "completed" ||
-                  progress[step] === "skipped" ? "completed" : ""
-                }`}
+              className={`stepper-item ${
+                currentStep === step ? "active" : ""
+              } ${
+                progress[step] === "completed" || progress[step] === "skipped"
+                  ? "completed"
+                  : ""
+              }`}
             >
               <div className="stepper-number">
-                {progress[step] === "completed" || progress[step] === "skipped" ? (
+                {progress[step] === "completed" ||
+                progress[step] === "skipped" ? (
                   ""
                 ) : (
                   <span>{step}</span>
@@ -53,18 +65,28 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
                   {step === 3 && "Document Details"}
                   {step === 4 && "Video KYC"}
                 </div>
-                <div className={`stepper-status text-xs ${progress[step] === "completed" ? "completed" :
-                  progress[step] === "inprogress" ? "inprogress" :
-                    progress[step] === "skipped" ? "skipped" : "pending"
-                  }`}>
-                  {progress[step] === "completed" ? "Completed" :
-                    progress[step] === "inprogress" ? "In Progress" :
-                      progress[step] === "skipped" ? "Skipped" : "Pending"}
+                <div
+                  className={`stepper-status text-xs ${
+                    progress[step] === "completed"
+                      ? "completed"
+                      : progress[step] === "inprogress"
+                      ? "inprogress"
+                      : progress[step] === "skipped"
+                      ? "skipped"
+                      : "pending"
+                  }`}
+                >
+                  {progress[step] === "completed"
+                    ? "Completed"
+                    : progress[step] === "inprogress"
+                    ? "In Progress"
+                    : progress[step] === "skipped"
+                    ? "Skipped"
+                    : "Pending"}
                 </div>
               </div>
 
               {/* Sub-steps for step 2 */}
-
             </div>
           ))}
         </div>
@@ -77,7 +99,10 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
             alt="profile"
             className="rounded-full object-cover mx-2"
           />
-          <span className='font-bold'>{username} <br /><small className='font-normal'> {userrole}</small></span>
+          <span className="font-bold">
+            {username} <br />
+            <small className="font-normal"> {userrole}</small>
+          </span>
         </div>
         <div className="flex items-center justify-between footer-icon-collection">
           <ThemeToggle />
@@ -87,7 +112,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
           <i className="mx-2 bi  bi-box-arrow-right" onClick={handleLogout}></i>
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 
