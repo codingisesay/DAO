@@ -239,7 +239,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className='md:w-1/3 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
-                            <h2 className="text-xl font-bold mb-2"> RE-KYC Verification Status</h2>
+                            <h2 className="text-xl font-bold mb-2"> Re-KYC Verification Status</h2>
                             <DemographicsBarChart />
                         </div>
                     </div>

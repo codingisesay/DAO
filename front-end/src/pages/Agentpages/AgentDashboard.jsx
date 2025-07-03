@@ -210,7 +210,7 @@ const Dashboard = () => {
             <div className="md:w-1/3 sm:w-full p-1">
               <div className="bg-white w-full my-2 px-4 pt-4 rounded-md relative">
                 <h2 className="text-xl font-bold mb-2">
-                  RE-KYC Application Status
+                  Re-KYC Application Status
                 </h2>
                 <div className="pb-11">
                   <KYCgue total={2000} approved={800} pending={1200} />
