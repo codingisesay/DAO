@@ -1,4 +1,4 @@
- 
+
 
 import React, { useState, useEffect, useRef } from 'react';
 import CommanInput from '../../components/CommanInput';
@@ -17,7 +17,7 @@ import { use } from 'react';
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
     const navigate = useNavigate();
-    const [nominees, setNominees] =useState([])
+    const [nominees, setNominees] = useState([])
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
 
@@ -32,140 +32,140 @@ const ViewApplicationForm = () => {
                 if (response.data) {
                     const { application, personal_details, account_personal_details, account_nominees, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                        console.log('NOM : ', account_nominees);
-                          if (account_nominees && account_nominees.length > 0) {
+                    console.log('NOM : ', account_nominees);
+                    if (account_nominees && account_nominees.length > 0) {
                         setNominees(account_nominees);
                     }
                     setFormData({
-                    application_id: applicationId ,
+                        application_id: applicationId,
 
-                    // Authentication
-                    auth_type: application.auth_type || "",
-                    auth_code: application.auth_code || "",
-                    status: application.auth_status || "",
+                        // Authentication
+                        auth_type: application.auth_type || "",
+                        auth_code: application.auth_code || "",
+                        status: application.auth_status || "",
 
-                    // Personal Info
-                    salutation: personal_details?.salutation || "",
-                    first_name: application.first_name || "",
-                    middle_name: application.middle_name || "",
-                    last_name: application.last_name || "",
-                    DOB: application.DOB || "",
-                    gender: application.gender || "",
-                    religion: personal_details?.religion || "",
-                    caste: personal_details?.caste || "",
-                    marital_status: personal_details?.marital_status || "",
+                        // Personal Info
+                        salutation: personal_details?.salutation || "",
+                        first_name: application.first_name || "",
+                        middle_name: application.middle_name || "",
+                        last_name: application.last_name || "",
+                        DOB: application.DOB || "",
+                        gender: application.gender || "",
+                        religion: personal_details?.religion || "",
+                        caste: personal_details?.caste || "",
+                        marital_status: personal_details?.marital_status || "",
 
-                    // Contact
-                    mobile: application.mobile || "",
-                    alt_mob_no: personal_details?.alt_mob_no || "",
-                    email: personal_details?.email || "",
+                        // Contact
+                        mobile: application.mobile || "",
+                        alt_mob_no: personal_details?.alt_mob_no || "",
+                        email: personal_details?.email || "",
 
-                    // Permanent Address
-                    complex_name: application.complex_name || "",
-                    flat_no: application.flat_no || "",
-                    area: application.area || "",
-                    landmark: application.landmark || "",
-                    country: application.country || "",
-                    pincode: application.pincode || "",
-                    city: application.city || "",
-                    district: application.district || "",
-                    state: application.state || "",
+                        // Permanent Address
+                        complex_name: application.complex_name || "",
+                        flat_no: application.flat_no || "",
+                        area: application.area || "",
+                        landmark: application.landmark || "",
+                        country: application.country || "",
+                        pincode: application.pincode || "",
+                        city: application.city || "",
+                        district: application.district || "",
+                        state: application.state || "",
 
-                    // Correspondence Address
-                    per_complex_name: address?.per_complex_name || "",
-                    per_flat_no: address?.per_flat_no || "",
-                    per_area: address?.per_area || "",
-                    per_landmark: address?.per_landmark || "",
-                    per_country: address?.per_country || "",
-                    per_pincode: address?.per_pincode || "",
-                    per_city: address?.per_city || "",
-                    per_district: address?.per_district || "",
-                    per_state: address?.per_state || "",
-                    cor_complex_name: address?.cor_complex_name || "",
-                    cor_flat_no: address?.cor_flat_no || "",
-                    cor_area: address?.cor_area || "",
-                    cor_landmark: address?.cor_landmark || "",
-                    cor_country: address?.cor_country || "",
-                    cor_pincode: address?.cor_pincode || "",
-                    cor_city: address?.cor_city || "",
-                    cor_district: address?.cor_district || "",
-                    cor_state: address?.cor_state || "",
+                        // Correspondence Address
+                        per_complex_name: address?.per_complex_name || "",
+                        per_flat_no: address?.per_flat_no || "",
+                        per_area: address?.per_area || "",
+                        per_landmark: address?.per_landmark || "",
+                        per_country: address?.per_country || "",
+                        per_pincode: address?.per_pincode || "",
+                        per_city: address?.per_city || "",
+                        per_district: address?.per_district || "",
+                        per_state: address?.per_state || "",
+                        cor_complex_name: address?.cor_complex_name || "",
+                        cor_flat_no: address?.cor_flat_no || "",
+                        cor_area: address?.cor_area || "",
+                        cor_landmark: address?.cor_landmark || "",
+                        cor_country: address?.cor_country || "",
+                        cor_pincode: address?.cor_pincode || "",
+                        cor_city: address?.cor_city || "",
+                        cor_district: address?.cor_district || "",
+                        cor_state: address?.cor_state || "",
 
-                    // Identity Documents
-                    adhar_card: personal_details?.adhar_card || "",
-                    pan_card: personal_details?.pan_card || "",
-                    passport: personal_details?.passport || "",
-                    driving_license: personal_details?.driving_license || "",
-                    voter_id: personal_details?.voter_id || "",
+                        // Identity Documents
+                        adhar_card: personal_details?.adhar_card || "",
+                        pan_card: personal_details?.pan_card || "",
+                        passport: personal_details?.passport || "",
+                        driving_license: personal_details?.driving_license || "",
+                        voter_id: personal_details?.voter_id || "",
 
-                    // Family Details
-                    father_prefix_name: account_personal_details?.father_prefix_name || "",
-                    father_first_name: account_personal_details?.father_first_name || "",
-                    father_middle_name: account_personal_details?.father_middle_name || "",
-                    father_last_name: account_personal_details?.father_last_name || "",
-                    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
-                    mother_first_name: account_personal_details?.mother_first_name || "",
-                    mother_middle_name: account_personal_details?.mother_middle_name || "",
-                    mother_last_name: account_personal_details?.mother_last_name || "",
-                    birth_place: account_personal_details?.birth_place || "",
-                    birth_country: account_personal_details?.birth_country || "",
+                        // Family Details
+                        father_prefix_name: account_personal_details?.father_prefix_name || "",
+                        father_first_name: account_personal_details?.father_first_name || "",
+                        father_middle_name: account_personal_details?.father_middle_name || "",
+                        father_last_name: account_personal_details?.father_last_name || "",
+                        mother_prefix_name: account_personal_details?.mother_prefix_name || "",
+                        mother_first_name: account_personal_details?.mother_first_name || "",
+                        mother_middle_name: account_personal_details?.mother_middle_name || "",
+                        mother_last_name: account_personal_details?.mother_last_name || "",
+                        birth_place: account_personal_details?.birth_place || "",
+                        birth_country: account_personal_details?.birth_country || "",
 
-                    // Occupation Details
-                    occoupation_type: account_personal_details?.occoupation_type || "",
-                    occupation_name: account_personal_details?.occupation_name || "",
-                    if_salaryed: account_personal_details?.if_salaryed || "",
-                    designation: account_personal_details?.designation || "",
-                    nature_of_occoupation: account_personal_details?.nature_of_occoupation || "",
-                    qualification: account_personal_details?.qualification || "",
-                    anual_income: account_personal_details?.anual_income || "",
-                    remark: account_personal_details?.remark || "",
+                        // Occupation Details
+                        occoupation_type: account_personal_details?.occoupation_type || "",
+                        occupation_name: account_personal_details?.occupation_name || "",
+                        if_salaryed: account_personal_details?.if_salaryed || "",
+                        designation: account_personal_details?.designation || "",
+                        nature_of_occoupation: account_personal_details?.nature_of_occoupation || "",
+                        qualification: account_personal_details?.qualification || "",
+                        anual_income: account_personal_details?.anual_income || "",
+                        remark: account_personal_details?.remark || "",
 
-                    // Documents
-                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
-                    : "",
+                        // Documents
+                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                            : "",
 
-                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
-                    : "",
+                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                            : "",
 
-                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
-                    : "",
+                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                            : "",
 
-                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
-                    : "",
+                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                            : "",
 
-                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
-                    : "",
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                            : "",
 
-                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
-                    : "",
+                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                            : "",
 
-                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
-                    : "",
+                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                            : "",
 
-                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
-                    : "",
+                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                            : "",
 
-                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
-                    : "",
+                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                            : "",
 
-                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
-                    : "",
+                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                            : "",
 
-                    signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
-                    : "",
- 
-                    photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
+                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
+                            : "",
+
+                        photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
                     // console.log(response)
                 }
@@ -174,7 +174,7 @@ const ViewApplicationForm = () => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text:  error?.response?.data?.message
+                    text: error?.response?.data?.message
                 });
             }
         };
@@ -201,8 +201,8 @@ const ViewApplicationForm = () => {
                     <div className='flex justify-between items-center mb-4'>
                         <div>
                             <p className="text-gray-600">Application Number: {formData.application_id || 'N/A'}</p>
-                          <p className="text-gray-600">
-                            Date: {new Date().toLocaleDateString('en-GB')}
+                            <p className="text-gray-600">
+                                Date: {new Date().toLocaleDateString('en-GB')}
                             </p>
 
                         </div>
@@ -363,7 +363,7 @@ const ViewApplicationForm = () => {
                 </div>
 
                 {/* Identity Documents */}
-                <div className="pdf-section"> 
+                <div className="pdf-section">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
                             onChange={handleChange}
@@ -419,78 +419,78 @@ const ViewApplicationForm = () => {
                 </div>
 
                 {/* Permanent Address */}
-             <div className="space-y-8">
+                <div className="space-y-8">
                     {/* Permanent Address Section */}
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                        <CommanInput
-                            label="Complex Name"
-                            name="per_complex_name"
-                            value={formData.per_complex_name || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <CommanInput
-                            label="Flat No"
-                            name="per_flat_no"
-                            value={formData.per_flat_no || ''}
-                            readOnly
-                            max={20}
-                        />
-                        <CommanInput
-                            label="Area"
-                            name="per_area"
-                            value={formData.per_area || ''}
-                            readOnly
-                            max={50}
-                        />
-                        <CommanInput
-                            label="Landmark"
-                            name="per_landmark"
-                            value={formData.per_landmark || ''}
-                            readOnly
-                            max={50}
-                        />
-                        <CommanInput
-                            label="Country"
-                            name="per_country"
-                            value={formData.per_country || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <CommanInput
-                            label="Pincode"
-                            name="per_pincode"
-                            value={formData.per_pincode || ''}
-                            readOnly
-                            max={6}
-                        />
-                        <CommanInput
-                            label="City"
-                            name="per_city"
-                            value={formData.per_city || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <CommanInput
-                            label="District"
-                            name="per_district"
-                            value={formData.per_district || ''}
-                            readOnly
-                            max={30}
-                        />
-                        <CommanInput
-                            label="State"
-                            name="per_state"
-                            value={formData.per_state || ''}
-                            readOnly
-                            max={30}
-                        />
+                            <CommanInput
+                                label="Complex Name"
+                                name="per_complex_name"
+                                value={formData.per_complex_name || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                label="Flat No"
+                                name="per_flat_no"
+                                value={formData.per_flat_no || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                label="Area"
+                                name="per_area"
+                                value={formData.per_area || ''}
+                                readOnly
+                                max={50}
+                            />
+                            <CommanInput
+                                label="Landmark"
+                                name="per_landmark"
+                                value={formData.per_landmark || ''}
+                                readOnly
+                                max={50}
+                            />
+                            <CommanInput
+                                label="Country"
+                                name="per_country"
+                                value={formData.per_country || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                label="Pincode"
+                                name="per_pincode"
+                                value={formData.per_pincode || ''}
+                                readOnly
+                                max={6}
+                            />
+                            <CommanInput
+                                label="City"
+                                name="per_city"
+                                value={formData.per_city || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                label="District"
+                                name="per_district"
+                                value={formData.per_district || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                label="State"
+                                name="per_state"
+                                value={formData.per_state || ''}
+                                readOnly
+                                max={30}
+                            />
                         </div>
                     </div>
- 
-                   
+
+
                 </div>
 
                 {/* Correspondence Address */}
@@ -591,53 +591,53 @@ const ViewApplicationForm = () => {
                         </div>
                     </div>
                 )}
-                
-                
-                  {/* Nominee Details */}
+
+
+                {/* Nominee Details */}
                 {nominees.length > 0 && (
-                <div className="pdf-section mb-8">
-                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+                    <div className="pdf-section mb-8">
+                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
 
-                        <div  className="mb-8 border rounded p-4 w-full overflow-auto"> 
+                        <div className="mb-8 border rounded p-4 w-full overflow-auto">
 
-                        {/* Personal Details Table */}
-                        <table className="w-full border border-collapse mb-4 ">
-                        <thead >
-                            <tr className="bg-gray-100 text-left">
-                            <th className="border px-4 py-2">Salutation</th>
-                            <th className="border px-4 py-2">First Name</th>
-                            <th className="border px-4 py-2">Middle Name</th>
-                            <th className="border px-4 py-2">Last Name</th>
-                            <th className="border px-4 py-2">Relationship</th>
-                            <th className="border px-4 py-2">Percentage</th>
-                            <th className="border px-4 py-2">Date of Birth</th>
-                            <th className="border px-4 py-2">Age</th> 
-                            <th className="border px-4 py-2">Address</th>
-                            </tr>
-                        </thead>
+                            {/* Personal Details Table */}
+                            <table className="w-full border border-collapse mb-4 ">
+                                <thead >
+                                    <tr className="bg-gray-100 text-left">
+                                        <th className="border px-4 py-2">Salutation</th>
+                                        <th className="border px-4 py-2">First Name</th>
+                                        <th className="border px-4 py-2">Middle Name</th>
+                                        <th className="border px-4 py-2">Last Name</th>
+                                        <th className="border px-4 py-2">Relationship</th>
+                                        <th className="border px-4 py-2">Percentage</th>
+                                        <th className="border px-4 py-2">Date of Birth</th>
+                                        <th className="border px-4 py-2">Age</th>
+                                        <th className="border px-4 py-2">Address</th>
+                                    </tr>
+                                </thead>
 
-                    {nominees.map((nominee, index) => (
-                  
-                        <tbody  key={index}>
-                            <tr>
-                            <td className="border px-4 py-2">{nominee.salutation}</td>
-                            <td className="border px-4 py-2">{nominee.first_name}</td>
-                            <td className="border px-4 py-2">{nominee.middle_name}</td>
-                            <td className="border px-4 py-2">{nominee.last_name}</td>
-                            <td className="border px-4 py-2">{nominee.relationship}</td>
-                            <td className="border px-4 py-2">{nominee.percentage}</td>
-                            <td className="border px-4 py-2">{nominee.dob}</td>
-                            <td className="border px-4 py-2">{nominee.age}</td> 
-                            <td className="border px-4 py-2">{nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}</td>
-                            </tr>
-                        </tbody>
-                     
-                    ))}
-                        </table>
- 
+                                {nominees.map((nominee, index) => (
+
+                                    <tbody key={index}>
+                                        <tr>
+                                            <td className="border px-4 py-2">{nominee.salutation}</td>
+                                            <td className="border px-4 py-2">{nominee.first_name}</td>
+                                            <td className="border px-4 py-2">{nominee.middle_name}</td>
+                                            <td className="border px-4 py-2">{nominee.last_name}</td>
+                                            <td className="border px-4 py-2">{nominee.relationship}</td>
+                                            <td className="border px-4 py-2">{nominee.percentage}</td>
+                                            <td className="border px-4 py-2">{nominee.dob}</td>
+                                            <td className="border px-4 py-2">{nominee.age}</td>
+                                            <td className="border px-4 py-2">{nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}</td>
+                                        </tr>
+                                    </tbody>
+
+                                ))}
+                            </table>
+
+                        </div>
+
                     </div>
-
-                </div>
                 )}
 
 
@@ -836,130 +836,130 @@ const ViewApplicationForm = () => {
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
                     <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6">
-                      
-                            {formData.photo ? (
-                                <>
+
+                        {formData.photo ? (
+                            <>
                                 <img
                                     src={typeof formData.photo === 'string' ? formData.photo : URL.createObjectURL(formData.photo)}
                                     alt="Photo"
                                     className="w-30 h-auto  "
                                 />
-                           
-                              </>
-                            ) : (
-                               <></>
-                            )}
-                        
-                  
-                            {formData.signaturedoc ? (
-                                <img
-                                    src={typeof formData.signaturedoc === 'string' ? formData.signaturedoc : URL.createObjectURL(formData.signaturedoc)}
-                                    alt="Signature"
-                                    className="w-auto h-15"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.passportdoc ? (
-                                <img
-                                    src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
-                                    alt="Passport"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.aadhaarFrontdoc ? (
-                                <img
-                                    src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
-                                    alt="Aadhaar Front"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.aadhaarBackdoc ? (
-                                <img
-                                    src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
-                                    alt="Aadhaar Back"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.pancarddoc ? (
-                                <img
-                                    src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
-                                    alt="PAN"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.voteridoc ? (
-                                <img
-                                    src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
-                                    alt="Voter ID"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.drivinglicensedoc ? (
-                                <img
-                                    src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
-                                    alt="Driving License"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.utilitybilldoc ? (
-                                <img
-                                    src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
-                                    alt="Utility Bill"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.rentagreementdoc ? (
-                                <img
-                                    src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
-                                    alt="Rent Agreement"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.propertytaxdoc ? (
-                                <img
-                                    src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
-                                    alt="Property Tax Receipt"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )}
-                            
-                            {formData.bankstatementdoc ? (
-                                <img
-                                    src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
-                                    alt="Bank Statement"
-                                    className="w-50 h-40"
-                                />
-                            ) : (
-                               <></>
-                            )} 
+
+                            </>
+                        ) : (
+                            <></>
+                        )}
+
+
+                        {formData.signaturedoc ? (
+                            <img
+                                src={typeof formData.signaturedoc === 'string' ? formData.signaturedoc : URL.createObjectURL(formData.signaturedoc)}
+                                alt="Signature"
+                                className="w-auto h-15"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.passportdoc ? (
+                            <img
+                                src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
+                                alt="Passport"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.aadhaarFrontdoc ? (
+                            <img
+                                src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
+                                alt="Aadhaar Front"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.aadhaarBackdoc ? (
+                            <img
+                                src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
+                                alt="Aadhaar Back"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.pancarddoc ? (
+                            <img
+                                src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
+                                alt="PAN"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.voteridoc ? (
+                            <img
+                                src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
+                                alt="Voter ID"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.drivinglicensedoc ? (
+                            <img
+                                src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
+                                alt="Driving License"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.utilitybilldoc ? (
+                            <img
+                                src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
+                                alt="Utility Bill"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.rentagreementdoc ? (
+                            <img
+                                src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
+                                alt="Rent Agreement"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.propertytaxdoc ? (
+                            <img
+                                src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
+                                alt="Property Tax Receipt"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
+
+                        {formData.bankstatementdoc ? (
+                            <img
+                                src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
+                                alt="Bank Statement"
+                                className="w-50 h-40"
+                            />
+                        ) : (
+                            <></>
+                        )}
                     </div>
                 </div>
             </div>
