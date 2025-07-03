@@ -92,6 +92,9 @@ const ViewApplicationForm = () => {
                     driving_license: personal_details?.driving_license,
                     voter_id: personal_details?.voter_id,
 
+                    per_resident: address?.per_resident || "",
+                    per_residence_status: address?.per_residence_status || "",
+                    resi_doc: address?.resi_doc || "",
                     // Family Details
                     father_prefix_name: account_personal_details?.father_prefix_name || '',
                     father_first_name: account_personal_details?.father_first_name || '',
@@ -440,7 +443,6 @@ const ViewApplicationForm = () => {
                                 value={formData.per_complex_name || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -450,7 +452,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_flat_no || ''}
                                 readOnly
                                 max={20}
-                                validationType="ALPHANUMERIC"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -460,7 +461,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_area || ''}
                                 readOnly
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -470,7 +470,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_landmark || ''}
                                 readOnly
                                 max={50}
-                                validationType="EVERYTHING"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -480,7 +479,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_country || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -490,7 +488,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_pincode || ''}
                                 readOnly
                                 max={6}
-                                validationType="NUMBER_ONLY"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -500,7 +497,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_city || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -510,7 +506,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_district || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -520,8 +515,30 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_state || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
+                            
+                            <CommanInput
+                                label="Permanent Resident"
+                                name="per_resident"
+                                value={formData.per_resident || ''}
+                                readOnly
+                                max={10}
+                            />
+                            <CommanInput
+                                label="Residence Status"
+                                name="per_residence_status"
+                                value={formData.per_residence_status || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                label="Residence Document"
+                                name="resi_doc"
+                                value={formData.resi_doc || ''}
+                                readOnly
+                                max={20}
+                            />
+
                         </div>
                     </div>
                 )}

@@ -87,6 +87,10 @@ const ViewApplicationForm = () => {
                         driving_license: personal_details?.driving_license,
                         voter_id: personal_details?.voter_id,
 
+                    // Add these new address-related fields
+                    per_resident: address?.per_resident || "",
+                    per_residence_status: address?.per_residence_status || "",
+                    resi_doc: address?.resi_doc || "",
                         // Family Details
                         father_prefix_name: account_personal_details?.father_prefix_name,
                         father_first_name: account_personal_details?.father_first_name,
@@ -244,7 +248,6 @@ const ViewApplicationForm = () => {
                             value={formData.first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -254,7 +257,6 @@ const ViewApplicationForm = () => {
                             value={formData.middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -264,7 +266,6 @@ const ViewApplicationForm = () => {
                             value={formData.last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -273,7 +274,6 @@ const ViewApplicationForm = () => {
                             name="DOB"
                             value={formData.DOB || ''}
                             readOnly
-                            validationType="DATE"
                         />
                         <CommanSelect
                             onChange={handleChange}
@@ -322,7 +322,6 @@ const ViewApplicationForm = () => {
                             value={formData.mobile || ''}
                             readOnly
                             max={10}
-                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -332,7 +331,6 @@ const ViewApplicationForm = () => {
                             value={formData.alt_mob_no || ''}
                             readOnly
                             max={10}
-                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -341,7 +339,6 @@ const ViewApplicationForm = () => {
                             name="email"
                             value={formData.email || ''}
                             readOnly
-                            validationType="EMAIL"
                         />
                     </div>
                 </div>
@@ -358,7 +355,6 @@ const ViewApplicationForm = () => {
                             value={formData.complex_name || ''}
                             readOnly
                             max={30}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -368,7 +364,6 @@ const ViewApplicationForm = () => {
                             value={formData.flat_no || ''}
                             readOnly
                             max={20}
-                            validationType="ALPHANUMERIC"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -378,7 +373,6 @@ const ViewApplicationForm = () => {
                             value={formData.area || ''}
                             readOnly
                             max={50}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -388,7 +382,6 @@ const ViewApplicationForm = () => {
                             value={formData.landmark || ''}
                             readOnly
                             max={50}
-                            validationType="EVERYTHING"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -398,7 +391,6 @@ const ViewApplicationForm = () => {
                             value={formData.country || ''}
                             readOnly
                             max={30}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -408,7 +400,6 @@ const ViewApplicationForm = () => {
                             value={formData.pincode || ''}
                             readOnly
                             max={6}
-                            validationType="NUMBER_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -418,7 +409,6 @@ const ViewApplicationForm = () => {
                             value={formData.city || ''}
                             readOnly
                             max={30}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -428,7 +418,6 @@ const ViewApplicationForm = () => {
                             value={formData.district || ''}
                             readOnly
                             max={30}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -438,8 +427,29 @@ const ViewApplicationForm = () => {
                             value={formData.state || ''}
                             readOnly
                             max={30}
-                            validationType="ALPHABETS_AND_SPACE"
                         />
+                        
+                            <CommanInput
+                                label="Permanent Resident"
+                                name="per_resident"
+                                value={formData.per_resident || ''}
+                                readOnly
+                                max={10}
+                            />
+                            <CommanInput
+                                label="Residence Status"
+                                name="per_residence_status"
+                                value={formData.per_residence_status || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                label="Residence Document"
+                                name="resi_doc"
+                                value={formData.resi_doc || ''}
+                                readOnly
+                                max={20}
+                            />
                     </div>
                 </div>
 
@@ -554,7 +564,6 @@ const ViewApplicationForm = () => {
                             value={formData.adhar_card || ''}
                             readOnly
                             max={12}
-                            validationType="NUMBER_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -564,7 +573,6 @@ const ViewApplicationForm = () => {
                             value={formData.pan_card || ''}
                             readOnly
                             max={10}
-                            validationType="PAN"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -574,7 +582,6 @@ const ViewApplicationForm = () => {
                             value={formData.passport || ''}
                             readOnly
                             max={20}
-                            validationType="ALPHANUMERIC"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -584,7 +591,6 @@ const ViewApplicationForm = () => {
                             value={formData.driving_license || ''}
                             readOnly
                             max={20}
-                            validationType="REGISTRATION_NO"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -594,7 +600,6 @@ const ViewApplicationForm = () => {
                             value={formData.voter_id || ''}
                             readOnly
                             max={20}
-                            validationType="REGISTRATION_NO"
                         />
                     </div>
                 </div>
@@ -619,7 +624,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -629,7 +633,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -639,7 +642,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanSelect
                             onChange={handleChange}
@@ -657,7 +659,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -667,7 +668,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -677,7 +677,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -687,7 +686,6 @@ const ViewApplicationForm = () => {
                             value={formData.birth_place || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -697,7 +695,6 @@ const ViewApplicationForm = () => {
                             value={formData.birth_country || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>
@@ -714,7 +711,6 @@ const ViewApplicationForm = () => {
                             value={formData.occoupation_type || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -724,7 +720,6 @@ const ViewApplicationForm = () => {
                             value={formData.occupation_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -734,7 +729,6 @@ const ViewApplicationForm = () => {
                             value={formData.if_salaryed || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -744,7 +738,6 @@ const ViewApplicationForm = () => {
                             value={formData.designation || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -754,7 +747,6 @@ const ViewApplicationForm = () => {
                             value={formData.nature_of_occoupation || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -764,7 +756,6 @@ const ViewApplicationForm = () => {
                             value={formData.qualification || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -774,7 +765,6 @@ const ViewApplicationForm = () => {
                             value={formData.anual_income || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>
