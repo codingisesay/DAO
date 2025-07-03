@@ -45,7 +45,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     // console.log('got data :', response.data.details);
                     const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
- setLocalFormData({
+                    setLocalFormData({
                         salutation: application.salutation || '',
                         first_name: application.first_name || '',
                         middle_name: application.middle_name || '',
