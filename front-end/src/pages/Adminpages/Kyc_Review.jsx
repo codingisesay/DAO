@@ -89,7 +89,7 @@ function KycReviewTable() {
   const fetchDataCount = async () => {
     try {
       setCountLoading(true);
-      const response = await adminService.kycReviewApplicationCountByAgent;
+      const response = await adminService.kycReviewApplicationCountByAgent();
       setCountData({ content: response.data || [] });
     } catch (error) {
       console.error("Failed to fetch agent counts:", error);

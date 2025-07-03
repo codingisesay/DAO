@@ -48,7 +48,7 @@ function PendingTable() {
   const fetchDataCount = async () => {
     try {
       setCountLoading(true);
-      const response = await adminService.pendingApplicationCountByAgent;
+      const response = await adminService.pendingApplicationCountByAgent();
       // console.log("PENDING APPLICATION COUNT:", response);
       setCountData({ content: response.data || [] });
     } catch (error) {
