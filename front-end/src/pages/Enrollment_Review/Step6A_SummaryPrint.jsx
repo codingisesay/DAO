@@ -95,7 +95,7 @@ const ViewApplicationForm = () => {
                     per_resident: address?.per_resident || "",
                     per_residence_status: address?.per_residence_status || "",
                     resi_doc: address?.resi_doc || "",
-                    // Family Details
+                   
                 // Family Details (add all these fields)
     maiden_prefix: account_personal_details?.maiden_prefix || "",
     maiden_first_name: account_personal_details?.maiden_first_name || "",
@@ -605,8 +605,7 @@ const ViewApplicationForm = () => {
                         />
                     </div>
                 </div>
-
-                {/* Family Details */}
+ 
           {/* Family Details */}
 <div className="pdf-section">
     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
