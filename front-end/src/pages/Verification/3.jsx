@@ -310,7 +310,7 @@ function toTitleCase(str) {
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th>
+                                    {/* <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th> */}
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
@@ -329,7 +329,7 @@ function toTitleCase(str) {
                                     
                                     return (
                                         <tr key={doc.id}>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
+                                            {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
                                        <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
                                             <td className="py-2 px-4 border-b border-gray-200">
                                                 <img
