@@ -50,19 +50,24 @@ export const COLUMN_DEFINITIONS = {
     header: "Application No",
     sortable: true,
     filterable: true,
-  }, 
+  },
   kyc_application_id: {
     header: "KYC Application ID",
     sortable: true,
     filterable: true,
   },
-  admin_id:{
-    header:'Reject By',
+  admin_id: {
+    header: "Review By",
     sortable: true,
     filterable: true,
   },
-  review_admin_id:{
-    header:'Review By',
+  reject_admin_id: {
+    header: "Reject By",
+    sortable: true,
+    filterable: true,
+  },
+  review_admin_id: {
+    header: "Review By",
     sortable: true,
     filterable: true,
   },
@@ -71,50 +76,49 @@ export const COLUMN_DEFINITIONS = {
     sortable: true,
     filterable: true,
   },
-  review_status_comment:{
-    header: "Rejected Reason",
+  review_status_comment: {
+    header: "Review Reason",
     sortable: true,
-    filterable: true,},
-  open_date:{
+    filterable: true,
+  },
+  open_date: {
     header: "Account Open Date",
     sortable: true,
     filterable: true,
   },
-  agent_id:{
+  agent_id: {
     header: "Agent ID",
     sortable: true,
     filterable: true,
   },
-  pending_count:{
+  pending_count: {
     header: "Pending Count",
     sortable: true,
     filterable: true,
   },
-  rejected_by:{
+  rejected_by: {
     header: "Reejected By",
     sortable: true,
     filterable: true,
-
   },
-  rejected_reason:{
+  rejected_reason: {
     header: "Rejected Reason",
     sortable: true,
     filterable: true,
   },
-  account_no:{
+  account_no: {
     header: "Account No.",
     sortable: true,
     filterable: true,
   },
-  account_open_date:{
+  account_open_date: {
     header: "Account Open Date",
     sortable: true,
     filterable: true,
   },
-  approved_by:{
+  approved_by: {
     header: "Approved By",
     sortable: true,
     filterable: true,
-  }
-
+  },
 };

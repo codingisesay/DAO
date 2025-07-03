@@ -494,7 +494,8 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
             width={'100px'}
             height={'100px'}
             alt="Customer Photo"
-            className=" border-2 rounded-lg mb-5"
+            className=" border-2 rounded-lg mb-5" 
+              disabled
           />
           <div className="section-content grid grid-cols-3 gap-4">
             <FloatingInput
@@ -503,7 +504,8 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               value={cbsData.kyc_cbs_salutation}
               onChange={(value) => handleCbsChange("kyc_vscbs_salutation", value)}
               required
-              isMatched={valuesMatch("salutation")}
+              isMatched={valuesMatch("salutation")} 
+              disabled
             />
 
             <FloatingInput
@@ -512,6 +514,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               value={cbsData.kyc_cbs_middle_name}
               onChange={(value) => handleCbsChange("kyc_vscbs_middle_name", value)}
               isMatched={valuesMatch("middle_name")}
+              disabled
             />
 
             <FloatingInput
@@ -521,6 +524,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_first_name", value)}
               required
               isMatched={valuesMatch("first_name")}
+              disabled
             />
 
             <FloatingInput
@@ -530,6 +534,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_last_name", value)}
               required
               isMatched={valuesMatch("last_name")}
+              disabled
             />
 
             <FloatingInput
@@ -539,6 +544,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_date_of_birth", value)}
               required
               isMatched={valuesMatch("date_of_birth")}
+              disabled
             />
 
             <FloatingInput
@@ -548,6 +554,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_gender", value)}
               required
               isMatched={valuesMatch("gender")}
+              disabled
             />
 
             <FloatingInput
@@ -557,6 +564,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_mobile_no", value)}
               required
               isMatched={valuesMatch("mobile_no")}
+              disabled
             />
 
             <FloatingInput
@@ -568,6 +576,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onToggle={() => toggleFieldValue("flat_no")}
               useAadhaarValue={useAadhaarValues.flat_no}
               isMatched={valuesMatch("flat_no")}
+              disabled
             />
 
             <FloatingInput
@@ -577,6 +586,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_complex_name", value)}
               required
               isMatched={valuesMatch("complex_name")}
+              disabled
             />
 
             <FloatingInput
@@ -588,6 +598,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onToggle={() => toggleFieldValue("lankmark")}
               useAadhaarValue={useAadhaarValues.lankmark}
               isMatched={valuesMatch("lankmark")}
+              disabled
             />
 
             <FloatingInput
@@ -599,6 +610,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onToggle={() => toggleFieldValue("area")}
               useAadhaarValue={useAadhaarValues.area}
               isMatched={valuesMatch("area")}
+              disabled
             />
 
             <FloatingInput
@@ -608,6 +620,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_pincode", value)}
               required
               isMatched={valuesMatch("pincode")}
+              disabled
             />
 
             <FloatingInput
@@ -617,6 +630,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_district", value)}
               required
               isMatched={valuesMatch("district")}
+              disabled
             />
 
             <FloatingInput
@@ -626,6 +640,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_country", value)}
               required
               isMatched={valuesMatch("country")}
+              disabled
             />
 
             <FloatingInput
@@ -637,6 +652,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onToggle={() => toggleFieldValue("city")}
               useAadhaarValue={useAadhaarValues.city}
               isMatched={valuesMatch("city")}
+              disabled
             />
 
             <FloatingInput
@@ -646,6 +662,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               onChange={(value) => handleCbsChange("kyc_vscbs_state", value)}
               required
               isMatched={valuesMatch("state")}
+              disabled
             />
           </div>
         </div>

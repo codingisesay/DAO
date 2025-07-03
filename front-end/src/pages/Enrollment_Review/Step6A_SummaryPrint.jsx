@@ -817,6 +817,16 @@ const ViewApplicationForm = () => {
                             max={50}
                             validationType="TEXT_ONLY"
                         />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Remark"
+                            type="text"
+                            name="remark"
+                            value={formData.remark || ''}
+                            readOnly
+                            max={50}
+                            validationType="TEXT_ONLY"
+                        />
                     </div>
                 </div>
 
