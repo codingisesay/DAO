@@ -269,7 +269,7 @@ public function saveLivePhoto(Request $request)
 public function saveAgentLivePhoto(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required|exists:customer_application_details,id',
         'longitude' => 'required|string|max:255',
         'latitude' => 'required|string|max:255',
         'status' => 'nullable|in:Pending,Approved,Reject,Review',
