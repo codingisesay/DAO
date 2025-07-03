@@ -164,7 +164,16 @@ const DocumentDetailsTable = ({ documentslist }) => {
         acc[type].push(doc);
         return acc;
     }, {});
-
+// Place this function inside your component or export it for reuse
+function toTitleCase(str) {
+    return str
+        .replace(/_?JPG$/i, '') // Remove _JPG or JPG at the end
+        .toLowerCase()
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .trim();
+}
     return (
         <div className="p-2 mx-auto">
            
@@ -186,7 +195,7 @@ const DocumentDetailsTable = ({ documentslist }) => {
                                 {docs.map((doc) => (
                                     <tr key={doc.id}>
                                         {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
-                                        <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+                                       <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
                                             {/* <a href={daodocbase+`${doc.file_path}`} target="_blank" rel="noopener noreferrer"> */}
                                             <img

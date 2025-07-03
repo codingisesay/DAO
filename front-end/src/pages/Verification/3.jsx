@@ -290,12 +290,21 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                 return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">Pending</span>;
         }
     };
-
+// Place this function inside your component or export it for reuse
+function toTitleCase(str) {
+    return str
+        .replace(/_?JPG$/i, '') // Remove _JPG or JPG at the end
+        .toLowerCase()
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+        .trim();
+}
     return (
         <div className="p-4 max-w-4xl mx-auto">
-            {Object.entries(groupedDocs).map(([type, docs]) => (
-                <div key={type} className="mb-8">
-                    <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2>
+          
+                <div className="mb-8">
+                    {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
@@ -308,7 +317,10 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {Object.entries(groupedDocs).map(([type, docs]) => (
+                            <tbody key={type}>
+
+
                                 {docs.map((doc) => {
                                     const extraction = extractedData[doc.id] || {};
                                     const hasSignatures = extraction.signatures?.length > 0;
@@ -317,7 +329,7 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                                     return (
                                         <tr key={doc.id}>
                                             <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+                                       <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
                                             <td className="py-2 px-4 border-b border-gray-200">
                                                 <img
                                                     src={daodocbase + `${doc.file_path}`}
@@ -353,11 +365,15 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                                         </tr>
                                     );
                                 })}
+
+
+
                             </tbody>
+                               ))}
                         </table>
                     </div>
                 </div>
-            ))}
+         
         </div>
     );
 };
