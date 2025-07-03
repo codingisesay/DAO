@@ -9,7 +9,7 @@ import { pendingAccountData } from '../../services/apiServices';
 
 function PersonalDetailsForm({ formData, updateFormData, }) {
     const { id } = useParams();
-    const [localFormData, setLocalFormData] = useState({
+  const [localFormData, setLocalFormData] = useState({
         salutation: '',
         first_name: '',
         middle_name: '',
@@ -17,15 +17,22 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
         DOB: '',
         gender: '',
         mobile: '',
-        complexName: '',
-        flatNoRoomNo: '',
-        area: '',
-        landmark: '',
-        country: '',
-        pincode: '',
-        city: '',
-        district: '',
-        state: ''
+        alt_mob_no: '',
+        email: '',
+        religion: '',
+        caste: '',
+        marital_status: '', 
+        adhar_card: '',
+        pan_card: '',
+        passport: '',
+        driving_license: '',
+        voter_id: '',
+        application_no: '',
+        auth_type: '',
+        auth_code: '',
+        auth_status: '',
+        agent_id: '',
+        admin_id: ''
     });
 
     useEffect(() => {
@@ -38,8 +45,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                     // console.log('got data :', response.data.details);
                     const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
-
-                    setLocalFormData({
+ setLocalFormData({
                         salutation: application.salutation || '',
                         first_name: application.first_name || '',
                         middle_name: application.middle_name || '',
@@ -47,16 +53,22 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
                         DOB: application.DOB || '',
                         gender: application.gender || '',
                         mobile: application.mobile || '',
-                        complexName: application.complex_name || '',
-                        flatNoRoomNo: application.flat_no || '',
-                        area: application.area || '',
-                        landmark: application.landmark || '',
-                        country: application.country || '',
-                        pincode: application.pincode || '',
-                        city: application.city || '',
-                        district: application.district || '',
-                        state: application.state || '',
-
+                        alt_mob_no: application.alt_mob_no || '',
+                        email: application.email || '',
+                        religion: application.religion || '',
+                        caste: application.caste || '',
+                        marital_status: application.marital_status || '',
+                        adhar_card: application.adhar_card || '',
+                        pan_card: application.pan_card || '',
+                        passport: application.passport || '',
+                        driving_license: application.driving_license || '',
+                        voter_id: application.voter_id || '',
+                        application_no: application.application_no || '',
+                        auth_type: application.auth_type || '',
+                        auth_code: application.auth_code || '',
+                        auth_status: application.auth_status || '',
+                        agent_id: application.agent_id || '',
+                        admin_id: application.admin_id || ''
                     });
                 }
             } catch (error) {
@@ -90,137 +102,136 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
     return (
         <div className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
-
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
+  <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
+                {/* Personal Information */}
+        
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.salutation.label}
                     name="salutation"
                     value={localFormData.salutation}
-                    // options={salutation}
-                    required
+                    readOnly={true}
                 />
-
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.firstname.label}
                     type="text"
-                    name="firstName"
+                    name="first_name"
                     value={localFormData.first_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.middlename.label}
                     type="text"
-                    name="middleName"
+                    name="middle_name"
                     value={localFormData.middle_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.lastname.label}
                     type="text"
-                    name="lastName"
+                    name="last_name"
                     value={localFormData.last_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.dob.label}
                     type="date"
-                    name="dob"
+                    name="DOB"
                     value={localFormData.DOB}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
                     label={labels.gender.label}
                     type="text"
                     name="gender"
                     value={localFormData.gender}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
+                    label="Religion"
+                    type="text"
+                    name="religion"
+                    value={localFormData.religion}
+                    readOnly={true}
+                />
+                <CommanInput
+                    label="Caste"
+                    type="text"
+                    name="caste"
+                    value={localFormData.caste}
+                    readOnly={true}
+                />
+                <CommanInput
+                    label="Marital Status"
+                    type="text"
+                    name="marital_status"
+                    value={localFormData.marital_status}
+                    readOnly={true}
+                />
+
+                {/* Contact Information */}
+                <CommanInput
                     label={labels.mobile.label}
                     type="text"
                     name="mobile"
                     value={localFormData.mobile}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.complexname.label}
+                    label="Alternate Mobile"
                     type="text"
-                    name="complexName"
-                    value={localFormData.complexName}
-                    required
-                    readOnly={true} />
+                    name="alt_mob_no"
+                    value={localFormData.alt_mob_no}
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label='Flat no/Room no'
-                    type="text"
-                    name="flatNoRoomNo"
-                    value={localFormData.flatNoRoomNo}
-                    required
-                    readOnly={true} />
+                    label="Email"
+                    type="email"
+                    name="email"
+                    value={localFormData.email}
+                    readOnly={true}
+                />
+  
+
+                {/* Identity Documents */}
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.area.label}
+                    label="Aadhar Card"
                     type="text"
-                    name="area"
-                    value={localFormData.area}
-                    required
-                    readOnly={true} />
+                    name="adhar_card"
+                    value={localFormData.adhar_card}
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.landmark.label}
+                    label="PAN Card"
                     type="text"
-                    name="landmark"
-                    value={localFormData.landmark}
-                    required
-                    readOnly={true} />
+                    name="pan_card"
+                    value={localFormData.pan_card}
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.country.label}
+                    label="Passport"
                     type="text"
-                    name="country"
-                    value={localFormData.country}
-                    required
-                    readOnly={true} />
+                    name="passport"
+                    value={localFormData.passport}
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.pincode.label}
+                    label="Driving License"
                     type="text"
-                    name="pincode"
-                    value={localFormData.pincode}
-                    required
-                    readOnly={true} />
+                    name="driving_license"
+                    value={localFormData.driving_license}
+                    readOnly={true}
+                />
                 <CommanInput
-                    onChange={handleChange}
-                    label={labels.city.label}
+                    label="Voter ID"
                     type="text"
-                    name="city"
-                    value={localFormData.city}
-                    required
-                    readOnly={true} />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.district.label}
-                    type="text"
-                    name="district"
-                    value={localFormData.district}
-                    required
-                    readOnly={true} />
-                <CommanInput
-                    onChange={handleChange}
-                    label={labels.state.label}
-                    type="text"
-                    name="state"
-                    value={localFormData.state}
-                    required
-                    readOnly={true} />
+                    name="voter_id"
+                    value={localFormData.voter_id}
+                    readOnly={true}
+                />
+
+       
+
+ 
             </div>
 
 
