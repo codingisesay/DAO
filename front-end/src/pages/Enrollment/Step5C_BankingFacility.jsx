@@ -194,7 +194,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                             />
                             {facilityKey === 'others' && localFormData.creditFacilities.others && (
                                 <div className="md:col-span-4">
-                                    <CommanInput
+                                    <CommanInput required
                                         label={labels.otherFacilityText.label}
                                         name="otherFacilityText"
                                         value={localFormData.otherFacilityText}
