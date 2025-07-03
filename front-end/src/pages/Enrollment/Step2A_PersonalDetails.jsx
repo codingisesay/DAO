@@ -131,7 +131,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
 
     // Mobile number validation
     if (!localFormData.mobile || localFormData.mobile.length !== 10) {
-      errors.mobile = "Mobile number must be 10 digits";
+      errors.mobile = "Mobile Number must be 10 digits";
     }
 
     // Alternate mobile number validation (only if provided)
