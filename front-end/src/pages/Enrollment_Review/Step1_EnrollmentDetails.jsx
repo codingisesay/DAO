@@ -126,7 +126,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
       auth_code: localFormData.auth_code,
       first_name: localFormData.first_name,
       auth_status: "Pending",
-      auth_type: localFormData.auth_type,
+      // auth_type: localFormData.auth_type,
       middle_name: localFormData.middle_name,
       last_name: localFormData.last_name,
       DOB: localFormData.DOB,
