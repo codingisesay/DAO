@@ -13,6 +13,7 @@ import { daodocbase } from '../../data/data';
 import { pendingAccountStatusUpdate } from '../../services/apiServices';
 
 function P1({ onNext, onBack, updateFormData }) {
+    localStorage.removeItem('approveStatusArray');
     const admin_id= localStorage.getItem('userCode');
     const [localFormData, setLocalFormData] = useState({
         salutation: '',
@@ -77,9 +78,7 @@ function P1({ onNext, onBack, updateFormData }) {
     }, [id]);
     
     if (!localStorage.getItem("approveStatusArray")) {
-        localStorage.setItem("approveStatusArray", JSON.stringify([]));
-
-
+        localStorage.setItem("approveStatusArray", JSON.stringify([])); 
     }
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];

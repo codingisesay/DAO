@@ -23,15 +23,17 @@ const ExtractionResult = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete }) => {
+const DAOExtraction = ({ document, onClose, onExtractionComplete }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState('No Signature or Photo found');
+    const [error, setError] = useState(null);
     const [signatures, setSignatures] = useState([]);
     const [photographs, setPhotographs] = useState([]);
     const [apiResponse, setApiResponse] = useState(null);
 
-    // API configuration
-    const API_URL = 'http://172.16.1.224:5001/api/detect';
+    // API configuration - you can switch between these as needed
+    const API_URL = 'https://dao.payvance.co.in:8091/ext/api/detect';
+    // const API_URL = 'http://172.16.1.224:5001/api/detect';
+    const bearerToken = localStorage.getItem('accessToken');
 
     useEffect(() => {
         if (document) {
@@ -46,51 +48,63 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
         }
 
         setIsLoading(true);
-        setError();
+        setError(null);
         setApiResponse(null);
         setSignatures([]);
         setPhotographs([]);
 
         try {
-            const formData = new FormData();
-            formData.append('image', document.file);
+            let fileToUpload;
+            
+            // Handle both URL (string) and File object cases
+            if (typeof document.file === 'string') {
+                // If it's a URL, fetch the image first
+                const response = await fetch(document.file);
+                fileToUpload = await response.blob();
+            } else {
+                // If it's already a File object
+                fileToUpload = document.file;
+            }
 
-            const response = await axios.post(API_URL, formData, {
+            const formData = new FormData();
+            formData.append('image', fileToUpload, document.file_name || 'document.jpg');
+
+            const config = {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${bearerToken}`
                 },
                 timeout: 30000 // 30 seconds timeout
-            });
+            };
 
-            setApiResponse(response.data);
+            const apiResponse = await axios.post(API_URL, formData, config);
+            setApiResponse(apiResponse.data);
 
-            // Process detections into signatures and photographs
-            if (response.data.detections && response.data.detections.length > 0) {
-                const sigs = response.data.detections
-                    .filter(d => d.class_id === 2) // Signature is class_id 2
+            if (apiResponse.data.detections && apiResponse.data.detections.length > 0) {
+                const sigs = apiResponse.data.detections
+                    .filter(d => d.class_id === 2) // Signature class
                     .map(d => ({
                         ...d,
-                        image: d.crop // Use the crop field directly
+                        image: d.crop
                     }));
 
-                const photos = response.data.detections
-                    .filter(d => d.class_id === 1) // Photograph is class_id 1
+                const photos = apiResponse.data.detections
+                    .filter(d => d.class_id === 1) // Photograph class
                     .map(d => ({
                         ...d,
-                        image: d.crop // Use the crop field directly
+                        image: d.crop
                     }));
 
                 setSignatures(sigs);
                 setPhotographs(photos);
                 
-                // Pass the extracted data back to parent
+                // Callback with extraction results
                 onExtractionComplete({
                     signatures: sigs,
                     photographs: photos
                 });
             } else {
-                // setError('No signatures or photographs detected in the document');
-                
+                setError('No signatures or photographs detected in the document');
             }
         } catch (err) {
             handleApiError(err);
@@ -126,48 +140,47 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
         console.error('Error:', errorMessage, err);
     };
 
-    // Add this to the renderExtractionResult function for signatures
-const renderExtractionResult = (items, title) => {
-  if (!items || items.length === 0) return null;
+    const renderExtractionResult = (items, title) => {
+        if (!items || items.length === 0) return null;
 
-  return (
-    <ExtractionResult elevation={3}>
-      <Typography variant="h6" gutterBottom>
-        {title} ({items.length})
-      </Typography>
-      <Grid container spacing={2}>
-        {items.map((item, index) => (
-          <Grid item xs={12} md={6} key={index}> {/* Changed from xs={6} md={4} to make signatures wider */}
-            <Box
-              component="img"
-              src={`data:image/jpeg;base64,${item.image}`}
-              alt={`${title.slice(0, -1)} ${index + 1}`}
-              sx={{
-                width: title === 'Extracted Signatures' ? '100%' : 'auto', // Wider for signatures
-                maxWidth: '100%',
-                maxHeight: title === 'Extracted Signatures' ? 80 : 150, // Different height for signatures
-                border: '1px solid #ddd',
-                borderRadius: 1
-              }}
-            />
-            <Typography variant="caption" display="block">
-              Confidence: {item.confidence ? `${(item.confidence * 100).toFixed(1)}%` : 'N/A'}
-            </Typography>
-            <Typography variant="caption" display="block">
-              Type: {item.label || 'Unknown'}
-            </Typography>
-          </Grid>
-        ))}
-      </Grid>
-    </ExtractionResult>
-  );
-};
+        return (
+            <ExtractionResult elevation={3}>
+                <Typography variant="h6" gutterBottom>
+                    {title} ({items.length})
+                </Typography>
+                <Grid container spacing={2}>
+                    {items.map((item, index) => (
+                        <Grid item xs={12} md={6} key={index}>
+                            <Box
+                                component="img"
+                                src={`data:image/jpeg;base64,${item.image}`}
+                                alt={`${title.slice(0, -1)} ${index + 1}`}
+                                sx={{
+                                    width: title === 'Extracted Signatures' ? '100%' : 'auto',
+                                    maxWidth: '100%',
+                                    maxHeight: title === 'Extracted Signatures' ? 80 : 150,
+                                    border: '1px solid #ddd',
+                                    borderRadius: 1
+                                }}
+                            />
+                            <Typography variant="caption" display="block">
+                                Confidence: {item.confidence ? `${(item.confidence * 100).toFixed(1)}%` : 'N/A'}
+                            </Typography>
+                            <Typography variant="caption" display="block">
+                                Type: {item.label || 'Unknown'}
+                            </Typography>
+                        </Grid>
+                    ))}
+                </Grid>
+            </ExtractionResult>
+        );
+    };
 
     return (
         <Dialog open={!!document} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6">Processing Document: {document?.name}</Typography>
+                    <Typography variant="h6">Processing Document: {document?.file_name || 'Document'}</Typography>
                     <IconButton onClick={onClose}>
                         <ClearIcon />
                     </IconButton>
@@ -184,24 +197,57 @@ const renderExtractionResult = (items, title) => {
                         </Box>
                     )}
 
-               { !isLoading &&  error ? (
-                        <Box sx={{ color: 'error.main', p: 2, border: '1px solid', borderColor: 'error.main', borderRadius: 1 }}>
-                            Document verifyed
-                             <Typography variant="body1">{error}</Typography>
+                    {!isLoading && error && (
+                        <Box sx={{ 
+                            color: 'error.main', 
+                            p: 2, 
+                            border: '1px solid', 
+                            borderColor: 'error.main', 
+                            borderRadius: 1,
+                            textAlign: 'center'
+                        }}>
+                            <Typography variant="body1">{error}</Typography>
+                            <Button 
+                                variant="outlined" 
+                                color="error" 
+                                sx={{ mt: 2 }}
+                                onClick={processImage}
+                            >
+                                Retry
+                            </Button>
                         </Box>
-                    ):(
-                        
-                        <><Box   sx={{ color: 'success.main',textAlign:'center',fontSize:'20px',  p: 2 }} >Document verifyed!</Box></>
                     )}
-                     
-                    {renderExtractionResult(signatures, 'Extracted Signatures')}
-                    {renderExtractionResult(photographs, 'Extracted Photographs')}
+
+                    {!isLoading && !error && signatures.length === 0 && photographs.length === 0 && (
+                        <Box sx={{ color: 'text.primary', textAlign: 'center', p: 2 }}>
+                            <Typography variant="body1">No signatures or photographs detected</Typography>
+                        </Box>
+                    )}
+
+                    {!isLoading && !error && (signatures.length > 0 || photographs.length > 0) && (
+                        <>
+                            <Box sx={{ color: 'success.main', textAlign: 'center', fontSize: '20px', p: 2 }}>
+                                Document processed successfully!
+                            </Box>
+                            {renderExtractionResult(signatures, 'Extracted Signatures')}
+                            {renderExtractionResult(photographs, 'Extracted Photographs')}
+                        </>
+                    )}
                 </Box>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="primary">
                     Close
                 </Button>
+                {!isLoading && (signatures.length > 0 || photographs.length > 0) && (
+                    <Button 
+                        onClick={processImage} 
+                        color="secondary"
+                        variant="outlined"
+                    >
+                        Reprocess
+                    </Button>
+                )}
             </DialogActions>
         </Dialog>
     );
