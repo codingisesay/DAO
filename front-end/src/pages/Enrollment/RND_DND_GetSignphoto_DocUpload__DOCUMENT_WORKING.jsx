@@ -61,20 +61,20 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
     const isDocumentUploaded = (documentValue) => {
         if (documentValue === 'AADHAAR_CARD_FRONT') {
-            return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+            return document.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
         }
         if (documentValue === 'AADHAAR_CARD_BACK') {
-            return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+            return document.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         }
         return document.some(doc => doc.type.includes(documentValue));
     };
 
     const isAadhaarFrontUploaded = () => {
-        return document.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
     };
 
     const isAadhaarBackUploaded = () => {
-        return document.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        return document.some(doc => doc.type === 'AADHAAR_CARD_BACK');
     };
 
     const validateAadharCard = async (imageData, side) => {
@@ -203,13 +203,15 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             }
         }
 
-        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_FRONT_JPG' :
-            documentValue === 'AADHAAR_CARD_BACK' ? 'AADHAAR_BACK_JPG' :
-                `${documentValue}_JPG`;
+        let docType = documentValue === 'AADHAAR_CARD_FRONT' ? 'AADHAAR_CARD_FRONT' :
+            documentValue === 'AADHAAR_CARD_BACK' ? 'AADHAAR_CARD_BACK' :
+                `${documentValue}`;
 
         const blob = await fetch(imageData).then(res => res.blob());
         const file = new File([blob], `${documentValue}.jpg`, { type: 'image/jpeg' });
-
+        const extension = file.type === "application/pdf" ? "pdf" : "jpg";
+        const mimeType = file.type === "application/pdf" ? "application/pdf" : "image/jpeg";
+        const fileObj = new File([blob], `${documentValue}.${extension}`, { type: mimeType });
         const newDocument = {
             id: Date.now(),
             type: docType,
@@ -253,29 +255,47 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         return true;
     };
+const handleFileChange = async (e, documentType, documentValue, side) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const handleFileChange = async (e, documentType, documentValue, side) => {
-        const file = e.target.files[0];
-        if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        showAlertMessage('Error', 'File size must not exceed 5MB', 'error');
+        return;
+    }
 
-        if (file.size > 5 * 1024 * 1024) {
-            showAlertMessage('Error', 'File size must not exceed 5MB', 'error');
-            return;
+    if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.type)) {
+        showAlertMessage('Error', 'Only JPG/PNG/PDF files are allowed', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+        let previewData;
+        
+        if (file.type === 'application/pdf') {
+            // For PDF files, we'll just show a generic preview
+            previewData = 'data:application/pdf;base64,' + btoa(
+                new Uint8Array(reader.result)
+                  .reduce((data, byte) => data + String.fromCharCode(byte), '')
+            );
+        } else {
+            // For images, use the normal data URL
+            previewData = reader.result;
         }
 
-        if (!['image/jpeg', 'image/png'].includes(file.type)) {
-            showAlertMessage('Error', 'Only JPG/PNG files are allowed', 'error');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const imageData = reader.result;
-            setPreviewImage(imageData);
-            await processImage(imageData, documentType, documentValue, side);
-        };
-        reader.readAsDataURL(file);
+        setPreviewImage(previewData);
+        await processImage(previewData, documentType, documentValue, side);
     };
+
+    if (file.type === 'application/pdf') {
+        // Read as ArrayBuffer for PDF
+        reader.readAsArrayBuffer(file);
+    } else {
+        // Read as DataURL for images
+        reader.readAsDataURL(file);
+    }
+};
 
     const startCamera = (documentType, documentValue) => {
         setActiveDocumentType(documentType);
@@ -352,9 +372,9 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         showAlertMessage('Document Removed', `${docToRemove.name} has been removed`, 'success');
 
         if (docToRemove?.type.includes('AADHAAR')) {
-            if (docToRemove.type === 'AADHAAR_FRONT_JPG') {
+            if (docToRemove.type === 'AADHAAR_CARD_FRONT') {
                 setSelectedAddressProof('AADHAAR_CARD_FRONT');
-            } else if (docToRemove.type === 'AADHAAR_BACK_JPG') {
+            } else if (docToRemove.type === 'AADHAAR_CARD_BACK') {
                 setSelectedAddressProof('AADHAAR_CARD_BACK');
             }
         }
@@ -560,20 +580,56 @@ useEffect(() => {
                     </div>
                 </div>
 
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/jpeg, image/png"
-                    style={{ display: 'none' }}
-                />
+          <input
+    type="file"
+    ref={fileInputRef}
+    accept="image/jpeg, image/png, application/pdf"
+    style={{ display: 'none' }}
+/>
 
-                <div className="preview-section my-1">
+<div className="preview-section my-1">
+    <div className="text-center p-1 rounded">
+        {previewImage ? (
+            <>
+                <small> </small>
+                {previewImage.startsWith('data:application/pdf') || 
+                 previewImage.endsWith('.pdf') ? (
+                    // PDF Preview
+                    <div className="h-[200px] w-auto mx-auto border-2 rounded-lg bg-gray-100 flex items-center justify-center">
+                        <div className="text-center p-4">
+                            <div className="text-4xl mb-2">📄</div>
+                            <p className="text-sm font-medium">PDF Document</p>
+                            <a 
+                                href={previewImage} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 underline text-sm mt-2 inline-block"
+                            >
+                                View PDF
+                            </a>
+                        </div>
+                    </div>
+                ) : (
+                    // Image Preview
+                    <img 
+                        src={previewImage} 
+                        alt="Document preview" 
+                        className="h-[200px] w-auto mx-auto border-2 rounded-lg" 
+                    />
+                )}
+            </>
+        ) : (
+            <img src={workingman} alt="logo" className="h-[200px] w-auto mx-auto" />
+        )}
+    </div>
+</div>
+                {/* <div className="preview-section my-1">
                     <div className="text-center p-1 rounded">
                         {previewImage ?
                             (<>  <small>  </small><img src={previewImage} alt="Document preview" className="h-[200px] w-auto mx-auto border-2 rounded-lg" /></>)
                             : (<><img src={workingman} alt="logo"  className="h-[200px] w-auto mx-auto "/></>)}
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className="documents-table mt-8">
@@ -594,13 +650,31 @@ useEffect(() => {
                                     <tr key={doc.id} className="border">
                                         <td className="border p-2">{doc.name}</td>
                                         <td className="border p-2">
-                                            {doc.image && (
+                                            {/* {doc.image && (
                                                 <img
                                                     src={doc.image}
                                                     alt={doc.name}
                                                     className="thumbnail w-auto h-15"
                                                 />
-                                            )}
+                                            )} */}
+                                           
+                                            {doc.file && doc.file.type === "application/pdf" ? (
+                                                <a
+                                                    href={doc.image}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-600 underline"
+                                                >
+                                                    View PDF
+                                                </a>
+                                            ) : doc.image ? (
+                                                <img
+                                                    src={doc.image}
+                                                    alt={doc.name}
+                                                    className="thumbnail w-auto h-15"
+                                                />
+                                            ) : null}
+                                         
                                         </td> 
                                          
                                         <td className="border p-2">

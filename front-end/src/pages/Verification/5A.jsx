@@ -34,7 +34,7 @@ function PersonalOccupationForm() {
 
         // Other Personal Details
         maritalStatus: '',
-        nationality: '',
+        nationality: 'Indian',
         religion: '',
         caste: '',
 

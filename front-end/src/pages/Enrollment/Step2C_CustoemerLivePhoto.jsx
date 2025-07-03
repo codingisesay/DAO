@@ -1,9 +1,9 @@
 // Step2C_CustoemerLivePhoto.jsx
-import React, { useEffect, useState } from 'react';
-import ImageCaptureValidator from './CustomerPhotoCapture'; // Import the updated component
+import React, { useEffect, useState, useCallback } from 'react'; // Import useCallback
+import ImageCaptureValidator from './CustomerPhotoCapture';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { createAccountService,pendingAccountData } from '../../services/apiServices';
+import { createAccountService, pendingAccountData } from '../../services/apiServices';
 
 const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);
@@ -12,44 +12,66 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
     const application_id = localStorage.getItem('application_id') || formData.application_id;
     const storageKey = 'customerPhotoData';
 
-    useEffect(() => {
-        const id = localStorage.getItem('application_id');
-        if (id) { 
-            fetchAndShowDetails(id);
-        }
-    }, []);
-    
-    const fetchAndShowDetails = async (id) => {
-        try { 
+    // Use useCallback for fetchAndShowDetails to prevent unnecessary re-renders/re-creations
+    const fetchAndShowDetails = useCallback(async (id) => {
+        try {
             if (id) {
                 const response = await pendingAccountData.getDetailsS2C(id);
                 const application = response.photos || null;
-                
-                if(application && application.length > 0) {
-                    setApiPhotoData(application[0]);
-                    
-                    // Convert API photo data to match our expected format
-                    const photoBlob = await fetch(application[0].path)
-                        .then(res => res.blob());
-                    
+
+                if (application && application.length > 0) {
+                    const fetchedApiPhoto = application[0];
+                    setApiPhotoData(fetchedApiPhoto);
+
+                    // Fetch the blob for initial display if needed, but don't store in photoData if a new photo is to be taken
+                    // For display purposes only, we can construct a previewUrl without storing the actual file in state
+                    // if you want to explicitly avoid having a "file" object in photoData when it comes from API.
+                    // However, to keep it consistent, let's try to get a blob if possible.
+                    let photoBlob = null;
+                    let previewUrl = null;
+                    try {
+                         // Assuming fetchedApiPhoto.path is a URL or base64
+                        if (fetchedApiPhoto.path.startsWith('data:')) {
+                            // If it's a base64 string, convert it to Blob
+                            const arr = fetchedApiPhoto.path.split(",");
+                            const mime = arr[0].match(/:(.*?);/)[1];
+                            const bstr = atob(arr[1]);
+                            let n = bstr.length;
+                            const u8arr = new Uint8Array(n);
+                            while (n--) {
+                                u8arr[n] = bstr.charCodeAt(n);
+                            }
+                            photoBlob = new Blob([u8arr], { type: mime });
+                        } else {
+                            // If it's a URL, fetch it
+                            const res = await fetch(fetchedApiPhoto.path);
+                            photoBlob = await res.blob();
+                        }
+                        previewUrl = URL.createObjectURL(photoBlob);
+                    } catch (blobError) {
+                        console.error('Error creating blob/previewUrl from API photo path:', blobError);
+                    }
+
+
                     const preparedPhotoData = {
-                        file: photoBlob,
-                        previewUrl: URL.createObjectURL(photoBlob),
-                        timestamp: application[0].created_at,
+                        file: photoBlob, // This will be null if fetching/conversion failed for existing photo
+                        previewUrl: previewUrl,
+                        timestamp: fetchedApiPhoto.created_at,
                         metadata: {
                             location: {
-                                longitude: application[0].longitude,
-                                latitude: application[0].latitude
+                                longitude: fetchedApiPhoto.longitude,
+                                latitude: fetchedApiPhoto.latitude
                             },
                             validation: {
-                                hasFace: true,
+                                hasFace: true, // Assuming this from API response structure
                                 lightingOk: true,
                                 singlePerson: true
                             }
                         }
                     };
-                    
-                    setPhotoData(preparedPhotoData);
+
+                    setPhotoData(preparedPhotoData); // Set photoData to the API provided photo
+                    // Also store in localStorage if desired, but prioritize API data
                     localStorage.setItem(storageKey, JSON.stringify({
                         previewUrl: preparedPhotoData.previewUrl,
                         timestamp: preparedPhotoData.timestamp,
@@ -59,12 +81,26 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
             }
         } catch (error) {
             console.error('Failed to fetch application details:', error);
+            // Even if API fetch fails, try to load from local storage
+            const storedData = localStorage.getItem(storageKey);
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    setPhotoData(parsedData);
+                } catch (parseError) {
+                    console.error('Error parsing stored photo data:', parseError);
+                    localStorage.removeItem(storageKey);
+                }
+            }
         }
-    };
+    }, []); // Empty dependency array means this function is created once
 
     useEffect(() => {
-        // Load saved photo data from localStorage only if no API data
-        if (!apiPhotoData) {
+        const id = localStorage.getItem('application_id');
+        if (id) {
+            fetchAndShowDetails(id);
+        } else {
+            // If no application_id, still try to load from local storage
             const storedData = localStorage.getItem(storageKey);
             if (storedData) {
                 try {
@@ -76,72 +112,73 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
                 }
             }
         }
-    }, [apiPhotoData]);
+    }, [fetchAndShowDetails]); // Add fetchAndShowDetails to dependencies to prevent stale closure if it changes
 
     const handlePhotoCapture = (capturedData) => {
-        // Store the full captured data in state
+        // UNCONDITIONALLY update photoData with the newly captured data
         setPhotoData(capturedData);
-        setApiPhotoData(null); // Clear any API data when new photo is captured
+        // Also clear apiPhotoData because a new photo has been taken
+        setApiPhotoData(null);
 
-        // Prepare the data for localStorage (without the file object)
+        // Prepare the data for localStorage (without the file object as it's not JSON serializable)
         const storageData = {
             previewUrl: capturedData.previewUrl,
             timestamp: capturedData.timestamp,
             metadata: capturedData.metadata
         };
-
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
 
     const submitPhoto = async (e) => {
-        // If photo already exists in API, proceed as before
-        if (apiPhotoData) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Photo saved successfully',
-                showConfirmButton: false,
-                timer: 1500
+        // Removed the check for apiPhotoData here.
+        // If a new photo is captured (photoData will be updated), it will be submitted.
+        // If no new photo is captured but there's an existing API photo,
+        // photoData will contain that (though its 'file' property might be null depending on fetchAndShowDetails),
+        // but the prompt below will handle the no-photo scenario.
+
+        if (!photoData || !photoData.file) {
+            const result = await Swal.fire({
+                icon: 'warning',
+                title: 'No Photo Captured',
+                text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Skip',
+                cancelButtonText: 'No, Go Back'
             });
-            onNext();
+            if (result.isConfirmed) {
+                onNext();
+            }
             return;
         }
-      
-        console.log('customer live photo data : ', photoData);
-        // alert('print done')
-        // If no photo is captured, ask user if they want to skip
-        // if (!photoData || !photoData.file) {
-        //     const result = await Swal.fire({
-        //         icon: 'warning',
-        //         title: 'No Photo Captured',
-        //         text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
-        //         showCancelButton: true,
-        //         confirmButtonText: 'Yes, Skip',
-        //         cancelButtonText: 'No, Go Back'
-        //     });
-        //     if (result.isConfirmed) {
-        //         onNext();
-        //     }
-        //     return;
-        // }
 
         setLocalIsSubmitting(true);
 
-        // Use FormData for file upload
         const submitFormData = new FormData();
         submitFormData.append('application_id', formData.application_id || application_id);
 
-        // Add location data if available
         if (photoData.metadata?.location) {
             submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
             submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
         }
 
-        // Add validation data if available
         if (photoData.metadata?.validation) {
             submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
         }
 
-        submitFormData.append('photo', photoData.file);
+        // Ensure photoData.file is present and a Blob
+        if (photoData.file instanceof Blob) {
+            submitFormData.append('photo', photoData.file, 'customer_photo.jpeg'); // Add a filename
+        } else {
+            console.error("photoData.file is not a Blob, cannot append to FormData.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'The captured photo data is invalid. Please retake the photo.'
+            });
+            setLocalIsSubmitting(false);
+            return;
+        }
+
         submitFormData.append('timestamp', photoData.timestamp);
         submitFormData.append('status', 'Pending');
 
@@ -161,7 +198,7 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+                text: error?.response?.data?.message || 'Failed to save photo. Please try again.' // Use error.response.data.message for Axios errors
             });
         } finally {
             setLocalIsSubmitting(false);
@@ -170,7 +207,6 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
 
     return (
         <div className="space-y-8">
-            {/* Loading overlay */}
             {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
@@ -181,8 +217,8 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
                 onCapture={handlePhotoCapture}
                 photoType="customer"
                 showLocation={true}
-                initialPhoto={photoData}
-                hasExistingPhoto={apiPhotoData}
+                initialPhoto={photoData} // Pass photoData here to reflect the current state (either API or newly captured)
+                hasExistingPhoto={apiPhotoData} // Keep this for displaying existing photo details
             />
 
             <div className="next-back-btns z-10">
@@ -265,8 +301,12 @@ export default PhotoCaptureApp;
 
 
 
+
+
+
+// // Step2C_CustoemerLivePhoto.jsx
 // import React, { useEffect, useState } from 'react';
-// import ImageCaptureValidator from './CustomerPhotoCapture';
+// import ImageCaptureValidator from './CustomerPhotoCapture'; // Import the updated component
 // import CommonButton from '../../components/CommonButton';
 // import Swal from 'sweetalert2';
 // import { createAccountService,pendingAccountData } from '../../services/apiServices';
@@ -358,78 +398,81 @@ export default PhotoCaptureApp;
 
 //         localStorage.setItem(storageKey, JSON.stringify(storageData));
 //     };
+
 //     const submitPhoto = async (e) => {
-//     // If photo already exists in API, proceed as before
-//     if (apiPhotoData) {
-//         Swal.fire({
-//             icon: 'success',
-//             title: 'Photo saved successfully',
-//             showConfirmButton: false,
-//             timer: 1500
-//         });
-//         onNext();
-//         return;
-//     }
-
-//     // If no photo is captured, ask user if they want to skip
-//     if (!photoData || !photoData.file) {
-//         const result = await Swal.fire({
-//             icon: 'warning',
-//             title: 'No Photo Captured',
-//             text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
-//             showCancelButton: true,
-//             confirmButtonText: 'Yes, Skip',
-//             cancelButtonText: 'No, Go Back'
-//         });
-//         if (result.isConfirmed) {
+//         // If photo already exists in API, proceed as before
+//         if (apiPhotoData) {
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Photo saved successfully',
+//                 showConfirmButton: false,
+//                 timer: 1500
+//             });
 //             onNext();
+//             return;
 //         }
-//         return;
-//     }
+//         setApiPhotoData(null)
+//         console.log('customer live photo data : ', photoData);
+//         // alert('print done')
+//         // If no photo is captured, ask user if they want to skip
+//         // if (!photoData || !photoData.file) {
+//         //     const result = await Swal.fire({
+//         //         icon: 'warning',
+//         //         title: 'No Photo Captured',
+//         //         text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
+//         //         showCancelButton: true,
+//         //         confirmButtonText: 'Yes, Skip',
+//         //         cancelButtonText: 'No, Go Back'
+//         //     });
+//         //     if (result.isConfirmed) {
+//         //         onNext();
+//         //     }
+//         //     return;
+//         // }
 
-//     setLocalIsSubmitting(true);
+//         setLocalIsSubmitting(true);
 
-//     // Use FormData for file upload
-//     const submitFormData = new FormData();
-//     submitFormData.append('application_id', formData.application_id || application_id);
+//         // Use FormData for file upload
+//         const submitFormData = new FormData();
+//         submitFormData.append('application_id', formData.application_id || application_id);
 
-//     // Add location data if available
-//     if (photoData.metadata?.location) {
-//         submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
-//         submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
-//     }
+//         // Add location data if available
+//         if (photoData.metadata?.location) {
+//             submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
+//             submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
+//         }
 
-//     // Add validation data if available
-//     if (photoData.metadata?.validation) {
-//         submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
-//     }
+//         // Add validation data if available
+//         if (photoData.metadata?.validation) {
+//             submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
+//         }
 
-//     submitFormData.append('photo', photoData.file);
-//     submitFormData.append('timestamp', photoData.timestamp);
-//     submitFormData.append('status', 'Pending');
+//         submitFormData.append('photo', photoData.file);
+//         submitFormData.append('timestamp', photoData.timestamp);
+//         submitFormData.append('status', 'Pending');
 
-//     try {
-//         const response = await createAccountService.livePhoto_s2c(submitFormData);
+//         try {
+//             const response = await createAccountService.livePhoto_s2c(submitFormData);
 
-//         Swal.fire({
-//             icon: 'success',
-//             title: response.data.message || 'Photo saved successfully',
-//             showConfirmButton: false,
-//             timer: 1500
-//         });
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: response.data.message || 'Photo saved successfully',
+//                 showConfirmButton: false,
+//                 timer: 1500
+//             });
 
-//         onNext();
-//     } catch (error) {
-//         console.error('Photo submission error:', error);
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Error',
-//             text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
-//         });
-//     } finally {
-//         setLocalIsSubmitting(false);
-//     }
-// };
+//             onNext();
+//         } catch (error) {
+//             console.error('Photo submission error:', error);
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Error',
+//                 text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+//             });
+//         } finally {
+//             setLocalIsSubmitting(false);
+//         }
+//     };
 
 //     return (
 //         <div className="space-y-8">
@@ -484,6 +527,41 @@ export default PhotoCaptureApp;
 // };
 
 // export default PhotoCaptureApp;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
