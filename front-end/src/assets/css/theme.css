@@ -1,6 +1,10 @@
 body {
     background: var(--payvance-bodybg);
 }
+ body.dark,
+.dark body {
+    background: #374151;
+}
 /* For Chrome, Safari, Edge, Opera */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button {

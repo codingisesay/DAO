@@ -9,6 +9,7 @@
   color: var(--text-color);
   transition: background-color 0.25s ease-in-out;
 }
+.dark .App, .dark.App {background-color: #363636 !important;}
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
