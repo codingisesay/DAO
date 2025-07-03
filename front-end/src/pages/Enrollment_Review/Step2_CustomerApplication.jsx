@@ -58,20 +58,14 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     return;
                 }
 
-                else if (pd.mobile.length !== 10) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error saving personal details',
-                        text: '10 Digit Must for Mobile Number ',
-                    }); return
-                }
-                else if (pd.alt_mob_no.length != 10) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error saving personal details',
-                        text: '10 Digit Must for Alternate Mobile Number ',
-                    }); return
-                }
+                // else if (pd.mobile.length !== 10) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Error saving personal details',
+                //         text: '10 Digit Must for Mobile Number ',
+                //     }); return
+                // }
+        
                 else if (pd.pannumber.length != 10) {
                     Swal.fire({
                         icon: 'error',

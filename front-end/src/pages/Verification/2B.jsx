@@ -1,3 +1,7 @@
+ 
+
+
+
 import labels from '../../components/labels';
 import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
@@ -309,6 +313,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const handleNextStepAdder = async () => {
+        
     try {
         const payload = {
             application_id: Number(id),
@@ -339,7 +344,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 }
 const handleReviewClickadder = async (e) => { // Add 'e' (event object) as a parameter
     e.preventDefault(); // Prevent default form submission
-
+alert('Review')
     const result = await Swal.fire({
         title: 'Reason for Review',
         input: 'text',
@@ -389,7 +394,8 @@ const handleReviewClickadder = async (e) => { // Add 'e' (event object) as a par
 };
 
     const handleRejectClickAddr  = async()=>{
-                const result = await Swal.fire({
+
+        const result = await Swal.fire({
             title: 'Reason for Rejection',
             input: 'text',
             inputLabel: 'Please provide a reason',

@@ -1,3 +1,11 @@
+ 
+
+
+
+
+
+
+
 
 import React, { useState } from 'react';
 import AddressForm from './2B';
@@ -119,8 +127,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             });
         }
     }
-
-
+ 
     // handel live photo below
     const handelPhotoReview = async () => {
         const result = await Swal.fire({
@@ -155,6 +162,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         }
 
     };
+
     const handelPhotoAccept = () => {
 
         try {
@@ -253,19 +261,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 })}
             </div>
 
-            <div className="nestedstepper-form-container">
+            <div className="nestedstepper-form-container">          
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
-                    onNext={handleNextStep}
+                    onNext={() => setActiveStep(activeStep + 1)}
                     onBack={handelPhotoReject}
                 />
             </div>
 
             <div className="next-back-btns">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    // onClick={activeStep === 0 ? handleRejectClick : handelPhotoReject}
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2" 
                     onClick={activeStep === 0 ? handleRejectClick : handelPhotoReject}
                 >
                     Reject & Continue
@@ -280,8 +287,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
                 <CommonButton
                     className="btn-next "
-                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}
-                // onClick={handleNextStep}
+                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}  
                 >
                     Accept & Continue
                 </CommonButton>
