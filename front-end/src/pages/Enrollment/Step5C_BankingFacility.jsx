@@ -122,37 +122,49 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
 
         return selectedIds;
     };
+const submitServiceToCustomer = async () => {
+    // Validation for "Others"
+    if (
+        localFormData.creditFacilities.others && 
+        (!localFormData.otherFacilityText || localFormData.otherFacilityText.trim() === "")
+    ) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Other Facility Required',
+            text: 'Please specify the other credit facility before proceeding.'
+        });
+        return; // Stop submission
+    }
 
-    const submitServiceToCustomer = async () => {
-        try {
-            // Get all selected facility IDs
-            const selectedFacilityIds = getSelectedFacilityIds();
+    try {
+        // Get all selected facility IDs
+        const selectedFacilityIds = getSelectedFacilityIds();
 
-            // Prepare the payload
-            const payload = {
-                application_id: Number(storedId),
-                banking_services_facilities_id: selectedFacilityIds
-            };
+        // Prepare the payload
+        const payload = {
+            application_id: Number(storedId),
+            banking_services_facilities_id: selectedFacilityIds
+        };
 
-            const response = await createAccountService.serviceToCustomer_s5c(payload);
+        const response = await createAccountService.serviceToCustomer_s5c(payload);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Service to customer saved!',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        Swal.fire({
+            icon: 'success',
+            title: response.data.message || 'Service to customer saved!',
+            showConfirmButton: false,
+            timer: 1500
+        });
 
-            if (onNext) onNext();
+        if (onNext) onNext();
 
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save service to customer'
-            });
-        }
-    };
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error?.response?.data?.message || 'Failed to save service to customer'
+        });
+    }
+};
 
     if (loading) {
         return <div>Loading banking services...</div>;
