@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
-import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
+import { pendingAccountData } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
 import axios from 'axios';
-import { Paper, Typography, Box, CircularProgress, Grid } from '@mui/material';
+import { Paper, Typography, Box } from '@mui/material';
 
 function DocumentReviewStep({ onNext, onBack }) {
     const [localFormData, setLocalFormData] = useState([]);
@@ -51,7 +51,7 @@ function DocumentReviewStep({ onNext, onBack }) {
             } finally {
                 setIsProcessing(false);
             }
-        };
+    };
 
     const processDocument = async (doc) => {
     try {
@@ -108,68 +108,7 @@ function DocumentReviewStep({ onNext, onBack }) {
         fetchAndProcessDocuments();
     }, [id]);
 
-    const handleRejectClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Rejection',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Reject',
-                status_comment: result.value,
-                admin_id: 1
-            };
-            await pendingAccountStatusUpdate.updateS3(id, payload);
-            applicationStatus.push('Reject');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            onNext();
-        }
-    };
-
-    const handleReviewClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Review',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Review',
-                status_comment: result.value,
-                admin_id: 1
-            };
-            await pendingAccountStatusUpdate.updateS3(id, payload);
-            applicationStatus.push('Review');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            onNext();
-        }
-    };
-
+  
     const handleNextStep = async () => {  onNext();   };
 
     const DocumentDetailsTable = ({ documentslist }) => {
@@ -232,24 +171,7 @@ const renderExtractedItems = (items) => {
         </Box>
     );
 };
-
-        const getStatusBadge = (status) => {
-            switch (status) {
-                case 'verified':
-                    return <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Verified</span>;
-                case 'failed':
-                    return <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">Failed</span>;
-                case 'processing':
-                    return (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                            <CircularProgress size={12} thickness={5} sx={{ marginRight: 1 }} />
-                            Processing
-                        </span>
-                    );
-                default:
-                    return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">Pending</span>;
-            }
-        };
+  
 
         return (
             <div className="p-4 max-w-4xl mx-auto">
