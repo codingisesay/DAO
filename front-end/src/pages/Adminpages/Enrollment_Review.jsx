@@ -93,7 +93,7 @@ import { useAuth } from '../../auth/AuthContext';
         const fetchDataCount = async () => {
             try {
                 setCountLoading(true);
-                const response = await adminService.reviewApplicationCountByAgent;
+                const response = await adminService.reviewApplicationCountByAgent();
                 console.log("REVIEW APPLICATION COUNT:", response);
                 setCountData({ content: response.data || [] });
             } catch (error) {

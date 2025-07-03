@@ -11,13 +11,18 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
     const [apiPhotoData, setApiPhotoData] = useState(null); 
     const storageKey = 'agentPhotoData';
-    const { id } = useParams();
-    const { application_id } = useParams();
+    
+    const id = localStorage.getItem('application_id')  ;
+    const application_id =localStorage.getItem('application_id') ;
+
+
+
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
 
     // Fetch reason data
     useEffect(() => {
+        
         if (!id) return;
 
         const fetchReason = async () => {
@@ -37,6 +42,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
     // Photo handling logic
     useEffect(() => { 
+
+        // alert(localStorage.getItem('userCode'))
         if (id) { 
             fetchAndShowDetails(id);
         }
@@ -188,8 +195,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
             // Use FormData for file upload
             const submitFormData = new FormData();
-            submitFormData.append('application_id', id || application_id);
-
+            submitFormData.append('application_id', localStorage.getItem('application_id'));
+            //  console.log('id to send : ', id, application_id)
             // Add location data if available
             if (photoData.metadata?.location) {
                 submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
@@ -233,7 +240,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+                    text: error?.data?.message || 'Failed to save photo. Please try again.'
                 });
             } finally {
                 setLocalIsSubmitting(false);
@@ -298,6 +305,19 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
 export default AgentPhotoCaptureApp;
  
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
