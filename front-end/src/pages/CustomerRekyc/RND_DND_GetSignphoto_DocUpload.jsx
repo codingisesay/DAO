@@ -43,7 +43,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         { value: 'AADHAAR_CARD_FRONT', label: 'Aadhaar Card Front' },
         { value: 'AADHAAR_CARD_BACK', label: 'Aadhaar Card Back' },
         { value: 'PAN_CARD', label: 'Pan Card' },
-        { value: 'VOTER_ID_CARD', label: 'Voter ID Card' },
+        { value: 'VOTER_ID_CARD', label: 'Voter Id Card' },
         { value: 'PASSPORT', label: 'Passport' },
         { value: 'DRIVING_LICENSE', label: 'Driving License' },
     ];
