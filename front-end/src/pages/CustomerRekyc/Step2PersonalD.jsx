@@ -119,7 +119,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
     kyc_vs_mobile_no: "8433843848",
     kyc_vs_flat_no: "Kalpgreen G4/106/01",
     kyc_vs_lankmark: "Kattap Pada, Kulgoan",
-    kyc_vs_pincode: "42IS03",
+    kyc_vs_pincode: "400070",
     kyc_vs_district: "Thane",
     kyc_vs_gender: "Male",
     kyc_vs_complex_name: "Kalpcity Phase 2",
@@ -137,9 +137,9 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
     kyc_cbs_last_name: "Nikam",
     kyc_cbs_date_of_birth: "1992-12-12",
     kyc_cbs_mobile_no: "8433843848",
-    kyc_cbs_flat_no: "Kalpgreen G4/106/01",
+    kyc_cbs_flat_no: "Kalpgreen G4/106/02",
     kyc_cbs_lankmark: "Kattap Pada, Kulgoan",
-    kyc_cbs_pincode: "42IS03",
+    kyc_cbs_pincode: "400070",
     kyc_cbs_district: "Thane",
     kyc_cbs_gender: "Male",
     kyc_cbs_complex_name: "Kalpcity Phase 2",
@@ -346,7 +346,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Salutation"
               value={aadhaarData.kyc_vs_salutation}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("salutation")}
             />
 
@@ -355,7 +354,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Middle Name"
               value={aadhaarData.kyc_vs_middle_name}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("middle_name")}
             />
 
@@ -364,7 +362,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="First Name"
               value={aadhaarData.kyc_vs_first_name}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("first_name")}
             />
 
@@ -373,7 +370,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Last Name"
               value={aadhaarData.kyc_vs_last_name}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("last_name")}
             />
 
@@ -382,7 +378,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="DOB"
               value={aadhaarData.kyc_vs_date_of_birth}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("date_of_birth")}
             />
 
@@ -391,7 +386,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Gender"
               value={aadhaarData.kyc_vs_gender}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("gender")}
             />
 
@@ -400,7 +394,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Mobile No"
               value={aadhaarData.kyc_vs_mobile_no}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("mobile_no")}
             />
 
@@ -409,7 +402,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Flat No./Bldg Name"
               value={aadhaarData.kyc_vs_flat_no}
               disabled
-              className="mb-4"
               showToggle={true}
               onToggle={() => toggleFieldValue("flat_no")}
               useAadhaarValue={useAadhaarValues.flat_no}
@@ -421,7 +413,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Complex Name"
               value={aadhaarData.kyc_vs_complex_name}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("complex_name")}
             />
 
@@ -430,7 +421,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Nearby Landmark"
               value={aadhaarData.kyc_vs_lankmark}
               disabled
-              className="mb-4"
               showToggle={true}
               onToggle={() => toggleFieldValue("lankmark")}
               useAadhaarValue={useAadhaarValues.lankmark}
@@ -442,7 +432,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Area"
               value={aadhaarData.kyc_vs_area}
               disabled
-              className="mb-4"
               showToggle={true}
               onToggle={() => toggleFieldValue("area")}
               useAadhaarValue={useAadhaarValues.area}
@@ -454,7 +443,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Pin Code"
               value={aadhaarData.kyc_vs_pincode}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("pincode")}
             />
 
@@ -463,7 +451,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="District"
               value={aadhaarData.kyc_vs_district}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("district")}
             />
 
@@ -472,7 +459,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="Country"
               value={aadhaarData.kyc_vs_country}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("country")}
             />
 
@@ -481,7 +467,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="City"
               value={aadhaarData.kyc_vs_city}
               disabled
-              className="mb-4"
               showToggle={true}
               onToggle={() => toggleFieldValue("city")}
               useAadhaarValue={useAadhaarValues.city}
@@ -493,7 +478,6 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
               label="State"
               value={aadhaarData.kyc_vs_state}
               disabled
-              className="mb-4"
               isMatched={valuesMatch("state")}
             />
           </div>

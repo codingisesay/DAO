@@ -259,9 +259,8 @@ const renderExtractedItems = (items) => {
                     </Paper>
                 )}
                 
-                {Object.entries(groupedDocs).map(([type, docs]) => (
-                    <div key={type} className="mb-8">
-                        <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2>
+                    <div className="mb-8">
+                        {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
                         <div className="overflow-x-auto">
                             <table className="min-w-full border border-gray-200">
                                 <thead className="bg-gray-100">
@@ -273,33 +272,35 @@ const renderExtractedItems = (items) => {
                                         <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {docs.map((doc) => (
-                                        <tr key={doc.id}>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                <img
-                                                    src={daodocbase + `${doc.file_path}`}
-                                                    alt="document"
-                                                    className="h-auto w-20 object-contain border rounded"
-                                                />
-                                            </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {renderExtractedItems(extractionResults[doc.id]?.signatures)}
-                                            </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {renderExtractedItems(extractionResults[doc.id]?.photographs)}
-                                            </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {formatDate(doc.created_at)}
-                                            </td>                                          
-                                        </tr>
+                                     {Object.entries(groupedDocs).map(([type, docs]) => (
+                                            <tbody key={type}>
+                                                {docs.map((doc) => (
+                                                    <tr key={doc.id}><td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
+                                                        <td className="py-2 px-4 border-b border-gray-200">
+                                                            <img
+                                                                src={daodocbase + `${doc.file_path}`}
+                                                                alt="document"
+                                                                className="h-auto w-20 object-contain border rounded"
+                                                            />
+                                                        </td>
+                                                        <td className="py-2 px-4 border-b border-gray-200">
+                                                            {renderExtractedItems(extractionResults[doc.id]?.signatures)}
+                                                        </td>
+                                                        <td className="py-2 px-4 border-b border-gray-200">
+                                                            {renderExtractedItems(extractionResults[doc.id]?.photographs)}
+                                                        </td>
+                                                        <td className="py-2 px-4 border-b border-gray-200">
+                                                            {formatDate(doc.created_at)}
+                                                        </td>                                          
+                                                    </tr>
+                                                ))}
+                                            </tbody>
                                     ))}
-                                </tbody>
                             </table>
+                           
                         </div>
                     </div>
-                ))}
+             
             </div>
         );
     };

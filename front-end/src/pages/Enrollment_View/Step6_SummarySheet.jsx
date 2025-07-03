@@ -150,7 +150,7 @@ const p6 = ({ onNext, onBack }) => {
             <CommonButton
               className="btn-next"
               // onClick={CreateAccount}
-              onClick={  CreateAccount  }
+              onClick={  handleNext  }
               iconRight={<i className="bi bi-chevron-double-right"></i>}
             >
               {activeStep === 1 ? (
