@@ -841,7 +841,7 @@ public function getRejectedApplicationsByAgent($agentId)
         'data' => $applications
     ]);
 }
-// KYC Application Status
+// admin Application Status
 public function getKycApplicationTrends(Request $request)
 {
     $kycAgentId = $request->input('kyc_agent_id');
