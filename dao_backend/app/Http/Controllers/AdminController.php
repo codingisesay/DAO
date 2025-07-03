@@ -52,6 +52,7 @@ public function getPendingApplications()
             'customer_application_details.last_name as last_name',
             'customer_application_details.created_at as created_at',
             'customer_application_details.application_no as application_no',
+            'customer_application_details.admin_id as admin_id'
             //need to join user table to get the agent name
             
         )
@@ -182,7 +183,8 @@ public function getReviewApplications()
             'customer_application_details.middle_name as middle_name',
             'customer_application_details.last_name as last_name',
             'customer_application_details.created_at as created_at',
-            'customer_application_details.application_no as application_no'
+            'customer_application_details.application_no as application_no',
+            'customer_application_details.admin_id as admin_id',
         )
         ->where('customer_appliction_status.status', 'review')
         ->get();
@@ -273,7 +275,7 @@ public function getRejectedApplications($status)
         'data' => $rejectedApplications
     ], 200);
 }
-
+// get the comments of the applications
 public function getResonApplications($status,$application_id)
 {
     $rejectedApplications = DB::table('customer_appliction_status')
@@ -315,7 +317,58 @@ public function getResonApplications($status,$application_id)
     ], 200);
 }
 
+// comments and status for last buttons  based on the application id 
+public function getApplicationDetailsFullComments($application_id)
+{
+    $applicationDetails = DB::table('customer_appliction_status')
+        ->leftJoin('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->leftJoin('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->leftJoin('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->leftJoin('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->leftJoin('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->leftJoin('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->select(
+            'customer_application_details.id as application_id',
+            'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+            'account_personal_details.status_comment as account_personal_details_status_comment',
+            'application_address_details.status as application_address_details_status',
+            'application_address_details.status_comment as application_address_details_status_comment',
+            'agent_live_photos.status as agent_live_photos_status',
+            'agent_live_photos.status_comment as agent_live_photos_status_comment',
+            'applicant_live_photos.status as applicant_live_photos_status',
+            'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+            'application_personal_details.status as application_personal_details_status',
+            'application_personal_details.status_comment as application_personal_details_status_comment',
+            'application_service_status.status as application_service_status_status',
+            'application_service_status.status_comment as application_service_status_status_comment',
+            'document_approved_status.status as document_approved_status_status',
+            'document_approved_status.status_comment as document_approved_status_status_comment',
+            'nominee_approved_status.status as nominee_approved_status_status',
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
+        )
+        ->where('customer_appliction_status.application_id', $application_id)
+        ->first();
 
+        if($applicationDetails){
+
+               return response()->json([
+        'data' => $applicationDetails
+    ], 200);
+
+        }
+
+        //eror
+
+
+
+    return response()->json([
+        'error' => 'Application details not found for the given application ID.'
+    ], 200);
+}
 
 	// Get Rejected  applications count per agent
 public function getRejectedApplicationsAgentCount()

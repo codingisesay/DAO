@@ -1,3 +1,11 @@
+ 
+
+
+
+
+
+
+
 
 import React, { useState } from 'react';
 import AddressForm from './2B';
@@ -13,6 +21,7 @@ import { a } from 'framer-motion/client';
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
+    const admin_id= localStorage.getItem('userCode');
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const steps = [
@@ -44,7 +53,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 application_id: id,
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
             applicationStatus.push('Reject');
@@ -77,7 +86,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS2A(id, payload);
             applicationStatus.push('Review');
@@ -94,7 +103,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS2A(id, payload);
 
@@ -118,14 +127,13 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             });
         }
     }
-
-
+ 
     // handel live photo below
     const handelPhotoReview = async () => {
         const result = await Swal.fire({
             title: 'Reason for Review',
             input: 'text',
-            inputLabel: 'Personal Details Review Reason',
+            inputLabel: 'Customer Photo Review Reason',
             inputPlaceholder: 'Enter reason here...',
             showCancelButton: true,
             confirmButtonText: 'Submit',
@@ -143,7 +151,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS2C(id, payload);
             applicationStatus.push('Review');
@@ -154,6 +162,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         }
 
     };
+
     const handelPhotoAccept = () => {
 
         try {
@@ -161,7 +170,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS2C(id, payload);
             Swal.fire({
@@ -190,7 +199,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
             input: 'text',
-            inputLabel: 'Personal Details Rejection Reason',
+            inputLabel: 'Customer Photo Rejection Reason',
             inputPlaceholder: 'Enter reason here...',
             showCancelButton: true,
             confirmButtonText: 'Submit',
@@ -208,7 +217,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS2C(id, payload);
             applicationStatus.push('Reject');
@@ -252,18 +261,18 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 })}
             </div>
 
-            <div className="nestedstepper-form-container">
+            <div className="nestedstepper-form-container">          
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
-                    onNext={handleNextStep}
+                    onNext={() => setActiveStep(activeStep + 1)}
                     onBack={handelPhotoReject}
                 />
             </div>
 
             <div className="next-back-btns">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2" 
                     onClick={activeStep === 0 ? handleRejectClick : handelPhotoReject}
                 >
                     Reject & Continue
@@ -278,8 +287,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
                 <CommonButton
                     className="btn-next "
-                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}
-                // onClick={handleNextStep}
+                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}  
                 >
                     Accept & Continue
                 </CommonButton>

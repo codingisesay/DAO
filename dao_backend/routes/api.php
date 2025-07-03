@@ -67,8 +67,10 @@ Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewA
 Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
 //This is for getting the applications by status(Approved,Review)
 Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
-    // API route for the table of Enrollment Applications
+    // API route for the table of Enrollment Applications  / // get the comments of the applications
 Route::get('admin/applications/reson/{status}/{application_id}', [AdminController::class, 'getResonApplications']);
+// get status and comments for the applications by application id for buttons 
+Route::get('/admin/application-details-comments/{application_id}', [AdminController::class, 'getApplicationDetailsFullComments']);
 // This is for getting the comments of applications by status and application id for KYC Anikta
 Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminController::class, 'getKycReasonApplications']);
 // API route for the table of rejected Enrollment Applications

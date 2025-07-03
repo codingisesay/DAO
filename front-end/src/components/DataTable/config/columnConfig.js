@@ -97,7 +97,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   rejected_by: {
-    header: "Reejected By",
+    header: "Rejected By",
     sortable: true,
     filterable: true,
   },
