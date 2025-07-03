@@ -195,36 +195,42 @@ public function kycSaveApplicationDocument(Request $request)
         'files.*' => 'file|max:10240',
     ]);
 
+    // Delete all existing documents for the given application ID
+    kycApplicationDocument::where('kyc_application_id', $validated['kyc_application_id'])->delete();
+
     $documents = [];
     foreach ($validated['files'] as $index => $file) {
         $documentType = $validated['document_types'][$index] ?? null;
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
         $binaryContent = file_get_contents($file->getRealPath());
 
-        $doc = kycApplicationDocument::updateOrCreate(
-            [
-                'kyc_application_id' => $validated['kyc_application_id'],
-                'kyc_document_type' => $documentType,
-            ],
-            [
-                'kyc_application_id' => $validated['kyc_application_id'],
-                'kyc_document_type' => $documentType,
-                'kyc_file_name' => $filename,
-                'kyc_file_path' => $binaryContent, // Save as mediumblob
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]
-        );
+        // Insert new document
+        $doc = kycApplicationDocument::create([
+            'kyc_application_id' => $validated['kyc_application_id'],
+            'kyc_document_type' => $documentType,
+            'kyc_file_name' => $filename,
+            'kyc_file_path' => $binaryContent,
+        ]);
 
         $documents[] = $doc->makeHidden(['kyc_file_path']);
     }
 
-    DB::table('kyc_document_approved_status')->updateOrInsert([
+    // Delete + Insert in kyc_document_approved_status
+    DB::table('kyc_document_approved_status')
+        ->where('kyc_application_id', $validated['kyc_application_id'])
+        ->delete();
+
+    DB::table('kyc_document_approved_status')->insert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
     ]);
 
-    DB::table('kyc_application_status')->updateOrInsert([
+    // Delete + Insert in kyc_application_status
+    DB::table('kyc_application_status')
+        ->where('kyc_application_id', $validated['kyc_application_id'])
+        ->delete();
+
+    DB::table('kyc_application_status')->insert([
         'kyc_application_id' => $validated['kyc_application_id'],
         'status' => 'Pending',
     ]);
@@ -234,6 +240,7 @@ public function kycSaveApplicationDocument(Request $request)
         'data' => $documents,
     ], 201);
 }
+
 
 public function updateKycDocumentStatus(Request $request)
 {
