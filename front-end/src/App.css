@@ -13,7 +13,7 @@
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i , td.css-jiabcu-MuiTableCell-root, svg{
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i ,.dark td.css-jiabcu-MuiTableCell-root,.dark svg{
   color: #f6f6f6;
 }
 body {
