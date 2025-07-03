@@ -11,7 +11,7 @@ import Stepper from './Stepper';
 import Footer from '../../components/Footer'
 
 function Enrollmentform() { 
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState(6);
     const [complete, setComplete] = useState(false);
 
     localStorage.setItem('vcall', JSON.stringify(false));
