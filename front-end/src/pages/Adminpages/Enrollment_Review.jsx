@@ -193,6 +193,7 @@ function ReviewTable() {
               loading={countLoading}
               primaryKeys={["agent_id"]}
               hidePagination={true}
+              editButtonDisabled={true}
               // showActions={false}
             />
           </div>

@@ -12,7 +12,7 @@ const KYCVerificationChart = () => {
 
     const fetchKYCStatus = async () => {
         try {
-            const response = await adminService.kycstatusperyear;
+            const response = await adminService.kycstatusperyear();
 
             if (response) {
                 // Transform the API response into the format needed by the chart
@@ -42,8 +42,8 @@ const KYCVerificationChart = () => {
     };
 
     useEffect(() => {
-        if (admin_id) { fetchKYCStatus(); }
-    }, [admin_id]);
+         fetchKYCStatus(); 
+    }, [ ]);
 
     const renderCustomizedLabel = ({
         cx,

@@ -9,12 +9,22 @@
   color: var(--text-color);
   transition: background-color 0.25s ease-in-out;
 }
+.dark .App, .dark.App {background-color: #363636 !important;}
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i {
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i ,.dark td.css-jiabcu-MuiTableCell-root,.dark svg{
   color: #f6f6f6;
 }
+body {
+    background: var(--payvance-bodybg);
+}
+ body.dark,
+.dark body {
+    background: #374151;
+}
+.dark .modal-content, .dark .css-1gtchvp-MuiPaper-root{background: #374151;}
+
 
 .dark input {
   color: white !important;

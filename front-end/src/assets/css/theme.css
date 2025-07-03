@@ -1,6 +1,4 @@
-body {
-    background: var(--payvance-bodybg);
-}
+
 /* For Chrome, Safari, Edge, Opera */
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button {
@@ -16,7 +14,6 @@ input[type=number] {
 .bi {
     cursor: pointer;
 }
-
 /* stepper css below */
 .stepper-container {
     border: 5px solid white;

@@ -170,7 +170,9 @@ function Enrollmentform() {
             />
           </div>
           <div className="xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-2">
-            <div className="work-area">{renderCurrentPage()}</div>
+            <div className="work-area dark:bg-gray-900">
+              {renderCurrentPage()}
+            </div>
           </div>
         </div>
       </div>

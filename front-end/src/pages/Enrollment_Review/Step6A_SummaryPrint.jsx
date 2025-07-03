@@ -92,17 +92,26 @@ const ViewApplicationForm = () => {
                     driving_license: personal_details?.driving_license,
                     voter_id: personal_details?.voter_id,
 
-                    // Family Details
-                    father_prefix_name: account_personal_details?.father_prefix_name || '',
-                    father_first_name: account_personal_details?.father_first_name || '',
-                    father_middle_name: account_personal_details?.father_middle_name || '',
-                    father_last_name: account_personal_details?.father_last_name || '',
-                    mother_prefix_name: account_personal_details?.mother_prefix_name || '',
-                    mother_first_name: account_personal_details?.mother_first_name || '',
-                    mother_middle_name: account_personal_details?.mother_middle_name || '',
-                    mother_last_name: account_personal_details?.mother_last_name || '',
-                    birth_place: account_personal_details?.birth_place || '',
-                    birth_country: account_personal_details?.birth_country || '',
+                    per_resident: address?.per_resident || "",
+                    per_residence_status: address?.per_residence_status || "",
+                    resi_doc: address?.resi_doc || "",
+                   
+                // Family Details (add all these fields)
+    maiden_prefix: account_personal_details?.maiden_prefix || "",
+    maiden_first_name: account_personal_details?.maiden_first_name || "",
+    maiden_middle_name: account_personal_details?.maiden_middle_name || "",
+    maiden_last_name: account_personal_details?.maiden_last_name || "",
+    father_prefix_name: account_personal_details?.father_prefix_name || "",
+    father_first_name: account_personal_details?.father_first_name || "",
+    father_middle_name: account_personal_details?.father_middle_name || "",
+    father_last_name: account_personal_details?.father_last_name || "",
+    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
+    mother_first_name: account_personal_details?.mother_first_name || "",
+    mother_middle_name: account_personal_details?.mother_middle_name || "",
+    mother_last_name: account_personal_details?.mother_last_name || "",
+    birth_place: account_personal_details?.birth_place || "",
+    birth_country: account_personal_details?.birth_country || "",
+
 
                     // Occupation Details
                     occoupation_type: account_personal_details?.occoupation_type || '',
@@ -440,7 +449,6 @@ const ViewApplicationForm = () => {
                                 value={formData.per_complex_name || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -450,7 +458,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_flat_no || ''}
                                 readOnly
                                 max={20}
-                                validationType="ALPHANUMERIC"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -460,7 +467,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_area || ''}
                                 readOnly
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -470,7 +476,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_landmark || ''}
                                 readOnly
                                 max={50}
-                                validationType="EVERYTHING"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -480,7 +485,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_country || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -490,7 +494,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_pincode || ''}
                                 readOnly
                                 max={6}
-                                validationType="NUMBER_ONLY"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -500,7 +503,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_city || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -510,7 +512,6 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_district || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
@@ -520,8 +521,30 @@ const ViewApplicationForm = () => {
                                 value={formData.cor_state || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
+                            
+                            <CommanInput
+                                label="Permanent Resident"
+                                name="per_resident"
+                                value={formData.per_resident || ''}
+                                readOnly
+                                max={10}
+                            />
+                            <CommanInput
+                                label="Residence Status"
+                                name="per_residence_status"
+                                value={formData.per_residence_status || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                label="Residence Document"
+                                name="resi_doc"
+                                value={formData.resi_doc || ''}
+                                readOnly
+                                max={20}
+                            />
+
                         </div>
                     </div>
                 )}
@@ -582,109 +605,143 @@ const ViewApplicationForm = () => {
                         />
                     </div>
                 </div>
+ 
+          {/* Family Details */}
+<div className="pdf-section">
+    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+        {/* Maiden Name Fields */}
+        <CommanSelect
+            onChange={handleChange}
+            label="Maiden Prefix"
+            name="maiden_prefix"
+            value={formData.maiden_prefix || ''}
+            options={salutation}
+            readOnly
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Maiden First Name"
+            type="text"
+            name="maiden_first_name"
+            value={formData.maiden_first_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Maiden Middle Name"
+            type="text"
+            name="maiden_middle_name"
+            value={formData.maiden_middle_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Maiden Last Name"
+            type="text"
+            name="maiden_last_name"
+            value={formData.maiden_last_name || ''}
+            readOnly
+            max={50}
+        />
 
-                {/* Family Details */}
-                <div className="pdf-section">
-                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                        <CommanSelect
-                            onChange={handleChange}
-                            label="Father's Prefix"
-                            name="father_prefix_name"
-                            value={formData.father_prefix_name || ''}
-                            options={salutation}
-                            readOnly
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Father's First Name"
-                            type="text"
-                            name="father_first_name"
-                            value={formData.father_first_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Father's Middle Name"
-                            type="text"
-                            name="father_middle_name"
-                            value={formData.father_middle_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Father's Last Name"
-                            type="text"
-                            name="father_last_name"
-                            value={formData.father_last_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanSelect
-                            onChange={handleChange}
-                            label="Mother's Prefix"
-                            name="mother_prefix_name"
-                            value={formData.mother_prefix_name || ''}
-                            options={salutation}
-                            readOnly
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Mother's First Name"
-                            type="text"
-                            name="mother_first_name"
-                            value={formData.mother_first_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Mother's Middle Name"
-                            type="text"
-                            name="mother_middle_name"
-                            value={formData.mother_middle_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Mother's Last Name"
-                            type="text"
-                            name="mother_last_name"
-                            value={formData.mother_last_name || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Birth Place"
-                            type="text"
-                            name="birth_place"
-                            value={formData.birth_place || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label="Birth Country"
-                            type="text"
-                            name="birth_country"
-                            value={formData.birth_country || ''}
-                            readOnly
-                            max={50}
-                            validationType="TEXT_ONLY"
-                        />
-                    </div>
-                </div>
+        {/* Father's Details */}
+        <CommanSelect
+            onChange={handleChange}
+            label="Father's Prefix"
+            name="father_prefix_name"
+            value={formData.father_prefix_name || ''}
+            options={salutation}
+            readOnly
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Father's First Name"
+            type="text"
+            name="father_first_name"
+            value={formData.father_first_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Father's Middle Name"
+            type="text"
+            name="father_middle_name"
+            value={formData.father_middle_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Father's Last Name"
+            type="text"
+            name="father_last_name"
+            value={formData.father_last_name || ''}
+            readOnly
+            max={50}
+        />
+
+        {/* Mother's Details */}
+        <CommanSelect
+            onChange={handleChange}
+            label="Mother's Prefix"
+            name="mother_prefix_name"
+            value={formData.mother_prefix_name || ''}
+            options={salutation}
+            readOnly
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Mother's First Name"
+            type="text"
+            name="mother_first_name"
+            value={formData.mother_first_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Mother's Middle Name"
+            type="text"
+            name="mother_middle_name"
+            value={formData.mother_middle_name || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Mother's Last Name"
+            type="text"
+            name="mother_last_name"
+            value={formData.mother_last_name || ''}
+            readOnly
+            max={50}
+        />
+
+        {/* Birth Place & Country */}
+        <CommanInput
+            onChange={handleChange}
+            label="Birth Place"
+            type="text"
+            name="birth_place"
+            value={formData.birth_place || ''}
+            readOnly
+            max={50}
+        />
+        <CommanInput
+            onChange={handleChange}
+            label="Birth Country"
+            type="text"
+            name="birth_country"
+            value={formData.birth_country || ''}
+            readOnly
+            max={50}
+        />
+    </div>
+</div>
 
                 {/* Occupation Details */}
                 <div className="pdf-section">
@@ -756,6 +813,16 @@ const ViewApplicationForm = () => {
                             type="text"
                             name="anual_income"
                             value={formData.anual_income || ''}
+                            readOnly
+                            max={50}
+                            validationType="TEXT_ONLY"
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Remark"
+                            type="text"
+                            name="remark"
+                            value={formData.remark || ''}
                             readOnly
                             max={50}
                             validationType="TEXT_ONLY"

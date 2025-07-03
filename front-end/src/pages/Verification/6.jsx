@@ -16,6 +16,8 @@ const p6 = ({ onNext, onBack }) => {
     JSON.parse(localStorage.getItem("approveStatusArray")) || [];
   const [isDisabled, setIsDisabled] = useState(false);
 
+  const admin_id = localStorage.getItem("userCode");
+
   useEffect(() => {
     // Get the array from localStorage
     const storedArray =
@@ -130,7 +132,7 @@ const p6 = ({ onNext, onBack }) => {
         application_id: Number(id),
         status: "Rejected",
         status_comment: result.value,
-        admin_id: 1,
+        admin_id: admin_id,
       };
       await pendingAccountStatusUpdate.updateS6B(id, payload);
 
@@ -169,7 +171,7 @@ const p6 = ({ onNext, onBack }) => {
         application_id: Number(id),
         status: "Review",
         status_comment: result.value,
-        admin_id: 1,
+        admin_id: admin_id,
       };
       await pendingAccountStatusUpdate.updateS6B(id, payload);
       applicationStatus.push("Review");
@@ -192,7 +194,7 @@ const p6 = ({ onNext, onBack }) => {
         applicaiton_id: Number(id),
         status: "Approved",
         status_comment: "",
-        admin_id: 1,
+        admin_id: admin_id,
       };
       const response = pendingAccountStatusUpdate.updateS6B(id, payload);
       applicationStatus.push("Approved");
@@ -303,15 +305,14 @@ const p6 = ({ onNext, onBack }) => {
               >
                 Review & Continue
               </CommonButton>
-              {!isDisabled && (
-                <CommonButton
-                  className="btn-next "
-                  onClick={handleNextStep}
-                  disabled={isDisabled}
-                >
-                  Accept & Continue
-                </CommonButton>
-              )}
+
+              <CommonButton
+                className="btn-next "
+                onClick={handleNextStep}
+                disabled={isDisabled}
+              >
+                Accept & Continue
+              </CommonButton>
             </div>
           </>
         ) : (

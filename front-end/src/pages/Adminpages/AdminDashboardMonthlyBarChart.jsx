@@ -48,9 +48,9 @@ function ValidationBarChart() {
         try {
             let response;
             if (timePeriod === 'monthly') {
-                response = await adminService.monthlyauthbarchart;
+                response = await adminService.monthlyauthbarchart();
             } else {
-                response = await adminService.weeklyauthbarchart;
+                response = await adminService.weeklyauthbarchart();
             }
 
             if (response && response.labels && response.data) {
