@@ -466,93 +466,84 @@ const ViewApplicationForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Complex Name"
+                                label="Complex Name"
                                 type="text"
                                 name="per_complex_name"
                                 value={formData.per_complex_name || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Flat No"
+                                label="Flat No"
                                 type="text"
                                 name="cor_flat_no"
                                 value={formData.cor_flat_no || ''}
                                 readOnly
                                 max={20}
-                                validationType="ALPHANUMERIC"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Area"
+                                label="Area"
                                 type="text"
                                 name="cor_area"
                                 value={formData.cor_area || ''}
                                 readOnly
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Landmark"
+                                label=" Landmark"
                                 type="text"
                                 name="cor_landmark"
                                 value={formData.cor_landmark || ''}
                                 readOnly
                                 max={50}
-                                validationType="EVERYTHING"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Country"
+                                label=" Country"
                                 type="text"
                                 name="cor_country"
                                 value={formData.cor_country || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Pincode"
+                                label=" Pincode"
                                 type="text"
                                 name="cor_pincode"
                                 value={formData.cor_pincode || ''}
                                 readOnly
-                                max={6}
-                                validationType="NUMBER_ONLY"
+                                max={6} 
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence City"
+                                label=" City"
                                 type="text"
                                 name="cor_city"
                                 value={formData.cor_city || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence District"
+                                label=" District"
                                 type="text"
                                 name="cor_district"
                                 value={formData.cor_district || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence State"
+                                label="State"
                                 type="text"
                                 name="cor_state"
                                 value={formData.cor_state || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                         </div>
                     </div>
@@ -822,7 +813,6 @@ const ViewApplicationForm = () => {
                             value={formData.remark || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>

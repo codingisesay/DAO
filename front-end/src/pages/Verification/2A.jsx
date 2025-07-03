@@ -100,7 +100,7 @@ function PersonalDetailsForm({ formData, updateFormData, }) {
     };
 
     return (
-        <div className="personal-details-form">
+        <div className="personal-details-form mb-20">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
   <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {/* Personal Information */}

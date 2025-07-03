@@ -13,6 +13,7 @@ function p4({ onNext, onBack }) {
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const { id } = useParams();
 
+    const admin_id= localStorage.getItem('userCode');
     const handleRejectClick = async () => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
@@ -35,7 +36,7 @@ function p4({ onNext, onBack }) {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             // await pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Reject');
@@ -69,7 +70,7 @@ function p4({ onNext, onBack }) {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id:admin_id
             };
             // await pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Review');
@@ -88,7 +89,7 @@ function p4({ onNext, onBack }) {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id:admin_id
             }
             // const response = pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Approved');

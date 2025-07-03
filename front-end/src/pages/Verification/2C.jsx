@@ -51,7 +51,7 @@ const ImageWithDetails = () => {
 
 
     return (
-        <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg mx-auto">
+        <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg mx-auto mb-20">
             {/* Left Side - Image */}
             <div className="w-full md:w-1/2 mb-6 md:mb-0 md:pr-6">
 

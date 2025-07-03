@@ -180,7 +180,8 @@ import { useAuth } from '../../auth/AuthContext';
                                 loading={countLoading}
                                 primaryKeys={["agent_id"]}
                                 hidePagination={true}  
-                                showActions={false} 
+                                editButtonDisabled={true}
+                                // showActions={false} 
                             />
                         </div>
                     )}

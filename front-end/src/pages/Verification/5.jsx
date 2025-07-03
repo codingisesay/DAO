@@ -14,6 +14,8 @@ const p5 = ({ onNext, onBack }) => {
     const { id } = useParams();
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
+    const admin_id= localStorage.getItem('userCode');
+
     const [formData, setFormData] = useState({
         // Personal Details
         firstName: '',
@@ -100,7 +102,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5A(id, payload);
             applicationStatus.push('Reject');
@@ -133,7 +135,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5A(id, payload);
             applicationStatus.push('Review');
@@ -150,7 +152,7 @@ const p5 = ({ onNext, onBack }) => {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS5A(id, payload);
             applicationStatus.push('Approved');
@@ -198,7 +200,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
             
@@ -232,7 +234,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
             
@@ -250,7 +252,7 @@ const p5 = ({ onNext, onBack }) => {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS5A(id, payload);
             Swal.fire({
@@ -299,7 +301,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5C(id, payload);
             
@@ -334,7 +336,7 @@ const p5 = ({ onNext, onBack }) => {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5C(id, payload);            
             applicationStatus.push('Review');
@@ -353,7 +355,7 @@ const p5 = ({ onNext, onBack }) => {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS5C(id, payload);
             

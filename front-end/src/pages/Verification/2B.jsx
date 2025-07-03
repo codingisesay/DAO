@@ -304,10 +304,92 @@ const AddressInputs = () => {
 function AddressForm({ formData, updateFormData, onNext, onBack }) {
 
     const { id } = useParams();
+    const admin_id= localStorage.getItem('userCode');
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
-    const handleRejectClick = async () => {
-        const result = await Swal.fire({
+
+    const handleNextStepAdder = async () => {
+    try {
+        const payload = {
+            application_id: Number(id),
+            status: 'Approved',
+            status_comment: '',
+            admin_id: admin_id
+        };
+        await pendingAccountStatusUpdate.updateS2B(id, payload);
+        applicationStatus.push('Approved');
+        localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+        Swal.fire({
+            icon: 'success',
+            title: 'Address Details Approved Successfully',
+            timer: 2000,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        });
+        onNext();
+    }
+    catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error?.response?.data?.message,
+        });
+    }
+}
+const handleReviewClickadder = async (e) => { // Add 'e' (event object) as a parameter
+    e.preventDefault(); // Prevent default form submission
+
+    const result = await Swal.fire({
+        title: 'Reason for Review',
+        input: 'text',
+        inputLabel: 'Please provide a reason',
+        inputPlaceholder: 'Enter reason here...',
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        className: 'btn-login',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'You need to write a reason!';
+            }
+        },
+    });
+
+    if (result.isConfirmed && result.value) {
+        try {
+            const payload = {
+                application_id: Number(id),
+                status: 'Review',
+                status_comment: result.value,
+                admin_id: admin_id
+            };
+            await pendingAccountStatusUpdate.updateS2B(id, payload);
+            applicationStatus.push('Review');
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
+            Swal.fire({
+                icon: 'success',
+                title: 'Address Details Marked for Review',
+                timer: 2000,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            });
+            onNext();
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error?.response?.data?.message || 'Failed to update status',
+            });
+        }
+    } else if (result.isDismissed) {
+        console.log('Review canceled');
+    }
+};
+
+    const handleRejectClickAddr  = async()=>{
+                const result = await Swal.fire({
             title: 'Reason for Rejection',
             input: 'text',
             inputLabel: 'Please provide a reason',
@@ -328,7 +410,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS2B(id, payload);
             applicationStatus.push('Reject');
@@ -337,119 +419,43 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
         } else if (result.isDismissed) {
             console.log('Rejection canceled');
         }
-    };
-
-    const handleReviewClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Review',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Review',
-                status_comment: result.value,
-                admin_id: 1
-            };
-            await pendingAccountStatusUpdate.updateS2B(id, payload);
-            applicationStatus.push('Review');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            onNext();
-        } else if (result.isDismissed) {
-            console.log('Rejection canceled');
-        }
-    };
-
-    const handleNextStep = async () => {
-        try {
-            const payload = {
-                applicaiton_id: Number(id),
-                status: 'Approved',
-                status_comment: '',
-                admin_id: 1
-            }
-            await pendingAccountStatusUpdate.updateS2B(id, payload);
-            applicationStatus.push('Approved');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            Swal.fire({
-                icon: 'success',
-                title: 'Address Details Approved Successfully',
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            });
-            onNext();
-        }
-        catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text:  error?.response?.data?.message,
-            });
-        }
     }
 
     return (
-        <div className="address-form">
+        <div className="address-form mb-20">
 
             <AddressInputs />
 
 
             <div className="next-back-btns z-10">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleRejectClick}
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2 z-10"
+                    onClick={handleRejectClickAddr}
                 >
                     Reject & Continue
                 </CommonButton>
 
                 <CommonButton
-                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                    onClick={handleReviewClick}
+                    className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2 z-10"
+                    onClick={handleReviewClickadder}
                 >
                     Review & Continue
                 </CommonButton>
 
                 <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
+                    className="btn-next z-10"
+                    onClick={handleNextStepAdder}
                 >
                     Accept & Continue
                 </CommonButton>
             </div>
 
 
-
-            {/* <div className="next-back-btns z-10">
-                <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1"
-                    onClick={handleRejectClick}
-                >
-                    Reject & Continue
-                </CommonButton>
-
-                <CommonButton
-                    className="btn-next "
-                    onClick={handleNextStep}
-                >
-                    Accept & Continue
-                </CommonButton>
-            </div> */}
+ 
         </div>
     );
 }
 
-export default AddressForm; 
+export default AddressForm;
+
+ 
