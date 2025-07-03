@@ -80,7 +80,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
+      <div data-theme={isDark ? "dark" : "light"} className="p-4  dark:bg-gray-700">
         <div className="flex justify-between">
           <div>
             <img
@@ -203,7 +203,7 @@ const Dashboard = () => {
               <StatusDashboard1 />
             </div>
             <div className="md:w-2/3 sm:w-full p-1">
-              <div className="bg-white w-full my-2 p-4 rounded-md">
+              <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
                 <AccountBarChart />
               </div>
             </div>
@@ -220,7 +220,7 @@ const Dashboard = () => {
           </div>
 
           <div className="md:w-2/6 sm:w-full p-1">
-            <div className="bg-white w-full my-2 p-4 rounded-md">
+            <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
               <h2 className="text-xl font-bold mb-0">Application Insights</h2>
               <div className="text-center">
                 <DateRangePicker onChange={handleDateChange} />
@@ -230,13 +230,13 @@ const Dashboard = () => {
           </div>
 
           <div className="md:w-1/2 sm:w-full p-1">
-            <div className="bg-white w-full my-2 p-4 rounded-md">
+            <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
               <h2 className="text-xl font-bold mb-2"> Demographics Report</h2>
               <DemographicsBarChart />
             </div>
           </div>
           <div className="md:w-1/2 sm:w-full p-1">
-            <div className="bg-white w-full my-2 p-4 rounded-md">
+            <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
               <h2 className="text-xl font-bold mb-2"> V-KYC Pending Status</h2>
               <KYCpendingTbl />
             </div>

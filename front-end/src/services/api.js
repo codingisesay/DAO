@@ -172,8 +172,7 @@ export const API_ENDPOINTS = {
     //clicking on the view button in the admin dashboard
     GET_FULL_APPLICATION_DETAILS: (id) => `/admin/application-details/${id}`,
     // Add these for Reviews applications
-    GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/applications/rejected/Review',
-    GET_REVIEW_APPLICATIONS_AGENT_COUNT: '/dao/api/admin/reviewApplicationCount',
+    GET_ALL_REVIEW_APPLICATIONS: '/dao/api/admin/applications/rejected/Review', 
     
     GET_REVIEW_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/reviewApplicationDetails/${agentId}`,
     GET_APPROVED_APPLICATIONS_DETAILS_BY_AGENT: (agentId) => `/dao/api/admin/approvedApplicationDetails/${agentId}`,

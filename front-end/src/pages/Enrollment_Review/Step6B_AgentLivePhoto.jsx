@@ -117,59 +117,62 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
     const submitPhoto = async (e) => { 
         if(apiPhotoData){ 
-            try {
-                
-            setLocalIsSubmitting(true);
-
-            // Use FormData for file upload
-            const submitFormData = new FormData();
-            submitFormData.append('application_id', id || application_id);
-
-            // Add location data if available
-            if (photoData.metadata?.location) {
-                submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
-                submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
-            }
-
-            // Add validation data if available
-            if (photoData.metadata?.validation) {
-                submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
-            }
-
-            submitFormData.append('photo', photoData.file);
-            submitFormData.append('timestamp', photoData.timestamp);
-            submitFormData.append('status', 'Pending');
-              createAccountService.agentLivePhoto_s6b(submitFormData);
-
-              
+            
             Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : '+ id,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Clear all related localStorage data
-                    localStorage.removeItem('customerPhotoData');
-                    localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData');
-                    // window.location.href = '/agentdashboard'; // Redirect to the desired page
-                }
-            }); 
-                // Proceed to next step after successful submission
-                // onNext();
-            } catch (error) {
-                console.error('Photo submission error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
-                });
-            } finally {
-                setLocalIsSubmitting(false);
-            }
+    title: 'Live Capture Required',
+    text: 'Please enable your camera to continue.',
+    icon: 'info',
+    confirmButtonText: 'OK',  // Only OK button
+    showCancelButton: false,  // No cancel button
+  });
 
-        }
+
+            
+    //    try {
+        //     // Save previous apiPhotoData if needed
+        //     const prevApiPhotoData = apiPhotoData;
+
+        //     // Clear apiPhotoData
+        //     setApiPhotoData();
+
+        //     // Prepare data to save only the path
+        //     const dataToSave = {
+        //         application_id: id || application_id,
+        //         photo: prevApiPhotoData.path, // Save only the path
+        //         timestamp: prevApiPhotoData.created_at,
+        //         longitude: prevApiPhotoData.longitude,
+        //         latitude: prevApiPhotoData.latitude,
+        //         status: 'Pending'
+        //     };
+
+        //     // You may need to adjust your backend to accept this structure
+        //     await createAccountService.agentLivePhoto_s6b(dataToSave);
+
+        //     Swal.fire({
+        //         title: 'Application Created Successfully!', 
+        //         text: 'Application Number : '+ id,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK',
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             // Clear all related localStorage data
+        //             localStorage.removeItem('customerPhotoData');
+        //             localStorage.removeItem('agentPhotoData');
+        //             localStorage.removeItem('documentData');
+        //             // window.location.href = '/agentdashboard'; // Redirect to the desired page
+        //         }
+        //     }); 
+        // } catch (error) {
+        //     console.error('Photo submission error:', error);
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Error',
+        //         text: error?.data?.message + ` Retake and Save Photo` || 'Failed to save photo. Please try again.'
+        //     });
+        // } finally {
+        //     setLocalIsSubmitting(false);
+        // }
+    }
         else {
             if (!photoData || !photoData.file) {
                 Swal.fire({

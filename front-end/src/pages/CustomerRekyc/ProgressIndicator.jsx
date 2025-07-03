@@ -71,7 +71,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
       </div>
 
       <div className="stepper-footer">
-        <div className="flex bg-green-100 p-2 rounded-md items-center ">
+        <div className="flex bg-green-100 p-2 rounded-md items-center dark:bg-gray-800   ">
           <img height='40px' width='40px'
             src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
             alt="profile"
