@@ -25,13 +25,11 @@ const MonthlyAccountTrends = () => {
                 setData(chartData);
             }
         } catch (error) {
-            if(error.status==401){window.location.reload()}
-
-            console.error('Error fetching Monthly Trends:', error);
+            
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.status || 'Failed to load chart data'
+                text: error.data.message || 'Failed to load chart data'
             });
         } 
     };
