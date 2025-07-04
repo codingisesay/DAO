@@ -951,7 +951,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
       <div className="flex justify-end mb-6 mt-3">
         <CommonButton
-          onClick={addNominee}
+          onClick={addNominee} disabled={getRemainingPercentage() <= 0}
           className="border border-green-500 rounded-md text-green-500 px-3 py-1"
         >
           Add Nominee
