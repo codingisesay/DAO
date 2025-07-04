@@ -22,7 +22,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       nomineeMiddleName: "",
       nomineeLastName: "",
       nomineeRelation: "",
-      nomineePercentage: "",
+      nomineePercentage: "100",
       nomineeDOB: "",
       nomineeAge: "",
     },

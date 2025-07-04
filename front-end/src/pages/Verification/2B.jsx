@@ -344,7 +344,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
 }
 const handleReviewClickadder = async (e) => { // Add 'e' (event object) as a parameter
     e.preventDefault(); // Prevent default form submission
-alert('Review')
+ 
     const result = await Swal.fire({
         title: 'Reason for Review',
         input: 'text',
