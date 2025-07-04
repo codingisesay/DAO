@@ -29,7 +29,7 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
         birthPlaceCity:  '',
         birthPlaceCountry:  '',
         maritalStatus:   '',
-        nationality: 'Indian',
+        nationality: '',
         religion:  '',
         caste: '',
         occupationType:  '',
@@ -140,6 +140,7 @@ useEffect(() => {
                     maritalStatus: personal_details?.marital_status || prev.maritalStatus,
                     religion: personal_details?.religion || prev.religion,
                     caste: personal_details?.caste || prev.caste,
+                    nationality : 'Indian',
                     
                     // Occupation details (from account_personal_details)
                     occupationType: account_personal_details?.occoupation_type || prev.occupationType,
