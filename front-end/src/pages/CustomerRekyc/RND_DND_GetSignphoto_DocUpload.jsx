@@ -23,6 +23,8 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const [activeSide, setActiveSide] = useState('');
     const [document, setDocuments] = useState(documents || []);
     const [showAlert, setShowAlert] = useState(false);
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
     const [alertConfig, setAlertConfig] = useState({ title: '', message: '', type: '' });
 
     const showAlertMessage = (title, message, type, duration = 2000) => {
@@ -599,6 +601,15 @@ useEffect(() => {
                                                     src={doc.image}
                                                     alt={doc.name}
                                                     className="thumbnail max-w-xs max-h-15"
+                                                          onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(doc.image);
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             )}
                                         </td> 
@@ -609,6 +620,17 @@ useEffect(() => {
                                             src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                             alt="Signature"
                                             className="w-10 h-auto rounded-md object-contain shadow-sm"
+                                                  onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `data:image/jpeg;base64,${doc.signatures[0].image}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                             />
                                         ) : '-'}
                                         </td>
@@ -618,6 +640,17 @@ useEffect(() => {
                                                     src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
                                                     alt="Photograph"
                                                     className="w-auto h-[50px] rounded-md object-contain shadow-sm"
+                                                           onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `data:image/jpeg;base64,${doc.photographs[0].image}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             ) : '-'}
                                         </td>
@@ -641,6 +674,21 @@ useEffect(() => {
                             )}
                         </tbody>
                     </table>
+                              {hoveredImage && (
+            <div
+              className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+              style={{
+                top: `${hoverPosition.y}px`,
+                left: `${hoverPosition.x}px`,
+              }}
+            >
+              <img
+                src={hoveredImage}
+                alt="Zoomed Preview"
+                className="h-[200px] w-auto rounded"
+              />
+            </div>
+          )}
                 </div>
             </div>
 

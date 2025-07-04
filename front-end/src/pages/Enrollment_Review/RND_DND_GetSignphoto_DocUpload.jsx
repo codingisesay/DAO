@@ -14,6 +14,8 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
     const [previewImage, setPreviewImage] = useState(null);
     const [uploadSide, setUploadSide] = useState('');
     const fileInputRef = useRef(null);
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
     const [loading, setLoading] = useState(false);
     const [showCameraModal, setShowCameraModal] = useState(false);
     const [stream, setStream] = useState(null);
@@ -598,6 +600,17 @@ useEffect(() => {
                                                     src={doc.image}
                                                     alt={doc.name}
                                                     className="thumbnail max-w-xs max-h-15"
+                                                               onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `${doc.image}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             )}
                                         </td> 
@@ -608,6 +621,17 @@ useEffect(() => {
                                             src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
                                             alt="Signature"
                                             className="w-24 h-auto rounded-md object-contain shadow-sm"
+                                                       onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `data:image/jpeg;base64,${doc.signatures[0].image}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                             />
                                         ) : '-'}
                                         </td>
@@ -617,6 +641,17 @@ useEffect(() => {
                                                     src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
                                                     alt="Photograph"
                                                     className="w-auto h-[50px] rounded-md object-contain shadow-sm"
+                                                               onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `data:image/jpeg;base64,${doc.photographs[0].image}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             ) : '-'}
                                         </td>
@@ -625,6 +660,7 @@ useEffect(() => {
                                                 onClick={() => removeDocument(doc.id)}
                                                 className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors duration-200"
                                                 title="Remove Document"
+                                                
                                             >
                                                 <Trash2 size={18} />
                                             </button>
@@ -675,7 +711,21 @@ useEffect(() => {
                     </div>
                 </div>
             )}
- 
+           {hoveredImage && (
+            <div
+              className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+              style={{
+                top: `${hoverPosition.y}px`,
+                left: `${hoverPosition.x}px`,
+              }}
+            >
+              <img
+                src={hoveredImage}
+                alt="Zoomed Preview"
+                className="h-[200px] w-auto rounded"
+              />
+            </div>
+          )}
         </div>
     );
 };

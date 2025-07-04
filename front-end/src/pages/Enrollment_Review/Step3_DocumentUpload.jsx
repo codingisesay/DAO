@@ -32,7 +32,7 @@ const P3 = ({ onNext, onBack }) => {
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
-                console.log( reason.applicant_live_photos_status_comment)
+                console.log( reason.document_approved_status_status_comment)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -242,10 +242,10 @@ const P3 = ({ onNext, onBack }) => {
                 )}
                 
              
-                {reason && reason.applicant_live_photos_status_comment ? (
+                {reason && reason.document_approved_status_status_comment ? (
                     <>
                 <div>
-                     {reason &&  <p className="text-red-500">Review Reason : {reason.applicant_live_photos_status_comment}</p> }
+                     {reason &&  <p className="text-red-500">Review Reason : {reason.document_approved_status_status_comment}</p> }
                  <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
