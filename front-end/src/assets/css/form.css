@@ -27,6 +27,7 @@
   right: 20px;
   background-color: white;
 }
+
 .dark .next-back-btns {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
@@ -705,10 +706,12 @@ div.border-red-500 select {
 } */
 
 @keyframes glowPulse {
+
   0%,
   100% {
     text-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
   }
+
   50% {
     text-shadow: 0 0 2px rgba(34, 197, 94, 0.2);
   }
@@ -734,5 +737,6 @@ div.border-red-500 select {
 
 input:disabled,
 select:disabled {
-  color: gray;             /* important to keep color visible */
+  color: gray;
+  /* important to keep color visible */
 }
