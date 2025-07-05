@@ -6,8 +6,9 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import {  createAccountService, pendingAccountData } from '../../services/apiServices';
+import {  createAccountService, pendingAccountData, agentService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
@@ -16,6 +17,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const agent_id =localStorage.getItem('userCode');
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -40,8 +43,26 @@ function P1({ onNext, onBack, formData, updateFormData }) {
       
     
     // Fetch details if application_id exists
-    const id = localStorage.getItem('application_id');
+    // const id = localStorage.getItem('application_id');
+    const {id} = useParams();
     useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
+    
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
     
 
         // clear local storage from below code
@@ -327,7 +348,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             <div className='form-container'>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
-                        <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
+                        <h2 className="text-xl font-bold mb-2">Enrollment Form</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.status_comment}</p> }
                         <div className="application-type-container">
                             <label className="application-type">
                                 <input

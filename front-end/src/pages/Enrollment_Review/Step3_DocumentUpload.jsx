@@ -12,7 +12,8 @@ import { useParams } from 'react-router-dom';
 const P3 = ({ onNext, onBack }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [Loading, setLoading] = React.useState(false);
-    const [localFormData, setLocalFormData]=useState([]);
+    const [localFormData, setLocalFormData]=useState([]); 
+
     const [documents, setDocuments] = useState(() => {
 
         try {

@@ -7,7 +7,7 @@ import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
 import Swal from 'sweetalert2';
-import { pendingAccountData, createAccountService } from '../../services/apiServices';
+import { pendingAccountData, createAccountService, agentService } from '../../services/apiServices';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,8 +15,10 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     const verificationMethod = formData.verificationOption || '';
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [validationErrors, setValidationErrors] = useState({});
-    const [touchedFields, setTouchedFields] = useState({});
-
+    const [touchedFields, setTouchedFields] = useState({}); 
+    const [loading, setLoading] = useState(false);
+    const [reason, setReason] = useState(null); 
+    const id = localStorage.getItem('application_id');
     const [localFormData, setLocalFormData] = useState({
         salutation: formData.salutation || '',
         first_name: formData.first_name || '',
@@ -39,12 +41,27 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     });
 
     useEffect(() => {
-        const id = localStorage.getItem('application_id');
         if (id) {
             fetchAndShowDetails(id);
         }
     }, []);
 
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
     const fetchAndShowDetails = async (id) => {
         try {
             if (id) {
@@ -312,6 +329,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     return (
         <form className="personal-details-form">
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_personal_details_status_comment}</p> }
             <div className='block sm:flex'>
                 <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-3">
                     {/* Salutation */}

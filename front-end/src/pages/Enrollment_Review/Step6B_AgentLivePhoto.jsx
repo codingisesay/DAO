@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ImageCaptureValidator from './agentliveCapture'; // Make sure this path is correct
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { createAccountService, agentService, pendingAccountData } from '../../services/apiServices';
+import { createAccountService, agentService, pendingAccountData, } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
 
 const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);

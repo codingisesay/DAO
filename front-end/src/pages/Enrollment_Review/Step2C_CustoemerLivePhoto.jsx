@@ -3,7 +3,8 @@ import React, { useEffect, useState, useCallback } from "react"; // Import useCa
 import ImageCaptureValidator from "./CustomerPhotoCapture";
 import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";
-import {
+import {useParams} from "react-router-dom";
+import { agentService,
   createAccountService,
   pendingAccountData,
 } from "../../services/apiServices";
@@ -11,9 +12,12 @@ import {
 const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
   const [photoData, setPhotoData] = useState(null);
   const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
-  const [apiPhotoData, setApiPhotoData] = useState(null);
+  const [apiPhotoData, setApiPhotoData] = useState(null); 
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null);   const {id}=useParams();
   const application_id =
     localStorage.getItem("application_id") || formData.application_id;
+  
   const storageKey = "customerPhotoData";
 
   // Use useCallback for fetchAndShowDetails to prevent unnecessary re-renders/re-creations
@@ -138,6 +142,23 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
     localStorage.setItem(storageKey, JSON.stringify(storageData));
   };
 
+  
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
   const submitPhoto = async (e) => {
     // Removed the check for apiPhotoData here.
     // If a new photo is captured (photoData will be updated), it will be submitted.
@@ -250,6 +271,8 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
         </div>
       )}
 
+   <h2 className="text-xl font-bold m-2">Customer Photo</h2>
+      {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
       <ImageCaptureValidator
         onCapture={handlePhotoCapture}
         photoType="customer"

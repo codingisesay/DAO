@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import CommonButton from "../../components/CommonButton";
-import {
+import { agentService,
   pendingAccountData,
   createAccountService,
   applicationDetailsService,
@@ -11,10 +11,13 @@ import { salutation, relation } from "../../data/data";
 import InputField from "../../components/CommanInput";
 import SelectField from "../../components/CommanSelect";
 import { add } from "@tensorflow/tfjs-core/dist/engine";
+import { useParams } from "react-router-dom";
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
   const storedId = localStorage.getItem("application_id");
   const [nominees, setNominees] = useState([]);const [isPinCodeValid, setIsPinCodeValid] = useState(true); // New state
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null);   const {id}=useParams();  
   const [currentNominee, setCurrentNominee] = useState({
     details: {
       nomineeSalutation: "",
@@ -52,6 +55,22 @@ function toTitleCase(str) {
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
+   useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
   const fetchAndStoreDetails = async () => {
     try {
       if (storedId) {
@@ -608,6 +627,7 @@ const nomineesPayload = nominees.map((nominee) => ({
   return (
     <div className="max-w-screen-xl mx-auto">
       <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.nominee_approved_status_status_comment}</p> }
       <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
         <div>
           <SelectField
