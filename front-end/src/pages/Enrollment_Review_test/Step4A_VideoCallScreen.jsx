@@ -15,7 +15,6 @@ const VideoKYCInstructions = ({onNext}) => {
     const [showOptions, setShowOptions] = useState(false);
     const [assistKycCall, setAssistKycCall] = useState(false);
 
-    const application_id = JSON.parse(localStorage.getItem('application_id')) || null;
     const handleCheckboxChange = (type) => {
         setTermsAccepted(prev => ({
             ...prev,
@@ -24,46 +23,6 @@ const VideoKYCInstructions = ({onNext}) => {
     };
    
     const handleConfirm = () => { setShowOptions(true); };
-
-// ...existing code...
-// const handleConfirm = async () => {
-//     try {
-//         const response = await fetch(`/video-kyc/guidline/${application_id}`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//         });
-
-//         if (!response.ok) {
-//             // Try to parse error message if present
-//             let errorMsg = 'Unknown error';
-//             const text = await response.text();
-//             if (text) {
-//                 try {
-//                     const errorData = JSON.parse(text);
-//                     errorMsg = errorData.message || errorMsg;
-//                 } catch {
-//                     errorMsg = text;
-//                 }
-//             }
-//             alert('Error: ' + errorMsg);
-//             return;
-//         }
-
-//         // Check if response has content
-//         const text = await response.text();
-//         if (text) {
-//             const data = JSON.parse(text);
-//             alert('Success: ' + (data.message || 'Operation successful'));
-//         } else {
-//             alert('Success!');
-//         }
-//     } catch (error) {
-//         alert('Network error: ' + error.message);
-//     }
-// };
-// ...existing code...
 
     const allTermsAccepted = termsAccepted.guidelines && termsAccepted.technical;
 
@@ -81,22 +40,19 @@ const VideoKYCInstructions = ({onNext}) => {
     }
     const assistKyc= async()=>{
         localStorage.setItem('vcall', JSON.stringify(true));
-        // navigate('/startVkyc');
-        // try{
-        // const responce = await videoKycServie.createMeeting(5);
-        // console.log(responce);
+        try{
+        const responce = await videoKycServie.createMeeting(5);
+        console.log(responce);
         setAssistKycCall(true);
-        // }catch(error){
-        //     Swal.fire({
-        // icon: 'error',
-        // title: JSON.stringify( error.data.message ),
-        // //   text: 'Please upload at least one document before proceeding.',
-        // });
-        // }          
+    }catch(error){
+         Swal.fire({
+      icon: 'error',
+      title: JSON.stringify( error.data.message ),
+    //   text: 'Please upload at least one document before proceeding.',
+    });
+    }          
     }
-    const vcallstart=async()=>{
-        navigate('/startVkyc');
-    }
+
 
     return (
         <>
@@ -207,7 +163,7 @@ const VideoKYCInstructions = ({onNext}) => {
                     </h1>
                     <input className="m-4 p-2 border-2 border-gray-500 rounded" type="text" name="" id="" />
 
-                    <button className="btn-login my-3 w-[200px]" onClick={vcallstart}>
+                    <button className="btn-login my-3 w-[200px]">
                         Join V-KYC
                     </button>
                 </>

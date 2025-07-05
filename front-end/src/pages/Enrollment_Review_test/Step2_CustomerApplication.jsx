@@ -37,13 +37,15 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleSubmit = async (e) => {
-        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault(); 
         setIsSubmitting(true);
-
+  
         try {
             if (activeStep === 0) {
-                console.log('2A formadta : ', formData.personalDetails)
+                // console.log('2A formadta : ', formData)
                 const pd = formData.personalDetails || {};
+                
+                console.log('GET MEEE : ' , pd)
                 if (
                     /\d/.test(pd.first_name) ||
                     /\d/.test(pd.middle_name) ||
@@ -56,36 +58,14 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     return;
                 }
 
-             let missingFields = [];
-
-            if (!pd.email) missingFields.push("Email");
-            if (!pd.caste) missingFields.push("Caste");
-            if (!pd.religion) missingFields.push("Religion");
-
-            if (missingFields.length > 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Missing Required Fields',
-                    html: 'Please fill the following fields:<br><b>' + missingFields.join('</b><br><b>') + '</b>',
-                });
-                return;
-            }
-
-
-                else if (pd.mobile.length != 10) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error saving personal details',
-                        text: '10 Digit Must for Mobile Number ',
-                    }); return
-                }
-                else if (pd.alt_mob_no.length != 10) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error saving personal details',
-                        text: '10 Digit Must for Alternate Mobile Number ',
-                    }); return
-                }
+                // else if (pd.mobile.length !== 10) {
+                //     Swal.fire({
+                //         icon: 'error',
+                //         title: 'Error saving personal details',
+                //         text: '10 Digit Must for Mobile Number ',
+                //     }); return
+                // }
+        
                 else if (pd.pannumber.length != 10) {
                     Swal.fire({
                         icon: 'error',
@@ -99,7 +79,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     salutation: pd.salutation,
                     religion: pd.religion,
                     caste: pd.caste,
-                    marital_status: pd.maritalStatus ? pd.maritalStatus.toUpperCase() : undefined,
+                    marital_status: pd.marital_status ? pd.marital_status.toUpperCase() : undefined,
                     alt_mob_no: pd.alt_mob_no,
                     email: pd.email,
                     adhar_card: pd.adhar_card,
