@@ -225,7 +225,19 @@ function toTitleCase(str) {
     const { name, value } = e.target;
 
     // ... (existing code)
-
+  if (name === "nomineeDOB") {
+    // Calculate age when DOB changes
+    const age = calculateAge(value);
+    setCurrentNominee((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: value,
+        nomineeAge: age, // Set the calculated age
+      },
+    }));
+    return;
+  }
     if (name === "nomineePinCode") {
         setCurrentNominee((prev) => ({
             ...prev,
@@ -399,7 +411,7 @@ const newNominee = {
   const removeNominee = (id) => {
   const updatedNominees = nominees.filter((nominee) => nominee.id !== id);
     setNominees((prev) => prev.filter((nominee) => nominee.id !== id));
- 
+  resetForm(updatedNominees); 
   // Calculate new remaining percentage after deletion
   const remainingPercentage =
     100 -
@@ -968,7 +980,7 @@ const nomineesPayload = nominees.map((nominee) => ({
         className={`border border-green-500 rounded-md text-green-500 px-3 py-1 
           ${getRemainingPercentage() <= 0 || !isPinCodeValid || Object.keys(errors).length > 0 
             ? 'grayscale opacity-50 cursor-not-allowed' 
-            : ''}`}
+            : 'border border-green-500 rounded-md text-green-500 px-3 py-1'}`}
       >
         Add Nominee
       </CommonButton>
