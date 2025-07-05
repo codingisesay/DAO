@@ -375,6 +375,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                   ? "border-red-500"
                   : ""
               }
+               disabled={true}
             />
             {validationErrors.first_name && touchedFields.first_name && (
               <p className="text-red-500 text-xs">
@@ -397,7 +398,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 validationErrors.middle_name && touchedFields.middle_name
                   ? "border-red-500"
                   : ""
-              }
+              } disabled={true}
             />
             {validationErrors.middle_name && touchedFields.middle_name && (
               <p className="text-red-500 text-xs">
@@ -421,13 +422,13 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 validationErrors.last_name && touchedFields.last_name
                   ? "border-red-500"
                   : ""
-              }
+              } disabled={true}
             />
             {validationErrors.last_name && touchedFields.last_name && (
               <p className="text-red-500 text-xs">
                 {validationErrors.last_name}
               </p>
-            )}
+            )} 
           </div>
 
           {/* Date of Birth */}
@@ -445,7 +446,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 validationErrors.DOB && touchedFields.DOB
                   ? "border-red-500"
                   : ""
-              }
+              } disabled={true}
             />
             {validationErrors.DOB && touchedFields.DOB && (
               <p className="text-red-500 text-xs">{validationErrors.DOB}</p>
@@ -466,7 +467,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 validationErrors.gender && touchedFields.gender
                   ? "border-red-500"
                   : ""
-              }
+              } disabled={true}
             />
             {validationErrors.gender && touchedFields.gender && (
               <p className="text-red-500 text-xs">{validationErrors.gender}</p>
@@ -557,7 +558,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 validationErrors.mobile && touchedFields.mobile
                   ? "border-red-500"
                   : ""
-              }
+              } disabled={true}
             />
             {validationErrors.mobile && touchedFields.mobile && (
               <p className="text-red-500 text-xs">{validationErrors.mobile}</p>
