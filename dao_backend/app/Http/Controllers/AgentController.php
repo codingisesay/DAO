@@ -412,13 +412,14 @@ public function saveAccountPersonalDetails(Request $request)
         'father_first_name' => 'nullable|string|max:191',
         'father_middle_name' => 'nullable|string|max:191',
         'father_last_name' => 'nullable|string|max:191',
-
+        
         'mother_prefix_name' => 'nullable',
         'mother_first_name' => 'nullable|string|max:191',
         'mother_middle_name' => 'nullable|string|max:191',
         'mother_last_name' => 'nullable|string|max:191',
         'birth_place' => 'nullable|string|max:191',
         'birth_country' => 'nullable|string|max:191',
+        'nationality' => 'nullable',
         'occoupation_type' => 'nullable|string|max:191',
         'occupation_name' => 'nullable|string|max:191',
         'if_salaryed' => 'nullable',
