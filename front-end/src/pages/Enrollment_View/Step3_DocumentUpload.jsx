@@ -179,7 +179,9 @@ const renderExtractedItems = (items) => {
             <div className="p-4 max-w-4xl mx-auto">
                 {isProcessing && (
                     <Paper elevation={3} sx={{ p: 0, mb: 0, boxShadow:'none' }}>
-                        <Typography variant="body1" align="center">Getting Abstractions ...  </Typography>
+                        <Typography variant="body1" align="center">
+                            {/* Getting Abstractions ...  to SHOW LOADING  */}
+                            </Typography>
                     </Paper>
                 )}
                 
@@ -191,8 +193,8 @@ const renderExtractedItems = (items) => {
                                     <tr>
                                         <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
                                         <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
-                                        <th className="py-2 px-4 border-b border-gray-200 text-left">Signatures</th>
-                                        <th className="py-2 px-4 border-b border-gray-200 text-left">Photographs</th> 
+                                        <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th>
+                                        <th className="py-2 px-4 border-b border-gray-200 text-left">Photograph</th> 
                                         <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                     </tr>
                                 </thead>
@@ -258,9 +260,7 @@ const renderExtractedItems = (items) => {
     return (
         <div className="form-container">
             <h2 className="text-xl font-bold mb-2">Document Verification</h2>
-            <p className="mb-4 text-gray-600">
-                Documents are being automatically processed for signature and photograph extraction.
-            </p>
+            
             
             <DocumentDetailsTable documentslist={localFormData} />
 
