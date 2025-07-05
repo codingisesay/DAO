@@ -617,45 +617,41 @@ const ViewApplicationForm = () => {
                 {nominees.length > 0 && (
                     <div className="pdf-section mb-8">
                         <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+<div className="w-full mb-8 border rounded p-4">
+  <table className="min-w-fit table-auto border border-collapse mb-4">
+    <thead>
+      <tr className="bg-gray-100 text-left">
+        <th  className="border px-4 py-2">Name of the Nominee</th>
+        <th  className="border px-4 py-2">Address</th>
+        <th  className="border px-4 py-2">Relationship</th>
+        <th  className="border px-4 py-2">Date of Birth</th>
+        <th  className="border px-4 py-2">Age</th>
+        <th  className="border px-4 py-2">Percentage</th> 
+      </tr>
+    </thead>
 
-                        <div className="mb-8 border rounded p-4 w-full overflow-auto">
+    {nominees.map((nominee, index) => (
+      <tbody key={index}>
+        <tr>
+          <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+            {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+          </td>
+          <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+            {nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}
+          </td>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.relationship}</td>
+          <td className="border px-4 py-2" style={{ verticalAlign: 'top', minWidth: '100px' }}>
+  {nominee.dob ? new Date(nominee.dob).toLocaleDateString('en-GB') : 'N/A'}
+</td>
 
-                            {/* Personal Details Table */}
-                            <table className="w-full border border-collapse mb-4 ">
-                                <thead >
-                                    <tr className="bg-gray-100 text-left">
-                                        <th className="border px-4 py-2">Salutation</th>
-                                        <th className="border px-4 py-2">First Name</th>
-                                        <th className="border px-4 py-2">Middle Name</th>
-                                        <th className="border px-4 py-2">Last Name</th>
-                                        <th className="border px-4 py-2">Relationship</th>
-                                        <th className="border px-4 py-2">Percentage</th>
-                                        <th className="border px-4 py-2">Date of Birth</th>
-                                        <th className="border px-4 py-2">Age</th>
-                                        <th className="border px-4 py-2">Address</th>
-                                    </tr>
-                                </thead>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.age}</td>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.percentage}</td> 
+        </tr>
+      </tbody>
+    ))}
+  </table>
+</div>
 
-                                {nominees.map((nominee, index) => (
-
-                                    <tbody key={index}>
-                                        <tr>
-                                            <td className="border px-4 py-2">{nominee.salutation}</td>
-                                            <td className="border px-4 py-2">{nominee.first_name}</td>
-                                            <td className="border px-4 py-2">{nominee.middle_name}</td>
-                                            <td className="border px-4 py-2">{nominee.last_name}</td>
-                                            <td className="border px-4 py-2">{nominee.relationship}</td>
-                                            <td className="border px-4 py-2">{nominee.percentage}</td>
-                                            <td className="border px-4 py-2">{nominee.dob}</td>
-                                            <td className="border px-4 py-2">{nominee.age}</td>
-                                            <td className="border px-4 py-2">{nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}</td>
-                                        </tr>
-                                    </tbody>
-
-                                ))}
-                            </table>
-
-                        </div>
 
                     </div>
                 )}
