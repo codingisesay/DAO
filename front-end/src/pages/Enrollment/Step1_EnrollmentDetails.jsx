@@ -46,7 +46,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         // clear local storage from below code
         // ...existing code...
-useEffect(() => {
+    useEffect(() => {
+        setIsFetchDisabled(true)
     const checkAndClearLocalStorage = async () => {
         const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
         const hasDocuments = !!localStorage.getItem('documentData');
