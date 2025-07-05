@@ -400,16 +400,25 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
   };
 
   const removeNominee = (id) => {
+  const updatedNominees = nominees.filter((nominee) => nominee.id !== id);
     setNominees((prev) => prev.filter((nominee) => nominee.id !== id));
+ 
+  // Calculate new remaining percentage after deletion
+  const remainingPercentage =
+    100 -
+    updatedNominees.reduce(
+      (sum, nominee) =>
+        sum + parseFloat(nominee.details.nomineePercentage || 0),
+      0
+    );
 
-    const remainingPercentage = getRemainingPercentage();
-    setCurrentNominee((prev) => ({
-      ...prev,
-      details: {
-        ...prev.details,
-        // nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
-      },
-    }));
+  setCurrentNominee((prev) => ({
+    ...prev,
+    details: {
+      ...prev.details,
+      nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : "0",
+    },
+  }));
   };
 
   const resetForm = (updatedNominees = nominees) => {
@@ -472,7 +481,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       });
       return;
     }
-
+   
     try {
       const nomineesPayload = nominees.map((nominee) => ({
         id: nominee.id,
@@ -481,7 +490,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         middle_name: nominee.details.nomineeMiddleName,
         last_name: nominee.details.nomineeLastName,
         relationship: nominee.details.nomineeRelation,
-        percentage: nominee.details.nomineePercentage,
+      percentage: nominee.details.nomineePercentage.toString(),
         dob: nominee.details.nomineeDOB,
         age: nominee.details.nomineeAge,
         nom_complex_name: nominee.address.nomineeComplexName,
@@ -523,6 +532,18 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     setIsSameAsPermanent(isChecked);
 
     if (isChecked) {
+         setErrors((prev) => ({
+        ...prev,
+        nomineeComplexName: undefined,
+        nomineeBuildingName: undefined,
+        nomineeArea: undefined,
+        nomineeLandmark: undefined,
+        nomineeCountry: undefined,
+        nomineePinCode: undefined,
+        nomineeCity: undefined,
+        nomineeDistrict: undefined,
+        nomineeState: undefined,
+      }));
       try {
         const response = await applicationDetailsService.getFullDetails(
           storedId
@@ -991,15 +1012,21 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                       {nominee.details.nomineeRelation}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {new Date(
-                        nominee.details.nomineeDOB
-                      ).toLocaleDateString()}
+                      {
+                        (() => {
+                          const date = new Date(nominee.details.nomineeDOB);
+                          const day = String(date.getDate()).padStart(2, '0');
+                          const month = String(date.getMonth() + 1).padStart(2, '0');
+                          const year = date.getFullYear();
+                          return `${day}/${month}/${year}`;
+                        })()
+                      }
                     </td>
                     <td className="py-2 px-4 border-b">
                       {nominee.details.nomineeAge}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {nominee.details.nomineePercentage}%
+                      {nominee.details.nomineePercentage}% 
                     </td>
                     <td className="py-2 px-4 border-b">
                       <button
