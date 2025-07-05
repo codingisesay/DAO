@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Page1 from './Step1_EnrollmentDetails';
 import Page2 from './Step2_CustomerApplication';
 import Page3 from './Step3_DocumentUpload';
@@ -8,16 +8,11 @@ import Page4 from './Step4_VideoCallMain';
 import Page5 from './Step5_AccountDetails';
 import Page6 from './Step6_SummarySheet';
 import Stepper from './Stepper';
-import { agentService } from '../../services/apiServices';
-import { useParams } from 'react-router-dom';
-import Footer from '../../components/Footer';
+import Footer from '../../components/Footer'
 
-function Enrollmentform() {  
+function Enrollmentform() { 
     const [currentStep, setCurrentStep] = useState(1);
     const [complete, setComplete] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const { id } = useParams();
-
 
     localStorage.setItem('vcall', JSON.stringify(false));
     // const application_no = localStorage.getItem('application_no')
@@ -57,27 +52,6 @@ function Enrollmentform() {
         personalDetailsf5: [],
     });
     // Update form data handler
- 
-     useEffect(() => {
-     
-    const fetchAndStoreDetails = async (id) => {
-        try {
-            setLoading(true);
-            const response = await agentService.refillApplication(id);
-            console.log(response)
-        } catch (error) {
-            console.error("Failed to fetch review applications:", error);
-        } finally {
-            setLoading(false);
-        }
-    }; 
-    
-        fetchAndStoreDetails();
-    }, [id]);
-
-  
-
-
 
     const updateFormData = (step, data) => {
         setFormData(prev => {
@@ -197,7 +171,7 @@ function Enrollmentform() {
 
     return (
         <>
-        <div className="enrollment-form-container px-1 pt-1">
+        <div className="enrollment-form-container px-2 pt-1">
             <div className='flex justify-around items-center flex-wrap'>
                 <div className='xl:w-1/5 lg:w-1/4 md:w-2/6 sm:w-1/3 p-1'>
                     <Stepper
@@ -219,9 +193,10 @@ function Enrollmentform() {
                     </div>
                 </div>
             </div>
+         
         </div>
-        <Footer />
-        </>
+           <Footer />
+           </>
     );
 }
 

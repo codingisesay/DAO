@@ -90,14 +90,9 @@ export const App = () => {
     <Route path="/changepass" element={<ChangePassword />}   />
   
 
-  
           {/* Public routes */}
-          <Route path="/login" element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          } />
-
+          <Route path="/login" element={<Login />} />
+       
           {/* Protected admin routes */}
           <Route path="/admindashboard" element={
             <ProtectedRoute>

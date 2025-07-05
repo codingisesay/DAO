@@ -3,14 +3,12 @@ import CommanInput from '../../components/CommanInput';
 import CommanCheckbox from '../../components/CommanCheckbox';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
-import { agentService , createAccountService, pendingAccountData} from '../../services/apiServices';
+import { serviceToCustomerService , createAccountService, pendingAccountData} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { apiService } from '../../utils/storage';
-import { useParams } from 'react-router-dom';
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
-    
-          const { id } = useParams();
+    const storedId = localStorage.getItem('application_id');
     const [bankingServices, setBankingServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [initialSelectedFacilities, setInitialSelectedFacilities] = useState([]);
@@ -20,28 +18,6 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
         creditFacilities: formData.bankFacility?.creditFacilities || {},
         otherFacilityText: formData.bankFacility?.otherFacilityText || ''
     });
- 
-        const [reason, setReason] = useState(null);
-    
-        useEffect(() => { 
-            if (!id) return;
-    
-            const fetchReason = async () => {
-                try {
-                    setLoading(true);
-                    const response = await agentService.refillApplication(id);
-                    setReason(response.data[0]);
-                } catch (error) {
-                    console.error("Failed to fetch review applications:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-    
-            fetchReason();
-        }, [id]);
-    
-    
 
     useEffect(() => {
         const fetchBankingServices = async () => {
@@ -51,7 +27,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
                 setBankingServices(servicesResponse.data);
 
                 // Fetch user's selected services
-                const userSelectionResponse = await pendingAccountData.getDetailsS5C(id);
+                const userSelectionResponse = await pendingAccountData.getDetailsS5C(storedId);
                 const userSelectedIds = userSelectionResponse.services.map(
                     service => service.banking_services_facilities_id
                 );
@@ -90,7 +66,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
         };
 
         fetchBankingServices();
-    }, [id]);
+    }, [storedId]);
 
     const handleEBankingChange = (e) => {
         const { name, checked } = e.target;
@@ -146,37 +122,49 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
 
         return selectedIds;
     };
+const submitServiceToCustomer = async () => {
+    // Validation for "Others"
+    // if (
+    //     localFormData.creditFacilities.others && 
+    //     (!localFormData.otherFacilityText || localFormData.otherFacilityText.trim() === "")
+    // ) {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Other Facility Required',
+    //         text: 'Please specify the other credit facility before proceeding.'
+    //     });
+    //     return; // Stop submission
+    // }
 
-    const submitServiceToCustomer = async () => {
-        try {
-            // Get all selected facility IDs
-            const selectedFacilityIds = getSelectedFacilityIds();
+    try {
+        // Get all selected facility IDs
+        const selectedFacilityIds = getSelectedFacilityIds();
 
-            // Prepare the payload
-            const payload = {
-                application_id: Number(id),
-                banking_services_facilities_id: selectedFacilityIds
-            };
+        // Prepare the payload
+        const payload = {
+            application_id: Number(storedId),
+            banking_services_facilities_id: selectedFacilityIds
+        };
 
-            const response = await createAccountService.serviceToCustomer_s5c(payload);
+        const response = await createAccountService.serviceToCustomer_s5c(payload);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Service to customer saved!',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        Swal.fire({
+            icon: 'success',
+            title: response.data.message || 'Service to customer saved!',
+            showConfirmButton: false,
+            timer: 1500
+        });
 
-            if (onNext) onNext();
+        if (onNext) onNext();
 
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save service to customer'
-            });
-        }
-    };
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error?.response?.data?.message || 'Failed to save service to customer'
+        });
+    }
+};
 
     if (loading) {
         return <div>Loading banking services...</div>;
@@ -189,8 +177,6 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
     return (
         <div className="mx-auto">
             <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
-            
-            <p className="text-red-500" > Review For : {reason && reason.document_approved_status_status_comment}</p>  
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {eBankingFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
@@ -208,7 +194,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
-            {creditFacilities
+           {creditFacilities
     .filter(facility => facility.facility_name.toLowerCase().replace(/ /g, '') !== 'others')
     .map(facility => {
         const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
@@ -223,7 +209,6 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             </React.Fragment>
         );
     })}
-                
             </div>
 
             <div className="next-back-btns z-10">

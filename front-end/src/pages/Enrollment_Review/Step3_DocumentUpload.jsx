@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+ 
+ import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
 import { apiService } from '../../utils/storage';
@@ -311,4 +312,5 @@ const P3 = ({ onNext, onBack }) => {
 export default P3;
 
 
+ 
  

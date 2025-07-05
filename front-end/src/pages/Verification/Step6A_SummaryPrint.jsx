@@ -77,13 +77,6 @@ const ViewApplicationForm = () => {
                     cor_district: address?.cor_district,
                     cor_state: address?.cor_state,
 
-                    // Identity Documents
-                    adhar_card: personal_details?.adhar_card,
-                    pan_card: personal_details?.pan_card,
-                    passport: personal_details?.passport,
-                    driving_license: personal_details?.driving_license,
-                    voter_id: personal_details?.voter_id,
-
                     // Add these new address-related fields
                     per_resident: address?.per_resident || "",
                     per_residence_status: address?.per_residence_status || "",
@@ -104,6 +97,13 @@ const ViewApplicationForm = () => {
                     mother_last_name: account_personal_details?.mother_last_name || "",
                     birth_place: account_personal_details?.birth_place || "",
                     birth_country: account_personal_details?.birth_country || "",
+
+                    // Identity Documents
+                    adhar_card: personal_details?.adhar_card,
+                    pan_card: personal_details?.pan_card,
+                    passport: personal_details?.passport,
+                    driving_license: personal_details?.driving_license,
+                    voter_id: personal_details?.voter_id,
 
 
                     // Occupation Details

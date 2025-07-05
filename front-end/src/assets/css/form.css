@@ -717,3 +717,22 @@ div.border-red-500 select {
 .text-glow-pulse {
   animation: glowPulse 1.5s ease-in-out infinite;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+input:disabled,
+select:disabled {
+  color: gray;             /* important to keep color visible */
+}

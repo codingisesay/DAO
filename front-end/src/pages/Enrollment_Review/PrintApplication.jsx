@@ -128,8 +128,8 @@ const ApplicationPdf = () => {
                             ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
                             : "",
                         
-                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_JPG')).file_path
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
                             : "",
                         
                         drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
@@ -672,11 +672,6 @@ const ApplicationPdf = () => {
 };
 
 export default ApplicationPdf;
-
-
-
-
-
 
 
 

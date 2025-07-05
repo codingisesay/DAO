@@ -90,6 +90,7 @@ const p6 = ({ onNext, onBack }) => {
     //  window.location.href = "/agentdashboard";
     navigate(-1);
   };
+
   return (
     <div className="">
       <div className="stepper-header">
@@ -136,20 +137,11 @@ const p6 = ({ onNext, onBack }) => {
         />
       </div>
 
-      <>
-        <div className="next-back-btns">
-          <CommonButton
-            className="btn-back"
-            onClick={activeStep === 0 ? onBack : handleBack}
-            iconLeft={<i className="bi bi-chevron-double-left"></i>}
-          >
-            <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-          </CommonButton>
 
-          {/* <CommonButton
+      {/* 
+            <CommonButton
               className="btn-next"
-              // onClick={CreateAccount}
-              onClick={  handleNext  }
+              onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
               iconRight={<i className="bi bi-chevron-double-right"></i>}
             >
               {activeStep === 1 ? (
@@ -161,6 +153,17 @@ const p6 = ({ onNext, onBack }) => {
               )}
             </CommonButton> */}
 
+
+
+      <>
+        <div className="next-back-btns">
+          <CommonButton
+            className="btn-back"
+            onClick={activeStep === 0 ? onBack : handleBack}
+            iconLeft={<i className="bi bi-chevron-double-left"></i>}
+          >
+            <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+          </CommonButton>
           <CommonButton
             className="btn-next"
             onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
@@ -174,8 +177,6 @@ const p6 = ({ onNext, onBack }) => {
               </>
             )}
           </CommonButton>
-
-
         </div>
       </>
 
