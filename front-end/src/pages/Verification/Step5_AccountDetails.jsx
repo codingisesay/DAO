@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import NominationForm from './5B';
-import PersonalDetailsForm from './5A';
-import BankFacility from './5C';
+import NominationForm from './Step5B_NominationDetails';
+import PersonalDetailsForm from './Step5A_PersonalDetails';
+import BankFacility from './Step5C_BankingFacility';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
