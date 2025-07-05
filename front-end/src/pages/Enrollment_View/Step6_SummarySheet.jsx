@@ -164,21 +164,19 @@ const p6 = ({ onNext, onBack }) => {
           >
             <i className="bi bi-chevron-double-left"></i>&nbsp;Back
           </CommonButton>
-
-          <CommonButton
-            className="btn-next"
-            // onClick={CreateAccount}
-            onClick={CreateAccount}
-            iconRight={<i className="bi bi-chevron-double-right"></i>}
-          >
-            {activeStep === 1 ? (
-              <>Close</>
-            ) : (
-              <>
-                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-              </>
-            )}
-          </CommonButton>
+  <CommonButton
+              className="btn-next"
+              onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
+              iconRight={<i className="bi bi-chevron-double-right"></i>}
+            >
+              {activeStep === 1 ? (
+                <>Close</>
+              ) : (
+                <>
+                  Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </>
+              )}
+            </CommonButton> 
         </div>
       </>
 

@@ -6,7 +6,7 @@ import Webcam from "react-webcam";
 
 const ImageCaptureValidator = ({
   onCapture,
-  photoType = "customer",
+  photoType = "agent",
   showLocation = true,
   initialPhoto = null,
   hasExistingPhoto = false
@@ -23,7 +23,7 @@ const ImageCaptureValidator = ({
   const [locationError, setLocationError] = useState(null);
   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
-  const [tempAddress, setTempAddress] = useState();
+  const [tempAddress, setTempAddress] = useState(''); // Initialize with empty string
 
   // Check browser support
   const isWebcamSupported = () => {
@@ -131,25 +131,35 @@ const ImageCaptureValidator = ({
 
   // Convert base64 to Blob
   const dataURLtoBlob = (dataURL) => {
-    const arr = dataURL.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
+    try {
+      const arr = dataURL.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    } catch (error) {
+      console.error("Error in dataURLtoBlob:", error);
+      console.log("Problematic dataURL prefix:", dataURL.substring(0, 100));
+      return null;
     }
-    return new Blob([u8arr], { type: mime });
   };
 
   // Capture image
-  const capture = () => {
+  const capture = async () => {
     if (!webcamRef.current || !isWebcamReady) return;
 
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
 
     const blob = dataURLtoBlob(imageSrc);
+    if (!blob) {
+      console.error("Failed to convert image to Blob.");
+      return;
+    }
     const file = blob;
     const previewUrl = URL.createObjectURL(file);
 
@@ -170,7 +180,7 @@ const ImageCaptureValidator = ({
 
     stopCamera();
   };
-
+  
   // Retake photo
   const retake = () => {
     setImgSrc(null);
@@ -226,11 +236,11 @@ const ImageCaptureValidator = ({
     if (hasExistingPhoto && hasExistingPhoto.latitude && hasExistingPhoto.longitude) {
       printAddressFromLatLng(hasExistingPhoto.latitude, hasExistingPhoto.longitude);
     }
-  }, []);
+  }, [hasExistingPhoto]);
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2">Live Photo</h1>
+      <h1 className="text-xl font-bold mb-2">{photoType === "agent" ? "Agent Live Photo" : "agent Live Photo"}</h1>
 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -313,7 +323,7 @@ const ImageCaptureValidator = ({
             ) : isCameraActive && isWebcamSupported() ? (
               <button
                 onClick={capture}
-                disabled={isLoading}
+                disabled={isLoading || !isWebcamReady}
                 className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
               >
                 {isLoading ? "Processing..." : "Capture Photo"}
