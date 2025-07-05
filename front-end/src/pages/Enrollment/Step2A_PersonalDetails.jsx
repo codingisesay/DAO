@@ -90,7 +90,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         // Required fields validation
         const requiredFields = [
             'salutation', 'first_name', 'last_name', 'DOB', 'gender', 'pan_card', 'adhar_card',
-            'religion', 'caste', 'maritalStatus', 'mobile', 'email', 'alt_mob_no'
+            'religion', 'caste', 'maritalStatus', 'mobile', 'email', 'alt_mob_no',
         ];
 
         // Add PAN to required fields if verification method is Pan Card
@@ -107,6 +107,10 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         // Mobile number validation
         if (!localFormData.mobile || localFormData.mobile.length !== 10) {
             errors.mobile = 'Mobile number must be 10 digits';
+        }
+        // Mobile number validation
+        if (!localFormData.adhar_card || localFormData.adhar_card.length !== 12) {
+            errors.adhar_card = 'Aadhar Number must be 10 digits';
         }
 
         // Alternate mobile number validation (only if provided)
@@ -527,7 +531,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                             name="adhar_card"
                             value={localFormData.adhar_card}
                             required={true}
-                            max={12}
+                            max={12} min={12}
                             validationType="NUMBER_ONLY"
                             disabled={verificationMethod === 'Aadhar Card'}
                             className={validationErrors.adhar_card && touchedFields.adhar_card ? 'border-red-500' : ''}
