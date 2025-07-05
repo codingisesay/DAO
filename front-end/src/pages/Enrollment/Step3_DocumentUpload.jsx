@@ -206,7 +206,7 @@ const P3 = ({ onNext, onBack }) => {
     };
 
     return (
-        <div className='form-container'>
+        <div className='form-container pb-10'>
             <div className="relative ">
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

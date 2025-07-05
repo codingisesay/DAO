@@ -47,7 +47,7 @@ const NominationDetailsTable = () => {
                         {formData.map((nominee, index) => (
                             <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                                 <td className="py-3 px-4 border-b border-gray-200">
-                                    {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+                                    {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
                                 </td>
                                 <td className="py-3 px-4 border-b border-gray-200">
                                     {nominee.nom_complex_name}, {nominee.nom_landmark}, {nominee.nom_district}, {nominee.nom_country}, {nominee.nom_pincode}

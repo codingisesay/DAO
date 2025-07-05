@@ -11,8 +11,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     const [apiPhotoData, setApiPhotoData] = useState(null); 
     const storageKey = 'agentPhotoData';
     
-    const id = localStorage.getItem('application_id');
-    const application_id = localStorage.getItem('application_id');
+    const {id} = useParams(); 
 
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
@@ -26,6 +25,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
+
+                console.log(response)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {

@@ -272,7 +272,7 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
       )}
 
    <h2 className="text-xl font-bold m-2">Customer Photo</h2>
-      {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
+      {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.applicant_live_photos_status_comment}</p> }
       <ImageCaptureValidator
         onCapture={handlePhotoCapture}
         photoType="customer"

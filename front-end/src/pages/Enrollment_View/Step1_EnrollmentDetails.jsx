@@ -86,7 +86,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     return (
         <>
             <>
-            <div className='form-container'>
+            <div className='form-container pb-10'>
                 <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-3/4 md:full sm:w-full"><br />

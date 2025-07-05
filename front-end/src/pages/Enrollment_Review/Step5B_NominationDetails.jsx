@@ -12,12 +12,13 @@ import InputField from "../../components/CommanInput";
 import SelectField from "../../components/CommanSelect";
 import { add } from "@tensorflow/tfjs-core/dist/engine";
 import { useParams } from "react-router-dom";
+import NomineeViewonlyTable from '../Enrollment_View/Step5B_NominationDetails';
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
   const storedId = localStorage.getItem("application_id");
   const [nominees, setNominees] = useState([]);const [isPinCodeValid, setIsPinCodeValid] = useState(true); // New state
-        const [loading, setLoading] = useState(false);
-        const [reason, setReason] = useState(null);   const {id}=useParams();  
+  const [loading, setLoading] = useState(false);
+  const [reason, setReason] = useState(null);   const {id}=useParams();  
   const [currentNominee, setCurrentNominee] = useState({
     details: {
       nomineeSalutation: "",
@@ -49,6 +50,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
   });
   const [isSameAsPermanent, setIsSameAsPermanent] = useState(false);
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+    const isEditable = !!(reason && reason.nominee_approved_status_status_comment);
+
+
 // Converts a string to title case
 function toTitleCase(str) {
   return str
@@ -626,453 +630,462 @@ const nomineesPayload = nominees.map((nominee) => ({
 
   return (
     <div className="max-w-screen-xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Add Nominee Details</h2>
-                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.nominee_approved_status_status_comment}</p> }
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
-        <div>
-          <SelectField
-            label="Salutation"
-            name="nomineeSalutation"
-            value={currentNominee.details.nomineeSalutation}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            options={salutation}
-            className={
-              errors.nomineeSalutation &&
-              touchedFields.details?.nomineeSalutation
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeSalutation &&
-            touchedFields.details?.nomineeSalutation && (
-              <p className="text-red-500 text-xs">{errors.nomineeSalutation}</p>
-            )}
-        </div>
+     
+      {/* {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.nominee_approved_status_status_comment}</p> } */}
 
-        <div>
-          <InputField
-            label="First Name"
-            name="nomineeFirstName"
-            value={currentNominee.details.nomineeFirstName}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            max={50}
-            className={
-              errors.nomineeFirstName && touchedFields.details?.nomineeFirstName
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeFirstName &&
-            touchedFields.details?.nomineeFirstName && (
-              <p className="text-red-500 text-xs">{errors.nomineeFirstName}</p>
-            )}
-        </div>
+  {isEditable ? (
 
-        <div>
-          <InputField
-            label="Middle Name"
-            name="nomineeMiddleName"
-            value={currentNominee.details.nomineeMiddleName}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            max={50}
-            className={
-              errors.nomineeMiddleName &&
-              touchedFields.details?.nomineeMiddleName
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeMiddleName &&
-            touchedFields.details?.nomineeMiddleName && (
-              <p className="text-red-500 text-xs">{errors.nomineeMiddleName}</p>
-            )}
-        </div>
-
-        <div>
-          <InputField
-            label="Last Name"
-            name="nomineeLastName"
-            value={currentNominee.details.nomineeLastName}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            max={50}
-            className={
-              errors.nomineeLastName && touchedFields.details?.nomineeLastName
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeLastName && touchedFields.details?.nomineeLastName && (
-            <p className="text-red-500 text-xs">{errors.nomineeLastName}</p>
-          )}
-        </div>
-
-        <div>
-          <SelectField
-            label="Relation"
-            name="nomineeRelation"
-            value={currentNominee.details.nomineeRelation}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            options={relation}
-            className={
-              errors.nomineeRelation && touchedFields.details?.nomineeRelation
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeRelation && touchedFields.details?.nomineeRelation && (
-            <p className="text-red-500 text-xs">{errors.nomineeRelation}</p>
-          )}
-        </div>
-
-        <div>
-          <InputField
-            label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
-            name="nomineePercentage"
-            value={currentNominee.details.nomineePercentage}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            max={3}
-            className={
-              errors.nomineePercentage &&
-              touchedFields.details?.nomineePercentage
-                ? "border-red-500"
-                : ""
-            }
-          />
-
-          {errors.nomineePercentage &&
-            touchedFields.details?.nomineePercentage && (
-              <p className="text-red-500 text-xs">{errors.nomineePercentage}</p>
-            )}
-        </div>
-
-        <div>
-          <InputField
-            label="Date of Birth"
-            name="nomineeDOB"
-            type="date"
-            value={currentNominee.details.nomineeDOB}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            className={
-              errors.nomineeDOB && touchedFields.details?.nomineeDOB
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeDOB && touchedFields.details?.nomineeDOB && (
-            <p className="text-red-500 text-xs">{errors.nomineeDOB}</p>
-          )}
-        </div>
-
-        <div>
-          <InputField
-            label="Age"
-            name="nomineeAge"
-            value={currentNominee.details.nomineeAge}
-            onChange={(e) => handleChange("details", e)}
-            onBlur={(e) => handleBlur("details", e)}
-            required
-            max={3}
-            disabled={true}
-          />
-        </div>
-      </div>
-
-      <div className="flex items-center mb-2">
-        <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="sameAsPermanent"
-            className="me-2"
-            checked={isSameAsPermanent}
-            onChange={handleSameAddressToggle}
-          />
-          <label htmlFor="sameAsPermanent">Same as permanent address</label>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
-        <div>
-          <InputField
-            label="Complex Name"
-            name="nomineeComplexName"
-            value={currentNominee.address.nomineeComplexName}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            max={50}
-            className={
-              errors.nomineeComplexName &&
-              touchedFields.address?.nomineeComplexName
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeComplexName &&
-            touchedFields.address?.nomineeComplexName && (
-              <p className="text-red-500 text-xs">
-                {errors.nomineeComplexName}
-              </p>
-            )}
-        </div>
-
-        <div>
-          <InputField
-            label="Building Name"
-            name="nomineeBuildingName"
-            value={currentNominee.address.nomineeBuildingName}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            max={20}
-            className={
-              errors.nomineeBuildingName &&
-              touchedFields.address?.nomineeBuildingName
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeBuildingName &&
-            touchedFields.address?.nomineeBuildingName && (
-              <p className="text-red-500 text-xs">
-                {errors.nomineeBuildingName}
-              </p>
-            )}
-        </div>
-
-        <div>
-          <InputField
-            label="Area"
-            name="nomineeArea"
-            value={currentNominee.address.nomineeArea}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            max={50}
-            className={
-              errors.nomineeArea && touchedFields.address?.nomineeArea
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeArea && touchedFields.address?.nomineeArea && (
-            <p className="text-red-500 text-xs">{errors.nomineeArea}</p>
-          )}
-        </div>
-
-        <div>
-          <InputField
-            label="Landmark"
-            name="nomineeLandmark"
-            value={currentNominee.address.nomineeLandmark}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            max={50}
-            className={
-              errors.nomineeLandmark && touchedFields.address?.nomineeLandmark
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeLandmark && touchedFields.address?.nomineeLandmark && (
-            <p className="text-red-500 text-xs">{errors.nomineeLandmark}</p>
-          )}
-        </div>
-
-        <div>
-          <InputField
-            label="Country"
-            name="nomineeCountry"
-            value={currentNominee.address.nomineeCountry}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            max={30}
-            className={
-              errors.nomineeCountry && touchedFields.address?.nomineeCountry
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeCountry && touchedFields.address?.nomineeCountry && (
-            <p className="text-red-500 text-xs">{errors.nomineeCountry}</p>
-          )}
-        </div>
-
-        <div>
-            <InputField
-                label="Pin Code"
-                name="nomineePinCode"
-                value={currentNominee.address.nomineePinCode}
-                onChange={(e) => handleChange("address", e)}
-                onBlur={(e) => handleBlur("address", e)}
-                required
-                max={6}
-                className={
-                    (errors.nomineePinCode && touchedFields.address?.nomineePinCode) || !isPinCodeValid
-                        ? "border-red-500"
-                        : ""
-                }
+      <><p className="text-red-500 mb-3 " > <h2 className="text-xl font-bold mb-4">Nominee Details</h2> Review For :{ reason.nominee_approved_status_status_comment}</p>
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5 mb-3">
+          <div>
+            <SelectField
+              label="Salutation"
+              name="nomineeSalutation"
+              value={currentNominee.details.nomineeSalutation}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              options={salutation}
+              className={
+                errors.nomineeSalutation &&
+                touchedFields.details?.nomineeSalutation
+                  ? "border-red-500"
+                  : ""
+              }
             />
-            {errors.nomineePinCode && touchedFields.address?.nomineePinCode && (
-                <p className="text-red-500 text-xs">{errors.nomineePinCode}</p>
+            {errors.nomineeSalutation &&
+              touchedFields.details?.nomineeSalutation && (
+                <p className="text-red-500 text-xs">{errors.nomineeSalutation}</p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="First Name"
+              name="nomineeFirstName"
+              value={currentNominee.details.nomineeFirstName}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              max={50}
+              className={
+                errors.nomineeFirstName && touchedFields.details?.nomineeFirstName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeFirstName &&
+              touchedFields.details?.nomineeFirstName && (
+                <p className="text-red-500 text-xs">{errors.nomineeFirstName}</p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="Middle Name"
+              name="nomineeMiddleName"
+              value={currentNominee.details.nomineeMiddleName}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              max={50}
+              className={
+                errors.nomineeMiddleName &&
+                touchedFields.details?.nomineeMiddleName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeMiddleName &&
+              touchedFields.details?.nomineeMiddleName && (
+                <p className="text-red-500 text-xs">{errors.nomineeMiddleName}</p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="Last Name"
+              name="nomineeLastName"
+              value={currentNominee.details.nomineeLastName}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              max={50}
+              className={
+                errors.nomineeLastName && touchedFields.details?.nomineeLastName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeLastName && touchedFields.details?.nomineeLastName && (
+              <p className="text-red-500 text-xs">{errors.nomineeLastName}</p>
             )}
-            {!isPinCodeValid && touchedFields.address?.nomineePinCode && !errors.nomineePinCode && (
-                <p className="text-red-500 text-xs">Please enter a valid PIN code.</p>
+          </div>
+
+          <div>
+            <SelectField
+              label="Relation"
+              name="nomineeRelation"
+              value={currentNominee.details.nomineeRelation}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              options={relation}
+              className={
+                errors.nomineeRelation && touchedFields.details?.nomineeRelation
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeRelation && touchedFields.details?.nomineeRelation && (
+              <p className="text-red-500 text-xs">{errors.nomineeRelation}</p>
             )}
-        </div>
+          </div>
 
-        <div>
-          <InputField
-            label="State"
-            name="nomineeState"
-            value={currentNominee.address.nomineeState}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            className={
-              errors.nomineeState && touchedFields.address?.nomineeState
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeState && touchedFields.address?.nomineeState && (
-            <p className="text-red-500 text-xs">{errors.nomineeState}</p>
-          )}
-        </div>
+          <div>
+            <InputField
+              label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
+              name="nomineePercentage"
+              value={currentNominee.details.nomineePercentage}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              max={3}
+              className={
+                errors.nomineePercentage &&
+                touchedFields.details?.nomineePercentage
+                  ? "border-red-500"
+                  : ""
+              }
+            />
 
-        <div>
-          <InputField
-            label="City"
-            name="nomineeCity"
-            value={currentNominee.address.nomineeCity}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            className={
-              errors.nomineeCity && touchedFields.address?.nomineeCity
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeCity && touchedFields.address?.nomineeCity && (
-            <p className="text-red-500 text-xs">{errors.nomineeCity}</p>
-          )}
-        </div>
+            {errors.nomineePercentage &&
+              touchedFields.details?.nomineePercentage && (
+                <p className="text-red-500 text-xs">{errors.nomineePercentage}</p>
+              )}
+          </div>
 
-        <div>
-          <InputField
-            label="District"
-            name="nomineeDistrict"
-            value={currentNominee.address.nomineeDistrict}
-            onChange={(e) => handleChange("address", e)}
-            onBlur={(e) => handleBlur("address", e)}
-            required
-            className={
-              errors.nomineeDistrict && touchedFields.address?.nomineeDistrict
-                ? "border-red-500"
-                : ""
-            }
-          />
-          {errors.nomineeDistrict && touchedFields.address?.nomineeDistrict && (
-            <p className="text-red-500 text-xs">{errors.nomineeDistrict}</p>
-          )}
-        </div>
-      </div>
+          <div>
+            <InputField
+              label="Date of Birth"
+              name="nomineeDOB"
+              type="date"
+              value={currentNominee.details.nomineeDOB}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              className={
+                errors.nomineeDOB && touchedFields.details?.nomineeDOB
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeDOB && touchedFields.details?.nomineeDOB && (
+              <p className="text-red-500 text-xs">{errors.nomineeDOB}</p>
+            )}
+          </div>
 
-      <div className="flex justify-end mb-6 mt-3">
-      <CommonButton
-        onClick={addNominee}
-        disabled={getRemainingPercentage() <= 0 || !isPinCodeValid || Object.keys(errors).length > 0}
-        className={`border border-green-500 rounded-md text-green-500 px-3 py-1 
-          ${getRemainingPercentage() <= 0 || !isPinCodeValid || Object.keys(errors).length > 0 
-            ? 'grayscale opacity-50 cursor-not-allowed' 
-            : 'border border-green-500 rounded-md text-green-500 px-3 py-1'}`}
-      >
-        Add Nominee
-      </CommonButton>
-
-      </div>
-
-      {nominees.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">Nominees List</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4 border-b">Name of the Nominee</th>
-                  <th className="py-2 px-4 border-b">Address</th>
-                  <th className="py-2 px-4 border-b">Relationship</th>
-                  <th className="py-2 px-4 border-b">Date of Birth</th>
-                  <th className="py-2 px-4 border-b">Age</th>
-                  <th className="py-2 px-4 border-b">Percentage</th>
-                  <th className="py-2 px-4 border-b">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {nominees.map((nominee) => (
-                  <tr key={nominee.id} className="hover:bg-gray-50">
-                  <td className="py-2 px-4 border-b">
-                    {toTitleCase(nominee.details.nomineeSalutation)}{" "}
-                    {toTitleCase(nominee.details.nomineeFirstName)}{" "}
-                    {toTitleCase(nominee.details.nomineeLastName)}
-                  </td>
-                    <td className="py-2 px-4 border-b">
-                      {nominee.address.nomineeComplexName},{" "}
-                      {nominee.address.nomineeBuildingName},{" "}
-                      {nominee.address.nomineeArea}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {nominee.details.nomineeRelation}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {
-                        (() => {
-                          const date = new Date(nominee.details.nomineeDOB);
-                          const day = String(date.getDate()).padStart(2, '0');
-                          const month = String(date.getMonth() + 1).padStart(2, '0');
-                          const year = date.getFullYear();
-                          return `${day}/${month}/${year}`;
-                        })()
-                      }
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {nominee.details.nomineeAge}
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      {nominee.details.nomineePercentage}% 
-                    </td>
-                    <td className="py-2 px-4 border-b">
-                      <button
-                        onClick={() => removeNominee(nominee.id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div>
+            <InputField
+              label="Age"
+              name="nomineeAge"
+              value={currentNominee.details.nomineeAge}
+              onChange={(e) => handleChange("details", e)}
+              onBlur={(e) => handleBlur("details", e)}
+              required
+              max={3}
+              disabled={true}
+            />
           </div>
         </div>
-      )}
+
+        <div className="flex items-center mb-2">
+          <h2 className="text-xl font-bold m-0">Nominee Address</h2>&emsp;
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="sameAsPermanent"
+              className="me-2"
+              checked={isSameAsPermanent}
+              onChange={handleSameAddressToggle}
+            />
+            <label htmlFor="sameAsPermanent">Same as permanent address</label>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
+          <div>
+            <InputField
+              label="Complex Name"
+              name="nomineeComplexName"
+              value={currentNominee.address.nomineeComplexName}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              max={50}
+              className={
+                errors.nomineeComplexName &&
+                touchedFields.address?.nomineeComplexName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeComplexName &&
+              touchedFields.address?.nomineeComplexName && (
+                <p className="text-red-500 text-xs">
+                  {errors.nomineeComplexName}
+                </p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="Building Name"
+              name="nomineeBuildingName"
+              value={currentNominee.address.nomineeBuildingName}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              max={20}
+              className={
+                errors.nomineeBuildingName &&
+                touchedFields.address?.nomineeBuildingName
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeBuildingName &&
+              touchedFields.address?.nomineeBuildingName && (
+                <p className="text-red-500 text-xs">
+                  {errors.nomineeBuildingName}
+                </p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="Area"
+              name="nomineeArea"
+              value={currentNominee.address.nomineeArea}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              max={50}
+              className={
+                errors.nomineeArea && touchedFields.address?.nomineeArea
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeArea && touchedFields.address?.nomineeArea && (
+              <p className="text-red-500 text-xs">{errors.nomineeArea}</p>
+            )}
+          </div>
+
+          <div>
+            <InputField
+              label="Landmark"
+              name="nomineeLandmark"
+              value={currentNominee.address.nomineeLandmark}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              max={50}
+              className={
+                errors.nomineeLandmark && touchedFields.address?.nomineeLandmark
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeLandmark && touchedFields.address?.nomineeLandmark && (
+              <p className="text-red-500 text-xs">{errors.nomineeLandmark}</p>
+            )}
+          </div>
+
+          <div>
+            <InputField
+              label="Country"
+              name="nomineeCountry"
+              value={currentNominee.address.nomineeCountry}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              max={30}
+              className={
+                errors.nomineeCountry && touchedFields.address?.nomineeCountry
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeCountry && touchedFields.address?.nomineeCountry && (
+              <p className="text-red-500 text-xs">{errors.nomineeCountry}</p>
+            )}
+          </div>
+
+          <div>
+              <InputField
+                  label="Pin Code"
+                  name="nomineePinCode"
+                  value={currentNominee.address.nomineePinCode}
+                  onChange={(e) => handleChange("address", e)}
+                  onBlur={(e) => handleBlur("address", e)}
+                  required
+                  max={6}
+                  className={
+                      (errors.nomineePinCode && touchedFields.address?.nomineePinCode) || !isPinCodeValid
+                          ? "border-red-500"
+                          : ""
+                  }
+              />
+              {errors.nomineePinCode && touchedFields.address?.nomineePinCode && (
+                  <p className="text-red-500 text-xs">{errors.nomineePinCode}</p>
+              )}
+              {!isPinCodeValid && touchedFields.address?.nomineePinCode && !errors.nomineePinCode && (
+                  <p className="text-red-500 text-xs">Please enter a valid PIN code.</p>
+              )}
+          </div>
+
+          <div>
+            <InputField
+              label="State"
+              name="nomineeState"
+              value={currentNominee.address.nomineeState}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              className={
+                errors.nomineeState && touchedFields.address?.nomineeState
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeState && touchedFields.address?.nomineeState && (
+              <p className="text-red-500 text-xs">{errors.nomineeState}</p>
+            )}
+          </div>
+
+          <div>
+            <InputField
+              label="City"
+              name="nomineeCity"
+              value={currentNominee.address.nomineeCity}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              className={
+                errors.nomineeCity && touchedFields.address?.nomineeCity
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeCity && touchedFields.address?.nomineeCity && (
+              <p className="text-red-500 text-xs">{errors.nomineeCity}</p>
+            )}
+          </div>
+
+          <div>
+            <InputField
+              label="District"
+              name="nomineeDistrict"
+              value={currentNominee.address.nomineeDistrict}
+              onChange={(e) => handleChange("address", e)}
+              onBlur={(e) => handleBlur("address", e)}
+              required
+              className={
+                errors.nomineeDistrict && touchedFields.address?.nomineeDistrict
+                  ? "border-red-500"
+                  : ""
+              }
+            />
+            {errors.nomineeDistrict && touchedFields.address?.nomineeDistrict && (
+              <p className="text-red-500 text-xs">{errors.nomineeDistrict}</p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end mb-6 mt-3">
+        <CommonButton
+          onClick={addNominee}
+          disabled={getRemainingPercentage() <= 0 || !isPinCodeValid || Object.keys(errors).length > 0}
+          className={`border border-green-500 rounded-md text-green-500 px-3 py-1 
+            ${getRemainingPercentage() <= 0 || !isPinCodeValid || Object.keys(errors).length > 0 
+              ? 'grayscale opacity-50 cursor-not-allowed' 
+              : 'border border-green-500 rounded-md text-green-500 px-3 py-1'}`}
+        >
+          Add Nominee
+        </CommonButton>
+
+        </div>
+
+        {nominees.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold mb-4">Nominees List</h2>
+            <div className="overflow-x-auto">
+              <table className="min-w-full bg-white border border-gray-200">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="py-2 px-4 border-b">Name of the Nominee</th>
+                    <th className="py-2 px-4 border-b">Address</th>
+                    <th className="py-2 px-4 border-b">Relationship</th>
+                    <th className="py-2 px-4 border-b">Date of Birth</th>
+                    <th className="py-2 px-4 border-b">Age</th>
+                    <th className="py-2 px-4 border-b">Percentage</th>
+                    <th className="py-2 px-4 border-b">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {nominees.map((nominee) => (
+                    <tr key={nominee.id} className="hover:bg-gray-50">
+                    <td className="py-2 px-4 border-b">
+                      {toTitleCase(nominee.details.nomineeSalutation)}{" "}
+                      {toTitleCase(nominee.details.nomineeFirstName)}{" "}
+                      {toTitleCase(nominee.details.nomineeLastName)}
+                    </td>
+                      <td className="py-2 px-4 border-b">
+                        {nominee.address.nomineeComplexName},{" "}
+                        {nominee.address.nomineeBuildingName},{" "}
+                        {nominee.address.nomineeArea}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {nominee.details.nomineeRelation}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {
+                          (() => {
+                            const date = new Date(nominee.details.nomineeDOB);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const year = date.getFullYear();
+                            return `${day}/${month}/${year}`;
+                          })()
+                        }
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {nominee.details.nomineeAge}
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        {nominee.details.nomineePercentage}% 
+                      </td>
+                      <td className="py-2 px-4 border-b">
+                        <button
+                          onClick={() => removeNominee(nominee.id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </>
+) : (
+
+<NomineeViewonlyTable/> 
 
 
+)}
       <div className="next-back-btns z-10">
         <CommonButton onClick={onBack} variant="outlined" className="btn-back">
           <i className="bi bi-chevron-double-left"></i>&nbsp;Back
