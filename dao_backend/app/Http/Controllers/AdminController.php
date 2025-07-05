@@ -1031,44 +1031,43 @@ public function getKycPendingApplicationsByAgentId($agentId)
 
 public function getAllKycDetails($id)
 {
-    $kycData = DB::table('kyc_application as ka')
-        ->leftJoin('kyc_application_status as kas', 'ka.id', '=', 'kas.kyc_application_id')
-        ->leftJoin('kyc_customer_document as kcd', 'ka.id', '=', 'kcd.kyc_application_id')
-        ->leftJoin('kyc_data_after_vs_cbs as kda', 'ka.id', '=', 'kda.kyc_application_id')
-        ->leftJoin('kyc_data_from_verify_cbs as kdvcbs', 'ka.id', '=', 'kdvcbs.kyc_application_id')
-        ->leftJoin('kyc_data_from_verify_sources as kdvs', 'ka.id', '=', 'kdvs.kyc_application_id')
-        ->leftJoin('kyc_document_approved_status as kdas', 'ka.id', '=', 'kdas.kyc_application_id')
-        ->where('ka.id', $id)
-        ->select(
-            'ka.*',
-            'kas.*',
-            'kcd.*',
-            'kda.*',
-            'kdvcbs.*',
-            'kdvs.*',
-            'kdas.*'
-        )
-        ->get();
+    // Fetch the base application
+    $application = DB::table('kyc_application')->where('id', $id)->first();
 
-    if ($kycData->isEmpty()) {
+    if (!$application) {
         return response()->json([
             'message' => 'No KYC data found for this application ID.',
             'data' => null
         ], 404);
     }
 
-    // Base64 encode BLOB fields
-  $kycData->transform(function ($item) {
-    // Base64 encode the kyc_file_path field if it exists
-    if (isset($item->kyc_file_path) && $item->kyc_file_path !== null) {
-        $item->kyc_file_path = base64_encode($item->kyc_file_path);
-    }
-    return $item;
-});
+    // Fetch related records (One-to-Many tables)
+    $status = DB::table('kyc_application_status')->where('kyc_application_id', $id)->get();
+    $documents = DB::table('kyc_customer_document')->where('kyc_application_id', $id)->get();
+    $vsCbsData = DB::table('kyc_data_after_vs_cbs')->where('kyc_application_id', $id)->get();
+    $verifyCbs = DB::table('kyc_data_from_verify_cbs')->where('kyc_application_id', $id)->get();
+    $verifySources = DB::table('kyc_data_from_verify_sources')->where('kyc_application_id', $id)->get();
+    $approvedStatus = DB::table('kyc_document_approved_status')->where('kyc_application_id', $id)->get();
+
+    // Encode any binary file paths in documents
+    $documents->transform(function ($doc) {
+        if (isset($doc->kyc_file_path)) {
+            $doc->kyc_file_path = base64_encode($doc->kyc_file_path);
+        }
+        return $doc;
+    });
 
     return response()->json([
-        'message' => 'KYC details fetched successfully',
-        'data' => $kycData
+        'message' => 'KYC details fetched successfully.',
+        'data' => [
+            'application' => $application,
+            'status' => $status,
+            'documents' => $documents,
+            'vs_cbs_data' => $vsCbsData,
+            'verify_cbs' => $verifyCbs,
+            'verify_sources' => $verifySources,
+            'approved_status' => $approvedStatus,
+        ]
     ]);
 }
 
