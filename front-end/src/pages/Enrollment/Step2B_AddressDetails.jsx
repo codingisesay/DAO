@@ -9,6 +9,7 @@ import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
     const applicationId = localStorage.getItem('application_id');    
+    const [invalidPinCode, setInvalidPinCode] = useState({ per: false, cor: false });
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
@@ -150,30 +151,32 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-        if (name === 'per_pincode' && value.length === 6) {
-            setLoadingPinCode(prev => ({ ...prev, per: true }));
-            try {
-                const addressData = await fetchAddressByPinCode(value, 'per');
-                setLocalFormData(prev => ({
-                    ...prev,
-                    ...addressData,
-                    ...(sameAsAbove ? Object.fromEntries(
-                        Object.entries(addressData).map(([key, val]) => [
-                            key.replace('per_', 'cor_'), 
-                            val
-                        ])
-                    ) : {})
-                }));
-            } catch (error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
-                });
-            } finally {
-                setLoadingPinCode(prev => ({ ...prev, per: false }));
-            }
+   if (name === 'per_pincode' && value.length === 6) {
+    setLoadingPinCode(prev => ({ ...prev, per: true }));
+    try {
+        const addressData = await fetchAddressByPinCode(value, 'per');
+        setLocalFormData(prev => ({
+            ...prev,
+            ...addressData,
+            ...(sameAsAbove ? Object.fromEntries(
+                Object.entries(addressData).map(([key, val]) => [
+                    key.replace('per_', 'cor_'), 
+                    val
+                ])
+            ) : {})
+        }));
+        setInvalidPinCode(prev => ({ ...prev, per: false }));
+        } catch (error) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'PIN Code Not Found',
+                text: 'Could not find address details for this PIN code. Please enter manually.',
+            });
+            setInvalidPinCode(prev => ({ ...prev, per: true }));
+        } finally {
+            setLoadingPinCode(prev => ({ ...prev, per: false }));
         }
+    }
     };
 
     const handleCorrespondenceChange = async (e) => {
@@ -197,24 +200,26 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-        if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
-            setLoadingPinCode(prev => ({ ...prev, cor: true }));
-            try {
-                const addressData = await fetchAddressByPinCode(value, 'cor');
-                setLocalFormData(prev => ({
-                    ...prev,
-                    ...addressData
-                }));
-            } catch (error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
-                });
-            } finally {
-                setLoadingPinCode(prev => ({ ...prev, cor: false }));
-            }
-        }
+  if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
+    setLoadingPinCode(prev => ({ ...prev, cor: true }));
+    try {
+        const addressData = await fetchAddressByPinCode(value, 'cor');
+        setLocalFormData(prev => ({
+            ...prev,
+            ...addressData
+        }));
+        setInvalidPinCode(prev => ({ ...prev, cor: false }));
+    } catch (error) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'PIN Code Not Found',
+            text: 'Could not find address details for this PIN code. Please enter manually.',
+        });
+        setInvalidPinCode(prev => ({ ...prev, cor: true }));
+    } finally {
+        setLoadingPinCode(prev => ({ ...prev, cor: false }));
+    }
+}
     };
 
     const validateForm = () => {
@@ -399,18 +404,19 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     return (
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
-            <AddressSection
-                formData={localFormData}
-                handleChange={handlePermanentChange}
-                handleBlur={handleBlur}
-                prefix="per"
-                extraInputData={extraInputData}
-                setTouchedFields={setTouchedFields}
-                validationErrors={validationErrors}
-                touchedFields={touchedFields}
-                handleExtraInputChange={handleExtraInputChange}
-                loading={loadingPinCode.per}
-            />
+                <AddressSection
+                    formData={localFormData}
+                    handleChange={handlePermanentChange}
+                    handleBlur={handleBlur}
+                    prefix="per"
+                    extraInputData={extraInputData}
+                    setTouchedFields={setTouchedFields}
+                    validationErrors={validationErrors}
+                    touchedFields={touchedFields}
+                    handleExtraInputChange={handleExtraInputChange}
+                    loading={loadingPinCode.per}
+                    invalidPinCode={invalidPinCode.per} // Pass only the relevant flag
+                />
 
             <div className='flex items-center mb-2'>
                 <h2 className="text-xl font-bold m-2">Correspondence Address</h2>
@@ -443,6 +449,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 validationErrors={validationErrors}
                 touchedFields={touchedFields}
                 loading={loadingPinCode.cor}
+                invalidPinCode={invalidPinCode.cor} // Pass only the relevant flag
             />
 
             <div className="next-back-btns z-10">
@@ -458,7 +465,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                     onClick={submitaddress}
                     variant="contained"
                     className="btn-next"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || invalidPinCode.per || invalidPinCode.cor}
                 >
                     {isSubmitting ? (
                         <>
@@ -476,7 +483,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     );
 }
 
-function AddressSection({ formData, handleChange, handleBlur, prefix, extraInputData, validationErrors, touchedFields,setTouchedFields, handleExtraInputChange, disabled = false, loading = false }) {
+function AddressSection({ formData, handleChange, handleBlur, prefix, extraInputData, validationErrors, touchedFields,setTouchedFields, handleExtraInputChange, disabled = false, loading = false, invalidPinCode  }) {
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
             <div>
@@ -489,7 +496,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_complex_name`] && touchedFields[`${prefix}_complex_name`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_complex_name`] && touchedFields[`${prefix}_complex_name`] && (
@@ -505,8 +511,7 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={5}
-                disabled={disabled}
+                max={15}
                 className={validationErrors[`${prefix}_flat_no`] && touchedFields[`${prefix}_flat_no`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_flat_no`] && touchedFields[`${prefix}_flat_no`] && (
@@ -524,7 +529,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_area`] && touchedFields[`${prefix}_area`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_area`] && touchedFields[`${prefix}_area`] && (
@@ -542,7 +546,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_landmark`] && touchedFields[`${prefix}_landmark`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_landmark`] && touchedFields[`${prefix}_landmark`] && (
@@ -560,7 +563,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_country`] && touchedFields[`${prefix}_country`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_country`] && touchedFields[`${prefix}_country`] && (
@@ -577,8 +579,7 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={6}
-                disabled={disabled}
+                max={6} type='number'
                 className={validationErrors[`${prefix}_pincode`] && touchedFields[`${prefix}_pincode`] ? 'border-red-500' : ''}
                 endAdornment={loading && (
                     <i className="bi bi-arrow-repeat animate-spin"></i>
@@ -587,7 +588,11 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
             {validationErrors[`${prefix}_pincode`] && touchedFields[`${prefix}_pincode`] && (
                 <p className="text-red-500 text-xs col-span-full">{validationErrors[`${prefix}_pincode`]}</p>
             )}
-
+            {invalidPinCode && (
+                <p className="text-red-500 text-xs col-span-full">
+                    Please enter a valid {prefix === 'per' ? 'Permanent' : 'Correspondence'} Address PIN code.
+                </p>
+            )}
             </div>
             <div>
             <CommanInput
@@ -599,7 +604,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] && (
@@ -617,7 +621,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] && (
@@ -635,7 +638,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] && (

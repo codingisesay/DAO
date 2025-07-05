@@ -85,7 +85,6 @@ function p3({ onNext, onBack }) {
     };
 
     const handleNextStep = () => {
-        // alert('called')
         try {
             const payload = {
                 applicaiton_id: Number(id),
@@ -112,7 +111,6 @@ function p3({ onNext, onBack }) {
             });
         }
         catch (error) {
-            // console.error('Error updating status:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -202,12 +200,8 @@ function p3({ onNext, onBack }) {
         fetchAndProcessDocuments();
     }, [id]);
 
-    // ... (keep all your existing handler functions unchanged)
-    // handleRejectClick, handleReviewClick, handleNextStep remain the same
-
     return (
-        <div className="form-container">
-            <h2 className="text-xl font-bold mb-2">Document Verification</h2>
+        <div className="form-container"> 
             {isProcessing && (
                 <div className="mb-4 p-2 bg-blue-100 text-blue-800 rounded">
                     Processing documents... Please wait.
@@ -246,6 +240,9 @@ function p3({ onNext, onBack }) {
 }
 
 const DocumentDetailsTable = ({ documentslist, extractedData }) => {
+    const [hoveredImage, setHoveredImage] = useState(null);
+    const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+
     if (!documentslist || !Array.isArray(documentslist)) {
         return <p>No documents found.</p>;
     }
@@ -291,95 +288,234 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                 return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">Pending</span>;
         }
     };
-// Place this function inside your component or export it for reuse
-function toTitleCase(str) {
-    return str
-        .replace(/_?JPG$/i, '') // Remove _JPG or JPG at the end
-        .toLowerCase()
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-        .trim();
-}
+
     return (
         <div className="p-4 max-w-4xl mx-auto">
-          
-                <div className="mb-8">
-                    {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full border border-gray-200">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    {/* <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th> */}
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th> 
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
-                                </tr>
-                            </thead>
-                            {Object.entries(groupedDocs).map(([type, docs]) => (
-                            <tbody key={type}>
-
-
-                                {docs.map((doc) => {
-                                    const extraction = extractedData[doc.id] || {};
-                                    const hasSignatures = extraction.signatures?.length > 0;
-                                    const hasPhotos = extraction.photographs?.length > 0;
-                                    
-                                    return (
-                                        <tr key={doc.id}>
-                                            {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
-                                       <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                <img
-                                                    src={daodocbase + `${doc.file_path}`}
-                                                    alt="document"
-                                                    className="h-auto w-20 object-contain border rounded"
+            <div className="mb-8">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th> 
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
+                            </tr>
+                        </thead>
+                        {Object.entries(groupedDocs).map(([type, docs]) => (
+                        <tbody key={type}>
+                            {docs.map((doc) => {
+                                const extraction = extractedData[doc.id] || {};
+                                const hasSignatures = extraction.signatures?.length > 0;
+                                const hasPhotos = extraction.photographs?.length > 0;
+                                
+                                return (
+                                    <tr key={doc.id}>
+                                        <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
+                                        <td className="py-2 px-4 border-b border-gray-200">
+                                            <img
+                                                src={daodocbase + `${doc.file_path}`}
+                                                alt="document"
+                                                className="h-auto w-20 object-contain border rounded"
+                                                onMouseEnter={(e) => {
+                                                    const rect = e.target.getBoundingClientRect();
+                                                    setHoveredImage(daodocbase + doc.file_path);
+                                                    setHoverPosition({
+                                                        x: rect.right + 10,
+                                                        y: rect.top - 170,
+                                                    });
+                                                }}
+                                                onMouseLeave={() => setHoveredImage(null)}
+                                            />
+                                        </td>
+                                        <td className="py-2 px-4 border-b border-gray-200">
+                                            {hasPhotos ? (
+                                                <img 
+                                                    src={`data:image/jpeg;base64,${extraction.photographs[0].image}`}
+                                                    alt="Extracted photo"
+                                                    className="h-10 w-auto border rounded"
                                                 />
-                                            </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {hasPhotos ? (
-                                                    <img 
-                                                        src={`data:image/jpeg;base64,${extraction.photographs[0].image}`}
-                                                        alt="Extracted photo"
-                                                        className="h-10 w-auto border rounded"
-                                                    />
-                                                ) : (
-                                                    <span className="text-gray-400">Not detected</span>
-                                                )}
-                                            </td>
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {hasSignatures ? (
-                                                    <img 
-                                                        src={`data:image/jpeg;base64,${extraction.signatures[0].image}`}
-                                                        alt="Extracted signature"
-                                                        className="h-10 w-auto border rounded"
-                                                    />
-                                                ) : (
-                                                    <span className="text-gray-400">Not detected</span>
-                                                )}
-                                            </td> 
-                                            <td className="py-2 px-4 border-b border-gray-200">
-                                                {formatDate(doc.created_at)}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-
-
-
-                            </tbody>
-                               ))}
-                        </table>
-                    </div>
+                                            ) : (
+                                                <span className="text-gray-400">Not detected</span>
+                                            )}
+                                        </td>
+                                        <td className="py-2 px-4 border-b border-gray-200">
+                                            {hasSignatures ? (
+                                                <img 
+                                                    src={`data:image/jpeg;base64,${extraction.signatures[0].image}`}
+                                                    alt="Extracted signature"
+                                                    className="h-10 w-auto border rounded"
+                                                />
+                                            ) : (
+                                                <span className="text-gray-400">Not detected</span>
+                                            )}
+                                        </td> 
+                                        <td className="py-2 px-4 border-b border-gray-200">
+                                            {formatDate(doc.created_at)}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                        ))}
+                    </table>
+                    {hoveredImage && (
+                        <div
+                            className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+                            style={{
+                                top: `${hoverPosition.y}px`,
+                                left: `${hoverPosition.x}px`,
+                            }}
+                        >
+                            <img
+                                src={hoveredImage}
+                                alt="Zoomed Preview"
+                                className="h-[200px] w-auto rounded"
+                            />
+                        </div>
+                    )}
                 </div>
-         
+            </div>
         </div>
     );
 };
 
 export default p3;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import CommonButton from '../../components/CommonButton';
+// import Swal from 'sweetalert2';
+// import { useParams } from 'react-router-dom';
+// import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices'; // <-- Import your service
+// import { daodocbase } from '../../data/data';
+
+
+// function p3({ onNext, onBack }) {
+//     const [localFormData, setLocalFormData] = useState();
+//     const  id = localStorage.getItem('application_id');
+//     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
+
+//     useEffect(() => {
+//         const fetchAndStoreDetails = async () => {
+//             try {
+//                 // alert('called')
+//                 if (id) {
+//                     const response = await pendingAccountData.getDetailsS3(id);
+//                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
+//                     console.log('documants :', response);
+//                     const application = response.documents || {};
+//                     setLocalFormData(application);
+//                 }
+//             } catch (error) {
+//                 console.error('Failed to fetch application details:', error);
+//             }
+//         };
+
+//         fetchAndStoreDetails();
+//     }, [id]);
+
+ 
+
+//     return (
+//         <div className="form-container">
+//             <h2 className="text-xl font-bold mb-2">Upload Documents</h2>
+//             <DocumentDetailsTable documentslist={localFormData} />
+ 
+//         </div>
+//     );
+// }
+
+
+
+// const DocumentDetailsTable = ({ documentslist }) => {
+//     if (!documentslist || !Array.isArray(documentslist)) {
+//         return <p>No documents found.</p>;
+//     }
+
+//     // Grouping documents by `document_type`
+//     const groupedDocs = documentslist.reduce((acc, doc) => {
+//         const type = doc.document_type;
+//         if (!acc[type]) {
+//             acc[type] = [];
+//         }
+//         acc[type].push(doc);
+//         return acc;
+//     }, {});
+
+//     return (
+//         <div className="p-2 mx-auto">
+//             {/* {Object.entries(groupedDocs).map(([type, docs]) => ( */}
+//                 <div className="mb-2">
+//                     {/* <h2 className="text-xl font-bold mb-4 capitalize">Saved Document</h2> */}
+//                     {/* <span className="text-xs text-gray-500 ms-auto">Priviously submitted docsuments</span> */}
+//                     <div className="overflow-x-auto">
+//                         <table className="min-w-full border border-gray-200">
+//                             <thead className="bg-gray-100">
+//                                 <tr>
+//                                     {/* <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th> */}
+//                                     <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
+//                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
+//                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
+//                                 </tr>
+//                             </thead>
+//                               {Object.entries(groupedDocs).map(([type, docs]) => (
+//                             <tbody key={type}>
+//                                 {docs.map((doc) => (
+//                                     <tr key={doc.id}>
+//                                         {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
+//                                         <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+//                                         <td className="py-2 px-4 border-b border-gray-200">
+//                                             {/* <a href={daodocbase+`${doc.file_path}`} target="_blank" rel="noopener noreferrer"> */}
+//                                             <img
+//                                                 src= {daodocbase+`${doc.file_path}`}
+//                                                 alt="document"
+//                                                 className="h-auto w-20 object-contain border rounded"
+//                                                 />
+//                                             {/* </a> */}
+//                                         </td>
+//                                         <td className="py-2 px-4 border-b border-gray-200">
+//                                         {(() => {
+//                                             const date = new Date(doc.created_at);
+//                                             const day = String(date.getDate()).padStart(2, '0');
+//                                             const month = String(date.getMonth() + 1).padStart(2, '0');
+//                                             const year = date.getFullYear();
+//                                             return `${day}-${month}-${year}`;
+//                                         })()}
+//                                         </td>
+//                                     </tr>
+//                                 ))}
+//                             </tbody>
+//                               ))}
+//                         </table>
+//                     </div>
+//                 </div>
+//             {/* // ))} */}
+//         </div>
+//     );
+// };
+
+
+// export default p3;
 
 
  

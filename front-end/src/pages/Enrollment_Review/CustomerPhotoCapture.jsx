@@ -25,7 +25,9 @@ const ImageCaptureValidator = ({
   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
   const [tempAddress, setTempAddress] = useState();
-
+const latitude = location && !isNaN(Number(location.latitude)) ? Number(location.latitude).toFixed(5) : "";
+const longitude = location && !isNaN(Number(location.longitude)) ? Number(location.longitude).toFixed(5) : "";
+ 
   // Check browser support
   const isWebcamSupported = () => {
     return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
@@ -237,9 +239,7 @@ const capture = async () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2">Live Photo</h1>
-
+    <div className="container mx-auto p-4 max-w-4xl"> 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {webcamError}. Please try another browser or upload a photo instead.
@@ -348,9 +348,9 @@ const capture = async () => {
             {showLocation && location && imgSrc ? (
               <div className="text-start">
                 <br />
-                <div><i className="bi bi-send"></i> Latitude: {location && location.latitude && location.latitude.toFixed(5)}</div>
+                <div><i className="bi bi-send"></i> Latitude: {latitude}</div>
                 <br />
-                <div><i className="bi bi-send"></i> Longitude: {location && location.longitude && location.longitude.toFixed(5)}</div>
+                <div><i className="bi bi-send"></i> Longitude: {longitude}</div>
                 <br />
                 {address && <div><i className="bi bi-geo-alt"></i> Address: {address}</div>}
               </div>

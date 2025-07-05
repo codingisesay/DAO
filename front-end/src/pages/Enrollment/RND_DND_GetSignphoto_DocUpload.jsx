@@ -72,20 +72,20 @@ const DocumentUpload = ({
 
   const isDocumentUploaded = (documentValue) => {
     if (documentValue === "AADHAAR_CARD_FRONT") {
-      return document.some((doc) => doc.type === "AADHAAR_FRONT_JPG");
+      return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
     }
     if (documentValue === "AADHAAR_CARD_BACK") {
-      return document.some((doc) => doc.type === "AADHAAR_BACK_JPG");
+      return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
     }
     return document.some((doc) => doc.type.includes(documentValue));
   };
 
   const isAadhaarFrontUploaded = () => {
-    return document.some((doc) => doc.type === "AADHAAR_FRONT_JPG");
+    return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
   };
 
   const isAadhaarBackUploaded = () => {
-    return document.some((doc) => doc.type === "AADHAAR_BACK_JPG");
+    return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
   };
 
   const validateAadharCard = async (imageData, side) => {
@@ -255,9 +255,9 @@ const DocumentUpload = ({
 
     let docType =
       documentValue === "AADHAAR_CARD_FRONT"
-        ? "AADHAAR_FRONT_JPG"
+        ? "AADHAAR_CARD_FRONT"
         : documentValue === "AADHAAR_CARD_BACK"
-        ? "AADHAAR_BACK_JPG"
+        ? "AADHAAR_CARD_BACK"
         : `${documentValue}_JPG`;
 
     const blob = await fetch(imageData).then((res) => res.blob());
@@ -439,9 +439,9 @@ const DocumentUpload = ({
     );
 
     if (docToRemove?.type.includes("AADHAAR")) {
-      if (docToRemove.type === "AADHAAR_FRONT_JPG") {
+      if (docToRemove.type === "AADHAAR_CARD_FRONT") {
         setSelectedAddressProof("AADHAAR_CARD_FRONT");
-      } else if (docToRemove.type === "AADHAAR_BACK_JPG") {
+      } else if (docToRemove.type === "AADHAAR_CARD_BACK") {
         setSelectedAddressProof("AADHAAR_CARD_BACK");
       }
     }

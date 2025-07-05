@@ -46,7 +46,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
         // clear local storage from below code
         // ...existing code...
-useEffect(() => {
+    useEffect(() => {
+        setIsFetchDisabled(true)
     const checkAndClearLocalStorage = async () => {
         const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
         const hasDocuments = !!localStorage.getItem('documentData');
@@ -323,7 +324,7 @@ useEffect(() => {
                 </div>
             )}
 
-            <div className='form-container'>
+            <div className='form-container pb-10'>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
                         <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>

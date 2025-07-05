@@ -149,7 +149,7 @@ const Step1PersonalInfo = ({
 
   return (
     <div className="form-step">
-      <div className='form-container'>
+      <div className='form-container pb-10'>
         <div className="flex flex-wrap items-top">
           <div className="lg:w-1/2 md:full sm:w-full my-4">
             <h2 className="text-xl font-bold mb-2">Re-KYC Application</h2>

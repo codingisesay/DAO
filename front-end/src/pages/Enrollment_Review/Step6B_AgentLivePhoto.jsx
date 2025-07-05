@@ -1,21 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react'; // Import useCallback
-import ImageCaptureValidator from './CustomerPhotoCapture';
+import React, { useEffect, useState } from 'react';
+import ImageCaptureValidator from './agentliveCapture'; // Make sure this path is correct
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
+import { createAccountService, agentService, pendingAccountData, } from '../../services/apiServices';
 import { useParams } from 'react-router-dom';
-import { createAccountService, agentService, pendingAccountData } from '../../services/apiServices';
 
 const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);
     const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
-    const [apiPhotoData, setApiPhotoData] = useState(null);
+    const [apiPhotoData, setApiPhotoData] = useState(null); 
     const storageKey = 'agentPhotoData';
-    const { id } = useParams(); // This 'id' is likely the application_id from the URL
-    // const { application_id } = useParams(); // This seems redundant if 'id' is application_id
+    
+    const {id} = useParams(); 
+
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
 
-    // Fetch reason data (unchanged)
+    // Fetch reason data
     useEffect(() => {
         if (!id) return;
 
@@ -24,6 +25,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
+
+                console.log(response)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -34,26 +37,39 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
         fetchReason();
     }, [id]);
 
-    // Photo handling logic - Consolidated and Prioritized
-    const fetchAndShowDetails = useCallback(async (currentId) => {
-        try {
-            if (currentId) {
-                // IMPORTANT: This API call is different (getDetailsS6B)
-                const response = await pendingAccountData.getDetailsS6B(currentId);
-                console.log('agent photo to show : ', response);
-                // IMPORTANT: The path to the photo data might be different (response.agent_photos or similar)
-                // Assuming it's still in response.services as per your original code
+    // Photo handling logic
+    useEffect(() => { 
+        if (id) { 
+            fetchAndShowDetails(id);
+        } else {
+            // If no application_id, still try to load from local storage
+            const storedData = localStorage.getItem(storageKey);
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    setPhotoData(parsedData);
+                } catch (error) {
+                    console.error("Error parsing stored photo data:", error);
+                    localStorage.removeItem(storageKey);
+                }
+            }
+        }
+    }, [id]);
+    
+    const fetchAndShowDetails = async (id) => {
+        try { 
+            if (id) {
+                const response = await pendingAccountData.getDetailsS6B(id);
                 const application = response.services || null;
-
-                if (application && application.length > 0) {
-                    const fetchedApiPhoto = application[0];
-                    setApiPhotoData(fetchedApiPhoto);
-
+                
+                if(application && application.length > 0) {
+                    setApiPhotoData(application[0]);
+                    
                     let photoBlob = null;
                     let previewUrl = null;
                     try {
-                        if (fetchedApiPhoto.path.startsWith('data:image')) { // Check if it's a base64 string
-                            const arr = fetchedApiPhoto.path.split(",");
+                        if (application[0].path.startsWith("data:")) {
+                            const arr = application[0].path.split(",");
                             const mime = arr[0].match(/:(.*?);/)[1];
                             const bstr = atob(arr[1]);
                             let n = bstr.length;
@@ -62,109 +78,62 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                                 u8arr[n] = bstr.charCodeAt(n);
                             }
                             photoBlob = new Blob([u8arr], { type: mime });
-                        } else { // Assume it's a URL
-                            const res = await fetch(fetchedApiPhoto.path);
+                        } else {
+                            const res = await fetch(application[0].path);
                             photoBlob = await res.blob();
                         }
                         previewUrl = URL.createObjectURL(photoBlob);
                     } catch (blobError) {
-                        console.error('Error creating blob/previewUrl from API photo path:', blobError);
-                        // If there's an error converting blob, set previewUrl to null or a placeholder
-                        previewUrl = null;
+                        console.error(
+                            "Error creating blob/previewUrl from API photo path:",
+                            blobError
+                        );
                     }
-
+                    
                     const preparedPhotoData = {
                         file: photoBlob,
                         previewUrl: previewUrl,
-                        timestamp: fetchedApiPhoto.created_at,
+                        timestamp: application[0].created_at,
                         metadata: {
                             location: {
-                                longitude: fetchedApiPhoto.longitude,
-                                latitude: fetchedApiPhoto.latitude
+                                longitude: application[0].longitude,
+                                latitude: application[0].latitude
                             },
                             validation: {
-                                hasFace: true, // Assuming this from API response structure
+                                hasFace: true,
                                 lightingOk: true,
                                 singlePerson: true
                             }
                         }
                     };
-
-                    setPhotoData(preparedPhotoData); // Set photoData to the API provided photo
-                    // Also store in localStorage for persistence
+                    
+                    setPhotoData(preparedPhotoData);
                     localStorage.setItem(storageKey, JSON.stringify({
                         previewUrl: preparedPhotoData.previewUrl,
                         timestamp: preparedPhotoData.timestamp,
                         metadata: preparedPhotoData.metadata
                     }));
-                } else {
-                    // If no API photo, try to load from local storage
-                    const storedData = localStorage.getItem(storageKey);
-                    if (storedData) {
-                        try {
-                            const parsedData = JSON.parse(storedData);
-                            setPhotoData(parsedData);
-                        } catch (error) {
-                            console.error('Error parsing stored photo data from localStorage:', error);
-                            localStorage.removeItem(storageKey);
-                        }
-                    }
-                }
-            } else {
-                // If no ID is available, try to load from local storage immediately
-                const storedData = localStorage.getItem(storageKey);
-                if (storedData) {
-                    try {
-                        const parsedData = JSON.parse(storedData);
-                        setPhotoData(parsedData);
-                    } catch (error) {
-                        console.error('Error parsing stored photo data from localStorage:', error);
-                        localStorage.removeItem(storageKey);
-                    }
                 }
             }
         } catch (error) {
-            console.error('Failed to fetch application details or process photo:', error);
-            // Even if API fetch fails, try to load from local storage as a fallback
+            console.error('Failed to fetch application details:', error);
             const storedData = localStorage.getItem(storageKey);
             if (storedData) {
                 try {
                     const parsedData = JSON.parse(storedData);
                     setPhotoData(parsedData);
                 } catch (parseError) {
-                    console.error('Error parsing stored photo data from localStorage (fallback):', parseError);
+                    console.error("Error parsing stored photo data:", parseError);
                     localStorage.removeItem(storageKey);
                 }
             }
         }
-    }, []);
-
-    useEffect(() => {
-        // Use the 'id' from useParams as the application ID
-        if (id) {
-            fetchAndShowDetails(id);
-        } else {
-            // If no ID, still try to load from local storage for new applications
-            const storedData = localStorage.getItem(storageKey);
-            if (storedData) {
-                try {
-                    const parsedData = JSON.parse(storedData);
-                    setPhotoData(parsedData);
-                } catch (error) {
-                    console.error('Error parsing stored photo data (initial load without ID):', error);
-                    localStorage.removeItem(storageKey);
-                }
-            }
-        }
-    }, [id, fetchAndShowDetails]); // Depend on 'id' and 'fetchAndShowDetails'
+    };
 
     const handlePhotoCapture = (capturedData) => {
-        // UNCONDITIONALLY update photoData with the newly captured data
         setPhotoData(capturedData);
-        // Clear any API data when a new photo is captured
-        setApiPhotoData(null);
+        setApiPhotoData(null); 
 
-        // Prepare the data for localStorage (without the file object as it's not JSON serializable)
         const storageData = {
             previewUrl: capturedData.previewUrl,
             timestamp: capturedData.timestamp,
@@ -174,88 +143,97 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
         localStorage.setItem(storageKey, JSON.stringify(storageData));
     };
 
-    const submitPhoto = async (e) => {
-        // If there's no photo data or no file associated with it, prompt the user
+    const submitPhoto = async (e) => { 
+        if(apiPhotoData && photoData) { 
+     
+            Swal.fire({
+                title: 'Application Created Successfully!', 
+                text: 'Application Number : ' + id,
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('customerPhotoData');
+                    localStorage.removeItem('agentPhotoData');
+                    localStorage.removeItem('documentData');
+                    window.location.href = '/agentdashboard'; 
+                }
+            });
+            return;
+        }
+
         if (!photoData || !photoData.file) {
             const result = await Swal.fire({
-                icon: 'warning',
-                title: 'No Photo Captured',
-                text: 'You have not captured a photo. Do you want to proceed without uploading a photo?',
+                icon: "warning",
+                title: "No Photo Captured",
+                text: "You have not captured a photo. Do you want to proceed without uploading a photo?",
                 showCancelButton: true,
-                confirmButtonText: 'Yes, Skip',
-                cancelButtonText: 'No, Go Back'
+                confirmButtonText: "Yes, Skip",
+                cancelButtonText: "No, Go Back",
             });
             if (result.isConfirmed) {
-                // If skipping, might want to just proceed without sending photo
-                onNext(); // Or do specific skip logic
+                localStorage.removeItem('customerPhotoData');
+                localStorage.removeItem('agentPhotoData');
+                localStorage.removeItem('documentData');
+                window.location.href = '/agentdashboard'; 
             }
             return;
         }
 
         setLocalIsSubmitting(true);
 
-        // Use FormData for file upload
         const submitFormData = new FormData();
-        // Use 'id' from useParams for application_id, or fallback to formData.application_id
-        submitFormData.append('application_id', id || formData.application_id || '');
-
-        // Add location data if available
+        submitFormData.append('application_id', localStorage.getItem('application_id'));
+        
         if (photoData.metadata?.location) {
             submitFormData.append('longitude', photoData.metadata.location.longitude ?? '');
             submitFormData.append('latitude', photoData.metadata.location.latitude ?? '');
         }
 
-        // Add validation data if available
         if (photoData.metadata?.validation) {
             submitFormData.append('validation', JSON.stringify(photoData.metadata.validation));
         }
 
-        // Ensure photoData.file is present and a Blob
         if (photoData.file instanceof Blob) {
-            submitFormData.append('photo', photoData.file, 'agent_photo.jpeg'); // Add a filename for agent photo
+            submitFormData.append('photo', photoData.file, "agent_photo.jpeg"); 
         } else {
-            console.error("photoData.file is not a Blob, cannot append to FormData.");
+            console.error(
+                "photoData.file is not a Blob, cannot append to FormData."
+            );
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'The captured photo data is invalid. Please retake the photo.'
+                icon: "error",
+                title: "Error",
+                text: "The captured photo data is invalid. Please retake the photo.",
             });
             setLocalIsSubmitting(false);
             return;
         }
 
         submitFormData.append('timestamp', photoData.timestamp);
-        submitFormData.append('status', 'Pending'); // Or whatever status is appropriate for agent photo submission
+        submitFormData.append('status', 'Pending');
 
         try {
-            // IMPORTANT: This API call is different (agentLivePhoto_s6b)
             await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
-                title: 'Application Created Successfully!',
+                title: 'Application Created Successfully!', 
                 text: 'Application Number : ' + id,
                 icon: 'success',
                 confirmButtonText: 'OK',
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Clear all related localStorage data upon successful final submission
                     localStorage.removeItem('customerPhotoData');
                     localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData'); // Assuming this is for other documents
-
-                    // Redirect to the desired page
-                    window.location.href = '/agentdashboard';
+                    localStorage.removeItem('documentData');
+                    window.location.href = '/agentdashboard'; 
                 }
             });
-
-            // If you intend to just move to the next step without redirection here, uncomment onNext()
-            // onNext();
         } catch (error) {
             console.error('Photo submission error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save photo. Please try again.'
+                text: error?.response?.data?.message || 'Failed to save photo. Please try again.' 
             });
         } finally {
             setLocalIsSubmitting(false);
@@ -264,11 +242,9 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
     return (
         <div className="space-y-1">
-            {/* Reason display */}
             {reason && <p className="text-red-500">Review For: {reason.applicant_live_photos_status_comment}</p>}
-
-            {/* Loading overlay */}
-            {(isSubmitting || localIsSubmitting || loading) && (
+            
+            {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
                 </div>
@@ -276,7 +252,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
             <ImageCaptureValidator
                 onCapture={handlePhotoCapture}
-                photoType="agent" // Changed photoType to "agent"
+                photoType="agent"
                 showLocation={true}
                 initialPhoto={photoData}
                 hasExistingPhoto={apiPhotoData}
@@ -308,7 +284,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                         </>
                     ) : (
                         <>
-                            Submit
+                           Submit
                         </>
                     )}
                 </CommonButton>
@@ -318,8 +294,6 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 };
 
 export default AgentPhotoCaptureApp;
-
-
 
 
 

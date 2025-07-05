@@ -32,7 +32,7 @@ const AddressInputs = () => {
         cor_pincode: '',
         cor_city: '',
         cor_district: '',
-        cor_state: '', 
+        cor_state: '',
         per_resident: "",
         per_residence_status: "",
         resi_doc: "",
@@ -180,39 +180,39 @@ const AddressInputs = () => {
                             error={errors.per_state}
                             readOnly={true} />
 
- 
-            <CommanSelect
-                label="Resident Y/N"
-                value={formData.per_resident || ''}
-                name="per_resident" 
-                options={YN}
-                error={errors.per_resident}
-                     disabled={true}              readOnly={true}
-            />
 
-       
-                <CommanSelect
-                    onChange={handleChange}
-                    label="Residential Status"
-                    value={formData.per_residence_status || ''}
-                    name="per_residence_status" 
-                    options={RESIDENTIAL_STATUS}
-                    error={errors.per_residence_status}
-                     disabled={true}              readOnly={true}
-                />
-     
+                        <CommanSelect
+                            label="Resident Y/N"
+                            value={formData.per_resident || ''}
+                            name="per_resident"
+                            options={YN}
+                            error={errors.per_resident}
+                            disabled={true} readOnly={true}
+                        />
 
-     
-                <CommanSelect
-                    onChange={handleChange}
-                    label="Residence Document"
-                    value={formData.resi_doc || ''}
-                    name="resi_doc" 
-                    options={RESIDENCE_DOCS}
-                    error={errors.resi_doc}
-                    disabled={true}        readOnly={true}
-                />
-            
+
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Residential Status"
+                            value={formData.per_residence_status || ''}
+                            name="per_residence_status"
+                            options={RESIDENTIAL_STATUS}
+                            error={errors.per_residence_status}
+                            disabled={true} readOnly={true}
+                        />
+
+
+
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Residence Document"
+                            value={formData.resi_doc || ''}
+                            name="resi_doc"
+                            options={RESIDENCE_DOCS}
+                            error={errors.resi_doc}
+                            disabled={true} readOnly={true}
+                        />
+
 
                     </div>
                 </div>
@@ -310,31 +310,31 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const { id } = useParams();
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
- 
+
 
     return (
         <div className="address-form">
 
             <AddressInputs />
 
- 
+
             <div className="next-back-btns z-10">
                 <CommonButton
                     className="btn-back"
                     onClick={onBack}
-                    iconLeft={<i className="bi bi-chevron-double-left"></i>} 
+                    iconLeft={<i className="bi bi-chevron-double-left"></i>}
                 >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
 
                 <CommonButton
                     className="btn-next"
-                    onClick={onNext }
-                    iconRight={<i className="bi bi-chevron-double-right"></i>} 
+                    onClick={onNext}
+                    iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    
-                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                     
+
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+
                 </CommonButton>
             </div>
         </div>

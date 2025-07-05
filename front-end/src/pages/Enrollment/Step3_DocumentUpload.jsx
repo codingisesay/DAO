@@ -32,7 +32,7 @@ const P3 = ({ onNext, onBack }) => {
                     localStorage.setItem('applicationDetails', JSON.stringify(response));
                     console.log('documants to show Via API :', response);
                     const application = response.documents || {};
-                    setLocalFormData(application);
+                    // setLocalFormData(application);
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -206,7 +206,7 @@ const P3 = ({ onNext, onBack }) => {
     };
 
     return (
-        <div className='form-container'>
+        <div className='form-container pb-10'>
             <div className="relative ">
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

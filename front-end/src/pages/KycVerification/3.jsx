@@ -15,6 +15,8 @@ function p3({ onNext, onBack }) {
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const API_URL = 'https://dao.payvance.co.in:8091/ext/api/detect';
     const bearerToken = localStorage.getItem('accessToken');
+      const [hoveredImage, setHoveredImage] = useState(null);
+      const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
         const fetchAndProcessDocuments = async () => {
@@ -341,6 +343,17 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                                     src={daodocbase + `${doc.kyc_file_path}`}
                                                     alt="document"
                                                     className="h-auto w-20 object-contain border rounded"
+                                                              onMouseEnter={(e) => {
+                                                                    const rect = e.target.getBoundingClientRect();
+                                                                    setHoveredImage(
+                                                                    `data:image/jpeg;base64,${doc.file_path}`
+                                                                    );
+                                                                    setHoverPosition({
+                                                                    x: rect.right + 10,
+                                                                    y: rect.top - 170,
+                                                                    });
+                                                                }}
+                                                                onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             </a>
                                         </td>
@@ -357,10 +370,27 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                 ))}
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
             ))}
+                                {/* {hoveredImage && (
+            <div
+              className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+              style={{
+                top: `${hoverPosition.y}px`,
+                left: `${hoverPosition.x}px`,
+              }}
+            >
+              <img
+                src={hoveredImage}
+                alt="Zoomed Preview"
+                className="h-[200px] w-auto rounded"
+              />
+            </div>
+          )} */}
         </div>
+
     );
 };
 

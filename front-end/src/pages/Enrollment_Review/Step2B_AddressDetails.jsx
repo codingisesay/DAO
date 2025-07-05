@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
@@ -8,20 +6,20 @@ import Swal from 'sweetalert2';
 import { agentService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
-import { useParams } from 'react-router-dom';
+import {useParams} from 'react-router-dom'
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
     const applicationId = localStorage.getItem('application_id');    
-    
-    const [loading, setLoading] = useState(false);
-    const [reason, setReason] = useState(null); 
-    const {id} = useParams();
+    const {id} =useParams()
+    const [invalidPinCode, setInvalidPinCode] = useState({ per: false, cor: false }); 
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
         per_area: formData.area || '',
         per_landmark: formData.landmark || '',
-        per_country: formData.country || '',
+        per_country: formData.country || 'INDIA',
         per_pincode: formData.pincode || '',
         per_city: formData.city || '',
         per_district: formData.district || '',
@@ -30,7 +28,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         cor_flat_no: formData.cor_flat_no || (formData.correspondenceAddressSame ? formData.per_flat_no : ''),
         cor_area: formData.cor_area || '',
         cor_landmark: formData.cor_landmark || '',
-        cor_country: formData.cor_country || '',
+        cor_country: formData.cor_country || 'INDIA',
         cor_pincode: formData.cor_pincode || '',
         cor_city: formData.cor_city || '',
         cor_district: formData.cor_district || '',
@@ -105,66 +103,23 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         fetchDetails();
     }, [applicationId]);
 
-    useEffect(()=>{
-        const fetchReason = async (id) => {  
+    
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
             if (!id) return;
             try {
-            setLoading(true);
-            const response = await agentService.refillApplication(id); 
-            setReason(response.data[0]);
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
             } catch (error) {
-            console.error("Failed to fetch review applications:", error);
+                console.error("Failed to fetch review applications:", error);
             } finally {
-            setLoading(false);
+                setLoading(false);
             }
         };
-          const fetchDetails = async () => {
-            try {
-                const response = await applicationDetailsService.getFullDetails(id);
-                if (response.data) {
-                    const { application_addresss } = response.data; 
-                    const addressFromDB = application_addresss[0];
-
-                    const resetFormData = {
-                        per_complex_name: addressFromDB?.per_complex_name || formData.complex_name || '',
-                        per_flat_no: addressFromDB?.per_flat_no || formData.flat_no || '',
-                        per_area: addressFromDB?.per_area || formData.area || '',
-                        per_landmark: addressFromDB?.per_landmark || formData.landmark || '',
-                        per_country: addressFromDB?.per_country || formData.country || 'INDIA',
-                        per_pincode: addressFromDB?.per_pincode || formData.pincode || '',
-                        per_city: addressFromDB?.per_city || formData.city || '',
-                        per_district: addressFromDB?.per_district || formData.district || '',
-                        per_state: addressFromDB?.per_state || formData.state || '',
-                        cor_complex_name: addressFromDB?.cor_complex_name || '',
-                        cor_flat_no: addressFromDB?.cor_flat_no || '',
-                        cor_area: addressFromDB?.cor_area || '',
-                        cor_landmark: addressFromDB?.cor_landmark || '',
-                        cor_country: addressFromDB?.cor_country || '',
-                        cor_pincode: addressFromDB?.cor_pincode || '',
-                        cor_city: addressFromDB?.cor_city || '',
-                        cor_district: addressFromDB?.cor_district || '',
-                        cor_state: addressFromDB?.cor_state || '',
-                        status: addressFromDB?.status || 'Pending'
-                    };
-
-                    setLocalFormData(resetFormData);
-
-                    const resetExtraInputData = {
-                        per_resident: addressFromDB?.per_resident || '',
-                        per_residence_status: addressFromDB?.per_residence_status || '',
-                        resi_doc: addressFromDB?.resi_doc || ''
-                    };
-
-                    setExtraInputData(resetExtraInputData);
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        };
-        fetchDetails();
-    fetchReason(id);
- 
-    }, [id]);
+     
+        fetchReason(id);
+    }, [id]); 
     // Function to fetch address details from PIN code API
     const fetchAddressByPinCode = async (pincode, prefix) => {
         try {
@@ -217,30 +172,32 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-        if (name === 'per_pincode' && value.length === 6) {
-            setLoadingPinCode(prev => ({ ...prev, per: true }));
-            try {
-                const addressData = await fetchAddressByPinCode(value, 'per');
-                setLocalFormData(prev => ({
-                    ...prev,
-                    ...addressData,
-                    ...(sameAsAbove ? Object.fromEntries(
-                        Object.entries(addressData).map(([key, val]) => [
-                            key.replace('per_', 'cor_'), 
-                            val
-                        ])
-                    ) : {})
-                }));
-            } catch (error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
-                });
-            } finally {
-                setLoadingPinCode(prev => ({ ...prev, per: false }));
-            }
+   if (name === 'per_pincode' && value.length === 6) {
+    setLoadingPinCode(prev => ({ ...prev, per: true }));
+    try {
+        const addressData = await fetchAddressByPinCode(value, 'per');
+        setLocalFormData(prev => ({
+            ...prev,
+            ...addressData,
+            ...(sameAsAbove ? Object.fromEntries(
+                Object.entries(addressData).map(([key, val]) => [
+                    key.replace('per_', 'cor_'), 
+                    val
+                ])
+            ) : {})
+        }));
+        setInvalidPinCode(prev => ({ ...prev, per: false }));
+        } catch (error) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'PIN Code Not Found',
+                text: 'Could not find address details for this PIN code. Please enter manually.',
+            });
+            setInvalidPinCode(prev => ({ ...prev, per: true }));
+        } finally {
+            setLoadingPinCode(prev => ({ ...prev, per: false }));
         }
+    }
     };
 
     const handleCorrespondenceChange = async (e) => {
@@ -264,24 +221,26 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-        if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
-            setLoadingPinCode(prev => ({ ...prev, cor: true }));
-            try {
-                const addressData = await fetchAddressByPinCode(value, 'cor');
-                setLocalFormData(prev => ({
-                    ...prev,
-                    ...addressData
-                }));
-            } catch (error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
-                });
-            } finally {
-                setLoadingPinCode(prev => ({ ...prev, cor: false }));
-            }
-        }
+  if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
+    setLoadingPinCode(prev => ({ ...prev, cor: true }));
+    try {
+        const addressData = await fetchAddressByPinCode(value, 'cor');
+        setLocalFormData(prev => ({
+            ...prev,
+            ...addressData
+        }));
+        setInvalidPinCode(prev => ({ ...prev, cor: false }));
+    } catch (error) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'PIN Code Not Found',
+            text: 'Could not find address details for this PIN code. Please enter manually.',
+        });
+        setInvalidPinCode(prev => ({ ...prev, cor: true }));
+    } finally {
+        setLoadingPinCode(prev => ({ ...prev, cor: false }));
+    }
+}
     };
 
     const validateForm = () => {
@@ -465,21 +424,21 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
     return (
         <div className="address-form">
-            <h2 className="text-xl font-bold mb-3">Permanent Address</h2>
-            
-          {reason &&  <p className="text-red-500 my-3" > Review For :  {reason.application_address_details_status_comment}</p> }
-            <AddressSection
-                formData={localFormData}
-                handleChange={handlePermanentChange}
-                handleBlur={handleBlur}
-                prefix="per"
-                extraInputData={extraInputData}
-                setTouchedFields={setTouchedFields}
-                validationErrors={validationErrors}
-                touchedFields={touchedFields}
-                handleExtraInputChange={handleExtraInputChange}
-                loading={loadingPinCode.per}
-            />
+            <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
+                <AddressSection
+                    formData={localFormData}
+                    handleChange={handlePermanentChange}
+                    handleBlur={handleBlur}
+                    prefix="per"
+                    extraInputData={extraInputData}
+                    setTouchedFields={setTouchedFields}
+                    validationErrors={validationErrors}
+                    touchedFields={touchedFields}
+                    handleExtraInputChange={handleExtraInputChange}
+                    loading={loadingPinCode.per}
+                    invalidPinCode={invalidPinCode.per} // Pass only the relevant flag
+                />
 
             <div className='flex items-center mb-2'>
                 <h2 className="text-xl font-bold m-2">Correspondence Address</h2>
@@ -512,6 +471,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 validationErrors={validationErrors}
                 touchedFields={touchedFields}
                 loading={loadingPinCode.cor}
+                invalidPinCode={invalidPinCode.cor} // Pass only the relevant flag
             />
 
             <div className="next-back-btns z-10">
@@ -527,7 +487,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                     onClick={submitaddress}
                     variant="contained"
                     className="btn-next"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || invalidPinCode.per || invalidPinCode.cor}
                 >
                     {isSubmitting ? (
                         <>
@@ -545,7 +505,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     );
 }
 
-function AddressSection({ formData, handleChange, handleBlur, prefix, extraInputData, validationErrors, touchedFields,setTouchedFields, handleExtraInputChange, disabled = false, loading = false }) {
+function AddressSection({ formData, handleChange, handleBlur, prefix, extraInputData, validationErrors, touchedFields,setTouchedFields, handleExtraInputChange, disabled = false, loading = false, invalidPinCode  }) {
     return (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-3">
             <div>
@@ -558,7 +518,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_complex_name`] && touchedFields[`${prefix}_complex_name`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_complex_name`] && touchedFields[`${prefix}_complex_name`] && (
@@ -574,8 +533,7 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={5}
-                disabled={disabled}
+                max={15}
                 className={validationErrors[`${prefix}_flat_no`] && touchedFields[`${prefix}_flat_no`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_flat_no`] && touchedFields[`${prefix}_flat_no`] && (
@@ -593,7 +551,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_area`] && touchedFields[`${prefix}_area`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_area`] && touchedFields[`${prefix}_area`] && (
@@ -611,7 +568,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_landmark`] && touchedFields[`${prefix}_landmark`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_landmark`] && touchedFields[`${prefix}_landmark`] && (
@@ -629,7 +585,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_country`] && touchedFields[`${prefix}_country`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_country`] && touchedFields[`${prefix}_country`] && (
@@ -646,8 +601,7 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={6}
-                disabled={disabled}
+                max={6} type='number'
                 className={validationErrors[`${prefix}_pincode`] && touchedFields[`${prefix}_pincode`] ? 'border-red-500' : ''}
                 endAdornment={loading && (
                     <i className="bi bi-arrow-repeat animate-spin"></i>
@@ -656,7 +610,11 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
             {validationErrors[`${prefix}_pincode`] && touchedFields[`${prefix}_pincode`] && (
                 <p className="text-red-500 text-xs col-span-full">{validationErrors[`${prefix}_pincode`]}</p>
             )}
-
+            {invalidPinCode && (
+                <p className="text-red-500 text-xs col-span-full">
+                    Please enter a valid {prefix === 'per' ? 'Permanent' : 'Correspondence'} Address PIN code.
+                </p>
+            )}
             </div>
             <div>
             <CommanInput
@@ -668,7 +626,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] && (
@@ -686,7 +643,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] && (
@@ -704,7 +660,6 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
                 onBlur={handleBlur}
                 required
                 max={30}
-                disabled={disabled}
                 className={validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] && (
@@ -726,15 +681,39 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
     );
 }
 
-const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouchedFields, handleChange, disabled = false }) => {
+const ExtraInput = ({ extraInputData, validationErrors, touchedFields, setTouchedFields, handleChange, disabled = false }) => {
     const isResidentYes = extraInputData.per_resident === 'Yes';
     const isStatusResident = extraInputData.per_residence_status === 'Resident';
+
+    // Custom handler to enforce blanking logic
+    const handleExtraChange = (e) => {
+        const { name, value } = e.target;
+        let updated = { ...extraInputData, [name]: value };
+
+        // If per_resident is set to 'No', blank the other two fields
+        if (name === 'per_resident' && value === 'No') {
+            updated.per_residence_status = '';
+            updated.resi_doc = '';
+        }
+
+        // If per_residence_status is set to 'Non Resident', blank resi_doc
+        if (name === 'per_residence_status' && value === 'Non Resident') {
+            updated.resi_doc = '';
+        }
+
+        handleChange({ target: { name: 'per_resident', value: updated.per_resident } });
+        handleChange({ target: { name: 'per_residence_status', value: updated.per_residence_status } });
+        handleChange({ target: { name: 'resi_doc', value: updated.resi_doc } });
+
+        // Mark field as touched
+        setTouchedFields(prev => ({ ...prev, [name]: true }));
+    };
 
     return (
         <>
             <div className="">
                 <CommanSelect
-                    onChange={handleChange}
+                    onChange={handleExtraChange}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, per_resident: true }))}
                     label="Resident Y/N"
                     value={extraInputData.per_resident || ''}
@@ -752,7 +731,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
             {isResidentYes && (
                 <div className="">
                     <CommanSelect
-                        onChange={handleChange}
+                        onChange={handleExtraChange}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, per_residence_status: true }))}
                         label="Residential Status"
                         value={extraInputData.per_residence_status || ''}
@@ -771,7 +750,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
             {isResidentYes && isStatusResident && (
                 <div className="">
                     <CommanSelect
-                        onChange={handleChange}
+                        onChange={handleExtraChange}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, resi_doc: true }))}
                         label="Residence Document"
                         value={extraInputData.resi_doc || ''}
@@ -789,6 +768,4 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
         </>
     );
 };
-
 export default AddressForm;
- 
