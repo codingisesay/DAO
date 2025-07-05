@@ -94,7 +94,7 @@ const AdminDashboard = () => {
     }
     return (
         <>
-            <div data-theme={isDark ? "dark" : "light"} className="px-8 py-4 ">
+            <div   className="p-4 dark:bg-gray-700 ">
 
                 <div className='flex justify-between'>
                     <div >
@@ -221,25 +221,25 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className='md:w-1/2 sm:w-full p-1'>
-                        <div className="bg-white w-full my-2 p-4 rounded-md text-sm text-gray-400 h-[190px] text-center">
+                        <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md text-sm text-gray-400 h-[190px] text-center">
                             yet to be come..
                         </div>
 
                     </div>
 
                     <div className="md:w-1/3 sm:w-full p-1">
-                        <div className="bg-white w-full my-2 p-4 rounded-md">
+                        <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
                             <MonthlyAccountTrends />
                         </div>
                     </div>
                     <div className='md:w-1/3 sm:w-full p-1'>
-                        <div className="bg-white w-full my-2 p-4 rounded-md">
+                        <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
                             <AccountBarChart />
                         </div>
                     </div>
                     <div className='md:w-1/3 sm:w-full p-1'>
-                        <div className="bg-white w-full my-2 p-4 rounded-md">
-                            <h2 className="text-xl font-bold mb-2"> KYC Verification Status</h2>
+                        <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
+                            <h2 className="text-xl font-bold mb-2"> Re-KYC Verification Status</h2>
                             <DemographicsBarChart />
                         </div>
                     </div>

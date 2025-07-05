@@ -122,37 +122,49 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
 
         return selectedIds;
     };
+const submitServiceToCustomer = async () => {
+    // Validation for "Others"
+    // if (
+    //     localFormData.creditFacilities.others && 
+    //     (!localFormData.otherFacilityText || localFormData.otherFacilityText.trim() === "")
+    // ) {
+    //     Swal.fire({
+    //         icon: 'warning',
+    //         title: 'Other Facility Required',
+    //         text: 'Please specify the other credit facility before proceeding.'
+    //     });
+    //     return; // Stop submission
+    // }
 
-    const submitServiceToCustomer = async () => {
-        try {
-            // Get all selected facility IDs
-            const selectedFacilityIds = getSelectedFacilityIds();
+    try {
+        // Get all selected facility IDs
+        const selectedFacilityIds = getSelectedFacilityIds();
 
-            // Prepare the payload
-            const payload = {
-                application_id: Number(storedId),
-                banking_services_facilities_id: selectedFacilityIds
-            };
+        // Prepare the payload
+        const payload = {
+            application_id: Number(storedId),
+            banking_services_facilities_id: selectedFacilityIds
+        };
 
-            const response = await createAccountService.serviceToCustomer_s5c(payload);
+        const response = await createAccountService.serviceToCustomer_s5c(payload);
 
-            Swal.fire({
-                icon: 'success',
-                title: response.data.message || 'Service to customer saved!',
-                showConfirmButton: false,
-                timer: 1500
-            });
+        Swal.fire({
+            icon: 'success',
+            title: response.data.message || 'Service to customer saved!',
+            showConfirmButton: false,
+            timer: 1500
+        });
 
-            if (onNext) onNext();
+        if (onNext) onNext();
 
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save service to customer'
-            });
-        }
-    };
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error?.response?.data?.message || 'Failed to save service to customer'
+        });
+    }
+};
 
     if (loading) {
         return <div>Loading banking services...</div>;
@@ -182,29 +194,21 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
-                {creditFacilities.map(facility => {
-                    const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
-                    return (
-                        <React.Fragment key={facility.facility_id}>
-                            <CommanCheckbox
-                                label={facility.facility_name}
-                                name={facilityKey}
-                                checked={localFormData.creditFacilities[facilityKey] || false}
-                                onChange={handleCreditFacilityChange}
-                            />
-                            {facilityKey === 'others' && localFormData.creditFacilities.others && (
-                                <div className="md:col-span-4">
-                                    <CommanInput
-                                        label={labels.otherFacilityText.label}
-                                        name="otherFacilityText"
-                                        value={localFormData.otherFacilityText}
-                                        onChange={handleOtherFacilityTextChange}
-                                    />
-                                </div>
-                            )}
-                        </React.Fragment>
-                    );
-                })}
+           {creditFacilities
+    .filter(facility => facility.facility_name.toLowerCase().replace(/ /g, '') !== 'others')
+    .map(facility => {
+        const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
+        return (
+            <React.Fragment key={facility.facility_id}>
+                <CommanCheckbox
+                    label={facility.facility_name}
+                    name={facilityKey}
+                    checked={localFormData.creditFacilities[facilityKey] || false}
+                    onChange={handleCreditFacilityChange}
+                />
+            </React.Fragment>
+        );
+    })}
             </div>
 
             <div className="next-back-btns z-10">

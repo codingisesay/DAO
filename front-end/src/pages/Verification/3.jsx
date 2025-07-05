@@ -4,78 +4,18 @@ import Swal from 'sweetalert2';
 import { useParams } from 'react-router-dom';
 import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
-// import DAOExtraction from '../Enrollment/RND_DND_GetSignphoto_abstraction';
+import axios from 'axios';
 
 function p3({ onNext, onBack }) {
     const [localFormData, setLocalFormData] = useState([]);
-    const [currentDocument, setCurrentDocument] = useState(null);
     const [extractedData, setExtractedData] = useState({});
+    const [isProcessing, setIsProcessing] = useState(false);
     const { id } = useParams();
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
+    const API_URL = 'https://dao.payvance.co.in:8091/ext/api/detect';
+    const bearerToken = localStorage.getItem('accessToken');
 
-    useEffect(() => {
-        const fetchAndStoreDetails = async () => {
-            try {
-                if (id) {
-                    const response = await pendingAccountData.getDetailsS3(id);
-                    const application = response.documents || [];
-                    setLocalFormData(application);
-                    
-                    if (application.length > 0) {
-                        processDocumentsForExtraction(application);
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to fetch application details:', error);
-            }
-        };
-
-        fetchAndStoreDetails();
-    }, [id]);
-
-    const processDocumentsForExtraction = (documents) => {
-        const processDocument = async (doc) => {
-            try {
-                const response = await fetch(daodocbase + doc.file_path);
-                const blob = await response.blob();
-                return {
-                    ...doc,
-                    file: new File([blob], doc.file_name, { type: blob.type })
-                };
-            } catch (error) {
-                console.error('Error processing document:', error);
-                return null;
-            }
-        };
-
-        documents.forEach(async (doc) => {
-            const processedDoc = await processDocument(doc);
-            if (processedDoc) {
-                setCurrentDocument(processedDoc);
-            }
-        });
-    };
-
-    const handleExtractionComplete = (data) => {
-        if (currentDocument) {
-            const updatedData = {
-                ...extractedData,
-                [currentDocument.id]: data
-            };
-            setExtractedData(updatedData);
-            
-            // Update localFormData with extracted data
-            setLocalFormData(prev => prev.map(doc => 
-                doc.id === currentDocument.id 
-                    ? { ...doc, extractedData: data } 
-                    : doc
-            ));
-        }
-        setCurrentDocument(null);
-    };
-
-    // ... (keep your existing handler functions unchanged)
-
+    const admin_id= localStorage.getItem('userCode');
     const handleRejectClick = async () => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
@@ -98,7 +38,7 @@ function p3({ onNext, onBack }) {
                 application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Reject');
@@ -132,7 +72,7 @@ function p3({ onNext, onBack }) {
                 application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Review');
@@ -151,7 +91,7 @@ function p3({ onNext, onBack }) {
                 applicaiton_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id:admin_id
             }
             const response = pendingAccountStatusUpdate.updateS3(id, payload);
             applicationStatus.push('Approved');
@@ -181,25 +121,106 @@ function p3({ onNext, onBack }) {
         }
     }
 
+    useEffect(() => {
+        const fetchAndProcessDocuments = async () => {
+            try {
+                if (id) {
+                    setIsProcessing(true);
+                    const response = await pendingAccountData.getDetailsS3(id);
+                    const documents = response.documents || [];
+                    setLocalFormData(documents);
+                    
+                    // Process each document sequentially
+                    for (const doc of documents) {
+                        await processDocument(doc);
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to process documents. Please try again.',
+                });
+            } finally {
+                setIsProcessing(false);
+            }
+        };
+
+        const processDocument = async (doc) => {
+            try {
+                const fileUrl = daodocbase + doc.file_path;
+                const response = await fetch(fileUrl);
+                const fileBlob = await response.blob();
+                
+                const formData = new FormData();
+                formData.append('image', fileBlob, doc.file_name || 'document.jpg');
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${bearerToken}`
+                    },
+                    timeout: 30000
+                };
+
+                const apiResponse = await axios.post(API_URL, formData, config);
+                
+                // Get only the first signature if multiple exist
+                const firstSignature = apiResponse.data.detections
+                    ?.filter(d => d.class_id === 2)
+                    .slice(0, 1)
+                    .map(d => ({ ...d, image: d.crop })) || [];
+                
+                // Get only the first photograph if multiple exist
+                const firstPhotograph = apiResponse.data.detections
+                    ?.filter(d => d.class_id === 1)
+                    .slice(0, 1)
+                    .map(d => ({ ...d, image: d.crop })) || [];
+
+                setExtractedData(prev => ({
+                    ...prev,
+                    [doc.id]: {
+                        signatures: firstSignature,
+                        photographs: firstPhotograph,
+                        status: firstSignature.length > 0 || firstPhotograph.length > 0 ? 'verified' : 'failed'
+                    }
+                }));
+
+            } catch (error) {
+                console.error('Error processing document:', error);
+                setExtractedData(prev => ({
+                    ...prev,
+                    [doc.id]: {
+                        ...prev[doc.id],
+                        status: 'failed'
+                    }
+                }));
+            }
+        };
+
+        fetchAndProcessDocuments();
+    }, [id]);
+
+    // ... (keep all your existing handler functions unchanged)
+    // handleRejectClick, handleReviewClick, handleNextStep remain the same
 
     return (
         <div className="form-container">
-            <h2 className="text-xl font-bold mb-2">Upload Documents</h2>
+            <h2 className="text-xl font-bold mb-2">Document Verification</h2>
+            {isProcessing && (
+                <div className="mb-4 p-2 bg-blue-100 text-blue-800 rounded">
+                    Processing documents... Please wait.
+                </div>
+            )}
+            
             <DocumentDetailsTable 
                 documentslist={localFormData} 
                 extractedData={extractedData} 
             />
 
-            {/* <DAOExtraction 
-                document={currentDocument}
-                onClose={() => setCurrentDocument(null)}
-                onExtractionComplete={handleExtractionComplete}
-            /> */}
-
-            {/* ... (keep your button section unchanged) */}
-            
-             <div className="next-back-btns">
-                 <CommonButton
+            <div className="next-back-btns">
+                <CommonButton
                     className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
                     onClick={handleRejectClick}
                 >
@@ -214,7 +235,7 @@ function p3({ onNext, onBack }) {
                 </CommonButton>
 
                 <CommonButton
-                    className="btn-next "
+                    className="btn-next"
                     onClick={handleNextStep}
                 >
                     Accept & Continue
@@ -237,48 +258,70 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
         acc[type].push(doc);
         return acc;
     }, {});
+
+    function toTitleCase(str) {
+        return str
+            .replace(/_?JPG$/i, '')
+            .replace(/_JPG/i, '')
+            .replace(/JPG$/i, '')
+            .toLowerCase()
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
+            .trim();
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString.replace(' ', 'T'));
+        if (isNaN(date)) return dateString;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    const getStatusBadge = (status) => {
+        switch (status) {
+            case 'verified':
+                return <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Verified</span>;
+            case 'failed':
+                return <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">Failed</span>;
+            default:
+                return <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs">Pending</span>;
+        }
+    };
+// Place this function inside your component or export it for reuse
 function toTitleCase(str) {
     return str
-        .replace(/_?JPG$/i, '') // Remove trailing '_JPG' or 'JPG'
-        .replace(/_JPG/i, '')   // Remove '_JPG' in the middle if needed
-        .replace(/JPG$/i, '')   // Remove 'JPG' at the end if not preceded by underscore
+        .replace(/_?JPG$/i, '') // Remove _JPG or JPG at the end
         .toLowerCase()
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
         .trim();
 }
-// Add this function above your return in DocumentDetailsTable
-function formatDate(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString.replace(' ', 'T')); // ensures compatibility
-    if (isNaN(date)) return dateString; // fallback if invalid date
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
-// ...inside your <tbody> map...
-
     return (
         <div className="p-4 max-w-4xl mx-auto">
-            {Object.entries(groupedDocs).map(([type, docs]) => (
-                <div key={type} className="mb-8">
-                 <h2 className=" font-bold mb-4 capitalize">{toTitleCase(type)}</h2>
+          
+                <div className="mb-8">
+                    {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
                     <div className="overflow-x-auto">
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th>
+                                    {/* <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th> */}
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th> 
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {Object.entries(groupedDocs).map(([type, docs]) => (
+                            <tbody key={type}>
+
+
                                 {docs.map((doc) => {
                                     const extraction = extractedData[doc.id] || {};
                                     const hasSignatures = extraction.signatures?.length > 0;
@@ -286,8 +329,8 @@ function formatDate(dateString) {
                                     
                                     return (
                                         <tr key={doc.id}>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.file_name}</td>
+                                            {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
+                                       <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
                                             <td className="py-2 px-4 border-b border-gray-200">
                                                 <img
                                                     src={daodocbase + `${doc.file_path}`}
@@ -296,64 +339,49 @@ function formatDate(dateString) {
                                                 />
                                             </td>
                                             <td className="py-2 px-4 border-b border-gray-200">
-                                                { hasPhotos ? (
-                                                    <div className="flex flex-col space-y-2">
-                                                        
-                                                        {hasPhotos && (
-                                                            <div>
-                                                                <span className="font-medium">Photos:</span>
-                                                                {extraction.photographs.map((photo, i) => (
-                                                                    <img 
-                                                                        key={i}
-                                                                        src={`data:image/jpeg;base64,${photo.image}`}
-                                                                        alt={`Photo ${i+1}`}
-                                                                        className="h-10 w-auto border rounded"
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
+                                                {hasPhotos ? (
+                                                    <img 
+                                                        src={`data:image/jpeg;base64,${extraction.photographs[0].image}`}
+                                                        alt="Extracted photo"
+                                                        className="h-10 w-auto border rounded"
+                                                    />
                                                 ) : (
-                                                    <span className="text-gray-400">No data extracted</span>
+                                                    <span className="text-gray-400">Not detected</span>
                                                 )}
                                             </td>
                                             <td className="py-2 px-4 border-b border-gray-200">
-                                                { hasPhotos ? (
-                                                    <div className="flex flex-col space-y-2">
-                                                        {hasSignatures && (
-                                                            <div>
-                                                                <span className="font-medium">Signatures:</span>
-                                                                {extraction.signatures.map((sig, i) => (
-                                                                    <img 
-                                                                        key={i}
-                                                                        src={`data:image/jpeg;base64,${sig.image}`}
-                                                                        alt={`Signature ${i+1}`}
-                                                                        className="h-10 w-auto border rounded"
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                      
-                                                    </div>
+                                                {hasSignatures ? (
+                                                    <img 
+                                                        src={`data:image/jpeg;base64,${extraction.signatures[0].image}`}
+                                                        alt="Extracted signature"
+                                                        className="h-10 w-auto border rounded"
+                                                    />
                                                 ) : (
-                                                    <span className="text-gray-400">No data extracted</span>
+                                                    <span className="text-gray-400">Not detected</span>
                                                 )}
-                                            </td>
+                                            </td> 
                                             <td className="py-2 px-4 border-b border-gray-200">
                                                 {formatDate(doc.created_at)}
                                             </td>
                                         </tr>
                                     );
                                 })}
+
+
+
                             </tbody>
+                               ))}
                         </table>
                     </div>
                 </div>
-            ))}
+         
         </div>
     );
 };
 
 export default p3;
+
+
+
 
  

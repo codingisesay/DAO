@@ -97,27 +97,20 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
             <br />
             <h2 className="text-xl font-bold mb-2">Existing Credit Facilities, If any</h2>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
-                {creditFacilities.map(facility => {
-                    const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
-                    return (
-                        <React.Fragment key={facility.facility_id}>
-                            <CommanCheckbox
-                                label={facility.facility_name}
-                                name={facilityKey}
-                                checked={localFormData.creditFacilities[facilityKey] || false} 
-                            />
-                            {facilityKey === 'others' && localFormData.creditFacilities.others && (
-                                <div className="md:col-span-4">
-                                    <CommanInput
-                                        label={labels.otherFacilityText.label}
-                                        name="otherFacilityText"
-                                        value={localFormData.otherFacilityText} 
-                                    />
-                                </div>
-                            )}
-                        </React.Fragment>
-                    );
-                })}
+              {creditFacilities
+    .filter(facility => facility.facility_name.toLowerCase().replace(/ /g, '') !== 'others')
+    .map(facility => {
+        const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');
+        return (
+            <React.Fragment key={facility.facility_id}>
+                <CommanCheckbox
+                    label={facility.facility_name}
+                    name={facilityKey}
+                    checked={localFormData.creditFacilities[facilityKey] || false} 
+                />
+            </React.Fragment>
+        );
+    })}
             </div>
 
             <div className="next-back-btns z-10">

@@ -1,8 +1,4 @@
 
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
@@ -36,7 +32,7 @@ const P3 = ({ onNext, onBack }) => {
                     localStorage.setItem('applicationDetails', JSON.stringify(response));
                     console.log('documants to show Via API :', response);
                     const application = response.documents || {};
-                    setLocalFormData(application);
+                    // setLocalFormData(application);
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -88,7 +84,7 @@ const P3 = ({ onNext, onBack }) => {
         if (!hasAddressDoc || !hasSignatureDoc || !hasIdentityDoc) {
             return {
                 isValid: false,
-                message: 'Please upload at least one document for each category: Address, Signature, and Identity.'
+                message: 'Please upload at least one document for each category: Identity, Address, and Signature.'
             };
         }
 

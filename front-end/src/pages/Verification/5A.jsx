@@ -58,14 +58,16 @@ function PersonalOccupationForm() {
                 // alert('called')
                 if (id) {
                     const response = await pendingAccountData.getDetailsS5A(id);
+                    const response2 = await pendingAccountData.getDetailsS2A(id);
                     // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    // console.log('%A :', response.data.documents[0]);
+                    console.log('SSSSSSSSSSSSSHOOOOOOOOOOOOWWWWWWWWWWWW :', response2);
                     const application = response.documents[0] || {};
+                    const application2 = response2.details || {};
                     // const personal = response?.data?.personal_details || {};
 
                     setFormData({
                         // Maiden Name Details
-                        maidenPrefixName: application.maiden_prefix || 'hi',
+                        maidenPrefixName: application.maiden_prefix || '',
                         maidenFirstName: application.maiden_first_name || '',
                         maidenMiddleName: application.maiden_middle_name || '',
                         maidenLastName: application.maiden_last_name || '',
@@ -87,10 +89,10 @@ function PersonalOccupationForm() {
                         birthPlaceCountry: application.birth_country || '',
 
                         // Other Personal Details
-                        maritalStatus: application.marital_status || '',
-                        nationality: application.nationality || '',
-                        religion: application.religion || '',
-                        caste: application.caste || '',
+                        maritalStatus: application2.marital_status || '',
+                        nationality: application2.nationality || 'Indian',
+                        religion: application2.religion || '',
+                        caste: application2.caste || '',
 
                         // Occupation Details
                         occupationType: application.occoupation_type || '',

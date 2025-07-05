@@ -13,6 +13,7 @@ import { daodocbase } from '../../data/data';
 import { usePDF } from 'react-to-pdf';
 import { useNavigate } from 'react-router-dom';
 import { use } from 'react';
+import { set } from 'webcamjs';
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
@@ -20,7 +21,7 @@ const ViewApplicationForm = () => {
     const [nominees, setNominees] = useState([])
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
-
+    const [pdftoshow, setPdftoshow] = useState();
     const applicationId = localStorage.getItem('application_id');
 
     useEffect(() => {
@@ -32,7 +33,7 @@ const ViewApplicationForm = () => {
                 if (response.data) {
                     const { application, personal_details, account_personal_details, account_nominees, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    console.log('NOM : ', account_nominees);
+                    // console.log('NOM : ', account_nominees);
                     if (account_nominees && account_nominees.length > 0) {
                         setNominees(account_nominees);
                     }
@@ -71,44 +72,54 @@ const ViewApplicationForm = () => {
                         district: application.district || "",
                         state: application.state || "",
 
-                        // Correspondence Address
-                        per_complex_name: address?.per_complex_name || "",
-                        per_flat_no: address?.per_flat_no || "",
-                        per_area: address?.per_area || "",
-                        per_landmark: address?.per_landmark || "",
-                        per_country: address?.per_country || "",
-                        per_pincode: address?.per_pincode || "",
-                        per_city: address?.per_city || "",
-                        per_district: address?.per_district || "",
-                        per_state: address?.per_state || "",
-                        cor_complex_name: address?.cor_complex_name || "",
-                        cor_flat_no: address?.cor_flat_no || "",
-                        cor_area: address?.cor_area || "",
-                        cor_landmark: address?.cor_landmark || "",
-                        cor_country: address?.cor_country || "",
-                        cor_pincode: address?.cor_pincode || "",
-                        cor_city: address?.cor_city || "",
-                        cor_district: address?.cor_district || "",
-                        cor_state: address?.cor_state || "",
+                    // Add these new address-related fields
+                    per_resident: address?.per_resident || "",
+                    per_residence_status: address?.per_residence_status || "",
+                    resi_doc: address?.resi_doc || "",
+                            
+                    // Correspondence Address
+                    per_complex_name: address?.per_complex_name || "",
+                    per_flat_no: address?.per_flat_no || "",
+                    per_area: address?.per_area || "",
+                    per_landmark: address?.per_landmark || "",
+                    per_country: address?.per_country || "",
+                    per_pincode: address?.per_pincode || "",
+                    per_city: address?.per_city || "",
+                    per_district: address?.per_district || "",
+                    per_state: address?.per_state || "",
+                    cor_complex_name: address?.cor_complex_name || "",
+                    cor_flat_no: address?.cor_flat_no || "",
+                    cor_area: address?.cor_area || "",
+                    cor_landmark: address?.cor_landmark || "",
+                    cor_country: address?.cor_country || "",
+                    cor_pincode: address?.cor_pincode || "",
+                    cor_city: address?.cor_city || "",
+                    cor_district: address?.cor_district || "",
+                    cor_state: address?.cor_state || "",
 
-                        // Identity Documents
-                        adhar_card: personal_details?.adhar_card || "",
-                        pan_card: personal_details?.pan_card || "",
-                        passport: personal_details?.passport || "",
-                        driving_license: personal_details?.driving_license || "",
-                        voter_id: personal_details?.voter_id || "",
+                    // Identity Documents
+                    adhar_card: personal_details?.adhar_card || "",
+                    pan_card: personal_details?.pan_card || "",
+                    passport: personal_details?.passport || "",
+                    driving_license: personal_details?.driving_license || "",
+                    voter_id: personal_details?.voter_id || "",
+ 
+                // Family Details (add all these fields)
+    maiden_prefix: account_personal_details?.maiden_prefix || "",
+    maiden_first_name: account_personal_details?.maiden_first_name || "",
+    maiden_middle_name: account_personal_details?.maiden_middle_name || "",
+    maiden_last_name: account_personal_details?.maiden_last_name || "",
+    father_prefix_name: account_personal_details?.father_prefix_name || "",
+    father_first_name: account_personal_details?.father_first_name || "",
+    father_middle_name: account_personal_details?.father_middle_name || "",
+    father_last_name: account_personal_details?.father_last_name || "",
+    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
+    mother_first_name: account_personal_details?.mother_first_name || "",
+    mother_middle_name: account_personal_details?.mother_middle_name || "",
+    mother_last_name: account_personal_details?.mother_last_name || "",
+    birth_place: account_personal_details?.birth_place || "",
+    birth_country: account_personal_details?.birth_country || "",
 
-                        // Family Details
-                        father_prefix_name: account_personal_details?.father_prefix_name || "",
-                        father_first_name: account_personal_details?.father_first_name || "",
-                        father_middle_name: account_personal_details?.father_middle_name || "",
-                        father_last_name: account_personal_details?.father_last_name || "",
-                        mother_prefix_name: account_personal_details?.mother_prefix_name || "",
-                        mother_first_name: account_personal_details?.mother_first_name || "",
-                        mother_middle_name: account_personal_details?.mother_middle_name || "",
-                        mother_last_name: account_personal_details?.mother_last_name || "",
-                        birth_place: account_personal_details?.birth_place || "",
-                        birth_country: account_personal_details?.birth_country || "",
 
                         // Occupation Details
                         occoupation_type: account_personal_details?.occoupation_type || "",
@@ -121,53 +132,54 @@ const ViewApplicationForm = () => {
                         remark: account_personal_details?.remark || "",
 
                         // Documents
-                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
                             : "",
 
-                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
                             : "",
 
-                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
                             : "",
 
-                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
                             : "",
 
-                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
                             : "",
 
-                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
                             : "",
 
-                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
                             : "",
 
-                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
                             : "",
 
-                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
                             : "",
 
-                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
                             : "",
 
-                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
+                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
                             : "",
 
                         photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
-                    // console.log(response)
+                    console.log('to show extention : ',   customerdoc[1].file_name)
+                    setPdftoshow(customerdoc[0].file_path)
                 }
             } catch (error) {
                 console.log(error)
@@ -361,62 +373,7 @@ const ViewApplicationForm = () => {
                         />
                     </div>
                 </div>
-
-                {/* Identity Documents */}
-                <div className="pdf-section">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.adhar_card.label}
-                            type="text"
-                            name="adhar_card"
-                            value={formData.adhar_card || ''}
-                            readOnly
-                            max={12}
-                            validationType="NUMBER_ONLY"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.pannumber.label}
-                            type="text"
-                            name="pan_card"
-                            value={formData.pan_card || ''}
-                            readOnly
-                            max={10}
-                            validationType="PAN"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.passportno.label}
-                            type="text"
-                            name="passport"
-                            value={formData.passport || ''}
-                            readOnly
-                            max={20}
-                            validationType="ALPHANUMERIC"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.drivinglicence.label}
-                            type="text"
-                            name="driving_license"
-                            value={formData.driving_license || ''}
-                            readOnly
-                            max={20}
-                            validationType="REGISTRATION_NO"
-                        />
-                        <CommanInput
-                            onChange={handleChange}
-                            label={labels.voterid.label}
-                            type="text"
-                            name="voter_id"
-                            value={formData.voter_id || ''}
-                            readOnly
-                            max={20}
-                            validationType="REGISTRATION_NO"
-                        />
-                    </div>
-                </div>
+ 
 
                 {/* Permanent Address */}
                 <div className="space-y-8">
@@ -424,68 +381,89 @@ const ViewApplicationForm = () => {
                     <div>
                         <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <CommanInput
+                            label="Complex Name"
+                            name="per_complex_name"
+                            value={formData.per_complex_name || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <CommanInput
+                            label="Flat No"
+                            name="per_flat_no"
+                            value={formData.per_flat_no || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <CommanInput
+                            label="Area"
+                            name="per_area"
+                            value={formData.per_area || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            label="Landmark"
+                            name="per_landmark"
+                            value={formData.per_landmark || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            label="Country"
+                            name="per_country"
+                            value={formData.per_country || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <CommanInput
+                            label="Pincode"
+                            name="per_pincode"
+                            value={formData.per_pincode || ''}
+                            readOnly
+                            max={6}
+                        />
+                        <CommanInput
+                            label="City"
+                            name="per_city"
+                            value={formData.per_city || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <CommanInput
+                            label="District"
+                            name="per_district"
+                            value={formData.per_district || ''}
+                            readOnly
+                            max={30}
+                        />
+                        <CommanInput
+                            label="State"
+                            name="per_state"
+                            value={formData.per_state || ''}
+                            readOnly
+                            max={30}
+                        />
                             <CommanInput
-                                label="Complex Name"
-                                name="per_complex_name"
-                                value={formData.per_complex_name || ''}
+                                label="Permanent Resident"
+                                name="per_resident"
+                                value={formData.per_resident || ''}
                                 readOnly
-                                max={30}
+                                max={10}
                             />
                             <CommanInput
-                                label="Flat No"
-                                name="per_flat_no"
-                                value={formData.per_flat_no || ''}
+                                label="Residence Status"
+                                name="per_residence_status"
+                                value={formData.per_residence_status || ''}
                                 readOnly
                                 max={20}
                             />
                             <CommanInput
-                                label="Area"
-                                name="per_area"
-                                value={formData.per_area || ''}
+                                label="Residence Document"
+                                name="resi_doc"
+                                value={formData.resi_doc || ''}
                                 readOnly
-                                max={50}
-                            />
-                            <CommanInput
-                                label="Landmark"
-                                name="per_landmark"
-                                value={formData.per_landmark || ''}
-                                readOnly
-                                max={50}
-                            />
-                            <CommanInput
-                                label="Country"
-                                name="per_country"
-                                value={formData.per_country || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                label="Pincode"
-                                name="per_pincode"
-                                value={formData.per_pincode || ''}
-                                readOnly
-                                max={6}
-                            />
-                            <CommanInput
-                                label="City"
-                                name="per_city"
-                                value={formData.per_city || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                label="District"
-                                name="per_district"
-                                value={formData.per_district || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                label="State"
-                                name="per_state"
-                                value={formData.per_state || ''}
-                                readOnly
-                                max={30}
+                                max={20}
                             />
                         </div>
                     </div>
@@ -500,100 +478,142 @@ const ViewApplicationForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Complex Name"
+                                label="  Complex Name"
                                 type="text"
                                 name="per_complex_name"
                                 value={formData.per_complex_name || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Flat No"
+                                label=" Flat No"
                                 type="text"
                                 name="cor_flat_no"
                                 value={formData.cor_flat_no || ''}
                                 readOnly
                                 max={20}
-                                validationType="ALPHANUMERIC"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Area"
+                                label=" Area"
                                 type="text"
                                 name="cor_area"
                                 value={formData.cor_area || ''}
                                 readOnly
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Landmark"
+                                label=" Landmark"
                                 type="text"
                                 name="cor_landmark"
                                 value={formData.cor_landmark || ''}
                                 readOnly
                                 max={50}
-                                validationType="EVERYTHING"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Country"
+                                label=" Country"
                                 type="text"
                                 name="cor_country"
                                 value={formData.cor_country || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Pincode"
+                                label=" Pincode"
                                 type="text"
                                 name="cor_pincode"
                                 value={formData.cor_pincode || ''}
                                 readOnly
                                 max={6}
-                                validationType="NUMBER_ONLY"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence City"
+                                label=" City"
                                 type="text"
                                 name="cor_city"
                                 value={formData.cor_city || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence District"
+                                label=" District"
                                 type="text"
                                 name="cor_district"
                                 value={formData.cor_district || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence State"
+                                label=" State"
                                 type="text"
                                 name="cor_state"
                                 value={formData.cor_state || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                         </div>
                     </div>
                 )}
-
-
-                {/* Nominee Details */}
+                
+                
+                {/* Identity Documents */}
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Identity Documents</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.adhar_card.label}
+                            type="text"
+                            name="adhar_card"
+                            value={formData.adhar_card || ''}
+                            readOnly
+                            max={12}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.pannumber.label}
+                            type="text"
+                            name="pan_card"
+                            value={formData.pan_card || ''}
+                            readOnly
+                            max={10}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.passportno.label}
+                            type="text"
+                            name="passport"
+                            value={formData.passport || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.drivinglicence.label}
+                            type="text"
+                            name="driving_license"
+                            value={formData.driving_license || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.voterid.label}
+                            type="text"
+                            name="voter_id"
+                            value={formData.voter_id || ''}
+                            readOnly
+                            max={20}
+                        />
+                    </div>
+                </div>
+                  {/* Nominee Details */}
                 {nominees.length > 0 && (
                     <div className="pdf-section mb-8">
                         <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
@@ -640,12 +660,49 @@ const ViewApplicationForm = () => {
                     </div>
                 )}
 
-
-
+ 
                 {/* Family Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        {/* Maiden Name Fields */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Maiden Prefix"
+                            name="maiden_prefix"
+                            value={formData.maiden_prefix || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden First Name"
+                            type="text"
+                            name="maiden_first_name"
+                            value={formData.maiden_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Middle Name"
+                            type="text"
+                            name="maiden_middle_name"
+                            value={formData.maiden_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Last Name"
+                            type="text"
+                            name="maiden_last_name"
+                            value={formData.maiden_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
+
+                        {/* Father's Details */}
                         <CommanSelect
                             onChange={handleChange}
                             label="Father's Prefix"
@@ -662,7 +719,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -672,7 +728,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -682,8 +737,9 @@ const ViewApplicationForm = () => {
                             value={formData.father_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
+
+                        {/* Mother's Details */}
                         <CommanSelect
                             onChange={handleChange}
                             label="Mother's Prefix"
@@ -700,7 +756,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -710,7 +765,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -720,8 +774,9 @@ const ViewApplicationForm = () => {
                             value={formData.mother_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
+
+                        {/* Birth Place & Country */}
                         <CommanInput
                             onChange={handleChange}
                             label="Birth Place"
@@ -730,7 +785,6 @@ const ViewApplicationForm = () => {
                             value={formData.birth_place || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -740,7 +794,6 @@ const ViewApplicationForm = () => {
                             value={formData.birth_country || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>
@@ -960,7 +1013,21 @@ const ViewApplicationForm = () => {
                         ) : (
                             <></>
                         )}
+ 
+
                     </div>
+                </div>
+            </div>
+            {/* show pdf below.. show pdf below */}
+            <div className='p-20 hidden'>
+                {/* <img src={} /> */}
+                <div style={{ width: '400px', height: '300px', border: '1px solid #ccc' }}>
+                <iframe
+                    src={`data:application/pdf;base64,${pdftoshow}`}
+                    title="PDF Viewer"
+                    style={{ width: '100%', height: '100%', border: 'none' }} 
+                    allowFullScreen s
+                />
                 </div>
             </div>
         </div>

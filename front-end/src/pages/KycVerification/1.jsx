@@ -81,7 +81,7 @@ const FloatingInput = ({
         )}
       >
         {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+        {/* {required && <span className="text-red-500 ml-0.5">*</span>} */}
       </label>
 
       {showToggle && (
@@ -253,7 +253,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
           <div className="section-content grid grid-cols-2 gap-2">
             <FloatingInput
               name="aadhaar-salutation"
-              label="Salutation*"
+              label="Salutation"
               value={localFormData.kyc_vs_salutation}
               disabled
               className="mb-4"
@@ -269,7 +269,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-firstName"
-              label="First Name*"
+              label="First Name"
               value={localFormData.kyc_vs_first_name}
               disabled
               className="mb-4"
@@ -277,7 +277,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-lastName"
-              label="Last Name*"
+              label="Last Name"
               value={localFormData.kyc_vs_last_name}
               disabled
               className="mb-4"
@@ -285,7 +285,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-dob"
-              label="DOB*"
+              label="DOB"
               value={localFormData.kyc_vs_date_of_birth}
               disabled
               className="mb-4"
@@ -293,7 +293,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-gender"
-              label="Gender*"
+              label="Gender"
               value={localFormData.kyc_vs_gender}
               disabled
               className="mb-4"
@@ -301,7 +301,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-mobileNo"
-              label="Mobile No*"
+              label="Mobile No"
               value={localFormData.kyc_vs_mobile_no}
               disabled
               className="mb-4"
@@ -309,7 +309,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-flatNo"
-              label="Flat No./Bldg Name*"
+              label="Flat No./Bldg Name"
               value={localFormData.kyc_vs_flat_no}
               disabled
               className="mb-4"
@@ -317,7 +317,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-complexName"
-              label="Complex Name*"
+              label="Complex Name"
               value={localFormData.kyc_vs_complex_name}
               disabled
               className="mb-4"
@@ -325,7 +325,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-landmark"
-              label="Nearby Landmark*"
+              label="Nearby Landmark"
               value={localFormData.kyc_vs_lankmark}
               disabled
               className="mb-4"
@@ -333,7 +333,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-area"
-              label="Area*"
+              label="Area"
               value={localFormData.kyc_vs_area}
               disabled
               className="mb-4"
@@ -341,7 +341,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-pinCode"
-              label="Pin Code*"
+              label="Pin Code"
               value={localFormData.kyc_vs_pincode}
               disabled
               className="mb-4"
@@ -349,7 +349,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-district"
-              label="District*"
+              label="District"
               value={localFormData.kyc_vs_district}
               disabled
               className="mb-4"
@@ -357,7 +357,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-country"
-              label="Country*"
+              label="Country"
               value={localFormData.kyc_vs_country}
               disabled
               className="mb-4"
@@ -365,7 +365,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-city"
-              label="City*"
+              label="City"
               value={localFormData.kyc_vs_city}
               disabled
               className="mb-4"
@@ -373,7 +373,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
 
             <FloatingInput
               name="aadhaar-state"
-              label="State*"
+              label="State"
               value={localFormData.kyc_vs_state}
               disabled
               className="mb-4"
@@ -398,7 +398,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-salutation"
-                label="Salutation*"
+                label="Salutation"
                 value={localFormData.kyc_cbs_salutation}
                 onChange={(value) => handleCbsChange("kyc_vscbs_salutation", value)}
                 required
@@ -419,7 +419,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-firstName"
-                label="First Name*"
+                label="First Name"
                 value={localFormData.kyc_cbs_first_name}
                 onChange={(value) => handleCbsChange("kyc_vscbs_first_name", value)}
                 required
@@ -430,7 +430,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-lastName"
-                label="Last Name*"
+                label="Last Name"
                 value={localFormData.kyc_cbs_last_name}
                 onChange={(value) => handleCbsChange("kyc_vscbs_last_name", value)}
                 required
@@ -441,7 +441,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-dob"
-                label="DOB*"
+                label="DOB"
                 value={localFormData.kyc_cbs_date_of_birth}
                 onChange={(value) => handleCbsChange("kyc_vscbs_date_of_birth", value)}
                 required
@@ -452,7 +452,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-gender"
-                label="Gender*"
+                label="Gender"
                 value={localFormData.kyc_cbs_gender}
                 onChange={(value) => handleCbsChange("kyc_vscbs_gender", value)}
                 required
@@ -463,7 +463,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-mobileNo"
-                label="Mobile No*"
+                label="Mobile No"
                 value={localFormData.kyc_cbs_mobile_no}
                 onChange={(value) => handleCbsChange("kyc_vscbs_mobile_no", value)}
                 required
@@ -473,7 +473,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-flatNo"
-                label="Flat No./Bldg Name*"
+                label="Flat No./Bldg Name"
                 value={localFormData.kyc_cbs_flat_no}
                 onChange={(value) => handleCbsChange("kyc_vscbs_flat_no", value)}
                 required
@@ -484,7 +484,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-complexName"
-                label="Complex Name*"
+                label="Complex Name"
                 value={localFormData.kyc_cbs_complex_name}
                 onChange={(value) => handleCbsChange("kyc_vscbs_complex_name", value)}
                 required
@@ -494,7 +494,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-landmark"
-                label="Nearby Landmark*"
+                label="Nearby Landmark"
                 value={localFormData.kyc_cbs_lankmark}
                 onChange={(value) => handleCbsChange("kyc_vscbs_lankmark", value)}
                 required
@@ -505,7 +505,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-area"
-                label="Area*"
+                label="Area"
                 value={localFormData.kyc_cbs_area}
                 onChange={(value) => handleCbsChange("kyc_vscbs_area", value)}
                 required
@@ -516,7 +516,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-pinCode"
-                label="Pin Code*"
+                label="Pin Code"
                 value={localFormData.kyc_cbs_pincode}
                 onChange={(value) => handleCbsChange("kyc_vscbs_pincode", value)}
                 required
@@ -527,7 +527,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-district"
-                label="District*"
+                label="District"
                 value={localFormData.kyc_cbs_district}
                 onChange={(value) => handleCbsChange("kyc_vscbs_district", value)}
                 required
@@ -538,7 +538,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-country"
-                label="Country*"
+                label="Country"
                 value={localFormData.kyc_cbs_country}
                 onChange={(value) => handleCbsChange("kyc_vscbs_country", value)}
                 required
@@ -549,7 +549,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-city"
-                label="City*"
+                label="City"
                 value={localFormData.kyc_cbs_city}
                 onChange={(value) => handleCbsChange("kyc_vscbs_city", value)}
                 required
@@ -560,7 +560,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             <div className="relative mb-4">
               <FloatingInput
                 name="cbs-state"
-                label="State*"
+                label="State"
                 value={localFormData.kyc_cbs_state}
                 onChange={(value) => handleCbsChange("kyc_vscbs_state", value)}
                 required

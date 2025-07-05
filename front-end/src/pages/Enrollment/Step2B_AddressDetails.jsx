@@ -657,15 +657,39 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
     );
 }
 
-const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouchedFields, handleChange, disabled = false }) => {
+const ExtraInput = ({ extraInputData, validationErrors, touchedFields, setTouchedFields, handleChange, disabled = false }) => {
     const isResidentYes = extraInputData.per_resident === 'Yes';
     const isStatusResident = extraInputData.per_residence_status === 'Resident';
+
+    // Custom handler to enforce blanking logic
+    const handleExtraChange = (e) => {
+        const { name, value } = e.target;
+        let updated = { ...extraInputData, [name]: value };
+
+        // If per_resident is set to 'No', blank the other two fields
+        if (name === 'per_resident' && value === 'No') {
+            updated.per_residence_status = '';
+            updated.resi_doc = '';
+        }
+
+        // If per_residence_status is set to 'Non Resident', blank resi_doc
+        if (name === 'per_residence_status' && value === 'Non Resident') {
+            updated.resi_doc = '';
+        }
+
+        handleChange({ target: { name: 'per_resident', value: updated.per_resident } });
+        handleChange({ target: { name: 'per_residence_status', value: updated.per_residence_status } });
+        handleChange({ target: { name: 'resi_doc', value: updated.resi_doc } });
+
+        // Mark field as touched
+        setTouchedFields(prev => ({ ...prev, [name]: true }));
+    };
 
     return (
         <>
             <div className="">
                 <CommanSelect
-                    onChange={handleChange}
+                    onChange={handleExtraChange}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, per_resident: true }))}
                     label="Resident Y/N"
                     value={extraInputData.per_resident || ''}
@@ -683,7 +707,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
             {isResidentYes && (
                 <div className="">
                     <CommanSelect
-                        onChange={handleChange}
+                        onChange={handleExtraChange}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, per_residence_status: true }))}
                         label="Residential Status"
                         value={extraInputData.per_residence_status || ''}
@@ -702,7 +726,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
             {isResidentYes && isStatusResident && (
                 <div className="">
                     <CommanSelect
-                        onChange={handleChange}
+                        onChange={handleExtraChange}
                         onBlur={() => setTouchedFields(prev => ({ ...prev, resi_doc: true }))}
                         label="Residence Document"
                         value={extraInputData.resi_doc || ''}
@@ -720,5 +744,4 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
         </>
     );
 };
-
 export default AddressForm;

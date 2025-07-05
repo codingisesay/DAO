@@ -115,13 +115,13 @@ const p6 = ({ onNext, onBack }) => {
               </div>
               <div className="step-title">Step {index + 1}</div>
               <div className="step-label">{step.label}</div>
-              <span
+              {/* <span
                 className={`badge badge-${status
                   .toLowerCase()
                   .replace(" ", "-")}`}
               >
                 {status}
-              </span>
+              </span> */}
             </div>
           );
         })}
@@ -146,10 +146,24 @@ const p6 = ({ onNext, onBack }) => {
             <i className="bi bi-chevron-double-left"></i>&nbsp;Back
           </CommonButton>
 
+          {/* <CommonButton
+              className="btn-next"
+              // onClick={CreateAccount}
+              onClick={  handleNext  }
+              iconRight={<i className="bi bi-chevron-double-right"></i>}
+            >
+              {activeStep === 1 ? (
+                <>Close</>
+              ) : (
+                <>
+                  Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                </>
+              )}
+            </CommonButton> */}
+
           <CommonButton
             className="btn-next"
-            // onClick={CreateAccount}
-            onClick={CreateAccount}
+            onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
             iconRight={<i className="bi bi-chevron-double-right"></i>}
           >
             {activeStep === 1 ? (
@@ -160,6 +174,8 @@ const p6 = ({ onNext, onBack }) => {
               </>
             )}
           </CommonButton>
+
+
         </div>
       </>
 
