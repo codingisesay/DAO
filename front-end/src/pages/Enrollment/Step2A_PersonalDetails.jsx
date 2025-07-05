@@ -84,6 +84,11 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             toast.error('Failed to load personal details');
         }
     };
+    function toTitleCase(str) {
+        return str
+            .replace(/_/g, ' ')
+            .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    }
     const validateForm = () => {
         const errors = {};
 
@@ -98,11 +103,11 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             requiredFields.push('pan_card');
         }
 
-        requiredFields.forEach(field => {
-            if (!localFormData[field]) {
-                errors[field] = `${labels[field]?.label || field} is required`;
-            }
-        });
+   requiredFields.forEach(field => {
+        if (!localFormData[field]) {
+            errors[field] = `${labels[field]?.label || toTitleCase(field)} Required`;
+        }
+    });
 
         // Mobile number validation
         if (!localFormData.mobile || localFormData.mobile.length !== 10) {
