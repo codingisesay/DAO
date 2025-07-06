@@ -34,7 +34,7 @@ tr:hover{background-color: transparent;}
   color: var(--primary-text-color);
   margin-bottom: 50px;
 }
-
+.dropdown-box {left:0 ;z-index: 99}
 .box {
   padding: 20px;
   border-radius: 10px;
