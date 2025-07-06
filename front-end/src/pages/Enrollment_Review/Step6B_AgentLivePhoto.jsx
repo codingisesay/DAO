@@ -144,23 +144,23 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     };
 
     const submitPhoto = async (e) => { 
-        if(apiPhotoData && photoData) { 
+        // if(apiPhotoData && photoData) { 
      
-            Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : ' + id,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('customerPhotoData');
-                    localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData');
-                    window.location.href = '/agentdashboard'; 
-                }
-            });
-            return;
-        }
+        //     Swal.fire({
+        //         title: 'Application Created Successfully!', 
+        //         text: 'Application Number : ' + id,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK',
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             localStorage.removeItem('customerPhotoData');
+        //             localStorage.removeItem('agentPhotoData');
+        //             localStorage.removeItem('documentData');
+        //             window.location.href = '/agentdashboard'; 
+        //         }
+        //     });
+        //     return;
+        // }
 
         if (!photoData || !photoData.file) {
             const result = await Swal.fire({
@@ -233,7 +233,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save photo. Please try again.' 
+                text: error?.response?.data?.message || 'Agent live phot capture is required.' 
             });
         } finally {
             setLocalIsSubmitting(false);
