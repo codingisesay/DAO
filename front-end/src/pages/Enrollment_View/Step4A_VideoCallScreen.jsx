@@ -1,3 +1,7 @@
+ 
+
+
+
 import React, { useState } from "react";
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import CommonButton from "../../components/CommonButton";
@@ -61,7 +65,7 @@ const VideoKYCInstructions = ({onNext}) => {
                 
             <div className="flex flex-col md:flex-row gap-5 justify-center items-start">
                 {/* Guidelines Box */}
-                <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
+                <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow" style={{minHeight:'100%'}}>
                     <div className="flex items-start gap-2">
                         <input
                             type="checkbox"
@@ -80,7 +84,8 @@ const VideoKYCInstructions = ({onNext}) => {
                                 <li>
                                     Complete the process and click the 'Confirm' button to finalize your submission.
                                 </li>
-                            </ul><br />
+                              
+                            </ul> 
                         </div>
                     </div>
                 </div>
@@ -102,9 +107,7 @@ const VideoKYCInstructions = ({onNext}) => {
                                 <li>
                                     Enable camera, location, and microphone permissions for smooth processing.
                                 </li>
-                                <li>
-                                    Close any unnecessary applications or tabs to enhance your device's performance during the Video KYC process.
-                                </li>
+                                <li>Close unnecessary applications or tabs to enhance device's performance during the Video KYC. </li> 
                             </ul>
                         </div>
                     </div>

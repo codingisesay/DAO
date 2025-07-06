@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import payvanceLogo from "../../assets/imgs/payvance_dark_logo.png";
+import payvanceLogoDark from "../../assets/imgs/payvance_dark_logo.png";
+import payvanceLogoLight from "../../assets/imgs/payvance_light_logo.png";
 import userphoto from "../../assets/imgs/user_avatar.jpg";
 import ThemeToggle from "../../components/Toggle";
 import useLocalStorage from "use-local-storage";
@@ -15,7 +16,13 @@ import { agentService } from "../../services/apiServices";
 import Swal from "sweetalert2";
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
-import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard';
+import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
+import EnrollmentPendingTable from './Enrollment_PendingTable'
+import EnrollmentRejectedTable from './Enrollment_Reject'
+import EnrollmentReviewTable from './Enrollment_Review'
+import Footer from "../../components/Footer";
+
 
 const Dashboard = () => {
   const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -83,8 +90,9 @@ const Dashboard = () => {
       <div data-theme={isDark ? "dark" : "light"} className="p-4  dark:bg-gray-700">
         <div className="flex justify-between">
           <div>
+     
             <img
-              src={payvanceLogo}
+              src={ isDark ? payvanceLogoLight :payvanceLogoDark}
               alt="PayVance Logo"
               className="payvance-logo"
             />
@@ -202,17 +210,17 @@ const Dashboard = () => {
             <div className="w-full sm:w-full p-1">
               <StatusDashboard1 />
             </div>
-            <div className="md:w-2/3 sm:w-full p-1">
+            <div className="md:w-3/5 sm:w-full p-1">
               <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
                 <AccountBarChart />
               </div>
             </div>
-            <div className="md:w-1/3 sm:w-full p-1">
-              <div className="bg-white w-full my-2 px-4 pt-4 rounded-md relative">
+            <div className="md:w-2/5 sm:w-full p-1">
+              <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md relative overflow-auto">
                 <h2 className="text-xl font-bold mb-2">
                   Re-KYC Application Status
                 </h2>
-                <div className="pb-11">
+                <div className="pb-7 ">
                   <KYCgue total={2000} approved={800} pending={1200} />
                 </div>
               </div>
@@ -248,12 +256,6 @@ const Dashboard = () => {
   );
 };
 
-
-import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
-import EnrollmentPendingTable from './Enrollment_PendingTable'
-import EnrollmentRejectedTable from './Enrollment_Reject'
-import EnrollmentReviewTable from './Enrollment_Review'
-import Footer from "../../components/Footer";
 
 function StatusDashboard1() {
   const storedId = localStorage.getItem("userCode") || 1;

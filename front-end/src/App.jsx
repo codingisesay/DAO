@@ -80,7 +80,7 @@ export const App = () => {
         <Routes>
           
  
-    <Route path="/" element={<Test />}   />
+    {/* <Route path="/" element={<Test />}   /> */}
     <Route path="/forgotpassword" element={<ForgotPassword />}   />
     <Route path="/otpvarification" element={<OtpVerification />} />
     <Route path="/changepass" element={<ChangePassword />}   />

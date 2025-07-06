@@ -13,9 +13,11 @@
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+
+.dark, .dark input, .dark select, .dark span, .dark small, .dark td, .dark .rdrDayNumber span, .dark .css-sc8y68-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, .dark .rdrMonthAndYearPickers select, .dark li,
 .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i ,.dark td.css-jiabcu-MuiTableCell-root,.dark svg{
-  color: #f6f6f6;
-}
+  color: #f6f6f6 !important;
+} 
 body {
     background: var(--payvance-bodybg);
 }
@@ -25,15 +27,9 @@ body {
 }
 .dark .modal-content, .dark .css-1gtchvp-MuiPaper-root{background: #374151;}
 
-
-.dark input {
-  color: white !important;
-}
-
-.dark {
-  color: white !important;
-}
-
+ .dark .rdrCalendarWrapper{background-color: #111827;border:1px solid #374151;border-radius: 6px; }
+ 
+tr:hover{background-color: transparent;}
 .title {
   color: var(--primary-text-color);
   margin-bottom: 50px;
