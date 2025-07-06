@@ -7,6 +7,7 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { salutation, religion, caste, salaryrange } from '../../data/data';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
     
@@ -42,6 +43,22 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
     });
  
     
+    const [reason, setReason] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const loadReason = async () => {
+        try {
+            setLoading(true);
+            const fetchedReason = await dataService.fetchReasonById(applicationId);
+            setReason(fetchedReason);
+        } catch (error) {
+            // Handle error, e.g., show a user-friendly message
+            console.error("Error loading reason in component:", error);
+            setReason(null); // Clear reason on error
+        } finally {
+            setLoading(false);
+        }
+    };
+
     
 useEffect(() => {
     const fetchDetails = async () => {
@@ -98,13 +115,14 @@ useEffect(() => {
 
     if (applicationId) {
         fetchDetails();
+        loadReason()
     }
 }, [applicationId]);
 
  
     return (
         <div className="max-w-screen-xl mx-auto pb-20">
-            <h2 className="text-xl font-bold mb-4">Personal Details</h2>
+            <h2 className="text-xl font-bold mb-4">Personal Details</h2>  {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.account_personal_details_status_comment}</p> }
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
                 {/* Maiden Name Section */}
                 <CommanSelect

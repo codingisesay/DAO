@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { pendingAccountData } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
 import axios from 'axios';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 import { Paper, Typography, Box } from '@mui/material';
 
 function DocumentReviewStep({ onNext, onBack }) {
@@ -105,10 +106,28 @@ function DocumentReviewStep({ onNext, onBack }) {
             }
         }));
     }
-};
+    };
 
         fetchAndProcessDocuments();
+        loadReason();
     }, [id]);
+
+    
+    const [reason, setReason] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const loadReason = async () => {
+        try {
+            setLoading(true);
+            const fetchedReason = await dataService.fetchReasonById(id);
+            setReason(fetchedReason);
+        } catch (error) {
+            // Handle error, e.g., show a user-friendly message
+            console.error("Error loading reason in component:", error);
+            setReason(null); // Clear reason on error
+        } finally {
+            setLoading(false);
+        }
+    };
 
   
     const handleNextStep = async () => {  onNext();   };
@@ -184,7 +203,7 @@ const renderExtractedItems = (items) => {
                             </Typography>
                     </Paper>
                 )}
-                
+                  {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.document_approved_status_status_comment}</p> }
                     <div className="mb-8">
                         {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
                         <div className="overflow-x-auto">

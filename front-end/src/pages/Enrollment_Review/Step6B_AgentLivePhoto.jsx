@@ -242,7 +242,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
     return (
         <div className="space-y-1">
-            {reason && <p className="text-red-500">Review For: {reason.applicant_live_photos_status_comment}</p>}
+            {reason && <p className="text-red-500">Review For: {reason.agent_live_photos_status_comment}</p>}
             
             {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">
