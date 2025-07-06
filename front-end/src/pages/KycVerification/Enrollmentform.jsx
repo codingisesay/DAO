@@ -1,9 +1,9 @@
 
 
 import React, { useState } from 'react';
-import Page1 from './1'; 
-import Page3 from './3';
-import Page4 from './4'; 
+import Page1 from './Step1_ClientDetails'; 
+import Page3 from './Step2_DocumentUpload';
+import Page4 from './Step3_Vcall'; 
 import Stepper from './Stepper';
 import Footer from '../../components/Footer';
 
