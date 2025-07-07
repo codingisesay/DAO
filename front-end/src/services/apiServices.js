@@ -544,3 +544,15 @@ export const accountService = {
   moduletype: (id) =>
     apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
 };
+
+
+export const lookUp = {
+  lookUp: (id) => apiService.post(API_ENDPOINTS.LOOKUPS.GET, id),
+  duplicatecodetypecheack: (codeType) =>
+    apiService.get(API_ENDPOINTS.LOOKUPS.LOOKUP_DUPLICATION(codeType)),
+
+  lookUp: (id, id2) => apiService.get(API_ENDPOINTS.PINCODE.GET(id, id2)),
+  getCountries: () => apiService.get(API_ENDPOINTS.PINCODE.GET_COUNTRI),
+  getPincodes: (id, id2) =>
+    apiService.get(API_ENDPOINTS.PINCODE.GET_PINCODE(id, id2)),
+};

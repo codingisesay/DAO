@@ -387,7 +387,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 </form>
                                 {selectedOption === 'Aadhaar Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Enter 12 Digit Aadhaar number (format: xxxx xxxx xxxx)</p>
+                                        <p className='mb-3 text-sm'>Enter 12 Digit Aadhaar Number (Format: xxxx xxxx xxxx)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
@@ -420,7 +420,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
                                 {selectedOption === 'Pan Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Please Enter a Valid PAN (format: AAAAA9999A)</p>
+                                        <p className='mb-3 text-sm'>Please Enter a Valid PAN (Format: AAAAA9999A)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput

@@ -213,9 +213,9 @@ const Step1PersonalInfo = ({
               {selectedOption && (
                 <div className="">
                   {selectedOption === 'Aadhaar Card'&&
-                  <> <p className=' text-sm'>Enter 12 Digit Aadhaar number (format: xxxx xxxx xxxx)</p></> }
+                  <> <p className=' text-sm'>Enter 12 Digit Aadhaar Number (Format: xxxx xxxx xxxx)</p></> }
                   {selectedOption === 'Pan Card'&&
-                  <>  <p className=' text-sm'>Please Enter a Valid PAN (format: AAAAA9999A)</p></> }
+                  <>  <p className=' text-sm'>Please Enter a Valid PAN (Format: AAAAA9999A)</p></> }
                   {selectedOption === 'Digilocker'&&
                   <>   </> }
                   

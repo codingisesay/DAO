@@ -253,7 +253,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 {localFormData.auth_type === "Aadhaar Card" && (
                   <div className="mt-3">
                     <p className="mb-3 text-sm">
-                      Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)
+                      Enter 12 digit Aadhaar Number (Format: XXXX XXXX XXXX)
                     </p>
                     <div className="flex items-center">
                       <div className="md:w-1/2 me-4">
@@ -285,7 +285,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 {localFormData.auth_type === "Pan Card" && (
                   <div className="mt-3">
                     <p className="mb-3 text-sm">
-                      Please enter a valid PAN (format: AAAAA9999A)
+                      Please enter a valid PAN (Format: AAAAA9999A)
                     </p>
                     <div className="flex items-center">
                       <div className="md:w-1/2 me-4">
