@@ -9,7 +9,7 @@ import { agentService,
   pendingAccountData,
 } from "../../services/apiServices";
 
-const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
+const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {  
   const [photoData, setPhotoData] = useState(null);
   const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
   const [apiPhotoData, setApiPhotoData] = useState(null); 

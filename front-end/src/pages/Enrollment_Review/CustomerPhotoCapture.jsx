@@ -239,7 +239,7 @@ const capture = async () => {
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2">Live Photo</h1>
+      {/* <h1 className="text-xl font-bold mb-2">Live Photo</h1> */}
 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

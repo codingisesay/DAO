@@ -274,7 +274,7 @@ public function saveAgentLivePhoto(Request $request)
         'latitude' => 'required|string|max:255',
         'status' => 'nullable|in:Pending,Approved,Reject,Review',
         'status_comment' => 'nullable|string|max:255',
-        'photo' => 'required|image|max:5120', // max 5MB
+        'photo' => 'nullable|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');

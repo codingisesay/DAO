@@ -142,23 +142,23 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     };
 
     const submitPhoto = async (e) => { 
-        if(apiPhotoData && photoData) { 
+        // if(apiPhotoData && photoData) { 
      
-            Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : ' + id,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('customerPhotoData');
-                    localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData');
-                    window.location.href = '/agentdashboard'; 
-                }
-            });
-            return;
-        }
+        //     Swal.fire({
+        //         title: 'Application Created Successfully!', 
+        //         text: 'Application Number : ' + id,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK',
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             localStorage.removeItem('customerPhotoData');
+        //             localStorage.removeItem('agentPhotoData');
+        //             localStorage.removeItem('documentData');
+        //             window.location.href = '/agentdashboard'; 
+        //         }
+        //     });
+        //     return;
+        // }
 
         if (!photoData || !photoData.file) {
             const result = await Swal.fire({
