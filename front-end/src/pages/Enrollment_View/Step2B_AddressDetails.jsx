@@ -201,7 +201,7 @@ const AddressInputs = () => {
 
 
                         <CommanSelect
-                            label="Resident Y/N"
+                            label="Resident"
                             value={formData.per_resident || ''}
                             name="per_resident"
                             options={YN}

@@ -39,7 +39,7 @@ const ProgressIndicator = ({ progress, subProgress, currentStep }) => {
       {/* <p className='my-3'> Account Opening</p> */}
 
       <div className="sidebar-stepper-container">
-        <div className="vertical-stepper">
+        <div className="vertical-stepper pt-3">
           {[1, 2, 3, 4].map((step) => (
             <div
               key={step}
