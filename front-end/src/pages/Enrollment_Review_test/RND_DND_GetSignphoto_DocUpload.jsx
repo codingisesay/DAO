@@ -79,7 +79,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
         return document.some(doc => doc.type === 'AADHAAR_CARD_BACK');
     };
 
-    const validateAadharCard = async (imageData, side) => {
+    const validateAadhaarCard = async (imageData, side) => {
         setLoading(true);
         try {
             const result = await Tesseract.recognize(imageData, 'eng', {
@@ -125,7 +125,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
             return { isValid: true };
 
         } catch (error) {
-            console.error("Aadhar validation error:", error);
+            console.error("Aadhaar validation error:", error);
             showAlertMessage('Error', 'Failed to process Aadhaar card image', 'error');
             return { isValid: false };
         } finally {
@@ -189,7 +189,7 @@ const DocumentUpload = ({ onDocumentsUpdate, onProcessDocument, documents }) => 
 
         if (shouldValidate) {
             if (documentValue === 'AADHAAR_CARD_FRONT' || documentValue === 'AADHAAR_CARD_BACK') {
-                const validationResult = await validateAadharCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
+                const validationResult = await validateAadhaarCard(imageData, documentValue === 'AADHAAR_CARD_FRONT' ? 'FRONT' : 'BACK');
                 isValid = validationResult.isValid;
                 extractedInfo = validationResult.extractedInfo;
             }

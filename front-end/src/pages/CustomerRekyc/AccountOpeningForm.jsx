@@ -13,7 +13,7 @@ function CustomerForm() {
     const [formData, setFormData] = useState({
         // Authentication Details
         begin_process: null,
-        auth_type: '', // 'Pan Card', 'Aadhar Card', 'Digilocker'
+        auth_type: '', // 'Pan Card', 'Aadhaar Card', 'Digilocker'
         auth_code: '',
         status: 'pending',
 
@@ -271,7 +271,7 @@ function CustomerForm() {
  
 
     // Add this handler
-    const handleAadharDataFetched = (data) => {
+    const handleAadhaarDataFetched = (data) => {
         setFormData(prev => ({
             ...prev,
             ...data // Merge fetched data into formData
@@ -303,7 +303,7 @@ function CustomerForm() {
                                 formData={formData}
                                 handleChange={handleChange}
                                 setFormData={setFormData}
-                                onAadharDataFetched={handleAadharDataFetched}
+                                onAadhaarDataFetched={handleAadhaarDataFetched}
                                 onNext={nextStep}
                                 onBack={prevStep}
                             />

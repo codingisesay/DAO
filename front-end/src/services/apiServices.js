@@ -127,7 +127,7 @@ export const applicationDetailsService = {
 };
 
 export const applicationDetailsServices = {
-  getByAadhar: (auth_code) =>
+  getByAadhaar: (auth_code) =>
     apiService.post("/api/application/by-aadhar", { auth_code }),
   // ...other methods
 };

@@ -180,7 +180,7 @@ const ApplicationPdf = () => {
                         <KeyValueRow label="DOB" value={formData.DOB} />
                         <KeyValueRow label="Gender" value={formData.gender} />
                         <KeyValueRow label="PAN No." value={formData.pan_card} />
-                        <KeyValueRow label="Aadhar No." value={formData.adhar_card} />
+                        <KeyValueRow label="Aadhaar No." value={formData.adhar_card} />
                     </div>
                 </div>
 

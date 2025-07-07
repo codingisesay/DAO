@@ -197,7 +197,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 
                 {/* Identity Documents */}
                 <CommanInput
-                    label="Aadhar Card"
+                    label="Aadhaar Card"
                     type="text"
                     name="adhar_card"
                     value={localFormData.adhar_card}

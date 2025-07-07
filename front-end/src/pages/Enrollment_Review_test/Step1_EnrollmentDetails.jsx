@@ -63,18 +63,18 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
   const fetchShowData = (e) => {
     e.preventDefault();
-    if (selectedOption === "Aadhar Card") {
+    if (selectedOption === "Aadhaar Card") {
       if (validateAadhaar(localFormData.verifynumber)) {
         Swal.fire({
           icon: "success",
-          title: "Aadhar Card verified!",
+          title: "Aadhaar Card verified!",
           showConfirmButton: false,
           timer: 1500,
         });
         setShowData(true);
         setLocalFormData((prev) => ({
           ...prev,
-          ...userdummydata.aadhardetails,
+          ...userdummydata.aadhaardetails,
           auth_code: prev.verifynumber,
         }));
       } else {
@@ -215,12 +215,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                       className="me-2"
                       type="radio"
                       name="option"
-                      value="Aadhar Card"
-                      checked={localFormData.auth_type === "Aadhar Card"}
+                      value="Aadhaar Card"
+                      checked={localFormData.auth_type === "Aadhaar Card"}
                       onChange={handleRadioChange}
                       disabled
                     />
-                    Aadhar Number
+                    Aadhaar Number
                   </label>
 
                   <label className="flex me-4">
@@ -250,7 +250,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                   </label>
                 </form>
 
-                {localFormData.auth_type === "Aadhar Card" && (
+                {localFormData.auth_type === "Aadhaar Card" && (
                   <div className="mt-3">
                     <p className="mb-3 text-sm">
                       Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)
@@ -259,7 +259,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                       <div className="md:w-1/2 me-4">
                         <CommanInput
                           onChange={handleChange}
-                          label="Enter Aadhar Number"
+                          label="Enter Aadhaar Number"
                           type="text"
                           name="verifynumber"
                           value={localFormData.auth_code}
