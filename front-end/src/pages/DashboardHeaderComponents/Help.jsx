@@ -15,11 +15,11 @@ const HelpAccordion = () => {
     },
     {
       question: "What is expected from an agent when handling customer inquiries?",
-      answer: "Agents are expected to be professional, courteous, and efficient. They should actively listen, understand the customer's needs, provide accurate information, and work towards a satisfactory resolution."
+      answer: "Agents are expected to be professional, courteous, and efficient."
     },
     {
       question: "How do agents handle difficult or irate customers?",
-      answer: "Agents are trained to remain calm and empathetic. They use de-escalation techniques, actively listen to concerns, acknowledge frustrations, and focus on finding solutions to resolve the issue."
+      answer: "Agents are trained to remain calm and empathetic. "
     },
     {
       question: "Can agents access a customer's account information?",

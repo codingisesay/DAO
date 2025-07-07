@@ -733,10 +733,12 @@ div.border-red-500 select {
 
 
 
-
+.tss-1fbujeu-MUIDataTableHeadCell-toolButton{margin: 0 !important;}
 
 input:disabled,
 select:disabled {
   color: gray;
   /* important to keep color visible */
 }
+.stepper-subtitle.text-xs{font-size: 9px  !important;}
+.stepper-title{margin-top: -3px;}

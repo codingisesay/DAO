@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import payvanceLogo from "../../assets/imgs/payvance_dark_logo.png";
+import payvanceLogoDark from "../../assets/imgs/payvance_dark_logo.png";
+import payvanceLogoLight from "../../assets/imgs/payvance_light_logo.png";
 import userphoto from "../../assets/imgs/user_avatar.jpg";
 import ThemeToggle from "../../components/Toggle";
 import useLocalStorage from "use-local-storage";
@@ -15,7 +16,14 @@ import { agentService } from "../../services/apiServices";
 import Swal from "sweetalert2";
 import Help from "../DashboardHeaderComponents/Help";
 import Profilecard from "../DashboardHeaderComponents/ProfileCard";
-import  NotificationDd from '../DashboardHeaderComponents/NotificationCard'
+import  NotificationDd from '../DashboardHeaderComponents/NotificationCard';
+import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
+import EnrollmentPendingTable from './Enrollment_PendingTable'
+import EnrollmentRejectedTable from './Enrollment_Reject'
+import EnrollmentReviewTable from './Enrollment_Review'
+import Footer from "../../components/Footer";
+import DashboardHeaderRight from '../DashboardHeaderComponents/DashboardHeaderRight'; // Import the new component
+
 
 const Dashboard = () => {
   const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -82,99 +90,46 @@ const Dashboard = () => {
     <>
       <div data-theme={isDark ? "dark" : "light"} className="p-4  dark:bg-gray-700">
         <div className="flex justify-between">
-          <div>
+          <div> 
             <img
-              src={payvanceLogo}
+              src={ isDark ? payvanceLogoLight :payvanceLogoDark}
               alt="PayVance Logo"
               className="payvance-logo"
             />
-            <h2>Welcome to FinAcctz</h2>
           </div>
-          <div className="text-right">
-            <div className="flex items-center">
-              <ThemeToggle /> 
-                <div className="inline-block relative"> 
-                <i
-                  className="mx-2 bi bi-bell"
-                  onClick={() => {
-                    setShowProfile(false);
-                    setShowHelp(false);
-                    setShowNotification(!showNotification)
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                {showNotification && (
-                  <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
-                    <NotificationDd />
-                  </div>
-                )}
-              </div> 
-                {/* Help Icon */}
-                <div className="inline-block relative">
-                <i
-                  className="mx-2 bi bi-question-circle"
-                  onClick={() => {
-                    setShowHelp(!showHelp);
-                    setShowProfile(false); 
-                    setShowNotification(false); // hide profile if open
-                  }}
-                  style={{ cursor: "pointer" }}
-                />
-                {showHelp && (
-                  <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
-                    <Help />
-                  </div>
-                )}
-                </div>
-                <div className="inline-block relative">
-              
-                <i
-                  className="mx-2 bi bi-globe2" 
-                  style={{ cursor: "pointer" }}
-                />
-             
-            {/* <LanguageSwitcher/> */}
-              </div> 
-              <i
-                className="mx-2 bi  bi-box-arrow-right md:w-right"
-                onClick={handleLogout}
-              ></i>
-
-              
-                <div className="inline-block relative">
+          <div className="text-right flex items-center " >
+          <DashboardHeaderRight /> 
+            <div className="inline-block relative">
                 {/* Profile Icon */}
+                <div className="flex">
+                    <img
+                        height="40px"
+                        width="40px"
+                        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                        alt="profile"
+                        className="rounded-full object-cover mx-2 my-auto"
+                        onClick={() => {
+                            setShowProfile(!showProfile);
+                            setShowHelp(false);
+                            setShowNotification(false);
+                        }}
+                    />
+                    <span className="font-bold">
+                        {username}
+                        <br />
+                        <small className="font-normal"> {userrole} </small>
+                    </span>
+                </div>
 
-                  <div className="flex">
-                <img
-                  height="40px"
-                  width="40px"
-                  src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                  alt="profile"
-                  className="rounded-full object-cover mx-2 my-auto"
-                    onClick={() => {
-                      setShowProfile(!showProfile);
-                      setShowHelp(false); // hide help if open
-                      setShowNotification(false)
-                    }}
-                />
-                <span className="font-bold">  
-                  { username }
-                  <br />
-                  <small className="font-normal"> { userrole } </small>
-                </span>
-                    </div>
- 
                 {showProfile && (
-                  <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
-                    <Profilecard />
-                  </div>
+                    <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3 left-[-125px]">
+                        <Profilecard />
+                    </div>
                 )}
-              </div>
- 
-
-            </div>
+            </div> 
           </div>
         </div>
+        <h2 className="mb-2">Welcome to FinAcctz</h2>
         <div className="flex justify-between">
           <h2 className="text-xl font-bold mb-2">Overview</h2>
 
@@ -202,18 +157,18 @@ const Dashboard = () => {
             <div className="w-full sm:w-full p-1">
               <StatusDashboard1 />
             </div>
-            <div className="md:w-2/3 sm:w-full p-1">
+            <div className="md:w-3/5 sm:w-full p-1">
               <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
                 <AccountBarChart />
               </div>
             </div>
-            <div className="md:w-1/3 sm:w-full p-1">
-              <div className="bg-white w-full my-2 px-4 pt-4 rounded-md relative">
+            <div className="md:w-2/5 sm:w-full p-1">
+              <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md relative overflow-auto">
                 <h2 className="text-xl font-bold mb-2">
                   Re-KYC Application Status
                 </h2>
-                <div className="pb-11">
-                  <KYCgue total={2000} approved={800} pending={1200} />
+                <div className="pt-5 pb-10 ">
+                  <KYCgue total={2000} approved={800} pending={1200} /><br />
                 </div>
               </div>
             </div>
@@ -248,12 +203,6 @@ const Dashboard = () => {
   );
 };
 
-
-import EnrollmentApprovedTable from './Enrollment_ApprovedTable'
-import EnrollmentPendingTable from './Enrollment_PendingTable'
-import EnrollmentRejectedTable from './Enrollment_Reject'
-import EnrollmentReviewTable from './Enrollment_Review'
-import Footer from "../../components/Footer";
 
 function StatusDashboard1() {
   const storedId = localStorage.getItem("userCode") || 1;

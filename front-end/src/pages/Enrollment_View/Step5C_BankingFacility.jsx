@@ -6,6 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { serviceToCustomerService , createAccountService, pendingAccountData} from '../../services/apiServices';
 import Swal from 'sweetalert2';
 import { apiService } from '../../utils/storage';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 
 function BankFacility({ formData, updateFormData, onBack, onNext }) {
@@ -67,8 +68,25 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
         };
 
         fetchBankingServices();
+        loadReason();
     }, [storedId]);
  
+    
+    const [reason, setReason] = useState(null); 
+    const loadReason = async () => {
+        try {
+            setLoading(true);
+            const fetchedReason = await dataService.fetchReasonById(storedId);
+            setReason(fetchedReason);
+        } catch (error) {
+            // Handle error, e.g., show a user-friendly message
+            console.error("Error loading reason in component:", error);
+            setReason(null); // Clear reason on error
+        } finally {
+            setLoading(false);
+        }
+    };
+
  
     if (loading) {
         return <div>Loading banking services...</div>;
@@ -80,7 +98,7 @@ function BankFacility({ formData, updateFormData, onBack, onNext }) {
 
     return (
         <div className="mx-auto">
-            <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>
+            <h2 className="text-xl font-bold mb-2">E-Banking Services</h2>  {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_service_status_status_comment}</p> }
             <div className="grid lg:grid-cols-4 md:grid-cols-3 gap-5">
                 {eBankingFacilities.map(facility => {
                     const facilityKey = facility.facility_name.toLowerCase().replace(/ /g, '');

@@ -53,7 +53,11 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
     const [validationErrors, setValidationErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState({});
-
+function toTitleCase(str) {
+    return str
+        .replace(/_/g, ' ')
+        .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
     // Fetch address details when component mounts
     useEffect(() => {
         if (!applicationId) return;
@@ -251,13 +255,14 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
             'per_complex_name', 'per_flat_no', 'per_area', 'per_landmark',
             'per_country', 'per_pincode', 'per_city', 'per_district', 'per_state'
         ];
-
         permanentRequiredFields.forEach(field => {
             if (!localFormData[field]) {
-                errors[field] = `${labels[field.replace('per_', '')]?.label || field} is required`;
+                const label =
+                    labels[field.replace('per_', '')]?.label ||
+                    toTitleCase(field.replace('per_', ''));
+                errors[field] = `${label} is required`;
             }
         });
-
         // PIN code validation
         if (localFormData.per_pincode && localFormData.per_pincode.length !== 6) {
             errors.per_pincode = 'PIN code must be 6 digits';
@@ -269,10 +274,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 'cor_complex_name', 'cor_flat_no', 'cor_area', 'cor_landmark',
                 'cor_country', 'cor_pincode', 'cor_city', 'cor_district', 'cor_state'
             ];
-
             correspondenceRequiredFields.forEach(field => {
                 if (!localFormData[field]) {
-                    errors[field] = `${labels[field.replace('cor_', '')]?.label || field} is required`;
+                    const label =
+                        labels[field.replace('cor_', '')]?.label ||
+                        toTitleCase(field.replace('cor_', ''));
+                    errors[field] = `${label} is required`;
                 }
             });
 
