@@ -82,7 +82,7 @@ const VideoKYCInstructions = ({onNext}) => {
                                     Present your documents clearly in front of the camera while recording the video.
                                 </li>
                                 <li>
-                                    Complete the process and click the 'Confirm' button to finalize your submission.
+                                    Complete the process and click 'Confirm' button to finalize submission.
                                 </li>
                               
                             </ul> 
@@ -107,7 +107,7 @@ const VideoKYCInstructions = ({onNext}) => {
                                 <li>
                                     Enable camera, location, and microphone permissions for smooth processing.
                                 </li>
-                                <li>Close unnecessary applications or tabs to enhance device's performance during the Video KYC. </li> 
+                                <li>Close unnecessary applications to enhance device's performance. </li> 
                             </ul>
                         </div>
                     </div>

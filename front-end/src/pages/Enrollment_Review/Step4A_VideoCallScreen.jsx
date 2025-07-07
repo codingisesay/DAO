@@ -107,7 +107,8 @@ const VideoKYCInstructions = ({onNext}) => {
                 
             <div className="flex flex-col md:flex-row gap-5 justify-center items-start">
                 {/* Guidelines Box */}
-                <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
+              
+                <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow" style={{minHeight:'100%'}}>
                     <div className="flex items-start gap-2">
                         <input
                             type="checkbox"
@@ -124,12 +125,14 @@ const VideoKYCInstructions = ({onNext}) => {
                                     Present your documents clearly in front of the camera while recording the video.
                                 </li>
                                 <li>
-                                    Complete the process and click the 'Confirm' button to finalize your submission.
+                                    Complete the process and click 'Confirm' button to finalize submission.
                                 </li>
-                            </ul><br />
+                              
+                            </ul> 
                         </div>
                     </div>
                 </div>
+
 
                 {/* Technical Instructions Box */}
                 <div className="bg-green-100 p-3 rounded-xl w-full md:w-1/2 shadow">
