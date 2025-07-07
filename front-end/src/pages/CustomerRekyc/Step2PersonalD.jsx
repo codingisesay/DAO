@@ -140,12 +140,12 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
     kyc_cbs_date_of_birth: "1992-12-12",
     kyc_cbs_mobile_no: "8433843848",
     kyc_cbs_flat_no: "Kalpgreen G4/106/02",
-    kyc_cbs_lankmark: "Kattap Pada, Kulgoana",
-    kyc_cbs_pincode: "400080",
+    kyc_cbs_lankmark: "Kattap Pada, Kulgoan",
+    kyc_cbs_pincode: "400070",
     kyc_cbs_district: "Mulund",
     kyc_cbs_gender: "Male",
     kyc_cbs_complex_name: "Kalpcity Phase 2",
-    kyc_cbs_area: "Near Old Petrol Pumpa",
+    kyc_cbs_area: "Near Old Petrol Pump",
     kyc_cbs_country: "India",
     kyc_cbs_city: "Badlapur",
     kyc_cbs_state: "Maharashtra",
@@ -192,53 +192,37 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
   );
 
   // Toggles an individual field's value between Aadhaar and original CBS
-  // const toggleFieldValue = (field) => {
-  //   const newUseAadhaarValue = !useAadhaarValues[field];
+  const toggleFieldValue = (field) => {
+    const newUseAadhaarValue = !useAadhaarValues[field];
 
-  //   setUseAadhaarValues((prev) => ({
-  //     ...prev,
-  //     [field]: newUseAadhaarValue,
-  //   }));
+    setUseAadhaarValues((prev) => ({
+      ...prev,
+      [field]: newUseAadhaarValue,
+    }));
 
-  //   if (newUseAadhaarValue) {
-  //     // Save current CBS value before overwriting with Aadhaar value
-  //     previousCbsData.current[field] = cbsData[`kyc_cbs_${field}`];
-  //     setCbsData((prev) => ({
-  //       ...prev,
-  //       [`kyc_cbs_${field}`]: aadhaarData[`kyc_vs_${field}`],
-  //     }));
-  //     setAfterVsCbsData((prev) => ({ 
-  //       ...prev,
-  //       [`kyc_vscbs_${field}`]: aadhaarData[`kyc_vs_${field}`],
-  //     }));
-  //   } else {
-  //     // Restore original CBS value
-  //     setCbsData((prev) => ({
-  //       ...prev,
-  //       [`kyc_cbs_${field}`]: previousCbsData.current[field],
-  //     }));
-  //     setAfterVsCbsData((prev) => ({ 
-  //       ...prev,
-  //       [`kyc_vscbs_${field}`]: previousCbsData.current[field],
-  //     }));
-  //   }
-  // };
-const toggleFieldValue = (field) => {
-  const newUseAadhaarValue = !useAadhaarValues[field];
-
-  setUseAadhaarValues((prev) => ({
-    ...prev,
-    [field]: newUseAadhaarValue,
-  }));
-
-  setAfterVsCbsData((prev) => ({
-    ...prev,
-    [`kyc_vscbs_${field}`]: newUseAadhaarValue
-      ? aadhaarData[`kyc_vs_${field}`]
-      : cbsData[`kyc_cbs_${field}`],
-  }));
-};
-
+    if (newUseAadhaarValue) {
+      // Save current CBS value before overwriting with Aadhaar value
+      previousCbsData.current[field] = cbsData[`kyc_cbs_${field}`];
+      setCbsData((prev) => ({
+        ...prev,
+        [`kyc_cbs_${field}`]: aadhaarData[`kyc_vs_${field}`],
+      }));
+      setAfterVsCbsData((prev) => ({ 
+        ...prev,
+        [`kyc_vscbs_${field}`]: aadhaarData[`kyc_vs_${field}`],
+      }));
+    } else {
+      // Restore original CBS value
+      setCbsData((prev) => ({
+        ...prev,
+        [`kyc_cbs_${field}`]: previousCbsData.current[field],
+      }));
+      setAfterVsCbsData((prev) => ({ 
+        ...prev,
+        [`kyc_vscbs_${field}`]: previousCbsData.current[field],
+      }));
+    }
+  };
 
   // Toggles all applicable fields to use Aadhaar values or restore original CBS values
   const toggleAllFields = (useAadhaar) => {
@@ -260,7 +244,7 @@ const toggleFieldValue = (field) => {
       });
 
       setUseAadhaarValues(newUseAadhaarValuesState);
-      setCbsData(newCbsData);
+      // setCbsData(newCbsData);
       setAfterVsCbsData(newAfterVsCbsData);
 
     } else {

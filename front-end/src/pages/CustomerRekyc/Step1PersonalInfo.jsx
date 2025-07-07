@@ -137,15 +137,15 @@ const Step1PersonalInfo = ({
     }
   };
 
-  const handleNext = (e) => {
-    e.preventDefault();
-    if (onNext) onNext();
-  };
+  // const handleNext = (e) => {
+  //   e.preventDefault();
+  //   if (onNext) onNext();
+  // };
 
-  const handleBack = (e) => {
-    e.preventDefault();
-    if (onBack) onBack();
-  };
+  // const handleBack = (e) => {
+  //   e.preventDefault();
+  //   if (onBack) onBack();
+  // };
 
   return (
     <div className="form-step">
@@ -230,7 +230,7 @@ const Step1PersonalInfo = ({
                         placeholder={`Enter ${selectedOption}`}
                         required
                         maxLength={selectedOption === 'Aadhar Card' ? 12 : 10} 
-                        disabled={localFormData.isVerified}
+                        // disabled={localFormData.isVerified}
                       />
                     </div>
                     <div className="md:w-1/2">
