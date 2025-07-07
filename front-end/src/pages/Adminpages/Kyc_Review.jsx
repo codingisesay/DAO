@@ -15,14 +15,14 @@ function KycReviewTable() {
   const [filters, setFilters] = useState({});
   const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
-  const getReviewComments = (item) => { 
+  const getReviewComments = (item) => {
     const comments = [];
-    
+
     const statusFields = [
       'kyc_data_after_vs_cbs_status_comment',
-      'kyc_document_approved_status_comment', 
+      'kyc_document_approved_status_comment',
     ];
-    
+
     statusFields.forEach(field => {
       if (item[field]) {
         const fieldName = field
@@ -33,7 +33,7 @@ function KycReviewTable() {
         comments.push(`${fieldName}: ${item[field]}`);
       }
     });
-    
+
     return comments.length > 0 ? comments.join('; ') : 'No review comments';
   };
 
@@ -44,20 +44,21 @@ function KycReviewTable() {
 
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" }, 
-    { 
-      header: "First Name", 
-      field: "kyc_vscbs_first_name", 
-      type: "text" 
-    },
-    { 
-      header: "Admin ID", 
-      field: "kyc_admin_id", 
-      type: "text" 
-    },  
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     {
-      header: "Review Comments", 
-      field: "review_comments", 
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
+    {
+      header: "Admin ID",
+      field: "kyc_admin_id",
+      type: "text"
+    },
+    {
+      header: "Review Comments",
+      field: "review_comments",
       type: "text",
       render: (rowData) => getReviewComments(rowData)
     },
@@ -71,12 +72,15 @@ function KycReviewTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      
+
+      // Process the data to include 'fullName' and all review comments
       const processedData = response.data ? response.data.map(item => ({
         ...item,
+        // Assuming 'kyc_vscbs_last_name' is the field for last name
+        fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
         review_comments: getReviewComments(item)
       })) : [];
-      
+
       setTbldata(processedData);
       setData({ content: processedData });
     } catch (error) {
@@ -174,7 +178,7 @@ function KycReviewTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -184,12 +188,6 @@ function KycReviewTable() {
 }
 
 export default KycReviewTable;
-
-
-
-
-
-
 
 
 

@@ -1,4 +1,4 @@
-import { useAuth } from '../../auth/AuthContext';  
+import { useAuth } from '../../auth/AuthContext';
 import { kycPendingApplicationsService, adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 
 function KycPendingTable() {
   const [tbldata, setTbldata] = React.useState([]);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
   const [countLoading, setCountLoading] = useState(false);
   const [countData, setCountData] = useState({ content: [] });
   const [data, setData] = useState({ content: [] });
@@ -25,7 +25,12 @@ function KycPendingTable() {
     { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "kyc_vscbs_first_name", type: "text" },
+    {
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
   ];
 
   const fetchData = async () => {
@@ -36,8 +41,18 @@ function KycPendingTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] });
+
+      // Process the data to include a 'fullName' field
+      const processedData = response.data
+        ? response.data.map(item => ({
+            ...item,
+            // Assuming 'kyc_vscbs_last_name' is the field for last name
+            fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
+          }))
+        : [];
+
+      setTbldata(processedData || []);
+      setData({ content: processedData || [] });
     } catch (error) {
       console.error("Failed to fetch pending applications:", error);
     } finally {
@@ -132,7 +147,7 @@ function KycPendingTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -143,3 +158,5 @@ function KycPendingTable() {
 
 export default KycPendingTable;
 
+
+ 

@@ -13,30 +13,18 @@ import { accountsStatusListService } from '../../services/apiServices';
 import { kycaccountsStatusListService } from '../../services/apiServices';
 import Footer from '../../components/Footer';
 import Swal from 'sweetalert2';
-import KycRviewTable from './Kyc_Review'
-import KycRejectedTable from './Kyc_Reject'
-import KycPendingTable from './Kyc_PendingTable'
-import KycApprovedTable from './Kyc_ApprovedTable'
-import Enrollment_PendingTable from './Enrollment_PendingTable';
-import Enrollment_ReviewTable from './Enrollment_Review';
-import Enrollment_ApprovedTable from './Enrollment_ApprovedTable';
-import Enrollment_Reject from './Enrollment_Reject';
-
-// import Help from "../DashboardHeaderComponents/Help"; // No longer needed here
-// import Profilecard from "../DashboardHeaderComponents/ProfileCard"; // No longer needed here
-// import NotificationDd from '../DashboardHeaderComponents/NotificationCard'; // No longer needed here
-// import Google_Translater from '../../components/GoogleTranslet/Google_Translater' // No longer needed here
-
-import DashboardHeaderRight from '../DashboardHeaderComponents/DashboardHeaderRight'; // Import the new component
+import Help from "../DashboardHeaderComponents/Help";
+import Profilecard from "../DashboardHeaderComponents/ProfileCard";
+import NotificationDd from '../DashboardHeaderComponents/NotificationCard';
+import Google_Translater from '../../components/GoogleTranslet/Google_Translater'
 
 const AdminDashboard = () => {
     const preference = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const [isDark, setIsDark] = useLocalStorage("isDark", preference);
-      const [showProfile, setShowProfile] = useState(false);
     const { logout } = useAuth();
     const navigate = useNavigate();
 
-    // const [showTranslator, setShowTranslator] = useState() // No longer needed here
+    const [showTranslator, setShowTranslator] = useState()
     const username = localStorage.getItem('userName');
     const userrole = localStorage.getItem('roleName');
     localStorage.removeItem('approveStatusArray');
@@ -44,11 +32,11 @@ const AdminDashboard = () => {
     const handleRedireact = () => {
         navigate('/add_agent'); // Change to your route
     };
-   
-       // Profile dropdown
-      if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
-        setShowProfile(false);
-      }
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
 
     useEffect(() => {
         if (username) { fetchDetails(); }
@@ -74,8 +62,31 @@ const AdminDashboard = () => {
     const handleDateChange = (range) => {
         console.log("Selected Range:", range);
     };
- 
-    // }, [showHelp, showProfile, showNotification]);
+
+    const [showHelp, setShowHelp] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [showNotification, setShowNotification] = useState(false);
+    const helpRef = useRef();
+    const profileRef = useRef();
+    const notifyRef = useRef();
+    useEffect(() => {
+        function handleClickOutside(event) {
+            // Help dropdown
+            if (showHelp && helpRef.current && !helpRef.current.contains(event.target)) {
+                setShowHelp(false);
+            }
+            // Profile dropdown
+            if (showProfile && profileRef.current && !profileRef.current.contains(event.target)) {
+                setShowProfile(false);
+            }
+            // Notification dropdown
+            if (showNotification && notifyRef.current && !notifyRef.current.contains(event.target)) {
+                setShowNotification(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showHelp, showProfile, showNotification]);
     function toTitleCase(str) {
         return str.replace(/\w\S*/g, (txt) =>
             txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
@@ -83,51 +94,118 @@ const AdminDashboard = () => {
     }
     return (
         <>
-            <div className="p-4 dark:bg-gray-700 ">
+            <div   className="p-4 dark:bg-gray-700 ">
 
-                    <div className="flex justify-between">
-          <div> 
-            <img
-              src={ payvanceLogo}
-              alt="PayVance Logo"
-              className="payvance-logo"
-            />
-          </div>
-          <div className="text-right flex items-center " >
-          <DashboardHeaderRight /> 
-            <div className="inline-block relative">
-                {/* Profile Icon */}
-                <div className="flex">
-                    <img
-                        height="40px"
-                        width="40px"
-                        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
-                        alt="profile"
-                        className="rounded-full object-cover mx-2 my-auto"
-                        onClick={() => {
-                            setShowProfile(!showProfile);
-                            setShowHelp(false);
-                            setShowNotification(false);
-                        }}
-                    />
-                    <span className="font-bold">
-                        {username}
-                        <br />
-                        <small className="font-normal"> {userrole} </small>
-                    </span>
-                </div>
-
-                {showProfile && (
-                    <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3 left-[-125px]">
-                        <Profilecard />
+                <div className='flex justify-between'>
+                    <div >
+                        <img src={payvanceLogo} alt="PayVance Logo" className="payvance-logo" />
+                        <h2>Welcome to FinAcctz</h2>
                     </div>
-                )}
-            </div> 
-          </div>
-        </div>
-        <h2 className="mb-2">Welcome to FinAcctz</h2>
+                    <div className="text-right">
+                        <div className="flex items-center">
+                            <ThemeToggle />
+                            <div className="inline-block relative">
+                                <i
+                                    className="mx-2 bi bi-bell"
+                                    onClick={() => {
+                                        setShowProfile(false);
+                                        setShowHelp(false);
+                                        setShowNotification(!showNotification)
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                {showNotification && (
+                                    <div ref={notifyRef} className="dropdown-box absolute w-[240px] h-[200px] overflow-y-auto shadow-md mt-4">
+                                        <NotificationDd />
+                                    </div>
+                                )}
+                            </div>
+                            {/* Help Icon */}
+                            <div className="inline-block relative">
+                                <i
+                                    className="mx-2 bi bi-question-circle"
+                                    onClick={() => {
+                                        setShowHelp(!showHelp);
+                                        setShowProfile(false);
+                                        setShowNotification(false); // hide profile if open
+                                    }}
+                                    style={{ cursor: "pointer" }}
+                                />
+                                {showHelp && (
+                                    <div ref={helpRef} className="dropdown-box rounded-lg absolute w-[200px] h-[200px] overflow-y-auto shadow-md mt-4 " >
+                                        <Help />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="inline-block relative">
+                                <i
+                                    className="mx-2 bi bi-globe2"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => setShowTranslator((prev) => !prev)}
+                                    title="Translate"
+                                />
+                                {showTranslator && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "30px",
+                                            right: 0,
+                                            zIndex: 9999,
+                                            background: "#fff",
+                                            borderRadius: "8px",
+                                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                                            padding: "8px",
+                                        }}
+                                    >
+                                        <Google_Translater key={Date.now()} /> {/* Add key to force remount */}
+                                    </div>
+                                )}
+                            </div>
+                            <i
+                                className="mx-2 bi  bi-box-arrow-right md:w-right"
+                                onClick={handleLogout}
+                            ></i>
 
-                
+
+                            <div className="inline-block relative">
+                                {/* Profile Icon */}
+
+                                <div className="flex">
+                                    <img
+                                        height="40px"
+                                        width="40px"
+                                        src="https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745"
+                                        alt="profile"
+                                        className="rounded-full object-cover mx-2 my-auto"
+                                        onClick={() => {
+                                            setShowProfile(!showProfile);
+                                            setShowHelp(false); // hide help if open
+                                            setShowNotification(false)
+                                        }}
+                                    />
+                                    <span className="font-bold">
+                                        {username}
+                                        <br />
+                                        <small className="font-normal"> {userrole} </small>
+                                    </span>
+                                </div>
+
+                                {showProfile && (
+                             <div
+                                ref={profileRef}
+                                className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3"
+                                style={{ left: "-120px" }}
+                              >
+                                <Profilecard />
+                              </div>
+                            
+                                )}
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
                 <div className='flex justify-between'>
                     <h2 className="text-xl font-bold mb-2">Overview</h2>
                     <CommonButton className="btn-login" onClick={handleRedireact} >
@@ -183,6 +261,15 @@ const AdminDashboard = () => {
     );
 };
 
+
+import KycRviewTable from './Kyc_Review'
+import KycRejectedTable from './Kyc_Reject'
+import KycPendingTable from './Kyc_PendingTable'
+import KycApprovedTable from './Kyc_ApprovedTable'
+import Enrollment_PendingTable from './Enrollment_PendingTable';
+import Enrollment_ReviewTable from './Enrollment_Review';
+import Enrollment_ApprovedTable from './Enrollment_ApprovedTable';
+import Enrollment_Reject from './Enrollment_Reject';
 
 
 function StatusDashboard1() {
@@ -331,7 +418,9 @@ function StatusDashboard1() {
     );
 }
 
- 
+
+
+
 
 function StatusDashboard2() {
     const [statusCounts, setStatusCounts] = useState({
@@ -484,17 +573,3 @@ function StatusDashboard2() {
 
 
 export default AdminDashboard;
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
