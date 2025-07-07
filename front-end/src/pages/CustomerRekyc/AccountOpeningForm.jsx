@@ -8,7 +8,7 @@ import "./style.css";
 import Footer from "../../components/Footer";
 
 function CustomerForm() {
-    const [currentStep, setCurrentStep] = useState(2);
+    const [currentStep, setCurrentStep] = useState(1);
 
     const [formData, setFormData] = useState({
         // Authentication Details

@@ -185,7 +185,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     }
 
     // Address validation (only if not same as permanent)
-    if (!isSameAsPermanent) {
+    // if (!isSameAsPermanent) {
       if (!nominee.address.nomineeComplexName) {
         newErrors.nomineeComplexName = "Complex name is required";
       }
@@ -218,7 +218,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       } else if (/\d/.test(nominee.address.nomineeState)) {
         newErrors.nomineeState = "State cannot contain numbers";
       }
-    }
+    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

@@ -183,43 +183,41 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
       newErrors.nomineeDOB = "Future date not allowed";
     }
-
-    // Address validation (only if not same as permanent)
-    if (!isSameAsPermanent) {
-      if (!nominee.address.nomineeComplexName) {
-        newErrors.nomineeComplexName = "Complex name is required";
-      }
-      if (!nominee.address.nomineeBuildingName) {
-        newErrors.nomineeBuildingName = "Building name is required";
-      }
-      if (!nominee.address.nomineeArea) {
-        newErrors.nomineeArea = "Area is required";
-      }
-      if (!nominee.address.nomineeCountry) {
-        newErrors.nomineeCountry = "Country is required";
-      }
-      if (!nominee.address.nomineePinCode) {
-        newErrors.nomineePinCode = "Pin code is required";
-      } else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) {
-        newErrors.nomineePinCode = "Pin code must be 6 digits";
-      }
-      if (!nominee.address.nomineeCity) {
-        newErrors.nomineeCity = "City is required";
-      } else if (/\d/.test(nominee.address.nomineeCity)) {
-        newErrors.nomineeCity = "City cannot contain numbers";
-      }
-      if (!nominee.address.nomineeDistrict) {
-        newErrors.nomineeDistrict = "District is required";
-      } else if (/\d/.test(nominee.address.nomineeDistrict)) {
-        newErrors.nomineeDistrict = "District cannot contain numbers";
-      }
-      if (!nominee.address.nomineeState) {
-        newErrors.nomineeState = "State is required";
-      } else if (/\d/.test(nominee.address.nomineeState)) {
-        newErrors.nomineeState = "State cannot contain numbers";
-      }
-    }
-
+ 
+  // Address validation (always validate, even if same as permanent)
+  const addr = nominee.address;
+  if (!addr.nomineeComplexName) {
+    newErrors.nomineeComplexName = "Complex name is required";
+  }
+  if (!addr.nomineeBuildingName) {
+    newErrors.nomineeBuildingName = "Building name is required";
+  }
+  if (!addr.nomineeArea) {
+    newErrors.nomineeArea = "Area is required";
+  }
+  if (!addr.nomineeCountry) {
+    newErrors.nomineeCountry = "Country is required";
+  }
+  if (!addr.nomineePinCode) {
+    newErrors.nomineePinCode = "Pin code is required";
+  } else if (!/^\d{6}$/.test(addr.nomineePinCode)) {
+    newErrors.nomineePinCode = "Pin code must be 6 digits";
+  }
+  if (!addr.nomineeCity) {
+    newErrors.nomineeCity = "City is required";
+  } else if (/\d/.test(addr.nomineeCity)) {
+    newErrors.nomineeCity = "City cannot contain numbers";
+  }
+  if (!addr.nomineeDistrict) {
+    newErrors.nomineeDistrict = "District is required";
+  } else if (/\d/.test(addr.nomineeDistrict)) {
+    newErrors.nomineeDistrict = "District cannot contain numbers";
+  }
+  if (!addr.nomineeState) {
+    newErrors.nomineeState = "State is required";
+  } else if (/\d/.test(addr.nomineeState)) {
+    newErrors.nomineeState = "State cannot contain numbers";
+  }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
