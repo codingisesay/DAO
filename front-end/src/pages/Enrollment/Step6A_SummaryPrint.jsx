@@ -213,7 +213,7 @@ const ViewApplicationForm = () => {
                     <div className='flex justify-between items-center mb-4'>
                         <div>
                             <p className="text-gray-600">Application Number: {formData.application_id || 'N/A'}</p>
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 text-start" >
                                 Date: {new Date().toLocaleDateString('en-GB')}
                             </p>
 
