@@ -52,7 +52,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       <p className="mb-2 ps-11"> Account Opening</p>
 
       <div className="sidebar-stepper-container">
-        <div className="vertical-stepper">
+        <div className="vertical-stepper pt-2">
           {steps.map((step, i) => (
             <div
               key={i}

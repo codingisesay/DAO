@@ -18,7 +18,11 @@ function ApprovedTable() {
 
   const columns = [
     {
-      ...COLUMN_DEFINITIONS.application_id,
+      ...COLUMN_DEFINITIONS.agent_id,
+      field: "agent_id", 
+    },
+    {
+      ...COLUMN_DEFINITIONS.application_no,
       field: "application_id", // Changed to application_no based on provided JSON
       type: "text",
     },
@@ -26,12 +30,8 @@ function ApprovedTable() {
     {
       ...COLUMN_DEFINITIONS.middle_name,
       field: "fullName", // New field to display full name
-      header: "Applicant Name", // Change header for clarity
+      header: "Customer Name", // Change header for clarity
       type: "text",
-    },
-    {
-      ...COLUMN_DEFINITIONS.agent_id,
-      field: "agent_id", 
     },
     {
       ...COLUMN_DEFINITIONS.approved_admin_id,

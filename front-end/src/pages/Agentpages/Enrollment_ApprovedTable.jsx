@@ -17,17 +17,18 @@ function ApprovedTable() {
   const [filters, setFilters] = useState({});
 
   const columns = [
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.application_no, field: "id", type: "text" },
     {
       // Updated column for Applicant Name
-      header: "Applicant Name", // Changed header for clarity
+      header: "Customer Name", // Changed header for clarity
       field: "fullName", // This field will be created in fetchData
       type: "text",
     },
     { ...COLUMN_DEFINITIONS.cust_no, field: "customer_no", type: "text" }, // Changed type to text as it's typically a string
-    { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
     { ...COLUMN_DEFINITIONS.approved_by, field: "admin_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
+    { ...COLUMN_DEFINITIONS.account_open_date, field: "created_at", type: "date" },
+    { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
   ];
 
   const fetchData = async () => {

@@ -40,7 +40,7 @@ const P3 = ({ nextStep, prevStep }) => {
     const storedId = localStorage.getItem('application_id');
     const [processingDoc, setProcessingDoc] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
- 
+
     useEffect(() => {
         try {
             localStorage.setItem('documentData', JSON.stringify(documents));
@@ -48,16 +48,16 @@ const P3 = ({ nextStep, prevStep }) => {
             console.error('Failed to save documents to localStorage:', error);
         }
     }, [documents]);
- 
+
     const handleDocumentsUpdate = (updatedDocuments) => {
         setDocuments(updatedDocuments);
     };
- 
+
     const handleProcessDocument = (doc) => {
         setProcessingDoc(doc);
         setIsProcessing(true);
     };
- 
+
     const handleExtractionComplete = (docId, extractions) => {
         const updatedDocs = documents.map(doc => {
             if (doc.id === docId) {
@@ -73,7 +73,7 @@ const P3 = ({ nextStep, prevStep }) => {
         setProcessingDoc(null);
         setIsProcessing(false);
     };
- 
+
     const validateDocuments = () => {
         const hasAddressDoc = documents.some(doc => doc.documentCategory === 'address');
         const hasSignatureDoc = documents.some(doc => doc.documentCategory === 'signature');
@@ -85,20 +85,27 @@ const P3 = ({ nextStep, prevStep }) => {
                 message: 'Please upload at least one document for each category: Identity, Address, and Signature.'
             };
         }
- 
-        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
 
-        if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
+        // Check for Aadhaar front/back dependency
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
+
+        if (hasAadhaarFront && !hasAadhaarBack) {
             return {
                 isValid: false,
-                message: 'Both front and back of Aadhaar card must be uploaded together.'
+                message: 'You have uploaded Aadhaar Card Front. Aadhaar Card Back is also required.'
             };
         }
- 
+        if (hasAadhaarBack && !hasAadhaarFront) {
+            return {
+                isValid: false,
+                message: 'You have uploaded Aadhaar Card Back. Aadhaar Card Front is also required.'
+            };
+        }
+
         return { isValid: true };
     };
- 
+
     const handleSubmit = async () => {
         const validation = validateDocuments();
         if (!validation.isValid) {
@@ -109,7 +116,7 @@ const P3 = ({ nextStep, prevStep }) => {
             });
             return;
         }
- 
+
         let localStorageDocuments;
         try {
             const saved = localStorage.getItem('documentData');
@@ -123,7 +130,7 @@ const P3 = ({ nextStep, prevStep }) => {
             });
             return;
         }
- 
+
         if (localStorageDocuments.length === 0) {
             Swal.fire({
                 icon: 'warning',
@@ -132,27 +139,27 @@ const P3 = ({ nextStep, prevStep }) => {
             });
             return;
         }
- 
+
         setIsLoading(true);
- 
+
         try {
             const formDataObj = new FormData();
             formDataObj.append('kyc_application_id', storedId);
- 
+
             const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
- 
+
             if (documentsWithFiles.length === 0) {
                 throw new Error('No valid documents found. Please re-upload your documents.');
             }
- 
+
             documentsWithFiles.forEach((doc) => {
                 formDataObj.append('kyc_application_id', storedId);
                 formDataObj.append('files[]', doc.file);
                 formDataObj.append('document_types[]', doc.type || doc.name);
             });
- 
+
             const response = await kycService.kycDocumentUpload(formDataObj);
- 
+
             Swal.fire({
                 icon: 'success',
                 title: 'Success!',
@@ -173,7 +180,7 @@ const P3 = ({ nextStep, prevStep }) => {
             setIsLoading(false);
         }
     };
- 
+
     return (
         <div className='form-container pb-10'>
             <div className="relative ">
@@ -187,7 +194,7 @@ const P3 = ({ nextStep, prevStep }) => {
                         </div>
                     </div>
                 )}
- 
+
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
@@ -225,8 +232,7 @@ const P3 = ({ nextStep, prevStep }) => {
         </div>
     );
 };
- 
+
 export default P3;
 
-
-
+ 

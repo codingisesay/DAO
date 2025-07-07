@@ -113,8 +113,8 @@ const P3 = ({ onNext, onBack }) => {
         }
 
         // Check Aadhaar front/back pairing
-        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         
         if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
             return {

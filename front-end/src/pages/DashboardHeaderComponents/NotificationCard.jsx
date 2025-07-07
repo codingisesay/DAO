@@ -57,8 +57,8 @@ const NotificationPanel = ({ notifications }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-1 w-full max-w-md">
       <h2 className="text-sm text-center text-lg font-bold text-gray-800 mb-4 border-b pb-2">Notification</h2>
-      
-      <div className="">
+       {/* <p className="text-secondary text-">No Notifications</p> */}
+      <div className="p-2">
         {notifications.map((notification, index) => (
           <NotificationItem
             key={index}

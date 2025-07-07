@@ -95,7 +95,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     // Required fields validation
     const requiredFields = [
       'salutation', 'first_name', 'last_name', 'DOB', 'gender', 'pan_card', 'adhar_card',
-      'religion', 'caste', 'maritalStatus', 'mobile', 'email', 'alt_mob_no',
+      'religion', 'caste', 'maritalStatus', 'mobile', 'email',  
     ];
 
     // Add PAN to required fields if verification method is Pan Card
@@ -244,8 +244,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
       religion: true,
       caste: true,
       maritalStatus: true,
-      mobile: true,
-      alt_mob_no: true,
+      mobile: true, 
       email: true,
       adhar_card: true,
       pan_card: true,

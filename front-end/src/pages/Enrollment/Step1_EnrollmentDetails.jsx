@@ -387,7 +387,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 </form>
                                 {selectedOption === 'Aadhar Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (format: xxx xxx xxx xxx)</p>
+                                        <p className='mb-3 text-sm'>Enter 12 Digit Aadhaar number (format: xxx xxx xxx xxx)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput

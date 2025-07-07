@@ -211,8 +211,15 @@ const Step1PersonalInfo = ({
               </div>
 
               {selectedOption && (
-                <div className="mt-6">
-                  <div className="flex items-center">
+                <div className="">
+                  {selectedOption === 'Aadhar Card'&&
+                  <> <p className=' text-sm'>Enter 12 Digit Aadhaar number (format: xxx xxx xxx xxx)</p></> }
+                  {selectedOption === 'Pan Card'&&
+                  <>  <p className=' text-sm'>Please Enter a Valid PAN (format: AAAAA9999A)</p></> }
+                  {selectedOption === 'Digilocker'&&
+                  <>   </> }
+                  
+                  <div className="flex items-center mt-3">
                     <div className="md:w-1/2 me-4">
                       <CommanInput
                         type="text"
@@ -222,11 +229,7 @@ const Step1PersonalInfo = ({
                         name="auth_code"
                         placeholder={`Enter ${selectedOption}`}
                         required
-                        maxLength={selectedOption === 'Aadhar Card' ? 12 : 10}
-                        validationType={
-                          selectedOption === 'Aadhar Card' ? 'NUMBER_ONLY' :
-                          selectedOption === 'Pan Card' ? 'PAN' : 'EVERYTHING'
-                        }
+                        maxLength={selectedOption === 'Aadhar Card' ? 12 : 10} 
                         disabled={localFormData.isVerified}
                       />
                     </div>
@@ -247,7 +250,7 @@ const Step1PersonalInfo = ({
                       </CommonButton>
                     </div>
                   </div>
-                  {error && <div className="text-red-500 mt-2">{error}</div>}
+                  {error && <small className="text-red-500 mt-2">{error}</small>}
                 </div>
               )}
             </div>

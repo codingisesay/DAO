@@ -47,6 +47,7 @@ public function getPendingApplications()
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->select(
             'customer_appliction_status.*',
+            'customer_application_details.agent_id as agent_id',
             'customer_application_details.first_name as first_name',
             'customer_application_details.middle_name as middle_name',
             'customer_application_details.last_name as last_name',
@@ -114,6 +115,7 @@ public function getApprovedApplications()
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->select(
             'customer_appliction_status.*',
+            'customer_application_details.agent_id as agent_id',
             'customer_application_details.first_name as first_name',
             'customer_application_details.middle_name as middle_name',
             'customer_application_details.last_name as last_name',

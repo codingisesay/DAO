@@ -17,6 +17,7 @@ function PendingTable() {
 
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.application_id, field: "", type: "text" },
     {
       // Updated column for Applicant Name
@@ -24,7 +25,6 @@ function PendingTable() {
       field: "fullName", // This field will be created in fetchData
       type: "text",
     },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.review_admin_id, field: "admin_id", type: "text" },
     { ...COLUMN_DEFINITIONS.review_status_comment, field: "status_comment", type: "text" },
   ];
