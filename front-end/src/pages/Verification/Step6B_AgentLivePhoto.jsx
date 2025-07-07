@@ -44,10 +44,33 @@ const ImageWithDetails = () => {
     }, [id]);
 
 
+    const [fetchedAddress, setFetchedAddress] = useState("");
+// Add this inside your component (or outside if you prefer)
+const printAddressFromLatLng = async (lat, lng) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+    );
+    const data = await response.json();
+    if (data && data.display_name) {
+      return data.display_name;
+    } else {
+      return "Address not found";
+    }
+  } catch (error) {
+    console.error("Error fetching address:", error);
+    return "Error fetching address";
+  }
+};
 
 
 
-
+useEffect(() => {
+  if (localFormData.latitude && localFormData.longitude) {
+    printAddressFromLatLng(localFormData.latitude, localFormData.longitude)
+      .then(setFetchedAddress);
+  }
+}, [localFormData.latitude, localFormData.longitude]);
 
 
     return (
@@ -76,13 +99,14 @@ const ImageWithDetails = () => {
                         </span>
                         <span className="text-gray-900">{localFormData.longitude}</span>
                     </div>
-                    <div className="flex items-start">
-                        <span className="text-gray-700 min-w-[100px]"><i className="bi bi-geo-alt text-green-700"></i> Current Address :</span>
-                        <span className="text-gray-900">
-                            Wagle Estate, Centrum Business Square<br />
-                            Thane East 400152
-                        </span>
-                    </div>
+                <div className="flex items-start">
+                    <span className="text-gray-700 min-w-[100px]">
+                        <i className="bi bi-geo-alt text-green-700"></i> Current Address :
+                    </span>
+                    <span className="text-gray-900">
+                        {fetchedAddress || "Fetching address..."}
+                    </span>
+                </div>
                 </div>
 
 

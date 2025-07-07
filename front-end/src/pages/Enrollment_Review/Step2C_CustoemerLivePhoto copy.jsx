@@ -4,6 +4,8 @@ import scan_face from "../../assets/imgs/scan_face.gif";
 import scan_ray from "../../assets/imgs/scan_ray.gif";
 import instruction from "../../assets/imgs/photo_instructions.png";
 import Webcam from "react-webcam";
+import { useParams } from "react-router-dom";
+import { agentService } from "../../services/apiServices";
 
 const ImageCaptureValidator = ({
   onCapture,
@@ -18,10 +20,13 @@ const ImageCaptureValidator = ({
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isWebcamReady, setIsWebcamReady] = useState(false);
   const [webcamError, setWebcamError] = useState(null);
+  const {id} =useParams();
   const [location, setLocation] = useState(
     initialPhoto?.metadata?.location || null
   );
   const [locationError, setLocationError] = useState(null);
+      const [loading, setLoading] = useState(false);
+      const [reason, setReason] = useState(null); 
   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
   const [tempAddress, setTempAddress] = useState();
@@ -114,6 +119,22 @@ const ImageCaptureValidator = ({
     getLocation();
   }, [showLocation, location]);
 
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
   // Camera control functions
   const startCamera = () => {
     if (!isWebcamSupported()) {
@@ -240,6 +261,7 @@ const capture = async () => {
   return (
     <div className="container mx-auto p-4 max-w-4xl">
       <h1 className="text-xl font-bold mb-2">Live Photo</h1>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.applicant_live_photos_status_comment}</p> }
 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -415,3 +437,11 @@ const capture = async () => {
 };
 
 export default ImageCaptureValidator;
+
+
+
+
+
+
+
+ 
