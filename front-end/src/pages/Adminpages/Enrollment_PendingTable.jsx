@@ -20,7 +20,12 @@ function PendingTable() {
     { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    {
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
   ];
 
   const countColumns = [
@@ -36,8 +41,17 @@ function PendingTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] });
+
+      // Process the data to include a 'fullName' field
+      const processedData = response.data
+        ? response.data.map(item => ({
+            ...item,
+            fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(),
+          }))
+        : [];
+
+      setTbldata(processedData || []);
+      setData({ content: processedData || [] });
     } catch (error) {
       console.error("Failed to fetch pending applications:", error);
     } finally {
@@ -59,7 +73,7 @@ function PendingTable() {
   };
 
   useEffect(() => {
-    fetchData(); 
+    fetchData();
     fetchDataCount();
   }, [currentPage, sortConfig, filters]);
 
@@ -95,13 +109,13 @@ function PendingTable() {
         <div className="flex mb-4">
           <button
             onClick={() => toggleView('applications')}
-            className={`px-4 py-2 rounded  ${activeView === 'applications' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded  ${activeView === 'applications' ? ' bg-green-500 text-white ' : 'bg-gray-200'}`}
           >
             Application List
           </button>
           <button
             onClick={() => toggleView('agents')}
-            className={`px-4 py-2 rounded ${activeView === 'agents' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded ${activeView === 'agents' ? ' bg-green-500 text-white ' : 'bg-gray-200'}`}
           >
             List by Agent
           </button>
@@ -132,7 +146,7 @@ function PendingTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -142,6 +156,7 @@ function PendingTable() {
 }
 
 export default PendingTable;
+
 
 
 

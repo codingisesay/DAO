@@ -16,14 +16,14 @@ function KycRejectTable() {
   const [filters, setFilters] = useState({});
   const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
-  const getRejectionComments = (item) => { 
+  const getRejectionComments = (item) => {
     const comments = [];
-    
+
     const statusFields = [
       'kyc_data_after_vs_cbs_status_comment',
-      'kyc_document_approved_status_comment', 
+      'kyc_document_approved_status_comment',
     ];
-    
+
     statusFields.forEach(field => {
       if (item[field]) {
         const fieldName = field
@@ -34,7 +34,7 @@ function KycRejectTable() {
         comments.push(`${fieldName}: ${item[field]}`);
       }
     });
-    
+
     return comments.length > 0 ? comments.join('; ') : 'No rejection comments available';
   };
 
@@ -46,19 +46,20 @@ function KycRejectTable() {
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { 
-      header: "First Name", 
-      field: "kyc_vscbs_first_name", 
-      type: "text" 
-    },
-    { 
-      header: "Admin ID", 
-      field: "kyc_admin_id", 
-      type: "text" 
+    {
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
     },
     {
-      header: "Rejection Reasons", 
-      field: "rejection_comments", 
+      header: "Admin ID",
+      field: "kyc_admin_id",
+      type: "text"
+    },
+    {
+      header: "Rejection Reasons",
+      field: "rejection_comments",
       type: "text",
       render: (rowData) => getRejectionComments(rowData)
     },
@@ -72,12 +73,15 @@ function KycRejectTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      
+
+      // Process the data to include 'fullName' and all rejection reasons
       const processedData = response.data ? response.data.map(item => ({
         ...item,
+        // Assuming 'kyc_vscbs_last_name' is the field for last name
+        fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
         rejection_comments: getRejectionComments(item)
       })) : [];
-      
+
       setTbldata(processedData);
       setData({ content: processedData });
     } catch (error) {
@@ -175,7 +179,7 @@ function KycRejectTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -185,10 +189,6 @@ function KycRejectTable() {
 }
 
 export default KycRejectTable;
-
-
-
-
 
 
 

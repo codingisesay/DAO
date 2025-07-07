@@ -1,4 +1,4 @@
-import { useAuth } from '../../auth/AuthContext';  
+import { useAuth } from '../../auth/AuthContext';
 import { adminService, kycApprovedApplicationsService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 
 function KycApprovedTable() {
   const [tbldata, setTbldata] = React.useState([]);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
   const [countLoading, setCountLoading] = useState(false);
   const [countData, setCountData] = useState({ content: [] });
   const [data, setData] = useState({ content: [] });
@@ -16,14 +16,14 @@ function KycApprovedTable() {
   const [filters, setFilters] = useState({});
   const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
-  const getApprovalComments = (item) => { 
+  const getApprovalComments = (item) => {
     const comments = [];
-    
+
     const statusFields = [
       'kyc_data_after_vs_cbs_status_comment',
-      'kyc_document_approved_status_comment', 
+      'kyc_document_approved_status_comment',
     ];
-    
+
     statusFields.forEach(field => {
       if (item[field]) {
         const fieldName = field
@@ -34,7 +34,7 @@ function KycApprovedTable() {
         comments.push(`${fieldName}: ${item[field]}`);
       }
     });
-    
+
     return comments.length > 0 ? comments.join('; ') : 'No approval comments available';
   };
 
@@ -45,14 +45,19 @@ function KycApprovedTable() {
 
   const columns = [
     { ...COLUMN_DEFINITIONS.application_no, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "kyc_vscbs_first_name", type: "text" },
+    {
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
     { ...COLUMN_DEFINITIONS.cust_no, field: "", type: "text" },
     { ...COLUMN_DEFINITIONS.approved_by, field: "updated_by", type: "text" },
     { ...COLUMN_DEFINITIONS.account_open_date, field: "updated_at", type: "date" },
     { ...COLUMN_DEFINITIONS.account_no, field: "kyc_application_no", type: "text" },
     {
-      header: "Approval Comments", 
-      field: "approval_comments", 
+      header: "Approval Comments",
+      field: "approval_comments",
       type: "text",
       render: (rowData) => getApprovalComments(rowData)
     },
@@ -66,12 +71,15 @@ function KycApprovedTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      
+
+      // Process the data to include 'fullName' and all approval comments
       const processedData = response.data ? response.data.map(item => ({
         ...item,
+        // Assuming 'kyc_vscbs_last_name' is the field for last name
+        fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
         approval_comments: getApprovalComments(item)
       })) : [];
-      
+
       setTbldata(processedData);
       setData({ content: processedData });
     } catch (error) {
@@ -169,7 +177,7 @@ function KycApprovedTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -179,6 +187,9 @@ function KycApprovedTable() {
 }
 
 export default KycApprovedTable;
+
+
+
 
 
 
