@@ -223,7 +223,11 @@ export const API_ENDPOINTS = {
   },
 
   // om data above
-
+  PINCODE: {
+    GET: (id, id2) => `/loan/pincode/${id}/${id2}`,
+    GET_COUNTRI: `/loan/pincode/countries`,
+    GET_PINCODE: (id) => `/loan/pincode/pincodes?country=${id}`,
+  },
   BANK: {
     CREATE: "/auth/banks",
     GET_ALL: "/auth/banks",

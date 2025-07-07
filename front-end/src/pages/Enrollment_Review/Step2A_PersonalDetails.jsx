@@ -87,7 +87,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                         mobile: application.mobile || '',
                         alt_mob_no: application.alt_mob_no || '',
                         email: application.email || '',
-                        adhar_card: application.adhar_card || (verificationMethod === 'Aadhar Card' ? application.auth_code : ''),
+                        adhar_card: application.adhar_card || (verificationMethod === 'Aadhaar Card' ? application.auth_code : ''),
                         pan_card: application.pan_card || (verificationMethod === 'Pan Card' ? application.auth_code : ''),
                         driving_license: application.driving_license || '',
                         voterid: application.voter_id || '',
@@ -132,7 +132,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         }
         // Mobile number validation
         if (!localFormData.adhar_card || localFormData.adhar_card.length !== 12) {
-            errors.adhar_card = 'Aadhar Number must be 12 digits';
+            errors.adhar_card = 'Aadhaar Number must be 12 digits';
         }
 
         // Alternate mobile number validation (only if provided)
@@ -544,7 +544,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                         )}
                     </div>
 
-                    {/* Aadhar Card */}
+                    {/* Aadhaar Card */}
                     <div>
                         <CommanInput
                             onChange={handleChange}
@@ -556,7 +556,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                             required={true}
                             max={12} min={12}
                             validationType="NUMBER_ONLY"
-                            disabled={verificationMethod === 'Aadhar Card'}
+                            disabled={verificationMethod === 'Aadhaar Card'}
                             className={validationErrors.adhar_card && touchedFields.adhar_card ? 'border-red-500' : ''}
                         />
                         {validationErrors.adhar_card && touchedFields.adhar_card && (
@@ -765,7 +765,7 @@ export default PersonalDetailsForm;
 //             email: application.email || "",
 //             adhar_card:
 //               application.adhar_card ||
-//               (verificationMethod === "Aadhar Card"
+//               (verificationMethod === "Aadhaar Card"
 //                 ? application.auth_code
 //                 : ""),
 //             pan_card:
@@ -1303,7 +1303,7 @@ export default PersonalDetailsForm;
 //             )}
 //           </div>
 
-//           {/* Aadhar Card */}
+//           {/* Aadhaar Card */}
 //           <div>
 //             <CommanInput
 //               onChange={handleChange}
@@ -1315,7 +1315,7 @@ export default PersonalDetailsForm;
 //               required={true}
 //               max={12}
 //               validationType="NUMBER_ONLY"
-//               disabled={verificationMethod === "Aadhar Card"}
+//               disabled={verificationMethod === "Aadhaar Card"}
 //               className={
 //                 validationErrors.adhar_card && touchedFields.adhar_card
 //                   ? "border-red-500"

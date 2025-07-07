@@ -80,7 +80,7 @@ public function EnrollmentDetails(Request $request)
 
     $validatedData = $request->validate([
         'agent_id' => 'required',
-        'auth_type' => 'nullable|in:Pan Card,Aadhar Card,Digilocker',
+        'auth_type' => 'nullable|in:Pan Card,Aadhaar Card,Digilocker',
         'auth_code' => 'nullable|string',
         'auth_status' => 'nullable|string',
         'first_name' => 'nullable|string',
@@ -597,14 +597,14 @@ public function getFullApplicationDetails($applicationId)
     ]);
 }
 
-public function getApplicationByAadhar(Request $request)
+public function getApplicationByAadhaar(Request $request)
 {
     $request->validate([
         'auth_code' => 'required|string'
     ]);
 
     $application = \DB::table('customer_application_details')
-        ->where('auth_type', 'Aadhar Card')
+        ->where('auth_type', 'Aadhaar Card')
         ->where('auth_code', $request->auth_code)
         ->first();
 

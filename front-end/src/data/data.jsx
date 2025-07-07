@@ -96,15 +96,15 @@ const RESIDENTIAL_STATUS = [
 ];
 
 const RESIDENCE_DOCS = [
-    { label: 'Aadhar Card', value: 'AADHAR' },
-    { label: 'Ration Card', value: 'RATION' },
-    { label: 'Voter ID', value: 'VOTER_ID' },
-    { label: 'Utility Bill', value: 'UTILITY_BILL' },
+    { label: 'Aadhaar Card', value: 'Aadhaar Card' },
+    { label: 'Ration Card', value: 'Ration Card' },
+    { label: 'Voter ID', value: 'Voter ID' },
+    { label: 'Utility Bill', value: 'Utility Bill' },
 ];
 
 const userdummydata = {
-    aadhardetails: {
-        auth_type: "Aadhar Card",
+    aadhaardetails: {
+        auth_type: "Aadhaar Card",
         auth_code: "987654321098",
         auth_status: "Verified",
         first_name: "Kisan",

@@ -1128,7 +1128,7 @@ public function getMonthlyAuthTypeCounts()
         ->orderBy('month')
         ->get();
 
-    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhaar Card', 'DIGILOCKER'];
     $months = range(1, 12);
 
     $data = [];
@@ -1171,7 +1171,7 @@ public function getWeeklyAuthTypeCounts()
         ->orderBy('week')
         ->get();
 
-    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhaar Card', 'DIGILOCKER'];
     $weeks = range(1, 53); // ISO weeks
 
     $data = [];

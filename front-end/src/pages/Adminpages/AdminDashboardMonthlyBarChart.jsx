@@ -63,7 +63,7 @@ function ValidationBarChart() {
                     };
 
                     response.data.forEach(validationType => {
-                        const key = validationType.label === 'Aadhar Card' ? 'Aadhaar'
+                        const key = validationType.label === 'Aadhaar Card' ? 'Aadhaar'
                             : validationType.label === 'Pan Card' ? 'PAN'
                                 : 'DigiLocker';
                         dataPoint[key] = validationType.data[index] || 0;

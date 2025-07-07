@@ -91,7 +91,7 @@ const DocumentUpload = ({
     return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
   };
 
-  const validateAadharCard = async (imageData, side) => {
+  const validateAadhaarCard = async (imageData, side) => {
     setLoading(true);
     try {
       const result = await Tesseract.recognize(imageData, "eng", {
@@ -153,7 +153,7 @@ const DocumentUpload = ({
 
       return { isValid: true };
     } catch (error) {
-      console.error("Aadhar validation error:", error);
+      console.error("Aadhaar validation error:", error);
       showAlertMessage(
         "Error",
         "Failed to process Aadhaar card image",
@@ -238,7 +238,7 @@ const DocumentUpload = ({
         documentValue === "AADHAAR_CARD_FRONT" ||
         documentValue === "AADHAAR_CARD_BACK"
       ) {
-        const validationResult = await validateAadharCard(
+        const validationResult = await validateAadhaarCard(
           imageData,
           documentValue === "AADHAAR_CARD_FRONT" ? "FRONT" : "BACK"
         );
@@ -1051,7 +1051,7 @@ export default DocumentUpload;
 //     return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
 //   };
 
-//   const validateAadharCard = async (imageData, side) => {
+//   const validateAadhaarCard = async (imageData, side) => {
 //     setLoading(true);
 //     try {
 //       const result = await Tesseract.recognize(imageData, "eng", {
@@ -1113,7 +1113,7 @@ export default DocumentUpload;
 
 //       return { isValid: true };
 //     } catch (error) {
-//       console.error("Aadhar validation error:", error);
+//       console.error("Aadhaar validation error:", error);
 //       showAlertMessage(
 //         "Error",
 //         "Failed to process Aadhaar card image",
@@ -1198,7 +1198,7 @@ export default DocumentUpload;
 //         documentValue === "AADHAAR_CARD_FRONT" ||
 //         documentValue === "AADHAAR_CARD_BACK"
 //       ) {
-//         const validationResult = await validateAadharCard(
+//         const validationResult = await validateAadhaarCard(
 //           imageData,
 //           documentValue === "AADHAAR_CARD_FRONT" ? "FRONT" : "BACK"
 //         );

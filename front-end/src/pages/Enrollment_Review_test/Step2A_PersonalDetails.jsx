@@ -30,7 +30,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         alt_mob_no: formData.personalDetails.alt_mob_no || formData.alt_mob_no || '',
         email: formData.personalDetails.email || formData.email || '',
         adhar_card: formData.personalDetails.adhar_card || formData.adhar_card ||
-            (verificationMethod === 'Aadhar Card' ? formData.auth_code : ''),
+            (verificationMethod === 'Aadhaar Card' ? formData.auth_code : ''),
         pannumber: formData.personalDetails.pannumber || formData.pannumber ||
             (verificationMethod === 'Pan Card' ? formData.auth_code : ''),
         driving_license: formData.personalDetails.driving_license || formData.driving_license || '',
@@ -78,7 +78,7 @@ useEffect(() => {
                 alt_mob_no: formData.personalDetails?.alt_mob_no || formData.alt_mob_no || '',
                 email: formData.personalDetails?.email || formData.email || '',
                 adhar_card: formData.personalDetails?.adhar_card || formData.adhar_card || 
-                    (verificationMethod === 'Aadhar Card' ? formData.auth_code : ''),
+                    (verificationMethod === 'Aadhaar Card' ? formData.auth_code : ''),
                 pan_card: formData.personalDetails?.pan_card || formData.pan_card || 
                     (verificationMethod === 'Pan Card' ? formData.auth_code : ''),
                 driving_license: formData.personalDetails?.driving_license || formData.driving_license || '',
@@ -325,10 +325,10 @@ useEffect(() => {
                         type="text"
                         name="adhar_card"
                         value={localFormData.adhar_card}
-                        required={verificationMethod === 'Aadhar Card'} // Required if this was verification method
+                        required={verificationMethod === 'Aadhaar Card'} // Required if this was verification method
                         max={12}
                         validationType="NUMBER_ONLY"
-                        disabled={verificationMethod === 'Aadhar Card'} // Disable if this was verification method
+                        disabled={verificationMethod === 'Aadhaar Card'} // Disable if this was verification method
                     />
 
                     {/* Always show PAN field */}

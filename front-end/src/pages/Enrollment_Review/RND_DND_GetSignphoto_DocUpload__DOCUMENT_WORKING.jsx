@@ -91,7 +91,7 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
     return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
   };
 
-  const validateAadharCard = async (imageData, side) => {
+  const validateAadhaarCard = async (imageData, side) => {
     setLoading(true);
     try {
       const result = await Tesseract.recognize(imageData, "eng", {
@@ -153,7 +153,7 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
 
       return { isValid: true };
     } catch (error) {
-      console.error("Aadhar validation error:", error);
+      console.error("Aadhaar validation error:", error);
       showAlertMessage(
         "Error",
         "Failed to process Aadhaar card image",
@@ -237,7 +237,7 @@ const processImage = async (
       // Your existing validation logic here. Tesseract.recognize can generally handle data URLs (Base64).
       // Example:
       // if (documentValue === "AADHAAR_CARD_FRONT" || documentValue === "AADHAAR_CARD_BACK") {
-      //     const validationResult = await validateAadharCard(imageData, side);
+      //     const validationResult = await validateAadhaarCard(imageData, side);
       //     isValid = validationResult.isValid;
       //     extractedInfo = validationResult.extractedInfo;
       // } else if (documentValue === "PAN_CARD") {

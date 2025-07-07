@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const Step1PersonalInfo = ({ 
   formData, 
   handleChange, 
-  onAadharDataFetched, 
+  onAadhaarDataFetched, 
   setFormData,
   onNext,
   onBack
@@ -82,10 +82,10 @@ const Step1PersonalInfo = ({
     if (setFormData) setFormData(updatedData);
   };
 
-  const handleAadharSubmit = async () => {
+  const handleAadhaarSubmit = async () => {
     setError('');
     
-    if (selectedOption === 'Aadhar Card' && !validateAadhaar(localFormData.auth_code)) {
+    if (selectedOption === 'Aadhaar Card' && !validateAadhaar(localFormData.auth_code)) {
       setError('Please enter a valid 12-digit Aadhaar number');
       toast.error('Please enter a valid 12-digit Aadhaar number');
       return;
@@ -125,8 +125,8 @@ const Step1PersonalInfo = ({
 
         localStorage.setItem('application_id', response.kyc_application_id);
         
-        if (onAadharDataFetched) {
-          onAadharDataFetched(response.data);
+        if (onAadhaarDataFetched) {
+          onAadhaarDataFetched(response.data);
         }
       }
     } catch (err) {
@@ -178,11 +178,11 @@ const Step1PersonalInfo = ({
                     className="me-2"
                     type="radio"
                     name="auth_type"
-                    value="Aadhar Card"
-                    checked={selectedOption === 'Aadhar Card'}
+                    value="Aadhaar Card"
+                    checked={selectedOption === 'Aadhaar Card'}
                     onChange={handleRadioChange}
                   />
-                  Aadhar Number
+                  Aadhaar Number
                 </label>
 
                 <label className="flex me-4">
@@ -212,10 +212,10 @@ const Step1PersonalInfo = ({
 
               {selectedOption && (
                 <div className="">
-                  {selectedOption === 'Aadhar Card'&&
-                  <> <p className=' text-sm'>Enter 12 Digit Aadhaar number (format: xxx xxx xxx xxx)</p></> }
+                  {selectedOption === 'Aadhaar Card'&&
+                  <> <p className=' text-sm'>Enter 12 Digit Aadhaar Number (Format: xxxx xxxx xxxx)</p></> }
                   {selectedOption === 'Pan Card'&&
-                  <>  <p className=' text-sm'>Please Enter a Valid PAN (format: AAAAA9999A)</p></> }
+                  <>  <p className=' text-sm'>Please Enter a Valid PAN (Format: AAAAA9999A)</p></> }
                   {selectedOption === 'Digilocker'&&
                   <>   </> }
                   
@@ -229,14 +229,14 @@ const Step1PersonalInfo = ({
                         name="auth_code"
                         placeholder={`Enter ${selectedOption}`}
                         required
-                        maxLength={selectedOption === 'Aadhar Card' ? 12 : 10} 
+                        maxLength={selectedOption === 'Aadhaar Card' ? 12 : 10} 
                         // disabled={localFormData.isVerified}
                       />
                     </div>
                     <div className="md:w-1/2">
                       <CommonButton
                         className="btn-login"
-                        onClick={handleAadharSubmit}
+                        onClick={handleAadhaarSubmit}
                         disabled={!localFormData.auth_code || loading || localFormData.isVerified}
                       >
                         {loading ? (
