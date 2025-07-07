@@ -51,6 +51,11 @@ export const COLUMN_DEFINITIONS = {
     sortable: true,
     filterable: true,
   },
+  applicant_no: {
+    header: "Applicant No.",
+    sortable: true,
+    filterable: true,
+  },
   kyc_application_id: {
     header: "KYC Application Id",
     sortable: true,

@@ -46,15 +46,15 @@ function PendingTable() {
 
   const columns = [
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     // { ...COLUMN_DEFINITIONS.application_no, field: "application_no", type: "text" },
     {
       // Updated column for Applicant Name
-      header: "Applicant Name", // Changed header for clarity
+      header: "Customer Name", // Changed header for clarity
       field: "fullName", // This field will be created in fetchData
       type: "text",
     },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.admin_id, field: "admin_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.reject_admin_id, field: "admin_id", type: "text" },
     { // Add this new column for the aggregated rejection reason
       ...COLUMN_DEFINITIONS.rejected_reason, // Assuming you have this in COLUMN_DEFINITIONS
       field: "rejected_reason",

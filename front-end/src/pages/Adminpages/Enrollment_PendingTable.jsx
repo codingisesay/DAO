@@ -17,9 +17,9 @@ function PendingTable() {
   const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.agent_id, field: "agent_id", type: "text" }, //missing in API Call from backend
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" }, 
     {
       // Updated column for Applicant Name
       header: "Applicant Name", // Changed header for clarity

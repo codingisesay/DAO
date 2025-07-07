@@ -22,9 +22,9 @@ function KycPendingTable() {
   ];
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
+    { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
     {
       // Updated column for Applicant Name
       header: "Applicant Name", // Changed header for clarity

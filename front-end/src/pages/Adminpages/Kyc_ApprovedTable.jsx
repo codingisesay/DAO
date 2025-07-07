@@ -44,23 +44,19 @@ function KycApprovedTable() {
   ];
 
   const columns = [
+      { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.application_no, field: "kyc_application_id", type: "text" },
     {
       // Updated column for Applicant Name
-      header: "Applicant Name", // Changed header for clarity
+      header: "Customer Name", // Changed header for clarity
       field: "fullName", // This field will be created in fetchData
       type: "text",
     },
     { ...COLUMN_DEFINITIONS.cust_no, field: "", type: "text" },
-    { ...COLUMN_DEFINITIONS.approved_by, field: "updated_by", type: "text" },
+    { ...COLUMN_DEFINITIONS.approved_by, field: "admin_id", type: "text" },
     { ...COLUMN_DEFINITIONS.account_open_date, field: "updated_at", type: "date" },
     { ...COLUMN_DEFINITIONS.account_no, field: "kyc_application_no", type: "text" },
-    {
-      header: "Approval Comments",
-      field: "approval_comments",
-      type: "text",
-      render: (rowData) => getApprovalComments(rowData)
-    },
+   
   ];
 
   const fetchData = async () => {

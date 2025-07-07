@@ -16,16 +16,16 @@ function PendingTable() {
 
     // Columns for the main applications table
     const columns = [
+        { ...COLUMN_DEFINITIONS.open_date, field: "created_at", type: "date" },
         { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-        { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-        { ...COLUMN_DEFINITIONS.application_id, field: "", type: "text" },
         {
             // Updated column for Applicant Name
             header: "Applicant Name", // Changed header for clarity
             field: "fullName", // This field will be created in fetchData
             type: "text",
         },
-        { ...COLUMN_DEFINITIONS.open_date, field: "created_at", type: "date" },
+        { ...COLUMN_DEFINITIONS.applicant_no, field: "", type: "text" },
+        { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     ];
 
     const fetchData = async () => {

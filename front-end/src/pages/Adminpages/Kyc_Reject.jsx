@@ -44,16 +44,16 @@ function KycRejectTable() {
   ];
 
   const columns = [
+        { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     {
       // Updated column for Applicant Name
-      header: "Applicant Name", // Changed header for clarity
+      header: "Customer Name", // Changed header for clarity
       field: "fullName", // This field will be created in fetchData
       type: "text",
     },
-    {
-      header: "Admin ID",
+    {...COLUMN_DEFINITIONS.reject_admin_id,
       field: "kyc_admin_id",
       type: "text"
     },

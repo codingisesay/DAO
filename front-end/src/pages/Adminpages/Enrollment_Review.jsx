@@ -52,19 +52,22 @@ function ReviewTable() {
   };
 
   const columns = [
+        {
+          ...COLUMN_DEFINITIONS.agent_id,
+          field: "agent_id", 
+        },
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { 
-      header: "Applicant Name", field: "fullName",   type: "text",
-    },
-    { ...COLUMN_DEFINITIONS.agent_id, field: "agent_id", type: "text" },
+      header: "Customer Name", field: "fullName",   type: "text",
+    }, 
     { ...COLUMN_DEFINITIONS.review_admin_id, field: "admin_id", type: "text" },
     {
-      header: "Review Comments",
+      header: "Review Reason",
       field: "review_comments",
       type: "text",
       render: (rowData) => getReviewComments(rowData),
     },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
   ];
 
   const countColumns = [
