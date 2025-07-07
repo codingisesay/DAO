@@ -736,7 +736,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields,setTouched
                 <CommanSelect
                     onChange={handleChange}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, per_resident: true }))}
-                    label="Resident Y/N"
+                    label="Resident"
                     value={extraInputData.per_resident || ''}
                     name="per_resident"
                     required
