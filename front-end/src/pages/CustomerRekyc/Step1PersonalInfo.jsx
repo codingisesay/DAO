@@ -231,6 +231,10 @@ const Step1PersonalInfo = ({
                         required
                         max={selectedOption === 'Aadhaar Card' ? 12 : 10} 
                         // disabled={localFormData.isVerified}
+                         onInput={e => {
+                            // Remove any non-digit character (including '-')
+                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                        }}
                       />
                     </div>
                     <div className="md:w-1/2">
