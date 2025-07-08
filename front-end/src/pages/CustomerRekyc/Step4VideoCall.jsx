@@ -1,5 +1,5 @@
 
-import VideoKYCInstructions from '../Enrollment/Step4A_VideoCallScreen';
+import VideoKYCInstructions from './Step4A_VideoCallScreen';
 import CommonButton from '../../components/CommonButton';
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import { nav } from 'framer-motion/client';

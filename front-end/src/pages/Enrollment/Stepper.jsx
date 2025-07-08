@@ -37,7 +37,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       />
 
       <ul
-        className="max-w-md mx-auto my-3 dark:text-white"
+        className="max-w-md mx-auto my-1 dark:text-white"
         onClick={() => navigate(-1)}
       >
         <li
@@ -54,7 +54,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       <div className="sidebar-stepper-container ">
         <div className="vertical-stepper ">
           {steps.map((step, i) => (
-            <div
+            <div style={{paddingBottom: '10px'}}
               key={i}
               className={`stepper-item ${
                 currentStep === i + 1 ? "active" : ""
@@ -70,7 +70,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
               <div className="ms-2">
                 <div className="stepper-subtitle text-xs">{step.subtitle}</div>
                 <div className="stepper-title">{step.title}</div>
-                <div
+                <div  style={{fontSize: '10px', marginTop:'-3px'}}
                   className={`stepper-status text-xs ${getStepStatus(i)
                     .toLowerCase()
                     .replace(" ", "-")}`}
