@@ -397,7 +397,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={12}
+                                                    max={12} min={12}
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>

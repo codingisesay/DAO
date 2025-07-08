@@ -229,7 +229,7 @@ const Step1PersonalInfo = ({
                         name="auth_code"
                         placeholder={`Enter ${selectedOption}`}
                         required
-                        maxLength={selectedOption === 'Aadhaar Card' ? 12 : 10} 
+                        max={selectedOption === 'Aadhaar Card' ? 12 : 10} 
                         // disabled={localFormData.isVerified}
                       />
                     </div>
