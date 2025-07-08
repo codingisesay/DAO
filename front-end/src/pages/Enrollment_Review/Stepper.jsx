@@ -22,11 +22,12 @@ const Stepper = ({ currentStep, complete, steps }) => {
   };
 
   const getStepStatus = (stepIndex) => {
-    if (complete) return "";
-    if (stepIndex + 1 < currentStep) return "";
-    if (stepIndex + 1 === currentStep) return "";
-    return "";
+    if (complete) return "Completed";
+    if (stepIndex + 1 < currentStep) return "Completed";
+    if (stepIndex + 1 === currentStep) return "In Progress";
+    return "Pending";
   };
+
 
   return (
     <div className=" stepper-container max-w-md mx-auto p-5 relative ">

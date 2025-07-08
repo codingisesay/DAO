@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import { gender, salutation, religion, caste, maritalStatusOptions } from '../../data/data';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ApplicationPdf = () => {
     const [formData, setFormData] = useState({});
+  const contentRef = useRef(null); // Ref to the main content area
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ 
         filename: 'application-form.pdf',
@@ -215,32 +216,81 @@ const ApplicationPdf = () => {
     );
 
     return (
-        <div className='print-tbl' style={{ 
+        <div className='print-tbl ' style={{ 
             fontFamily: 'Arial, sans-serif', 
             maxWidth: '1000px', 
             margin: '0 auto', 
             padding: '20px',
             pageBreakInside: 'avoid'
         }}>
-            {/* Print Styles */}
-            <style>
-                {`
-                    @media print {
-                        body, div, table, tr, td, th, h2 {
-                            page-break-inside: avoid !important;
-                        }
-                        h2 {
-                            page-break-after: avoid !important;
-                        }
-                        .print-tbl {
-                            padding: 0 !important;
-                        }
-                    }
-                `}
-            </style>
+      <style>
+        {`
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact; /* For background colors/images */
+            print-color-adjust: exact;
+          }
+
+          /* General styling to ensure content fits */
+          .print-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          /* Avoid breaking content within logical sections */
+          .section-to-keep-together {
+            page-break-inside: avoid;
+            break-inside: avoid-page; /* Modern alternative */
+          }
+
+          /* Force new page before certain sections, e.g., major headings or large blocks */
+          .new-page-section {
+            page-break-before: always;
+            break-before: page; /* Modern alternative */
+          }
+
+          /* Hide elements not needed for print, e.g., navigation, buttons */
+          .no-print {
+            display: none !important;
+          }
+
+          /* Adjust font sizes if needed for print readability */
+          h1, h2, h3 {
+            font-size: 2em; /* Slightly smaller for print */
+          }
+          p, span, div {
+            font-size: 1em; /* Adjust paragraph text size */
+          }
+
+          /* Ensure tables don't break mid-row */
+          table {
+            page-break-inside: auto; /* Allow tables to break, but prefer not to */
+            width: 100%; /* Ensure table takes full print width */
+            border-collapse: collapse; /* For cleaner borders */
+          }
+          tr {
+            page-break-inside: avoid; /* Keep table rows from breaking */
+            page-break-after: auto;
+          }
+          thead {
+            display: table-header-group; /* Repeat table headers on new pages */
+          }
+          tfoot {
+            display: none; /* Repeat table footers on new pages */
+          }
+
+          /* Adjust margins for printing to reduce wasted space */
+          @page {
+            margin: 0.5in; /* Example: set uniform margins */
+          }
+        }
+        `}
+      </style>
 
             {/* Download Button */}
-            <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+            {/* <div style={{ textAlign: 'right', marginBottom: '20px' }}>
                 <button
                     onClick={() => toPDF()}
                     style={{
@@ -263,9 +313,17 @@ const ApplicationPdf = () => {
                     </svg>
                     Download PDF
                 </button>
-            </div>
-
-            <div ref={targetRef} style={{ 
+            </div> */}
+    <div className="no-print" style={{ marginTop: '20px', textAlign: 'center' }}>
+          {/* Assuming you have CommonButton imported and configured */}
+          {/* <CommonButton onClick={() => window.print()} variant="contained">
+            Print Application
+          </CommonButton> */}
+          <button onClick={() => window.print()} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            Print Application
+          </button>
+        </div>
+            <div className='print-application-container' ref={contentRef} style={{ 
                 backgroundColor: 'white', 
                 padding: '30px', 
                 borderRadius: '8px', 

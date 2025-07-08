@@ -376,7 +376,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Aadhaar Card"
+                                            value="Aadhaar Card" disabled={true}
                                             checked={selectedOption === 'Aadhaar Card'}
                                             onChange={handleRadioChange}
                                         />
@@ -388,7 +388,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Pan Card"
+                                            value="Pan Card" disabled={true}
                                             checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
                                         />
@@ -400,7 +400,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="DigiLocker"
+                                            value="DigiLocker" 
                                             checked={selectedOption === 'DigiLocker'}
                                             onChange={handleRadioChange}
                                         />
@@ -418,7 +418,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     type="text"
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required
+                                                    required disabled={true}
                                                     maxLength={12}
                                                     validationType="NUMBER_ONLY"
                                                 />
@@ -451,7 +451,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     type="text"
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required
+                                                    required disabled={true}
                                                     maxLength={10}
                                                     validationType="PAN"
                                                     onInput={(e) => {

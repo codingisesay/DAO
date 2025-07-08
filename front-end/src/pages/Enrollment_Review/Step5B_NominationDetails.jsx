@@ -261,7 +261,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         Swal.fire({
           icon: 'warning',
           title: 'PIN Code Not Found',
-          text: 'Could not find address details for this PIN code. Please enter manually.',
+          text: 'Could not find address details for this PIN code.',
         });
         setErrors((prev) => ({
           ...prev,
@@ -285,66 +285,65 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     }
   };
 
-  const handleChange = (section, e) => {
-    const { name, value } = e.target;
+const handleChange = (section, e) => {
+  const { name, value } = e.target;
 
-    if (name === "nomineeDOB") {
-      const age = calculateAge(value);
-      setCurrentNominee((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-          nomineeAge: age,
-        },
-      }));
-    } else if (name === "nomineePinCode") {
-      setCurrentNominee((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
+  if (name === "nomineeDOB") {
+    const age = calculateAge(value);
+    setCurrentNominee((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: value,
+        nomineeAge: age,
+      },
+    }));
+  } else if (name === "nomineePinCode") {
+    setCurrentNominee((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value,
+      },
+    }));
 
-      if (!isSameAsPermanent) {
-        if (value.length === 6) {
-          // Optimistically clear error and set valid before fetching
-          setErrors((prev) => {
-            const newErrors = { ...prev };
-            delete newErrors.nomineePinCode;
-            return newErrors;
-          });
-          setIsPinCodeValid(true); // Assume valid for now, API will confirm
-          fetchAddressByPinCode(value);
-        } else {
-          setIsPinCodeValid(false); // Invalidate if not 6 digits
-          setErrors((prev) => ({
-            ...prev,
-            nomineePinCode: "Pin code must be 6 digits",
-          }));
-        }
-      }
-    } else {
-      setCurrentNominee((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-        },
-      }));
-    }
-
-    // Clear error when user starts typing for fields other than pincode
-    // Pincode error handling is specific to its validation flow
-    if (errors[name] && name !== "nomineePinCode") {
+    if (value.length === 6) {
+      // Optimistically clear error and set valid before fetching
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[name];
+        delete newErrors.nomineePinCode;
         return newErrors;
       });
+      setIsPinCodeValid(true); // Assume valid for now, API will confirm
+      fetchAddressByPinCode(value);
+    } else {
+      setIsPinCodeValid(false); // Invalidate if not 6 digits
+      setErrors((prev) => ({
+        ...prev,
+        nomineePinCode: "Pin code must be 6 digits",
+      }));
     }
-  };
+  } else {
+    setCurrentNominee((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: value,
+      },
+    }));
+  }
+
+  // Clear error when user starts typing for fields other than pincode
+  // Pincode error handling is specific to its validation flow
+  if (errors[name] && name !== "nomineePinCode") {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[name];
+      return newErrors;
+    });
+  }
+};
+
 
   const handleBlur = (section, e) => {
     const { name } = e.target;
@@ -644,16 +643,16 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         },
       }));
       // When unchecking, re-evaluate pincode validity if it's currently invalid
-      if (currentNominee.address.nomineePinCode.length !== 6) {
+      // if (currentNominee.address.nomineePinCode.length !== 6) {
         setIsPinCodeValid(false);
         setErrors((prev) => ({
           ...prev,
           nomineePinCode: "Pin code must be 6 digits",
         }));
-      } else {
-        // If it was 6 digits, re-fetch to validate it independently
-        fetchAddressByPinCode(currentNominee.address.nomineePinCode);
-      }
+      // } else {
+      //   // If it was 6 digits, re-fetch to validate it independently
+      //   fetchAddressByPinCode(currentNominee.address.nomineePinCode);
+      // }
     }
   };
 
@@ -779,7 +778,26 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
             name="nomineePercentage"
             value={currentNominee.details.nomineePercentage}
-            onChange={(e) => handleChange("details", e)}
+              onChange={(e) => {
+              // Allow only digits or empty value
+              const value = e.target.value;
+              if (value === "" || /^[0-9]+$/.test(value)) {
+                handleChange("details", e);
+              }
+            }}
+            onKeyDown={(e) => {
+              // Allow only digits and control keys
+              const allowedKeys = [
+                "Backspace",
+                "ArrowLeft",
+                "ArrowRight",
+                "Delete",
+                "Tab",
+              ];
+              if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             onBlur={(e) => handleBlur("details", e)}
             required type="number"
             max={3}
@@ -805,12 +823,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             value={currentNominee.details.nomineeDOB}
             onChange={(e) => handleChange("details", e)}
             onBlur={(e) => handleBlur("details", e)}
+            max={new Date().toISOString().split("T")[0]}
             required
             className={
               errors.nomineeDOB && touchedFields.details?.nomineeDOB
                 ? "border-red-500"
                 : ""
             }
+
           />
           {errors.nomineeDOB && touchedFields.details?.nomineeDOB && (
             <p className="text-red-500 text-xs">{errors.nomineeDOB}</p>
