@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Page1 from "./1";
-import Page2 from "./2";
-import Page3 from "./3";
-import Page4 from "./4";
-import Page5 from "./5";
-import Page6 from "./6";
+import Page1 from "./Step1_EnrollmentDetails";
+import Page2 from "./Step2_CustomerApplication";
+import Page3 from "./Step3_DocumentUpload";
+import Page4 from "./Step4_VideoCallMain";
+import Page5 from "./Step5_AccountDetails";
+import Page6 from "./Step6_SummarySheet";
 import Stepper from "./Stepper";
 import Footer from "../../components/Footer";
 
@@ -170,7 +170,7 @@ function Enrollmentform() {
             />
           </div>
           <div className="xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-2">
-            <div className="work-area dark:bg-gray-900">
+            <div className="work-area dark:bg-gray-900 ">
               {renderCurrentPage()}
             </div>
           </div>

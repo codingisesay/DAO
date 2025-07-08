@@ -7,7 +7,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   application_id: {
-    header: "Application ID",
+    header: "Application Id",
     sortable: true,
     filterable: true,
   },
@@ -47,17 +47,27 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   application_no: {
-    header: "Application No",
+    header: "Application No.",
+    sortable: true,
+    filterable: true,
+  },
+  applicant_no: {
+    header: "Applicant No.",
     sortable: true,
     filterable: true,
   },
   kyc_application_id: {
-    header: "KYC Application ID",
+    header: "KYC Application Id",
     sortable: true,
     filterable: true,
   },
   admin_id: {
     header: "Review By",
+    sortable: true,
+    filterable: true,
+  },
+  approved_admin_id: {
+    header: "Approved By",
     sortable: true,
     filterable: true,
   },
@@ -70,7 +80,7 @@ export const COLUMN_DEFINITIONS = {
     header: "Review By",
     sortable: true,
     filterable: true,
-  },
+  }, 
   status_comment: {
     header: "Rejected Reason",
     sortable: true,
@@ -87,7 +97,7 @@ export const COLUMN_DEFINITIONS = {
     filterable: true,
   },
   agent_id: {
-    header: "Agent ID",
+    header: "Agent Name",
     sortable: true,
     filterable: true,
   },

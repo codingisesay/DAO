@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
+import CommonButton from '../../components/CommonButton';
 import { gender, salutation, religion, caste, maritalStatusOptions } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
 import { applicationDetailsService } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
 import { usePDF } from 'react-to-pdf';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
@@ -17,82 +17,86 @@ const ViewApplicationForm = () => {
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
 
-    // const id = localStorage.getItem('application_id');
-        const { id } = useParams();
+    const {id} = useParams();
 
     useEffect(() => {
-    
         if (!id) return;
         const fetchDetails = async () => {
             try {
-                
+                // alert('run')
                 const response = await applicationDetailsService.getFullDetails(id);
-                if (response) {
+                if (response.data) {
                     const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    const signatureDoc = customerdoc.find(doc =>
-                        doc.document_type.toLowerCase().includes('signature')
-                    );
-                    // console.log('photo :', customerpic[0].path);
+                    
+                    console.log('toshoe :', response);
+                 setFormData({
+                    application_id: id,
+                    // Authentication
+                    auth_type: application.auth_type || '',
+                    auth_code: application.auth_code || '',
+                    status: application.auth_status || '',
 
-                    setFormData({
-                        application_id: id,
-                        // Authentication
-                        auth_type: application.auth_type,
-                        auth_code: application.auth_code,
-                        status: application.auth_status,
+                    // Personal Info
+                    salutation: personal_details?.salutation || '',
+                    first_name: application.first_name || '',
+                    middle_name: application.middle_name || '',
+                    last_name: application.last_name || '',
+                    DOB: application.DOB || '',
+                    gender: application.gender || '',
+                    religion: personal_details?.religion || '',
+                    caste: personal_details?.caste || '',
+                    marital_status: personal_details?.marital_status || '',
 
-                        // Personal Info
-                        salutation: personal_details?.salutation,
-                        first_name: application.first_name,
-                        middle_name: application.middle_name,
-                        last_name: application.last_name,
-                        DOB: application.DOB,
-                        gender: application.gender,
-                        religion: personal_details?.religion,
-                        caste: personal_details?.caste,
-                        marital_status: personal_details?.marital_status,
+                    // Contact
+                    mobile: application.mobile || '',
+                    alt_mob_no: personal_details?.alt_mob_no || '',
+                    email: personal_details?.email || '',
 
-                        // Contact
-                        mobile: application.mobile,
-                        alt_mob_no: personal_details?.alt_mob_no,
-                        email: personal_details?.email,
+                    // Permanent Address (from application object)
+                    complex_name: application.complex_name || '',
+                    flat_no: application.flat_no || '',
+                    area: application.area || '',
+                    landmark: application.landmark || '', // Fixed typo from 'lankmark' to 'landmark'
+                    country: application.country || '',
+                    pincode: application.pincode || '',
+                    city: application.city || '',
+                    district: application.district || '',
+                    state: application.state || '',
 
-                        // Permanent Address
-                        complex_name: application.complex_name,
-                        flat_no: application.flat_no,
-                        area: application.area,
-                        landmark: application.lankmark,
-                        country: application.country,
-                        pincode: application.pincode,
-                        city: application.city,
-                        district: application.district,
-                        state: application.state,
+                    // Correspondence Address (from application_addresss array - using first item)
+                    per_complex_name: address.per_complex_name || '',
+                    per_flat_no: address?.per_flat_no || '',
+                    per_area: address.per_area || '',
+                    per_landmark:address.per_landmark || '',
+                    per_country:address.per_country || '',
+                    per_pincode:address.per_pincode || '',
+                    per_city:address.per_city || '',
+                    per_district:address.per_district || '',
+                    per_state:address.per_state || '',
+                    cor_complex_name:address.cor_complex_name || '',
+                    cor_flat_no:address.cor_flat_no || '',
+                    cor_area:address.cor_area || '',
+                    cor_landmark:address.cor_landmark || '',
+                    cor_country:address.cor_country || '',
+                    cor_pincode:address.cor_pincode || '',
+                    cor_city:address.cor_city || '',
+                    cor_district:address.cor_district || '',
+                    cor_state:address.cor_state || '',
+                            
 
-                        // Correspondence Address
-                        per_complex_name: address?.per_complex_name,
-                        cor_flat_no: address?.cor_flat_no,
-                        cor_area: address?.cor_area,
-                        cor_landmark: address?.cor_landmark,
-                        cor_country: address?.cor_country,
-                        cor_pincode: address?.cor_pincode,
-                        cor_city: address?.cor_city,
-                        cor_district: address?.cor_district,
-                        cor_state: address?.cor_state,
+                    // Identity Documents
+                    adhar_card: personal_details?.adhar_card,
+                    pan_card: personal_details?.pan_card,
+                    passport: personal_details?.passport,
+                    driving_license: personal_details?.driving_license,
+                    voter_id: personal_details?.voter_id,
 
-                        // Identity Documents
-                        adhar_card: personal_details?.adhar_card,
-                        pan_card: personal_details?.pan_card,
-                        passport: personal_details?.passport,
-                        driving_license: personal_details?.driving_license,
-                        voter_id: personal_details?.voter_id,
-
-                    // Add these new address-related fields
                     per_resident: address?.per_resident || "",
                     per_residence_status: address?.per_residence_status || "",
                     resi_doc: address?.resi_doc || "",
-                       
-            // Family Details (add all these fields)
+                   
+                // Family Details (add all these fields)
     maiden_prefix: account_personal_details?.maiden_prefix || "",
     maiden_first_name: account_personal_details?.maiden_first_name || "",
     maiden_middle_name: account_personal_details?.maiden_middle_name || "",
@@ -109,61 +113,62 @@ const ViewApplicationForm = () => {
     birth_country: account_personal_details?.birth_country || "",
 
 
-                        // Occupation Details
-                        occoupation_type: account_personal_details?.occoupation_type,
-                        occupation_name: account_personal_details?.occupation_name,
-                        if_salaryed: account_personal_details?.if_salaryed,
-                        designation: account_personal_details?.designation,
-                        nature_of_occoupation: account_personal_details?.nature_of_occoupation,
-                        qualification: account_personal_details?.qualification,
-                        anual_income: account_personal_details?.anual_income,
-                        remark: account_personal_details?.remark,
+                    // Occupation Details
+                    occoupation_type: account_personal_details?.occoupation_type || '',
+                    occupation_name: account_personal_details?.occupation_name || '',
+                    if_salaryed: account_personal_details?.if_salaryed || '',
+                    designation: account_personal_details?.designation || '',
+                    nature_of_occoupation: account_personal_details?.nature_of_occoupation || '',
+                    qualification: account_personal_details?.qualification || '',
+                    anual_income: account_personal_details?.anual_income || '',
+                    remark: account_personal_details?.remark || '',
+ 
+                // Documents
+                passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                : "",
 
-                        signature: daodocbase + signatureDoc.file_path || null,
-                        photo: customerpic ? daodocbase + customerpic[0].path : null, 
-    
-                    // Documents
-                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
-                    : "",
-    
-                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
-                    : "",
-    
-                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
-                    : "",
-    
-                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
-                    : "",
-    
-                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
-                    : "",
-    
-                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
-                    : "",
-    
-                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
-                    : "",
-    
-                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
-                    : "",
-    
-                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
-                    : "",
-    
-                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
-                    : "",
-                        
-                    });
+                aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                : "",
+
+                aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                : "",
+
+                pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                : "",
+
+                voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                : "",
+
+                drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                : "",
+
+                utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                : "",
+
+                rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                : "",
+
+                propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                : "",
+
+                bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
+                ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                : "",
+
+                    signature: customerdoc?.find(doc => doc.document_type.includes("SIGNATURE_JPG")) 
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes("SIGNATURE_JPG")).file_path 
+                            : null,
+                    photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : null,
+                });
                 }
             } catch (error) {
                 console.log(error)
@@ -254,6 +259,7 @@ const ViewApplicationForm = () => {
                             value={formData.first_name || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -263,6 +269,7 @@ const ViewApplicationForm = () => {
                             value={formData.middle_name || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -272,6 +279,7 @@ const ViewApplicationForm = () => {
                             value={formData.last_name || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -280,6 +288,7 @@ const ViewApplicationForm = () => {
                             name="DOB"
                             value={formData.DOB || ''}
                             readOnly
+                            validationType="DATE"
                         />
                         <CommanSelect
                             onChange={handleChange}
@@ -328,6 +337,7 @@ const ViewApplicationForm = () => {
                             value={formData.mobile || ''}
                             readOnly
                             max={10}
+                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -337,6 +347,7 @@ const ViewApplicationForm = () => {
                             value={formData.alt_mob_no || ''}
                             readOnly
                             max={10}
+                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -345,96 +356,173 @@ const ViewApplicationForm = () => {
                             name="email"
                             value={formData.email || ''}
                             readOnly
+                            validationType="EMAIL"
                         />
                     </div>
                 </div>
 
                 {/* Permanent Address */}
-                <div className="pdf-section">
-                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Permanent Address</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+             <div className="space-y-8">
+                    {/* Permanent Address Section */}
+                    <div>
+                        <h3 className="text-lg font-semibold mb-4">Permanent Address</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.complexname.label}
-                            type="text"
-                            name="complex_name"
-                            value={formData.complex_name || ''}
+                            label="Complex Name"
+                            name="per_complex_name"
+                            value={formData.per_complex_name || ''}
                             readOnly
                             max={30}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.roomno.label}
-                            type="text"
-                            name="flat_no"
-                            value={formData.flat_no || ''}
+                            label="Flat No"
+                            name="per_flat_no"
+                            value={formData.per_flat_no || ''}
                             readOnly
                             max={20}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.area.label}
-                            type="text"
-                            name="area"
-                            value={formData.area || ''}
+                            label="Area"
+                            name="per_area"
+                            value={formData.per_area || ''}
                             readOnly
                             max={50}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.landmark.label}
-                            type="text"
-                            name="landmark"
-                            value={formData.landmark || ''}
+                            label="Landmark"
+                            name="per_landmark"
+                            value={formData.per_landmark || ''}
                             readOnly
                             max={50}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.country.label}
-                            type="text"
-                            name="country"
-                            value={formData.country || ''}
+                            label="Country"
+                            name="per_country"
+                            value={formData.per_country || ''}
                             readOnly
                             max={30}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.pincode.label}
-                            type="text"
-                            name="pincode"
-                            value={formData.pincode || ''}
+                            label="Pincode"
+                            name="per_pincode"
+                            value={formData.per_pincode || ''}
                             readOnly
                             max={6}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.city.label}
-                            type="text"
-                            name="city"
-                            value={formData.city || ''}
+                            label="City"
+                            name="per_city"
+                            value={formData.per_city || ''}
                             readOnly
                             max={30}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.district.label}
-                            type="text"
-                            name="district"
-                            value={formData.district || ''}
+                            label="District"
+                            name="per_district"
+                            value={formData.per_district || ''}
                             readOnly
                             max={30}
                         />
                         <CommanInput
-                            onChange={handleChange}
-                            label={labels.state.label}
-                            type="text"
-                            name="state"
-                            value={formData.state || ''}
+                            label="State"
+                            name="per_state"
+                            value={formData.per_state || ''}
                             readOnly
                             max={30}
                         />
-                        
+                        </div>
+                    </div>
+ 
+                   
+                </div>
+
+                {/* Correspondence Address */}
+                {formData.correspondenceAddressSame !== "YES" && (
+                    <div className="pdf-section">
+                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Correspondence Address</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Complex Name"
+                                type="text"
+                                name="per_complex_name"
+                                value={formData.per_complex_name || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Flat No"
+                                type="text"
+                                name="cor_flat_no"
+                                value={formData.cor_flat_no || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Area"
+                                type="text"
+                                name="cor_area"
+                                value={formData.cor_area || ''}
+                                readOnly
+                                max={50}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Landmark"
+                                type="text"
+                                name="cor_landmark"
+                                value={formData.cor_landmark || ''}
+                                readOnly
+                                max={50}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Country"
+                                type="text"
+                                name="cor_country"
+                                value={formData.cor_country || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence Pincode"
+                                type="text"
+                                name="cor_pincode"
+                                value={formData.cor_pincode || ''}
+                                readOnly
+                                max={6}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence City"
+                                type="text"
+                                name="cor_city"
+                                value={formData.cor_city || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence District"
+                                type="text"
+                                name="cor_district"
+                                value={formData.cor_district || ''}
+                                readOnly
+                                max={30}
+                            />
+                            <CommanInput
+                                onChange={handleChange}
+                                label="Correspondence State"
+                                type="text"
+                                name="cor_state"
+                                value={formData.cor_state || ''}
+                                readOnly
+                                max={30}
+                            />
+                            
                             <CommanInput
                                 label="Permanent Resident"
                                 name="per_resident"
@@ -456,95 +544,7 @@ const ViewApplicationForm = () => {
                                 readOnly
                                 max={20}
                             />
-                    </div>
-                </div>
 
-                {/* Correspondence Address */}
-                {formData.correspondenceAddressSame !== "YES" && (
-                    <div className="pdf-section">
-                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Correspondence Address</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                            <CommanInput
-                                onChange={handleChange}
-                                label="Complex Name"
-                                type="text"
-                                name="per_complex_name"
-                                value={formData.per_complex_name || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label="Flat No"
-                                type="text"
-                                name="cor_flat_no"
-                                value={formData.cor_flat_no || ''}
-                                readOnly
-                                max={20}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label="Area"
-                                type="text"
-                                name="cor_area"
-                                value={formData.cor_area || ''}
-                                readOnly
-                                max={50}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label=" Landmark"
-                                type="text"
-                                name="cor_landmark"
-                                value={formData.cor_landmark || ''}
-                                readOnly
-                                max={50}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label=" Country"
-                                type="text"
-                                name="cor_country"
-                                value={formData.cor_country || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label=" Pincode"
-                                type="text"
-                                name="cor_pincode"
-                                value={formData.cor_pincode || ''}
-                                readOnly
-                                max={6} 
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label=" City"
-                                type="text"
-                                name="cor_city"
-                                value={formData.cor_city || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label=" District"
-                                type="text"
-                                name="cor_district"
-                                value={formData.cor_district || ''}
-                                readOnly
-                                max={30}
-                            />
-                            <CommanInput
-                                onChange={handleChange}
-                                label="State"
-                                type="text"
-                                name="cor_state"
-                                value={formData.cor_state || ''}
-                                readOnly
-                                max={30}
-                            />
                         </div>
                     </div>
                 )}
@@ -561,6 +561,7 @@ const ViewApplicationForm = () => {
                             value={formData.adhar_card || ''}
                             readOnly
                             max={12}
+                            validationType="NUMBER_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -570,6 +571,7 @@ const ViewApplicationForm = () => {
                             value={formData.pan_card || ''}
                             readOnly
                             max={10}
+                            validationType="PAN"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -579,6 +581,7 @@ const ViewApplicationForm = () => {
                             value={formData.passport || ''}
                             readOnly
                             max={20}
+                            validationType="ALPHANUMERIC"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -588,6 +591,7 @@ const ViewApplicationForm = () => {
                             value={formData.driving_license || ''}
                             readOnly
                             max={20}
+                            validationType="REGISTRATION_NO"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -597,11 +601,12 @@ const ViewApplicationForm = () => {
                             value={formData.voter_id || ''}
                             readOnly
                             max={20}
+                            validationType="REGISTRATION_NO"
                         />
                     </div>
                 </div>
  
-              {/* Family Details */}
+          {/* Family Details */}
 <div className="pdf-section">
     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
@@ -750,6 +755,7 @@ const ViewApplicationForm = () => {
                             value={formData.occoupation_type || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -759,6 +765,7 @@ const ViewApplicationForm = () => {
                             value={formData.occupation_name || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -768,6 +775,7 @@ const ViewApplicationForm = () => {
                             value={formData.if_salaryed || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -777,6 +785,7 @@ const ViewApplicationForm = () => {
                             value={formData.designation || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -786,6 +795,7 @@ const ViewApplicationForm = () => {
                             value={formData.nature_of_occoupation || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -795,6 +805,7 @@ const ViewApplicationForm = () => {
                             value={formData.qualification || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -804,6 +815,7 @@ const ViewApplicationForm = () => {
                             value={formData.anual_income || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -813,6 +825,7 @@ const ViewApplicationForm = () => {
                             value={formData.remark || ''}
                             readOnly
                             max={50}
+                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>
@@ -822,13 +835,16 @@ const ViewApplicationForm = () => {
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                         <div>
-                            <label className="block text-gray-700 font-bold mb-2">Photo</label>
+                            <label  className="block text-gray-700 font-bold mb-2">Photo</label>
                             {formData.photo ? (
+                                <>
                                 <img
                                     src={typeof formData.photo === 'string' ? formData.photo : URL.createObjectURL(formData.photo)}
                                     alt="Photo"
                                     className="w-30 h-auto  "
                                 />
+                           
+                              </>
                             ) : (
                                 <span>No photo uploaded</span>
                             )}
@@ -848,13 +864,15 @@ const ViewApplicationForm = () => {
                     </div>
                 </div>
 
-
-
                 
                 {/* File Uploads */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6"> 
+                    <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6">
+                      
+                    
+                        
+                  
                           
                             {formData.passportdoc ? (
                                 <img

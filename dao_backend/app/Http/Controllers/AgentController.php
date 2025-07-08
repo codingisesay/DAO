@@ -80,7 +80,7 @@ public function EnrollmentDetails(Request $request)
 
     $validatedData = $request->validate([
         'agent_id' => 'required',
-        'auth_type' => 'nullable|in:Pan Card,Aadhar Card,Digilocker',
+        'auth_type' => 'nullable|in:Pan Card,Aadhaar Card,Digilocker',
         'auth_code' => 'nullable|string',
         'auth_status' => 'nullable|string',
         'first_name' => 'nullable|string',
@@ -269,12 +269,12 @@ public function saveLivePhoto(Request $request)
 public function saveAgentLivePhoto(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required|exists:customer_application_details,id',
         'longitude' => 'required|string|max:255',
         'latitude' => 'required|string|max:255',
         'status' => 'nullable|in:Pending,Approved,Reject,Review',
         'status_comment' => 'nullable|string|max:255',
-        'photo' => 'required|image|max:5120', // max 5MB
+        'photo' => 'nullable|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');
@@ -412,13 +412,14 @@ public function saveAccountPersonalDetails(Request $request)
         'father_first_name' => 'nullable|string|max:191',
         'father_middle_name' => 'nullable|string|max:191',
         'father_last_name' => 'nullable|string|max:191',
-
+        
         'mother_prefix_name' => 'nullable',
         'mother_first_name' => 'nullable|string|max:191',
         'mother_middle_name' => 'nullable|string|max:191',
         'mother_last_name' => 'nullable|string|max:191',
         'birth_place' => 'nullable|string|max:191',
         'birth_country' => 'nullable|string|max:191',
+        'nationality' => 'nullable',
         'occoupation_type' => 'nullable|string|max:191',
         'occupation_name' => 'nullable|string|max:191',
         'if_salaryed' => 'nullable',
@@ -596,14 +597,14 @@ public function getFullApplicationDetails($applicationId)
     ]);
 }
 
-public function getApplicationByAadhar(Request $request)
+public function getApplicationByAadhaar(Request $request)
 {
     $request->validate([
         'auth_code' => 'required|string'
     ]);
 
     $application = \DB::table('customer_application_details')
-        ->where('auth_type', 'Aadhar Card')
+        ->where('auth_type', 'Aadhaar Card')
         ->where('auth_code', $request->auth_code)
         ->first();
 
@@ -800,17 +801,38 @@ public function getPendingApplicationsByAgent($agentId)
 
 public function getReviewApplicationsByAgent($agentId)
 {
-    $applications = DB::table('customer_appliction_status as cas')
-        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
-        ->where('cad.agent_id', $agentId)
-        ->where('cas.status', 'review') // Filter for review status
+    $applications = DB::table('customer_appliction_status')
+        ->leftJoin('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->leftJoin('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->leftJoin('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->leftJoin('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->leftJoin('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->leftJoin('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->where('customer_appliction_status.status', 'review')
         ->select(
-            'cad.id',
-            'cad.application_no',
-            'cad.first_name',
-            'cad.last_name',
-            'cad.created_at',
-            'cas.status'
+            'customer_application_details.*',
+            'customer_application_details.id as application_id',
+            'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+            'account_personal_details.status_comment as account_personal_details_status_comment',
+            'application_address_details.status as application_address_details_status',
+            'application_address_details.status_comment as application_address_details_status_comment',
+            'agent_live_photos.status as agent_live_photos_status',
+            'agent_live_photos.status_comment as agent_live_photos_status_comment',
+            'applicant_live_photos.status as applicant_live_photos_status',
+            'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+            'application_personal_details.status as application_personal_details_status',
+            'application_personal_details.status_comment as application_personal_details_status_comment',
+            'application_service_status.status as application_service_status_status',
+            'application_service_status.status_comment as application_service_status_status_comment',
+            'document_approved_status.status as document_approved_status_status',
+            'document_approved_status.status_comment as document_approved_status_status_comment',
+            'nominee_approved_status.status as nominee_approved_status_status',
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
         )
         ->get();
 
@@ -822,17 +844,38 @@ public function getReviewApplicationsByAgent($agentId)
 
 public function getRejectedApplicationsByAgent($agentId)
 {
-    $applications = DB::table('customer_appliction_status as cas')
-        ->join('customer_application_details as cad', 'cas.application_id', '=', 'cad.id')
-        ->where('cad.agent_id', $agentId)
-        ->where('cas.status', 'rejected') // Filter for rejected status
+    $applications = DB::table('customer_appliction_status')
+        ->leftJoin('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->leftJoin('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->leftJoin('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->leftJoin('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->leftJoin('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->leftJoin('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->where('customer_appliction_status.status', 'rejected')
         ->select(
-            'cad.id',
-            'cad.application_no',
-            'cad.first_name',
-            'cad.last_name',
-            'cad.created_at',
-            'cas.status'
+            'customer_application_details.*',
+            'customer_application_details.id as application_id',
+            'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+            'account_personal_details.status_comment as account_personal_details_status_comment',
+            'application_address_details.status as application_address_details_status',
+            'application_address_details.status_comment as application_address_details_status_comment',
+            'agent_live_photos.status as agent_live_photos_status',
+            'agent_live_photos.status_comment as agent_live_photos_status_comment',
+            'applicant_live_photos.status as applicant_live_photos_status',
+            'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+            'application_personal_details.status as application_personal_details_status',
+            'application_personal_details.status_comment as application_personal_details_status_comment',
+            'application_service_status.status as application_service_status_status',
+            'application_service_status.status_comment as application_service_status_status_comment',
+            'document_approved_status.status as document_approved_status_status',
+            'document_approved_status.status_comment as document_approved_status_status_comment',
+            'nominee_approved_status.status as nominee_approved_status_status',
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
         )
         ->get();
 

@@ -5,12 +5,15 @@ import { useParams } from "react-router-dom";
 import { pendingAccountData } from "../../services/apiServices";
 import { daodocbase } from "../../data/data";
 import axios from "axios";
+import dataService from "../../utils/reasonervices"; // Adjust the path as necessary
 import { Paper, Typography, Box } from "@mui/material";
 
 function DocumentReviewStep({ onNext, onBack }) {
   const [localFormData, setLocalFormData] = useState([]);
   const [extractionResults, setExtractionResults] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
+  const [hoveredImage, setHoveredImage] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
   const { id } = useParams();
   const applicationStatus =
     JSON.parse(localStorage.getItem("approveStatusArray")) || [];
@@ -111,7 +114,24 @@ function DocumentReviewStep({ onNext, onBack }) {
     };
 
     fetchAndProcessDocuments();
+    loadReason();
   }, [id]);
+
+  const [reason, setReason] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const loadReason = async () => {
+    try {
+      setLoading(true);
+      const fetchedReason = await dataService.fetchReasonById(id);
+      setReason(fetchedReason);
+    } catch (error) {
+      // Handle error, e.g., show a user-friendly message
+      console.error("Error loading reason in component:", error);
+      setReason(null); // Clear reason on error
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleNextStep = async () => {
     onNext();
@@ -186,11 +206,16 @@ function DocumentReviewStep({ onNext, onBack }) {
         {isProcessing && (
           <Paper elevation={3} sx={{ p: 0, mb: 0, boxShadow: "none" }}>
             <Typography variant="body1" align="center">
-              Getting Abstractions ...{" "}
+              {/* Getting Abstractions ...  to SHOW LOADING  */}
             </Typography>
           </Paper>
         )}
-
+        {reason && (
+          <p className="text-red-500 mb-3 ">
+            {" "}
+            Review For :{reason.document_approved_status_status_comment}
+          </p>
+        )}
         <div className="mb-8">
           {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
           <div className="overflow-x-auto">
@@ -204,10 +229,10 @@ function DocumentReviewStep({ onNext, onBack }) {
                     Preview
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
-                    Signatures
+                    Signature
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
-                    Photographs
+                    Photograph
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
                     Created At
@@ -226,6 +251,17 @@ function DocumentReviewStep({ onNext, onBack }) {
                           src={daodocbase + `${doc.file_path}`}
                           alt="document"
                           className="h-auto w-20 object-contain border rounded"
+                          onMouseEnter={(e) => {
+                            const rect = e.target.getBoundingClientRect();
+                            setHoveredImage(
+                              `data:image/jpeg;base64,${doc.file_path}`
+                            );
+                            setHoverPosition({
+                              x: rect.right + 10,
+                              y: rect.top - 170,
+                            });
+                          }}
+                          onMouseLeave={() => setHoveredImage(null)}
                         />
                       </td>
                       <td className="py-2 px-4 border-b border-gray-200">
@@ -248,6 +284,21 @@ function DocumentReviewStep({ onNext, onBack }) {
             </table>
           </div>
         </div>
+        {hoveredImage && (
+          <div
+            className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+            style={{
+              top: `${hoverPosition.y}px`,
+              left: `${hoverPosition.x}px`,
+            }}
+          >
+            <img
+              src={hoveredImage}
+              alt="Zoomed Preview"
+              className="h-[200px] w-auto rounded"
+            />
+          </div>
+        )}
       </div>
     );
   };
@@ -255,10 +306,6 @@ function DocumentReviewStep({ onNext, onBack }) {
   return (
     <div className="form-container">
       <h2 className="text-xl font-bold mb-2">Document Verification</h2>
-      <p className="mb-4 text-gray-600">
-        Documents are being automatically processed for signature and photograph
-        extraction.
-      </p>
 
       <DocumentDetailsTable documentslist={localFormData} />
 

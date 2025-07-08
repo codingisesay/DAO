@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
 import { daodocbase } from '../../data/data';
 import axios from 'axios';
+import DocumentView from '../Enrollment_View/Step3_DocumentUpload'
 
 function p3({ onNext, onBack }) {
     const [localFormData, setLocalFormData] = useState([]);
@@ -207,17 +208,18 @@ function p3({ onNext, onBack }) {
 
     return (
         <div className="form-container">
-            <h2 className="text-xl font-bold mb-2">Document Verification</h2>
+            {/* <h2 className="text-xl font-bold mb-2">Document Verification</h2>
             {isProcessing && (
                 <div className="mb-4 p-2 bg-blue-100 text-blue-800 rounded">
                     Processing documents... Please wait.
                 </div>
             )}
-            
-            <DocumentDetailsTable 
+             */}
+            {/* <DocumentDetailsTable 
                 documentslist={localFormData} 
                 extractedData={extractedData} 
-            />
+            /> */}
+            <DocumentView />
 
             <div className="next-back-btns">
                 <CommonButton
@@ -310,7 +312,7 @@ function toTitleCase(str) {
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th>
+                                    {/* <th className="py-2 px-4 border-b border-gray-200 text-left">ID</th> */}
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
@@ -329,7 +331,7 @@ function toTitleCase(str) {
                                     
                                     return (
                                         <tr key={doc.id}>
-                                            <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td>
+                                            {/* <td className="py-2 px-4 border-b border-gray-200">{doc.id}</td> */}
                                        <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.document_type)}</td>
                                             <td className="py-2 px-4 border-b border-gray-200">
                                                 <img

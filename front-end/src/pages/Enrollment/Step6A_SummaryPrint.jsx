@@ -13,6 +13,7 @@ import { daodocbase } from '../../data/data';
 import { usePDF } from 'react-to-pdf';
 import { useNavigate } from 'react-router-dom';
 import { use } from 'react';
+import { set } from 'webcamjs';
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
@@ -20,7 +21,7 @@ const ViewApplicationForm = () => {
     const [nominees, setNominees] = useState([])
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
-
+    const [pdftoshow, setPdftoshow] = useState();
     const applicationId = localStorage.getItem('application_id');
 
     useEffect(() => {
@@ -32,7 +33,7 @@ const ViewApplicationForm = () => {
                 if (response.data) {
                     const { application, personal_details, account_personal_details, account_nominees, application_addresss, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
-                    console.log('NOM : ', account_nominees);
+                    // console.log('NOM : ', account_nominees);
                     if (account_nominees && account_nominees.length > 0) {
                         setNominees(account_nominees);
                     }
@@ -131,53 +132,54 @@ const ViewApplicationForm = () => {
                         remark: account_personal_details?.remark || "",
 
                         // Documents
-                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
                             : "",
 
-                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
                             : "",
 
-                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
                             : "",
 
-                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
                             : "",
 
-                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
                             : "",
 
-                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
                             : "",
 
-                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
                             : "",
 
-                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
                             : "",
 
-                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
                             : "",
 
-                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
                             : "",
 
-                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
+                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
                             : "",
 
                         photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
-                    // console.log(response)
+                    console.log('to show extention : ',   customerdoc[1].file_name)
+                    setPdftoshow(customerdoc[0].file_path)
                 }
             } catch (error) {
                 console.log(error)
@@ -211,7 +213,7 @@ const ViewApplicationForm = () => {
                     <div className='flex justify-between items-center mb-4'>
                         <div>
                             <p className="text-gray-600">Application Number: {formData.application_id || 'N/A'}</p>
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 text-start" >
                                 Date: {new Date().toLocaleDateString('en-GB')}
                             </p>
 
@@ -615,186 +617,182 @@ const ViewApplicationForm = () => {
                 {nominees.length > 0 && (
                     <div className="pdf-section mb-8">
                         <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+<div className="w-full mb-8 border rounded p-4">
+  <table className="min-w-fit table-auto border border-collapse mb-4">
+    <thead>
+      <tr className="bg-gray-100 text-left">
+        <th  className="border px-4 py-2">Name of the Nominee</th>
+        <th  className="border px-4 py-2">Address</th>
+        <th  className="border px-4 py-2">Relationship</th>
+        <th  className="border px-4 py-2">Date of Birth</th>
+        <th  className="border px-4 py-2">Age</th>
+        <th  className="border px-4 py-2">Percentage</th> 
+      </tr>
+    </thead>
 
-                        <div className="mb-8 border rounded p-4 w-full overflow-auto">
+    {nominees.map((nominee, index) => (
+      <tbody key={index}>
+        <tr>
+          <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+            {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+          </td>
+          <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+            {nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}
+          </td>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.relationship}</td>
+          <td className="border px-4 py-2" style={{ verticalAlign: 'top', minWidth: '100px' }}>
+  {nominee.dob ? new Date(nominee.dob).toLocaleDateString('en-GB') : 'N/A'}
+</td>
 
-                            {/* Personal Details Table */}
-                            <table className="w-full border border-collapse mb-4 ">
-                                <thead >
-                                    <tr className="bg-gray-100 text-left">
-                                        <th className="border px-4 py-2">Salutation</th>
-                                        <th className="border px-4 py-2">First Name</th>
-                                        <th className="border px-4 py-2">Middle Name</th>
-                                        <th className="border px-4 py-2">Last Name</th>
-                                        <th className="border px-4 py-2">Relationship</th>
-                                        <th className="border px-4 py-2">Percentage</th>
-                                        <th className="border px-4 py-2">Date of Birth</th>
-                                        <th className="border px-4 py-2">Age</th>
-                                        <th className="border px-4 py-2">Address</th>
-                                    </tr>
-                                </thead>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.age}</td>
+          <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.percentage}</td> 
+        </tr>
+      </tbody>
+    ))}
+  </table>
+</div>
 
-                                {nominees.map((nominee, index) => (
-
-                                    <tbody key={index}>
-                                        <tr>
-                                            <td className="border px-4 py-2">{nominee.salutation}</td>
-                                            <td className="border px-4 py-2">{nominee.first_name}</td>
-                                            <td className="border px-4 py-2">{nominee.middle_name}</td>
-                                            <td className="border px-4 py-2">{nominee.last_name}</td>
-                                            <td className="border px-4 py-2">{nominee.relationship}</td>
-                                            <td className="border px-4 py-2">{nominee.percentage}</td>
-                                            <td className="border px-4 py-2">{nominee.dob}</td>
-                                            <td className="border px-4 py-2">{nominee.age}</td>
-                                            <td className="border px-4 py-2">{nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}</td>
-                                        </tr>
-                                    </tbody>
-
-                                ))}
-                            </table>
-
-                        </div>
 
                     </div>
                 )}
 
  
-          {/* Family Details */}
-<div className="pdf-section">
-    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-        {/* Maiden Name Fields */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Maiden Prefix"
-            name="maiden_prefix"
-            value={formData.maiden_prefix || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden First Name"
-            type="text"
-            name="maiden_first_name"
-            value={formData.maiden_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden Middle Name"
-            type="text"
-            name="maiden_middle_name"
-            value={formData.maiden_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden Last Name"
-            type="text"
-            name="maiden_last_name"
-            value={formData.maiden_last_name || ''}
-            readOnly
-            max={50}
-        />
+                {/* Family Details */}
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        {/* Maiden Name Fields */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Maiden Prefix"
+                            name="maiden_prefix"
+                            value={formData.maiden_prefix || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden First Name"
+                            type="text"
+                            name="maiden_first_name"
+                            value={formData.maiden_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Middle Name"
+                            type="text"
+                            name="maiden_middle_name"
+                            value={formData.maiden_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Last Name"
+                            type="text"
+                            name="maiden_last_name"
+                            value={formData.maiden_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
 
-        {/* Father's Details */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Father's Prefix"
-            name="father_prefix_name"
-            value={formData.father_prefix_name || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's First Name"
-            type="text"
-            name="father_first_name"
-            value={formData.father_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's Middle Name"
-            type="text"
-            name="father_middle_name"
-            value={formData.father_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's Last Name"
-            type="text"
-            name="father_last_name"
-            value={formData.father_last_name || ''}
-            readOnly
-            max={50}
-        />
+                        {/* Father's Details */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Father's Prefix"
+                            name="father_prefix_name"
+                            value={formData.father_prefix_name || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's First Name"
+                            type="text"
+                            name="father_first_name"
+                            value={formData.father_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's Middle Name"
+                            type="text"
+                            name="father_middle_name"
+                            value={formData.father_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's Last Name"
+                            type="text"
+                            name="father_last_name"
+                            value={formData.father_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
 
-        {/* Mother's Details */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Mother's Prefix"
-            name="mother_prefix_name"
-            value={formData.mother_prefix_name || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's First Name"
-            type="text"
-            name="mother_first_name"
-            value={formData.mother_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's Middle Name"
-            type="text"
-            name="mother_middle_name"
-            value={formData.mother_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's Last Name"
-            type="text"
-            name="mother_last_name"
-            value={formData.mother_last_name || ''}
-            readOnly
-            max={50}
-        />
+                        {/* Mother's Details */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Mother's Prefix"
+                            name="mother_prefix_name"
+                            value={formData.mother_prefix_name || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's First Name"
+                            type="text"
+                            name="mother_first_name"
+                            value={formData.mother_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's Middle Name"
+                            type="text"
+                            name="mother_middle_name"
+                            value={formData.mother_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's Last Name"
+                            type="text"
+                            name="mother_last_name"
+                            value={formData.mother_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
 
-        {/* Birth Place & Country */}
-        <CommanInput
-            onChange={handleChange}
-            label="Birth Place"
-            type="text"
-            name="birth_place"
-            value={formData.birth_place || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Birth Country"
-            type="text"
-            name="birth_country"
-            value={formData.birth_country || ''}
-            readOnly
-            max={50}
-        />
-    </div>
-</div>
+                        {/* Birth Place & Country */}
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Birth Place"
+                            type="text"
+                            name="birth_place"
+                            value={formData.birth_place || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Birth Country"
+                            type="text"
+                            name="birth_country"
+                            value={formData.birth_country || ''}
+                            readOnly
+                            max={50}
+                        />
+                    </div>
+                </div>
 
                 {/* Occupation Details */}
                 <div className="pdf-section">
@@ -1011,7 +1009,21 @@ const ViewApplicationForm = () => {
                         ) : (
                             <></>
                         )}
+ 
+
                     </div>
+                </div>
+            </div>
+            {/* show pdf below.. show pdf below */}
+            <div className='p-20 hidden'>
+                {/* <img src={} /> */}
+                <div style={{ width: '400px', height: '300px', border: '1px solid #ccc' }}>
+                <iframe
+                    src={`data:application/pdf;base64,${pdftoshow}`}
+                    title="PDF Viewer"
+                    style={{ width: '100%', height: '100%', border: 'none' }} 
+                    allowFullScreen s
+                />
                 </div>
             </div>
         </div>

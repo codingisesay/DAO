@@ -191,9 +191,14 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {showProfile && (
-                                    <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
-                                        <Profilecard />
-                                    </div>
+                             <div
+                                ref={profileRef}
+                                className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3"
+                                style={{ left: "-120px" }}
+                              >
+                                <Profilecard />
+                              </div>
+                            
                                 )}
                             </div>
 
@@ -239,7 +244,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className='md:w-1/3 sm:w-full p-1'>
                         <div className="bg-white w-full my-2 p-4  dark:bg-gray-900 rounded-md">
-                            <h2 className="text-xl font-bold mb-2"> KYC Verification Status</h2>
+                            <h2 className="text-xl font-bold mb-2"> Re-KYC Verification Status</h2>
                             <DemographicsBarChart />
                         </div>
                     </div>

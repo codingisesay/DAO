@@ -10,11 +10,12 @@ import Swal from "sweetalert2";
 import { salutation, relation } from "../../data/data";
 import InputField from "../../components/CommanInput";
 import SelectField from "../../components/CommanSelect";
-import { add } from "@tensorflow/tfjs-core/dist/engine";
+// import { add } from "@tensorflow/tfjs-core/dist/engine"; // This import seems unused and might cause issues, removed it.
 
 function NominationForm({ formData, updateFormData, onBack, onNext }) {
   const storedId = localStorage.getItem("application_id");
   const [nominees, setNominees] = useState([]);
+  const [isPinCodeValid, setIsPinCodeValid] = useState(true); // New state for overall pincode validity
   const [currentNominee, setCurrentNominee] = useState({
     details: {
       nomineeSalutation: "",
@@ -22,7 +23,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       nomineeMiddleName: "",
       nomineeLastName: "",
       nomineeRelation: "",
-      nomineePercentage: "",
+      nomineePercentage: "100",
       nomineeDOB: "",
       nomineeAge: "",
     },
@@ -46,6 +47,13 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
   });
   const [isSameAsPermanent, setIsSameAsPermanent] = useState(false);
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+
+  // Converts a string to title case
+  function toTitleCase(str) {
+    return str
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
 
   const fetchAndStoreDetails = async () => {
     try {
@@ -175,134 +183,50 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
       newErrors.nomineeDOB = "Future date not allowed";
     }
-
-    // Address validation (only if not same as permanent)
-    if (!isSameAsPermanent) {
-      if (!nominee.address.nomineeComplexName) {
-        newErrors.nomineeComplexName = "Complex name is required";
-      }
-      if (!nominee.address.nomineeBuildingName) {
-        newErrors.nomineeBuildingName = "Building name is required";
-      }
-      if (!nominee.address.nomineeArea) {
-        newErrors.nomineeArea = "Area is required";
-      }
-      if (!nominee.address.nomineeCountry) {
-        newErrors.nomineeCountry = "Country is required";
-      }
-      if (!nominee.address.nomineePinCode) {
-        newErrors.nomineePinCode = "Pin code is required";
-      }
-      if (!nominee.address.nomineeCity) {
-        newErrors.nomineeCity = "City  is required";
-      } else if (/\d/.test(nominee.address.nomineeCity)) {
-        newErrors.nomineeCity = "City cannot contain numbers";
-      }
-      if (!nominee.address.nomineeDistrict) {
-        newErrors.nomineeDistrict = "District is required";
-      } else if (/\d/.test(nominee.address.nomineeDistrict)) {
-        newErrors.nomineeDistrict = "District cannot contain numbers";
-      }
-      if (!nominee.address.nomineeState) {
-        newErrors.nomineeState = "State is required";
-      } else if (/\d/.test(nominee.address.nomineeState)) {
-        newErrors.nomineeState = "State cannot contain numbers";
-      } else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) {
-        newErrors.nomineePinCode = "Pin code must be 6 digits";
-      }
-    }
-
+ 
+  // Address validation (always validate, even if same as permanent)
+  const addr = nominee.address;
+  if (!addr.nomineeComplexName) {
+    newErrors.nomineeComplexName = "Complex name is required";
+  }
+  if (!addr.nomineeBuildingName) {
+    newErrors.nomineeBuildingName = "Building name is required";
+  }
+  if (!addr.nomineeArea) {
+    newErrors.nomineeArea = "Area is required";
+  }
+  if (!addr.nomineeCountry) {
+    newErrors.nomineeCountry = "Country is required";
+  }
+  if (!addr.nomineePinCode) {
+    newErrors.nomineePinCode = "Pin code is required";
+  } else if (!/^\d{6}$/.test(addr.nomineePinCode)) {
+    newErrors.nomineePinCode = "Pin code must be 6 digits";
+  }
+  if (!addr.nomineeCity) {
+    newErrors.nomineeCity = "City is required";
+  } else if (/\d/.test(addr.nomineeCity)) {
+    newErrors.nomineeCity = "City cannot contain numbers";
+  }
+  if (!addr.nomineeDistrict) {
+    newErrors.nomineeDistrict = "District is required";
+  } else if (/\d/.test(addr.nomineeDistrict)) {
+    newErrors.nomineeDistrict = "District cannot contain numbers";
+  }
+  if (!addr.nomineeState) {
+    newErrors.nomineeState = "State is required";
+  } else if (/\d/.test(addr.nomineeState)) {
+    newErrors.nomineeState = "State cannot contain numbers";
+  }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleChange = (section, e) => {
-    const { name, value } = e.target;
-
-    if (name === "nomineePercentage") {
-      let processedValue = value;
-      processedValue = processedValue.replace(/[^0-9]/g, "");
-      if (processedValue.length > 3)
-        processedValue = processedValue.slice(0, 3);
-      if (parseFloat(processedValue) > 100) processedValue = "100";
-
-      setCurrentNominee((prev) => ({
-        ...prev,
-        details: {
-          ...prev.details,
-          [name]: processedValue,
-        },
-      }));
-      return;
-    }
-
-    if (name === "nomineeDOB") {
-      const selectedDate = new Date(value);
-      const today = new Date();
-
-      selectedDate.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-
-      if (selectedDate > today) {
-        Swal.fire({
-          icon: "error",
-          title: "Future dates are not allowed.",
-        });
-        return;
-      }
-    }
-
-    if (name === "nomineeDOB") {
-      const age = calculateAge(value);
-      setCurrentNominee((prev) => ({
-        ...prev,
-        details: {
-          ...prev.details,
-          [name]: value,
-          nomineeAge: age,
-        },
-      }));
-    } else {
-      setCurrentNominee((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-        },
-      }));
-
-      if (
-        name === "nomineePinCode" &&
-        value.length === 6 &&
-        !isSameAsPermanent
-      ) {
-        fetchAddressByPinCode(value);
-      }
-    }
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-  };
-
-  const handleBlur = (section, e) => {
-    const { name } = e.target;
-    setTouchedFields((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [name]: true,
-      },
-    }));
-    validateNominee(currentNominee);
-  };
 
   const fetchAddressByPinCode = async (pincode) => {
-    if (!pincode || pincode.length !== 6) return;
+    if (!pincode || pincode.length !== 6) {
+      setIsPinCodeValid(false); // Mark as invalid if not 6 digits
+      return;
+    }
 
     setIsFetchingPincode(true);
     try {
@@ -324,12 +248,113 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             nomineeCountry: "India",
           },
         }));
+        setIsPinCodeValid(true); // Mark as valid on success
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.nomineePinCode; // Clear pincode specific error on success
+          return newErrors;
+        });
+      } else {
+        setIsPinCodeValid(false); // Mark as invalid if API returns no success or data
+        Swal.fire({
+          icon: 'warning',
+          title: 'PIN Code Not Found',
+          text: 'Could not find address details for this PIN code. Please enter manually.',
+        });
+        setErrors((prev) => ({
+          ...prev,
+          nomineePinCode: "Could not find address details for this PIN code.",
+        }));
       }
     } catch (error) {
       console.error("Error fetching address by PIN code:", error);
+      setIsPinCodeValid(false); // Mark as invalid on fetch error
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to fetch PIN code details.',
+      });
+      setErrors((prev) => ({
+        ...prev,
+        nomineePinCode: "Failed to fetch PIN code details.",
+      }));
     } finally {
       setIsFetchingPincode(false);
     }
+  };
+
+  const handleChange = (section, e) => {
+    const { name, value } = e.target;
+
+    if (name === "nomineeDOB") {
+      const age = calculateAge(value);
+      setCurrentNominee((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [name]: value,
+          nomineeAge: age,
+        },
+      }));
+    } else if (name === "nomineePinCode") {
+      setCurrentNominee((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [name]: value,
+        },
+      }));
+
+      if (!isSameAsPermanent) {
+        if (value.length === 6) {
+          // Optimistically clear error and set valid before fetching
+          setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.nomineePinCode;
+            return newErrors;
+          });
+          setIsPinCodeValid(true); // Assume valid for now, API will confirm
+          fetchAddressByPinCode(value);
+        } else {
+          setIsPinCodeValid(false); // Invalidate if not 6 digits
+          setErrors((prev) => ({
+            ...prev,
+            nomineePinCode: "Pin code must be 6 digits",
+          }));
+        }
+      }
+    } else {
+      setCurrentNominee((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          [name]: value,
+        },
+      }));
+    }
+
+    // Clear error when user starts typing for fields other than pincode
+    // Pincode error handling is specific to its validation flow
+    if (errors[name] && name !== "nomineePinCode") {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleBlur = (section, e) => {
+    const { name } = e.target;
+    setTouchedFields((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: true,
+      },
+    }));
+    // Re-validate the current nominee on blur to update errors
+    validateNominee(currentNominee);
   };
 
   const addNominee = () => {
@@ -348,7 +373,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
     const remainingPercentage = getRemainingPercentage();
 
-    // ✅ Auto-fill nomineePercentage if not set
+    // Auto-fill nomineePercentage if not set
     const filledNominee = {
       ...currentNominee,
       details: {
@@ -376,38 +401,65 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       Swal.fire({
         icon: "error",
         title: "Percentage Exhausted",
-        text: "All your percentage value (100%) has been used",
+        text: "The percentage for this nominee exceeds the remaining available percentage.",
       });
       return;
     }
 
-    // ✅ Run validation after pre-filling
+    // Run validation after pre-filling
     if (!validateNominee(filledNominee)) {
+      Swal.fire({
+        icon: "error",
+        title: "Validation Error",
+        text: "Please correct the errors in the nominee details before adding.",
+      });
+      return;
+    }
+
+    // Ensure pincode is valid if not same as permanent address
+    if (!isSameAsPermanent && (!isPinCodeValid || errors.nomineePinCode)) {
+      Swal.fire({
+        icon: "error",
+        title: "PIN Code Error",
+        text: "Please enter a valid PIN code or wait for validation to complete.",
+      });
       return;
     }
 
     const newNominee = {
       id: nominees.length > 0 ? Math.max(...nominees.map((n) => n.id)) + 1 : 1,
-      ...filledNominee,
+      details: {
+        ...filledNominee.details,
+        nomineeSalutation: toTitleCase(filledNominee.details.nomineeSalutation),
+        nomineeFirstName: toTitleCase(filledNominee.details.nomineeFirstName),
+        nomineeMiddleName: toTitleCase(filledNominee.details.nomineeMiddleName),
+        nomineeLastName: toTitleCase(filledNominee.details.nomineeLastName),
+      },
+      address: { ...filledNominee.address }
     };
-
     const updatedNominees = [...nominees, newNominee];
     setNominees(updatedNominees);
     resetForm(updatedNominees);
-
-    // setNominees((prev) => [...prev, newNominee]);
-    // resetForm();
   };
 
   const removeNominee = (id) => {
-    setNominees((prev) => prev.filter((nominee) => nominee.id !== id));
+    const updatedNominees = nominees.filter((nominee) => nominee.id !== id);
+    setNominees(updatedNominees);
+    resetForm(updatedNominees);
 
-    const remainingPercentage = getRemainingPercentage();
+    const remainingPercentage =
+      100 -
+      updatedNominees.reduce(
+        (sum, nominee) =>
+          sum + parseFloat(nominee.details.nomineePercentage || 0),
+        0
+      );
+
     setCurrentNominee((prev) => ({
       ...prev,
       details: {
         ...prev.details,
-        // nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : '0'
+        nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : "0",
       },
     }));
   };
@@ -428,7 +480,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         nomineeMiddleName: "",
         nomineeLastName: "",
         nomineeRelation: "",
-        nomineePercentage: remainingPercentage > 0 ? remainingPercentage : "0",
+        nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : "0",
         nomineeDOB: "",
         nomineeAge: "",
       },
@@ -448,6 +500,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     setErrors({});
     setTouchedFields({ details: {}, address: {} });
     setIsSameAsPermanent(false);
+    setIsPinCodeValid(true); // Reset pincode validity on form reset
   };
 
   const submitnomini = async () => {
@@ -476,12 +529,12 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     try {
       const nomineesPayload = nominees.map((nominee) => ({
         id: nominee.id,
-        salutation: nominee.details.nomineeSalutation,
-        first_name: nominee.details.nomineeFirstName,
-        middle_name: nominee.details.nomineeMiddleName,
-        last_name: nominee.details.nomineeLastName,
+        salutation: toTitleCase(nominee.details.nomineeSalutation),
+        first_name: toTitleCase(nominee.details.nomineeFirstName),
+        middle_name: toTitleCase(nominee.details.nomineeMiddleName),
+        last_name: toTitleCase(nominee.details.nomineeLastName),
         relationship: nominee.details.nomineeRelation,
-        percentage: nominee.details.nomineePercentage,
+        percentage: nominee.details.nomineePercentage.toString(),
         dob: nominee.details.nomineeDOB,
         age: nominee.details.nomineeAge,
         nom_complex_name: nominee.address.nomineeComplexName,
@@ -523,6 +576,22 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     setIsSameAsPermanent(isChecked);
 
     if (isChecked) {
+      // Clear all address-related errors when "Same as permanent" is checked
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.nomineeComplexName;
+        delete newErrors.nomineeBuildingName;
+        delete newErrors.nomineeArea;
+        delete newErrors.nomineeLandmark;
+        delete newErrors.nomineeCountry;
+        delete newErrors.nomineePinCode;
+        delete newErrors.nomineeCity;
+        delete newErrors.nomineeDistrict;
+        delete newErrors.nomineeState;
+        return newErrors;
+      });
+      setIsPinCodeValid(true); // Pincode is valid if copying from permanent address
+
       try {
         const response = await applicationDetailsService.getFullDetails(
           storedId
@@ -572,8 +641,28 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
           nomineeState: "",
         },
       }));
+      // When unchecking, re-evaluate pincode validity if it's currently invalid
+      if (currentNominee.address.nomineePinCode.length !== 6) {
+        setIsPinCodeValid(false);
+        setErrors((prev) => ({
+          ...prev,
+          nomineePinCode: "Pin code must be 6 digits",
+        }));
+      } else {
+        // If it was 6 digits, re-fetch to validate it independently
+        fetchAddressByPinCode(currentNominee.address.nomineePinCode);
+      }
     }
   };
+
+  // Determine if the Add Nominee button should be disabled
+  const isAddNomineeDisabled =
+    getRemainingPercentage() <= 0 || // No percentage left
+    (Object.keys(errors).length > 0 && !isSameAsPermanent) || // General errors (unless address is copied)
+    (errors.nomineePinCode && !isSameAsPermanent) || // Specific pincode error (unless address is copied)
+    (!isPinCodeValid && !isSameAsPermanent) || // Pincode not valid (unless address is copied)
+    isFetchingPincode || // Pincode is being fetched
+    (Object.keys(touchedFields.details).length === 0 && Object.keys(touchedFields.address).length === 0); // No fields touched yet (initial state)
 
   return (
     <div className="max-w-screen-xl mx-auto">
@@ -690,7 +779,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             value={currentNominee.details.nomineePercentage}
             onChange={(e) => handleChange("details", e)}
             onBlur={(e) => handleBlur("details", e)}
-            required
+            required type="number"
             max={3}
             className={
               errors.nomineePercentage &&
@@ -764,7 +853,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onBlur={(e) => handleBlur("address", e)}
             required
             max={50}
-            disabled={isSameAsPermanent}
+            // disabled={isSameAsPermanent}
             className={
               errors.nomineeComplexName &&
               touchedFields.address?.nomineeComplexName
@@ -789,7 +878,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onBlur={(e) => handleBlur("address", e)}
             required
             max={20}
-            disabled={isSameAsPermanent}
+            // disabled={isSameAsPermanent}
             className={
               errors.nomineeBuildingName &&
               touchedFields.address?.nomineeBuildingName
@@ -814,7 +903,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onBlur={(e) => handleBlur("address", e)}
             required
             max={50}
-            disabled={isSameAsPermanent}
+            // disabled={isSameAsPermanent}
             className={
               errors.nomineeArea && touchedFields.address?.nomineeArea
                 ? "border-red-500"
@@ -834,7 +923,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onChange={(e) => handleChange("address", e)}
             onBlur={(e) => handleBlur("address", e)}
             max={50}
-            disabled={isSameAsPermanent}
+            // disabled={isSameAsPermanent}
             className={
               errors.nomineeLandmark && touchedFields.address?.nomineeLandmark
                 ? "border-red-500"
@@ -855,7 +944,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onBlur={(e) => handleBlur("address", e)}
             required
             max={30}
-            disabled={isSameAsPermanent}
+            // disabled={isSameAsPermanent}
             className={
               errors.nomineeCountry && touchedFields.address?.nomineeCountry
                 ? "border-red-500"
@@ -876,15 +965,22 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onBlur={(e) => handleBlur("address", e)}
             required
             max={6}
-            disabled={isSameAsPermanent || isFetchingPincode}
+            // disabled={isSameAsPermanent}
             className={
-              errors.nomineePinCode && touchedFields.address?.nomineePinCode
+              (errors.nomineePinCode && touchedFields.address?.nomineePinCode) ||
+              (!isPinCodeValid && touchedFields.address?.nomineePinCode && !isSameAsPermanent)
                 ? "border-red-500"
                 : ""
             }
           />
           {errors.nomineePinCode && touchedFields.address?.nomineePinCode && (
             <p className="text-red-500 text-xs">{errors.nomineePinCode}</p>
+          )}
+          {!isPinCodeValid && touchedFields.address?.nomineePinCode && !errors.nomineePinCode && !isSameAsPermanent && (
+            <p className="text-red-500 text-xs">Please enter a valid PIN code.</p>
+          )}
+          {isFetchingPincode && !isSameAsPermanent && (
+            <p className="text-blue-500 text-xs">Fetching address...</p>
           )}
         </div>
 
@@ -896,7 +992,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onChange={(e) => handleChange("address", e)}
             onBlur={(e) => handleBlur("address", e)}
             required
-            disabled={isSameAsPermanent || isFetchingPincode}
+            // disabled={isSameAsPermanent || isFetchingPincode}
             className={
               errors.nomineeState && touchedFields.address?.nomineeState
                 ? "border-red-500"
@@ -916,7 +1012,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onChange={(e) => handleChange("address", e)}
             onBlur={(e) => handleBlur("address", e)}
             required
-            disabled={isSameAsPermanent || isFetchingPincode}
+            // disabled={isSameAsPermanent || isFetchingPincode}
             className={
               errors.nomineeCity && touchedFields.address?.nomineeCity
                 ? "border-red-500"
@@ -936,7 +1032,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             onChange={(e) => handleChange("address", e)}
             onBlur={(e) => handleBlur("address", e)}
             required
-            disabled={isSameAsPermanent || isFetchingPincode}
+            // disabled={isSameAsPermanent || isFetchingPincode}
             className={
               errors.nomineeDistrict && touchedFields.address?.nomineeDistrict
                 ? "border-red-500"
@@ -952,7 +1048,13 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       <div className="flex justify-end mb-6 mt-3">
         <CommonButton
           onClick={addNominee}
-          className="border border-green-500 rounded-md text-green-500 px-3 py-1"
+          disabled={isAddNomineeDisabled}
+          className={clsx(
+            "border rounded-md px-3 py-1",
+            isAddNomineeDisabled
+              ? "grayscale opacity-50 cursor-not-allowed border-gray-400 text-gray-400"
+              : "border-green-500 text-green-500"
+          )}
         >
           Add Nominee
         </CommonButton>
@@ -978,9 +1080,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                 {nominees.map((nominee) => (
                   <tr key={nominee.id} className="hover:bg-gray-50">
                     <td className="py-2 px-4 border-b">
-                      {nominee.details.nomineeSalutation}{" "}
-                      {nominee.details.nomineeFirstName}{" "}
-                      {nominee.details.nomineeLastName}
+                      {toTitleCase(nominee.details.nomineeSalutation)}{" "}
+                      {toTitleCase(nominee.details.nomineeFirstName)}{" "}
+                      {toTitleCase(nominee.details.nomineeLastName)}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {nominee.address.nomineeComplexName},{" "}
@@ -991,9 +1093,15 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                       {nominee.details.nomineeRelation}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {new Date(
-                        nominee.details.nomineeDOB
-                      ).toLocaleDateString()}
+                      {
+                        (() => {
+                          const date = new Date(nominee.details.nomineeDOB);
+                          const day = String(date.getDate()).padStart(2, '0');
+                          const month = String(date.getMonth() + 1).padStart(2, '0');
+                          const year = date.getFullYear();
+                          return `${day}/${month}/${year}`;
+                        })()
+                      }
                     </td>
                     <td className="py-2 px-4 border-b">
                       {nominee.details.nomineeAge}
@@ -1034,3 +1142,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 }
 
 export default NominationForm;
+
+
+
+
+ 

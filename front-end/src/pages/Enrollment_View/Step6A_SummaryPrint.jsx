@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
+        const [nominees, setNominees] = useState([])
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
@@ -26,9 +27,12 @@ const ViewApplicationForm = () => {
                 // alert('run')
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
+                    const { application, personal_details, account_personal_details, application_addresss,account_nominees, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     
+                    if (account_nominees && account_nominees.length > 0) {
+                        setNominees(account_nominees);
+                    }
                     console.log('toshoe :', response);
                  setFormData({
                     application_id: applicationId,
@@ -546,142 +550,237 @@ const ViewApplicationForm = () => {
                 )}
 
                 {/* Identity Documents */}
-          {/* Family Details */}
-<div className="pdf-section">
-    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-        {/* Maiden Name Fields */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Maiden Prefix"
-            name="maiden_prefix"
-            value={formData.maiden_prefix || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden First Name"
-            type="text"
-            name="maiden_first_name"
-            value={formData.maiden_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden Middle Name"
-            type="text"
-            name="maiden_middle_name"
-            value={formData.maiden_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Maiden Last Name"
-            type="text"
-            name="maiden_last_name"
-            value={formData.maiden_last_name || ''}
-            readOnly
-            max={50}
-        />
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Identity Documents</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.adhar_card.label}
+                            type="text"
+                            name="adhar_card"
+                            value={formData.adhar_card || ''}
+                            readOnly
+                            max={12}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.pannumber.label}
+                            type="text"
+                            name="pan_card"
+                            value={formData.pan_card || ''}
+                            readOnly
+                            max={10}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.passportno.label}
+                            type="text"
+                            name="passport"
+                            value={formData.passport || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.drivinglicence.label}
+                            type="text"
+                            name="driving_license"
+                            value={formData.driving_license || ''}
+                            readOnly
+                            max={20}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label={labels.voterid.label}
+                            type="text"
+                            name="voter_id"
+                            value={formData.voter_id || ''}
+                            readOnly
+                            max={20}
+                        />
+                    </div>
+                </div>
 
-        {/* Father's Details */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Father's Prefix"
-            name="father_prefix_name"
-            value={formData.father_prefix_name || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's First Name"
-            type="text"
-            name="father_first_name"
-            value={formData.father_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's Middle Name"
-            type="text"
-            name="father_middle_name"
-            value={formData.father_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Father's Last Name"
-            type="text"
-            name="father_last_name"
-            value={formData.father_last_name || ''}
-            readOnly
-            max={50}
-        />
 
-        {/* Mother's Details */}
-        <CommanSelect
-            onChange={handleChange}
-            label="Mother's Prefix"
-            name="mother_prefix_name"
-            value={formData.mother_prefix_name || ''}
-            options={salutation}
-            readOnly
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's First Name"
-            type="text"
-            name="mother_first_name"
-            value={formData.mother_first_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's Middle Name"
-            type="text"
-            name="mother_middle_name"
-            value={formData.mother_middle_name || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Mother's Last Name"
-            type="text"
-            name="mother_last_name"
-            value={formData.mother_last_name || ''}
-            readOnly
-            max={50}
-        />
+                  {/* Nominee Details */}
+                                {nominees.length > 0 && (
+                                    <div className="pdf-section mb-8">
+                                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+                                        <div className="w-full mb-8 border rounded p-4">
+                                        <table className="min-w-fit table-auto border border-collapse mb-4">
+                                            <thead>
+                                            <tr className="bg-gray-100 text-left">
+                                                <th  className="border px-4 py-2">Name of the Nominee</th>
+                                                <th  className="border px-4 py-2">Address</th>
+                                                <th  className="border px-4 py-2">Relationship</th>
+                                                <th  className="border px-4 py-2">Date of Birth</th>
+                                                <th  className="border px-4 py-2">Age</th>
+                                                <th  className="border px-4 py-2">Percentage</th> 
+                                            </tr>
+                                            </thead>
+                
+                                            {nominees.map((nominee, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                                    {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+                                                </td>
+                                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                                    {nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}
+                                                </td>
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.relationship}</td>
+                                                <td className="border px-4 py-2" style={{ verticalAlign: 'top', minWidth: '100px' }}>
+                                        {nominee.dob ? new Date(nominee.dob).toLocaleDateString('en-GB') : 'N/A'}
+                                        </td>
+                
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.age}</td>
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.percentage}</td> 
+                                                </tr>
+                                            </tbody>
+                                            ))}
+                                        </table>
+                                        </div>
+                
+                
+                                    </div>
+                                )}
+                
+                {/* Family Details */}
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        {/* Maiden Name Fields */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Maiden Prefix"
+                            name="maiden_prefix"
+                            value={formData.maiden_prefix || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden First Name"
+                            type="text"
+                            name="maiden_first_name"
+                            value={formData.maiden_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Middle Name"
+                            type="text"
+                            name="maiden_middle_name"
+                            value={formData.maiden_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Last Name"
+                            type="text"
+                            name="maiden_last_name"
+                            value={formData.maiden_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
 
-        {/* Birth Place & Country */}
-        <CommanInput
-            onChange={handleChange}
-            label="Birth Place"
-            type="text"
-            name="birth_place"
-            value={formData.birth_place || ''}
-            readOnly
-            max={50}
-        />
-        <CommanInput
-            onChange={handleChange}
-            label="Birth Country"
-            type="text"
-            name="birth_country"
-            value={formData.birth_country || ''}
-            readOnly
-            max={50}
-        />
-    </div>
-</div>
+                        {/* Father's Details */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Father's Prefix"
+                            name="father_prefix_name"
+                            value={formData.father_prefix_name || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's First Name"
+                            type="text"
+                            name="father_first_name"
+                            value={formData.father_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's Middle Name"
+                            type="text"
+                            name="father_middle_name"
+                            value={formData.father_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Father's Last Name"
+                            type="text"
+                            name="father_last_name"
+                            value={formData.father_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
+
+                        {/* Mother's Details */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Mother's Prefix"
+                            name="mother_prefix_name"
+                            value={formData.mother_prefix_name || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's First Name"
+                            type="text"
+                            name="mother_first_name"
+                            value={formData.mother_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's Middle Name"
+                            type="text"
+                            name="mother_middle_name"
+                            value={formData.mother_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Mother's Last Name"
+                            type="text"
+                            name="mother_last_name"
+                            value={formData.mother_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
+
+                        {/* Birth Place & Country */}
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Birth Place"
+                            type="text"
+                            name="birth_place"
+                            value={formData.birth_place || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Birth Country"
+                            type="text"
+                            name="birth_country"
+                            value={formData.birth_country || ''}
+                            readOnly
+                            max={50}
+                        />
+                    </div>
+                </div>
 
                
 

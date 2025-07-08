@@ -39,58 +39,57 @@ const DataTable = ({
   }, [data]);
 
   const getActionPath = (row) => primaryKeys.map((key) => row[key]).join("/");
-
-  // Add serial number column as the first column
-  const muiColumns = [
-    // {
-    //   name: 'serialNo',
-    //   label: 'S.No',
-    //   options: {
-    //     filter: false,
-    //     sort: false,
-    //     customBodyRender: (value, tableMeta) => {
-    //       // Calculate serial number based on current page and row index
-    //       const serialNo = page * pageSize + tableMeta.rowIndex + 1;
-    //       return <div style={{ textAlign: 'center' }}>{serialNo}</div>;
-    //     },
-    //   },
-    // },
-    ...columns.map((col) => ({
-      name: col.field,
-      label: col.header,
-      options: {
-        filter: true,
-        sort: col.sortable,
-        filterType: col.filterType || "dropdown",
-        filterOptions: col.filterOptions || {},
-        customBodyRender: (value) => {
-          if (col.type === "date") {
-            return formatDate(value);
-          } else if (["integer", "float", "double"].includes(col.type)) {
-            return <div style={{ textAlign: "right" }}>{value}</div>;
-          } else if (col.type === "amount") {
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontWeight: "bold",
-                }}
-              >
-                <span>₹</span>
-                <span style={{ textAlign: "right", flex: 1 }}>
-                  {parseFloat(value).toLocaleString("en-IN", {
-                    minimumFractionDigits: 2,
-                  })}
-                </span>
-              </div>
-            );
-          }
-          return <div style={{ textAlign: "left" }}>{value}</div>;
-        },
+ 
+const muiColumns = [
+  {
+    name: 'serialNo',
+    label: 'Serial No.',
+    options: {
+      filter: false,
+      sort: false,
+      customBodyRender: (value, tableMeta) => {
+        // Always use rowIndex + 1 for serial number
+        return <div >{tableMeta.rowIndex + 1}</div>;
       },
-    })),
-  ];
+    },
+  },
+  ...columns.map((col) => ({
+    name: col.field,
+    label: col.header,
+    options: {
+      filter: true,
+      sort: col.sortable,
+      filterType: col.filterType || "dropdown",
+      filterOptions: col.filterOptions || {},
+      customBodyRender: (value) => {
+        if (col.type === "date") {
+          return formatDate(value);
+        } else if (["integer", "float", "double"].includes(col.type)) {
+          return <div style={{ textAlign: "right" }}>{value}</div>;
+        } else if (col.type === "amount") {
+          return (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontWeight: "bold",
+              }}
+            >
+              <span>₹</span>
+              <span style={{ textAlign: "right", flex: 1 }}>
+                {parseFloat(value).toLocaleString("en-IN", {
+                  minimumFractionDigits: 2,
+                })}
+              </span>
+            </div>
+          );
+        }
+        return <div style={{ textAlign: "left" }}>{value}</div>;
+      },
+    },
+  })),
+];
+
 
   if (showActions) {
     muiColumns.push({

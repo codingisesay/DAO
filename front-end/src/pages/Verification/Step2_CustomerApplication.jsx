@@ -1,4 +1,4 @@
- 
+
 
 
 
@@ -8,9 +8,9 @@
 
 
 import React, { useState } from 'react';
-import AddressForm from './2B';
-import PersonalDetailsForm from './2A';
-import CameraCapture from './2C';
+import AddressForm from './Step2B_AddressDetails';
+import PersonalDetailsForm from './Step2A_PersonalDetails';
+import CameraCapture from './Step2C_CustoemerLivePhoto';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
@@ -21,7 +21,7 @@ import { a } from 'framer-motion/client';
 const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     const [activeStep, setActiveStep] = useState(0);
     const { id } = useParams();
-    const admin_id= localStorage.getItem('userCode');
+    const admin_id = localStorage.getItem('userCode');
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
     const steps = [
@@ -123,11 +123,11 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text:  error?.response?.data?.message,
+                text: error?.response?.data?.message,
             });
         }
     }
- 
+
     // handel live photo below
     const handelPhotoReview = async () => {
         const result = await Swal.fire({
@@ -189,7 +189,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text:  error?.response?.data?.message,
+                text: error?.response?.data?.message,
             });
         }
 
@@ -240,7 +240,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
             <div className="stepper-header">
                 {steps.map((step, index) => {
                     const status = index < activeStep ? 'Completed' :
-                        index === activeStep ? 'In Progress' : 'Pending';
+                        index === activeStep ? 'In Review' : 'Pending';
 
                     return (
                         <div
@@ -261,7 +261,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                 })}
             </div>
 
-            <div className="nestedstepper-form-container">          
+            <div className="nestedstepper-form-container">
                 <CurrentStepComponent
                     formData={formData}
                     updateFormData={handleStepSubmit}
@@ -272,7 +272,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
             <div className="next-back-btns">
                 <CommonButton
-                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2" 
+                    className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
                     onClick={activeStep === 0 ? handleRejectClick : handelPhotoReject}
                 >
                     Reject & Continue
@@ -287,7 +287,7 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
 
                 <CommonButton
                     className="btn-next "
-                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}  
+                    onClick={activeStep === 0 ? handleNextStep : handelPhotoAccept}
                 >
                     Accept & Continue
                 </CommonButton>

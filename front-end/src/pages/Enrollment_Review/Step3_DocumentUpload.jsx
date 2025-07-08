@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+ 
+ import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
 import { apiService } from '../../utils/storage';
@@ -11,7 +12,8 @@ import { useParams } from 'react-router-dom';
 const P3 = ({ onNext, onBack }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [Loading, setLoading] = React.useState(false);
-    const [localFormData, setLocalFormData]=useState([]);
+    const [localFormData, setLocalFormData]=useState([]); 
+
     const [documents, setDocuments] = useState(() => {
 
         try {
@@ -32,7 +34,7 @@ const P3 = ({ onNext, onBack }) => {
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
-                console.log( reason.applicant_live_photos_status_comment)
+                console.log( reason.document_approved_status_status_comment)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -111,8 +113,8 @@ const P3 = ({ onNext, onBack }) => {
         }
 
         // Check Aadhaar front/back pairing
-        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         
         if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
             return {
@@ -242,10 +244,10 @@ const P3 = ({ onNext, onBack }) => {
                 )}
                 
              
-                {reason && reason.applicant_live_photos_status_comment ? (
+                {reason && reason.document_approved_status_status_comment ? (
                     <>
                 <div>
-                     {reason &&  <p className="text-red-500">Review Reason : {reason.applicant_live_photos_status_comment}</p> }
+                     {reason &&  <p className="text-red-500">Review Reason : {reason.document_approved_status_status_comment}</p> }
                  <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
@@ -311,4 +313,5 @@ const P3 = ({ onNext, onBack }) => {
 export default P3;
 
 
+ 
  

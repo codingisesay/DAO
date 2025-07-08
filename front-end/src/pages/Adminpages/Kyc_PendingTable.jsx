@@ -1,4 +1,4 @@
-import { useAuth } from '../../auth/AuthContext';  
+import { useAuth } from '../../auth/AuthContext';
 import { kycPendingApplicationsService, adminService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
 import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 
 function KycPendingTable() {
   const [tbldata, setTbldata] = React.useState([]);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
   const [countLoading, setCountLoading] = useState(false);
   const [countData, setCountData] = useState({ content: [] });
   const [data, setData] = useState({ content: [] });
@@ -22,10 +22,15 @@ function KycPendingTable() {
   ];
 
   const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
     { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "kyc_vscbs_first_name", type: "text" },
+    { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
+    {
+      // Updated column for Applicant Name
+      header: "Applicant Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
   ];
 
   const fetchData = async () => {
@@ -36,8 +41,18 @@ function KycPendingTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] });
+
+      // Process the data to include a 'fullName' field
+      const processedData = response.data
+        ? response.data.map(item => ({
+            ...item,
+            // Assuming 'kyc_vscbs_last_name' is the field for last name
+            fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
+          }))
+        : [];
+
+      setTbldata(processedData || []);
+      setData({ content: processedData || [] });
     } catch (error) {
       console.error("Failed to fetch pending applications:", error);
     } finally {
@@ -48,7 +63,7 @@ function KycPendingTable() {
   const fetchDataCount = async () => {
     try {
       setCountLoading(true);
-      const response = await adminService.kycPendingApplicationCountByAgent;
+      const response = await adminService.kycPendingApplicationCountByAgent();
       setCountData({ content: response.data || [] });
     } catch (error) {
       console.error("Failed to fetch agent counts:", error);
@@ -132,7 +147,7 @@ function KycPendingTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -142,154 +157,6 @@ function KycPendingTable() {
 }
 
 export default KycPendingTable;
-
-
-
-// import { useAuth } from '../../auth/AuthContext';  
-// import { kycPendingApplicationsService, adminService } from '../../services/apiServices'; // <-- Import your service
-// import DataTable from '../../components/DataTable';
-// import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
-// import React, { useState, useEffect } from "react"; // Import necessary hooks from React
- 
-
-
-// function KycPendingTable() {
-  
-//   const [countLoading, setCountLoading] = useState(false);
-//   const [countData, setCountData] = useState({ content: [] });
-   
-//     const [tbldata, setTbldata] = React.useState([]);
-//     const { logout } = useAuth(); 
-//     const [data, setData] = useState({ content: [] });
-//     const [loading, setLoading] = useState(false);
-//     const [currentPage, setCurrentPage] = useState(0);
-//     const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
-//     const [filters, setFilters] = useState({});
-
-
-    
-//   const countColumns = [
-//     { header: "Agent ID", field: "kyc_agent_id", type: "text" },
-//     { header: "Approved Count", field: "pending_count", type: "text" }
-//   ];
-
-
-//   const columns = [
-//     { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" },
-//     { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
-//     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-//     { ...COLUMN_DEFINITIONS.id, field: "kyc_application_id", type: "text" }, 
-//     { ...COLUMN_DEFINITIONS.first_name, field: "kyc_vscbs_first_name", type: "text" },
-//   ];
-
-  
-// const fetchData = async () => {
-//   try {
-//     setLoading(true);
-//     const response = await kycPendingApplicationsService.getList({
-//       page: currentPage,
-//       sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
-//       ...filters,
-//     });
-//     // Set both states correctly
-//     setTbldata(response.data || []);
-//     setData({ content: response.data || [] }); // This is what DataTable expects
-//   } catch (error) {
-//     console.error("Failed to fetch pending applications:", error);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
- 
-
-
-//   const fetchDataCount = async () => {
-//     try {
-//       setCountLoading(true);
-//       const response = await adminService.kycPendingApplicationCountByAgent;
-//       // console.log(response.data)
-//       setCountData({ content: response.data || [] });
-//     } catch (error) {
-//       console.error("No agent table:", error);
-//     } finally {
-//       setCountLoading(false);
-//     }
-//   };
-
-
-//   useEffect(() => {
-//     fetchData();
-//     fetchDataCount();
-//   }, [currentPage, sortConfig, filters]);
-
-//   const handleSort = (field, order) => {
-//     setSortConfig({ field, order });
-//   };
-
-//   const handleFilter = (newFilters) => {
-//     setFilters(newFilters);
-//     setCurrentPage(0);
-//   };
-//   const handlePageChange = (page) => {
-//     setCurrentPage(page);
-//   };
-
- 
-//     return (
-//         <>
- 
-//         <div className="container mx-auto">
-//                 <br />  
-//             <div
-//                     className="Usermaster-main-div"
-//                     style={{
-//                     display: "flex",
-//                     flexDirection: "column",
-//                     borderRadius: "30px",
-//                     }}
-//                 >
-//                     {/* Header and Search section */}
-//                     <div
-//                     className="search-user-container"
-//                     style={{ display: "flex", justifyContent: "space-between" }}
-//                     >
-                    
-//                     {/* Action Buttons */}
-//                     <div className="button-section"> </div>
-//                     </div>
-
-//                     <div className="bank-master" >
-//                     <DataTable
-//                         data={data}
-//                         columns={columns}
-//                         basePath="/kyc-verification"
-//                         onSort={handleSort}
-//                         onFilter={handleFilter}
-//                         onPageChange={handlePageChange}
-//                         loading={loading}
-//                         primaryKeys={["kyc_application_id"]} 
-//                     />
-//                     </div>
-
-//                          <div className="bank-master w-300px min-w-300px">
-//             <DataTable
-//               data={countData}
-//               columns={countColumns}
-//               basePath=""
-//               loading={countLoading}
-//               primaryKeys={["agent_id"]}
-//               hidePagination={true}
-//             />
-//           </div>
-//             </div>
-//         </div>
-                
-       
-
-//         </>);
-// }
-
-// export default KycPendingTable;
 
 
  

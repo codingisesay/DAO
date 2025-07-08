@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import PersonalDetailsForm from "./6A";
-import CameraCapture from "./6B";
+import PersonalDetailsForm from "./Step6A_SummaryPrint";
+import CameraCapture from "./Step6B_AgentLivePhoto";
 import "../../assets/css/StepperForm.css"; // Import your CSS file here
 import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";

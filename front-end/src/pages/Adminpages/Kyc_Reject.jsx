@@ -16,14 +16,14 @@ function KycRejectTable() {
   const [filters, setFilters] = useState({});
   const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
-  const getRejectionComments = (item) => { 
+  const getRejectionComments = (item) => {
     const comments = [];
-    
+
     const statusFields = [
       'kyc_data_after_vs_cbs_status_comment',
-      'kyc_document_approved_status_comment', 
+      'kyc_document_approved_status_comment',
     ];
-    
+
     statusFields.forEach(field => {
       if (item[field]) {
         const fieldName = field
@@ -34,7 +34,7 @@ function KycRejectTable() {
         comments.push(`${fieldName}: ${item[field]}`);
       }
     });
-    
+
     return comments.length > 0 ? comments.join('; ') : 'No rejection comments available';
   };
 
@@ -44,21 +44,22 @@ function KycRejectTable() {
   ];
 
   const columns = [
+        { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { 
-      header: "First Name", 
-      field: "kyc_vscbs_first_name", 
-      type: "text" 
+    {
+      // Updated column for Applicant Name
+      header: "Customer Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
     },
-    { 
-      header: "Admin ID", 
-      field: "kyc_admin_id", 
-      type: "text" 
+    {...COLUMN_DEFINITIONS.reject_admin_id,
+      field: "kyc_admin_id",
+      type: "text"
     },
     {
-      header: "Rejection Reasons", 
-      field: "rejection_comments", 
+      header: "Rejection Reasons",
+      field: "rejection_comments",
       type: "text",
       render: (rowData) => getRejectionComments(rowData)
     },
@@ -72,12 +73,15 @@ function KycRejectTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      
+
+      // Process the data to include 'fullName' and all rejection reasons
       const processedData = response.data ? response.data.map(item => ({
         ...item,
+        // Assuming 'kyc_vscbs_last_name' is the field for last name
+        fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
         rejection_comments: getRejectionComments(item)
       })) : [];
-      
+
       setTbldata(processedData);
       setData({ content: processedData });
     } catch (error) {
@@ -90,7 +94,7 @@ function KycRejectTable() {
   const fetchDataCount = async () => {
     try {
       setCountLoading(true);
-      const response = await adminService.kycRejectedApplicationCountByAgent;
+      const response = await adminService.kycRejectedApplicationCountByAgent();
       setCountData({ content: response.data || [] });
     } catch (error) {
       console.error("Failed to fetch agent counts:", error);
@@ -175,7 +179,7 @@ function KycRejectTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["kyc_agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -190,180 +194,4 @@ export default KycRejectTable;
 
 
 
-
-
-
-
-
-
-
-
-
-// import { useAuth } from '../../auth/AuthContext';
-// import { kycRjectedApplicationsService, adminService } from '../../services/apiServices';
-// import DataTable from '../../components/DataTable';
-// import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
-// import React, { useState, useEffect } from "react";
-
-// function KycRejectTable() {
  
-//   const [countLoading, setCountLoading] = useState(false);
-//   const [countData, setCountData] = useState({ content: [] });
-
-//   const [tbldata, setTbldata] = React.useState([]);
-//   const { logout } = useAuth();
-//   const [data, setData] = useState({ content: [] });
-//   const [loading, setLoading] = useState(false);
-//   const [currentPage, setCurrentPage] = useState(0);
-//   const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
-//   const [filters, setFilters] = useState({});
-
-//   const getRejectionComments = (item) => { 
-//     const comments = [];
-    
-//     // Check all possible status comment fields for rejected applications
-//     const statusFields = [
-//       'kyc_data_after_vs_cbs_status_comment',
-//       'kyc_document_approved_status_comment', 
-//     ];
-    
-//     statusFields.forEach(field => {
-//       if (item[field]) {
-//         // Format the field name for display
-//         const fieldName = field
-//           .replace('kyc_', '')
-//           .replace(/_comment$/, '')
-//           .replace(/_/g, ' ')
-//           .replace(/\b\w/g, l => l.toUpperCase());
-//         comments.push(`${fieldName}: ${item[field]}`);
-//       }
-//     });
-    
-//     return comments.length > 0 ? comments.join('; ') : 'No rejection comments available';
-//   };
-
-  
-    
-//   const countColumns = [
-//     { header: "Agent ID", field: "kyc_agent_id", type: "text" },
-//     { header: "Rejected Count", field: "rejected_count", type: "text" }
-//   ];
-
-//   const columns = [
-//     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-//     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-//     { 
-//       header: "First Name", 
-//       field: "kyc_vscbs_first_name", 
-//       type: "text" 
-//     },
-//     { 
-//       header: "Admin ID", 
-//       field: "kyc_admin_id", 
-//       type: "text" 
-//     },
-//     {
-//       header: "Rejection Reasons", 
-//       field: "rejection_comments", 
-//       type: "text",
-//       render: (rowData) => getRejectionComments(rowData)
-//     },
-//   ];
-
-//   const fetchData = async () => {
-//     try {
-//       setLoading(true);
-//       const response = await kycRjectedApplicationsService.getList({
-//         page: currentPage,
-//         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
-//         ...filters,
-//       });
-      
-//       // Process the data to include rejection_comments field
-//       const processedData = response.data ? response.data.map(item => ({
-//         ...item,
-//         rejection_comments: getRejectionComments(item) // Add the computed rejection comments
-//       })) : [];
-      
-//       setTbldata(processedData);
-//       setData({ content: processedData });
-//     } catch (error) {
-//       console.error("Failed to fetch rejected applications:", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-  
-//   const fetchDataCount = async () => {
-//     try {
-//       setCountLoading(true);
-//       const response = await adminService.kycRejectedApplicationCountByAgent;
-//       console.log(response)
-//       setCountData({ content: response.data || [] });
-//     } catch (error) {
-//       console.error("No agent table:", error);
-//     } finally {
-//       setCountLoading(false);
-//     }
-//   };
-
-
-//   useEffect(() => {
-//     fetchData();
-//     fetchDataCount();
-//   }, [currentPage, sortConfig, filters]);
-
-//   const handleSort = (field, order) => {
-//     setSortConfig({ field, order });
-//   };
-
-//   const handleFilter = (newFilters) => {
-//     setFilters(newFilters);
-//     setCurrentPage(0);
-//   };
-
-//   const handlePageChange = (page) => {
-//     setCurrentPage(page);
-//   };
-
-//   return (
-//     <div className="container mx-auto">
-//       <br />
-//       <div
-//         className="Usermaster-main-div"
-//         style={{
-//           display: "flex",
-//           flexDirection: "column",
-//           borderRadius: "30px",
-//         }}
-//       >
-//         <div className="bank-master">
-//           <DataTable
-//             data={data}
-//             columns={columns}
-//             basePath="/kyc-verification"
-//             onSort={handleSort}
-//             onFilter={handleFilter}
-//             onPageChange={handlePageChange}
-//             loading={loading}
-//             primaryKeys={["kyc_application_id"]}
-//             editButtonDisabled={true}
-//           />
-//         </div>
-//                      <div className="bank-master w-300px min-w-300px">
-//             <DataTable
-//               data={countData}
-//               columns={countColumns}
-//               basePath=""
-//               loading={countLoading}
-//               primaryKeys={["agent_id"]}
-//               hidePagination={true}
-//             />
-//           </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default KycRejectTable;  

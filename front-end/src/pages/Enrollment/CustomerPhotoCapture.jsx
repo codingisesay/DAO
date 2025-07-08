@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import scan_face from "../../assets/imgs/scan_face.gif";
 import scan_ray from "../../assets/imgs/scan_ray.gif";
@@ -130,7 +131,8 @@ const ImageCaptureValidator = ({
   };
 
   // Convert base64 to Blob
-  const dataURLtoBlob = (dataURL) => {
+const dataURLtoBlob = (dataURL) => {
+  try {
     const arr = dataURL.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -139,22 +141,29 @@ const ImageCaptureValidator = ({
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
+  console.log('tom convert base64 : ',new Blob([u8arr]));
     return new Blob([u8arr], { type: mime });
-  };
+  } catch (error) {
+    console.error("Error in dataURLtoBlob:", error);
+    console.log("Problematic dataURL prefix:", dataURL.substring(0, 100)); // Log part of the dataURL for inspection
+    return null; // Return null or throw the error
+  }
+};
 
   // Capture image
-  const capture = () => {
+const capture = async () => {
     if (!webcamRef.current || !isWebcamReady) return;
 
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
 
-    const blob = dataURLtoBlob(imageSrc);
-    const file = blob;
+    // If dataURLtoBlob was asynchronous, you would await it here
+    const blob =  dataURLtoBlob(imageSrc); // Assuming dataURLtoBlob returns a Promise
+    const file =  blob;
     const previewUrl = URL.createObjectURL(file);
 
     const capturedData = {
-      file: file,
+      file: file, // This `file` variable will be the Blob
       previewUrl: previewUrl,
       timestamp: new Date().toISOString(),
       metadata: {
@@ -170,7 +179,6 @@ const ImageCaptureValidator = ({
 
     stopCamera();
   };
-
   // Retake photo
   const retake = () => {
     setImgSrc(null);
@@ -214,6 +222,7 @@ const ImageCaptureValidator = ({
       const data = await response.json();
       if (data && data.display_name) {
         setTempAddress(data.display_name);
+        // console.log('to show at address : ',  data)
       } else {
         console.log("Address not found");
       }
@@ -226,7 +235,7 @@ const ImageCaptureValidator = ({
     if (hasExistingPhoto && hasExistingPhoto.latitude && hasExistingPhoto.longitude) {
       printAddressFromLatLng(hasExistingPhoto.latitude, hasExistingPhoto.longitude);
     }
-  }, []);
+  }, [hasExistingPhoto]);
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">

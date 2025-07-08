@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import NominationForm from './5B';
-import PersonalDetailsForm from './5A';
-import BankFacility from './5C';
+import NominationForm from './Step5B_NominationDetails';
+import PersonalDetailsForm from './Step5A_PersonalDetails';
+import BankFacility from './Step5C_BankingFacility';
 import '../../assets/css/StepperForm.css'; // Import your CSS file here
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
@@ -14,7 +14,7 @@ const p5 = ({ onNext, onBack }) => {
     const { id } = useParams();
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
 
-    const admin_id= localStorage.getItem('userCode');
+    const admin_id = localStorage.getItem('userCode');
 
     const [formData, setFormData] = useState({
         // Personal Details
@@ -171,7 +171,7 @@ const p5 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text:  error?.response?.data?.message,
+                text: error?.response?.data?.message,
             });
         }
     }
@@ -203,7 +203,7 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
-            
+
             applicationStatus.push('Reject');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
@@ -237,7 +237,7 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5B(id, payload);
-            
+
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
@@ -263,7 +263,7 @@ const p5 = ({ onNext, onBack }) => {
                 allowOutsideClick: false,
                 allowEscapeKey: false,
             });
-            
+
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             setActiveStep(activeStep + 1);
@@ -272,7 +272,7 @@ const p5 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text:  error?.response?.data?.message,
+                text: error?.response?.data?.message,
             });
         }
     }
@@ -304,7 +304,7 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: admin_id
             };
             await pendingAccountStatusUpdate.updateS5C(id, payload);
-            
+
             applicationStatus.push('Reject');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
@@ -338,7 +338,7 @@ const p5 = ({ onNext, onBack }) => {
                 status_comment: result.value,
                 admin_id: admin_id
             };
-            await pendingAccountStatusUpdate.updateS5C(id, payload);            
+            await pendingAccountStatusUpdate.updateS5C(id, payload);
             applicationStatus.push('Review');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             onNext();
@@ -358,7 +358,7 @@ const p5 = ({ onNext, onBack }) => {
                 admin_id: admin_id
             }
             pendingAccountStatusUpdate.updateS5C(id, payload);
-            
+
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
@@ -375,7 +375,7 @@ const p5 = ({ onNext, onBack }) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text:  error?.response?.data?.message,
+                text: error?.response?.data?.message,
             });
         }
 
@@ -391,7 +391,7 @@ const p5 = ({ onNext, onBack }) => {
                     if (index < activeStep) {
                         status = 'Completed';
                     } else if (index === activeStep) {
-                        status = 'In Progress';
+                        status = 'In Review';
                     } else {
                         status = 'Pending';
                     }

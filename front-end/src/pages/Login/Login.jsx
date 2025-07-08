@@ -23,6 +23,19 @@ const roles = [
 ];
 
 export default function LoginPage() {
+
+    // clear privious data
+
+   useEffect(() => {
+        localStorage.removeItem('approveStatusArray');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userCode');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('roleName');
+        localStorage.removeItem('refreshToken');
+    }, []);
+    // clear privious data above
+
     const [selectedRole, setSelectedRole] = useState(null);
     const [formData, setFormData] = useState({ username: '', password: '', captcha: '', role: '' });
     const [showPassword, setShowPassword] = useState(false);

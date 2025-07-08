@@ -90,7 +90,7 @@ function PersonalOccupationForm() {
 
                         // Other Personal Details
                         maritalStatus: application2.marital_status || '',
-                        nationality: application2.nationality || '',
+                        nationality: application2.nationality || 'Indian',
                         religion: application2.religion || '',
                         caste: application2.caste || '',
 

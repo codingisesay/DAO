@@ -7,7 +7,7 @@ import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";
 const p6 = ({ onNext, onBack }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const navigate =useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     // Personal Details
     firstName: "",
@@ -86,10 +86,11 @@ const p6 = ({ onNext, onBack }) => {
 
   const CurrentStepComponent = steps[activeStep].component;
 
-  const CreateAccount = () => {  
+  const CreateAccount = () => {
     //  window.location.href = "/agentdashboard";
-        navigate(-1);
-      };
+    navigate(-1);
+  };
+
   return (
     <div className="">
       <div className="stepper-header">
@@ -107,9 +108,8 @@ const p6 = ({ onNext, onBack }) => {
           return (
             <div
               key={index}
-              className={`step ${index === activeStep ? "active" : ""} ${
-                index < activeStep ? "completed" : ""
-              }`}
+              className={`step ${index === activeStep ? "active" : ""} ${index < activeStep ? "completed" : ""
+                }`}
             >
               <div className="step-number">
                 <i className={step.icon}></i>
@@ -136,21 +136,12 @@ const p6 = ({ onNext, onBack }) => {
           onBack={handleBack}
         />
       </div>
- 
-        <>
-          <div className="next-back-btns">
-            <CommonButton
-              className="btn-back"
-              onClick={activeStep === 0 ? onBack : handleBack}
-              iconLeft={<i className="bi bi-chevron-double-left"></i>}
-            >
-              <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-            </CommonButton>
 
-            {/* <CommonButton
+
+      {/* 
+            <CommonButton
               className="btn-next"
-              // onClick={CreateAccount}
-              onClick={  handleNext  }
+              onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
               iconRight={<i className="bi bi-chevron-double-right"></i>}
             >
               {activeStep === 1 ? (
@@ -162,24 +153,33 @@ const p6 = ({ onNext, onBack }) => {
               )}
             </CommonButton> */}
 
-            <CommonButton
-  className="btn-next"
-  onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
-  iconRight={<i className="bi bi-chevron-double-right"></i>}
->
-  {activeStep === 1 ? (
-    <>Close</>
-  ) : (
-    <>
-      Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-    </>
-  )}
-</CommonButton>
 
 
-          </div>
-        </>
- 
+      <>
+        <div className="next-back-btns">
+          <CommonButton
+            className="btn-back"
+            onClick={activeStep === 0 ? onBack : handleBack}
+            iconLeft={<i className="bi bi-chevron-double-left"></i>}
+          >
+            <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+          </CommonButton>
+          <CommonButton
+            className="btn-next"
+            onClick={activeStep === 0 ? handleNext : () => navigate(-1)}
+            iconRight={<i className="bi bi-chevron-double-right"></i>}
+          >
+            {activeStep === 1 ? (
+              <>Close</>
+            ) : (
+              <>
+                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+              </>
+            )}
+          </CommonButton>
+        </div>
+      </>
+
     </div>
   );
 };
