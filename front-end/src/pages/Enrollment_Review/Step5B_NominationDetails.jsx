@@ -781,7 +781,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             value={currentNominee.details.nomineePercentage}
             onChange={(e) => handleChange("details", e)}
             onBlur={(e) => handleBlur("details", e)}
-            required
+            required type="number"
             max={3}
             className={
               errors.nomineePercentage &&

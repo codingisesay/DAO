@@ -16,6 +16,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [touchedFields, setTouchedFields] = useState({});
+    const id = localStorage.getItem('application_id');
 
   const [localFormData, setLocalFormData] = useState({
     salutation: formData.salutation || '',
@@ -39,7 +40,6 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
   });
 
   useEffect(() => {
-    const id = localStorage.getItem('application_id');
     if (id) {
       fetchAndShowDetails(id);
     }

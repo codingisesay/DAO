@@ -39,6 +39,8 @@ export const createAccountService = {
     ),
   getBankingFacilitiesService: () =>
     apiService.get(API_ENDPOINTS.CREATE_ACCOUNT.GET_BANKING_FACILITIES_SERVICE),
+  vcallGuidlineAccept: (id, data) =>
+    apiService.post(API_ENDPOINTS.CREATE_ACCOUNT.VCALL_GUIDLINE_ACCEPTANCE(id), data),
 };
 
 export const agentService = {
@@ -80,6 +82,7 @@ export const personalDetailsService = {
     apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, data),
   // update: (id, data) => apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
 };
+ 
 
 export const addressDetailsService = {
   create: (data) => apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),

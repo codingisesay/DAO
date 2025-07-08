@@ -23,6 +23,7 @@ export const API_ENDPOINTS = {
     SERVICE_TO_CUSTOMER_S5C: "/dao/api/agent/service-to-customer",
     AGENT_LIVE_PHOTO_S6B: "/dao/api/agent/agent-live-photo",
     GET_BANKING_FACILITIES_SERVICE: "/dao/api/agent/bankingServices",
+  VCALL_GUIDLINE_ACCEPTANCE: (id) => `/dao/api/video-kyc/guidline/${id}`,
   },
 
   AGENT: {
@@ -265,3 +266,4 @@ export const API_ENDPOINTS = {
     },
   },
 };
+ 

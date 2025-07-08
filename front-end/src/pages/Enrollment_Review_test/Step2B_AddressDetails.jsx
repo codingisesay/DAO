@@ -490,7 +490,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                         onChange={handleSameAsAboveToggle}
                         className="mr-2"
                     />
-                    <label className="font-light">Same As Above</label>
+                    <label className="font-light">Same as above</label>
                 </div>
 
                 {!sameAsAbove && (

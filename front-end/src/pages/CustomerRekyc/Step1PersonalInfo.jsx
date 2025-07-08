@@ -222,7 +222,7 @@ const Step1PersonalInfo = ({
                   <div className="flex items-center mt-3">
                     <div className="md:w-1/2 me-4">
                       <CommanInput
-                        type="text"
+                        type={selectedOption === 'Aadhaar Card' ? "number" :  "text"} 
                         label={`Enter ${selectedOption}`}
                         value={localFormData.auth_code}
                         onChange={handleLocalChange}
