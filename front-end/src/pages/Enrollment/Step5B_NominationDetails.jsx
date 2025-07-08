@@ -50,9 +50,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
   // Converts a string to title case
   function toTitleCase(str) {
-    return str
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase());
+    return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
   const fetchAndStoreDetails = async () => {
@@ -183,41 +181,41 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
       newErrors.nomineeDOB = "Future date not allowed";
     }
- 
-  // Address validation (always validate, even if same as permanent)
-  const addr = nominee.address;
-  if (!addr.nomineeComplexName) {
-    newErrors.nomineeComplexName = "Complex name is required";
-  }
-  if (!addr.nomineeBuildingName) {
-    newErrors.nomineeBuildingName = "Building name is required";
-  }
-  if (!addr.nomineeArea) {
-    newErrors.nomineeArea = "Area is required";
-  }
-  if (!addr.nomineeCountry) {
-    newErrors.nomineeCountry = "Country is required";
-  }
-  if (!addr.nomineePinCode) {
-    newErrors.nomineePinCode = "Pin code is required";
-  } else if (!/^\d{6}$/.test(addr.nomineePinCode)) {
-    newErrors.nomineePinCode = "Pin code must be 6 digits";
-  }
-  if (!addr.nomineeCity) {
-    newErrors.nomineeCity = "City is required";
-  } else if (/\d/.test(addr.nomineeCity)) {
-    newErrors.nomineeCity = "City cannot contain numbers";
-  }
-  if (!addr.nomineeDistrict) {
-    newErrors.nomineeDistrict = "District is required";
-  } else if (/\d/.test(addr.nomineeDistrict)) {
-    newErrors.nomineeDistrict = "District cannot contain numbers";
-  }
-  if (!addr.nomineeState) {
-    newErrors.nomineeState = "State is required";
-  } else if (/\d/.test(addr.nomineeState)) {
-    newErrors.nomineeState = "State cannot contain numbers";
-  }
+
+    // Address validation (always validate, even if same as permanent)
+    const addr = nominee.address;
+    if (!addr.nomineeComplexName) {
+      newErrors.nomineeComplexName = "Complex name is required";
+    }
+    if (!addr.nomineeBuildingName) {
+      newErrors.nomineeBuildingName = "Building name is required";
+    }
+    if (!addr.nomineeArea) {
+      newErrors.nomineeArea = "Area is required";
+    }
+    if (!addr.nomineeCountry) {
+      newErrors.nomineeCountry = "Country is required";
+    }
+    if (!addr.nomineePinCode) {
+      newErrors.nomineePinCode = "Pin code is required";
+    } else if (!/^\d{6}$/.test(addr.nomineePinCode)) {
+      newErrors.nomineePinCode = "Pin code must be 6 digits";
+    }
+    if (!addr.nomineeCity) {
+      newErrors.nomineeCity = "City is required";
+    } else if (/\d/.test(addr.nomineeCity)) {
+      newErrors.nomineeCity = "City cannot contain numbers";
+    }
+    if (!addr.nomineeDistrict) {
+      newErrors.nomineeDistrict = "District is required";
+    } else if (/\d/.test(addr.nomineeDistrict)) {
+      newErrors.nomineeDistrict = "District cannot contain numbers";
+    }
+    if (!addr.nomineeState) {
+      newErrors.nomineeState = "State is required";
+    } else if (/\d/.test(addr.nomineeState)) {
+      newErrors.nomineeState = "State cannot contain numbers";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -257,9 +255,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       } else {
         setIsPinCodeValid(false); // Mark as invalid if API returns no success or data
         Swal.fire({
-          icon: 'warning',
-          title: 'PIN Code Not Found',
-          text: 'Could not find address details for this PIN code. Please enter manually.',
+          icon: "warning",
+          title: "PIN Code Not Found",
+          text: "Could not find address details for this PIN code. Please enter manually.",
         });
         setErrors((prev) => ({
           ...prev,
@@ -270,9 +268,9 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       console.error("Error fetching address by PIN code:", error);
       setIsPinCodeValid(false); // Mark as invalid on fetch error
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to fetch PIN code details.',
+        icon: "error",
+        title: "Error",
+        text: "Failed to fetch PIN code details.",
       });
       setErrors((prev) => ({
         ...prev,
@@ -435,7 +433,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         nomineeMiddleName: toTitleCase(filledNominee.details.nomineeMiddleName),
         nomineeLastName: toTitleCase(filledNominee.details.nomineeLastName),
       },
-      address: { ...filledNominee.address }
+      address: { ...filledNominee.address },
     };
     const updatedNominees = [...nominees, newNominee];
     setNominees(updatedNominees);
@@ -459,7 +457,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       ...prev,
       details: {
         ...prev.details,
-        nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : "0",
+        nomineePercentage:
+          remainingPercentage > 0 ? remainingPercentage.toString() : "0",
       },
     }));
   };
@@ -480,7 +479,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         nomineeMiddleName: "",
         nomineeLastName: "",
         nomineeRelation: "",
-        nomineePercentage: remainingPercentage > 0 ? remainingPercentage.toString() : "0",
+        nomineePercentage:
+          remainingPercentage > 0 ? remainingPercentage.toString() : "0",
         nomineeDOB: "",
         nomineeAge: "",
       },
@@ -662,7 +662,8 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     (errors.nomineePinCode && !isSameAsPermanent) || // Specific pincode error (unless address is copied)
     (!isPinCodeValid && !isSameAsPermanent) || // Pincode not valid (unless address is copied)
     isFetchingPincode || // Pincode is being fetched
-    (Object.keys(touchedFields.details).length === 0 && Object.keys(touchedFields.address).length === 0); // No fields touched yet (initial state)
+    (Object.keys(touchedFields.details).length === 0 &&
+      Object.keys(touchedFields.address).length === 0); // No fields touched yet (initial state)
 
   return (
     <div className="max-w-screen-xl mx-auto">
@@ -777,9 +778,29 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
             name="nomineePercentage"
             value={currentNominee.details.nomineePercentage}
-            onChange={(e) => handleChange("details", e)}
+            onChange={(e) => {
+              // Allow only digits or empty value
+              const value = e.target.value;
+              if (value === "" || /^[0-9]+$/.test(value)) {
+                handleChange("details", e);
+              }
+            }}
+            onKeyDown={(e) => {
+              // Allow only digits and control keys
+              const allowedKeys = [
+                "Backspace",
+                "ArrowLeft",
+                "ArrowRight",
+                "Delete",
+                "Tab",
+              ];
+              if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             onBlur={(e) => handleBlur("details", e)}
-            required type="number"
+            required
+            type="number"
             max={3}
             className={
               errors.nomineePercentage &&
@@ -803,6 +824,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             value={currentNominee.details.nomineeDOB}
             onChange={(e) => handleChange("details", e)}
             onBlur={(e) => handleBlur("details", e)}
+            max={new Date().toISOString().split("T")[0]}
             required
             className={
               errors.nomineeDOB && touchedFields.details?.nomineeDOB
@@ -967,8 +989,11 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             max={6}
             // disabled={isSameAsPermanent}
             className={
-              (errors.nomineePinCode && touchedFields.address?.nomineePinCode) ||
-              (!isPinCodeValid && touchedFields.address?.nomineePinCode && !isSameAsPermanent)
+              (errors.nomineePinCode &&
+                touchedFields.address?.nomineePinCode) ||
+              (!isPinCodeValid &&
+                touchedFields.address?.nomineePinCode &&
+                !isSameAsPermanent)
                 ? "border-red-500"
                 : ""
             }
@@ -976,9 +1001,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
           {errors.nomineePinCode && touchedFields.address?.nomineePinCode && (
             <p className="text-red-500 text-xs">{errors.nomineePinCode}</p>
           )}
-          {!isPinCodeValid && touchedFields.address?.nomineePinCode && !errors.nomineePinCode && !isSameAsPermanent && (
-            <p className="text-red-500 text-xs">Please enter a valid PIN code.</p>
-          )}
+          {!isPinCodeValid &&
+            touchedFields.address?.nomineePinCode &&
+            !errors.nomineePinCode &&
+            !isSameAsPermanent && (
+              <p className="text-red-500 text-xs">
+                Please enter a valid PIN code.
+              </p>
+            )}
           {isFetchingPincode && !isSameAsPermanent && (
             <p className="text-blue-500 text-xs">Fetching address...</p>
           )}
@@ -1093,15 +1123,16 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
                       {nominee.details.nomineeRelation}
                     </td>
                     <td className="py-2 px-4 border-b">
-                      {
-                        (() => {
-                          const date = new Date(nominee.details.nomineeDOB);
-                          const day = String(date.getDate()).padStart(2, '0');
-                          const month = String(date.getMonth() + 1).padStart(2, '0');
-                          const year = date.getFullYear();
-                          return `${day}/${month}/${year}`;
-                        })()
-                      }
+                      {(() => {
+                        const date = new Date(nominee.details.nomineeDOB);
+                        const day = String(date.getDate()).padStart(2, "0");
+                        const month = String(date.getMonth() + 1).padStart(
+                          2,
+                          "0"
+                        );
+                        const year = date.getFullYear();
+                        return `${day}/${month}/${year}`;
+                      })()}
                     </td>
                     <td className="py-2 px-4 border-b">
                       {nominee.details.nomineeAge}
@@ -1142,8 +1173,3 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 }
 
 export default NominationForm;
-
-
-
-
- 
