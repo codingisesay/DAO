@@ -29,7 +29,7 @@ const FloatingInput = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const shouldFloat = isFocused || value;
-
+  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
   const handleBlur = (e) => {
     setIsFocused(false);
     if (rest.onBlur) rest.onBlur(e);
@@ -148,7 +148,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                 kyc_application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingKycStusUpdate.updateKyc1( payload);
 
@@ -183,7 +183,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                 kyc_application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await  pendingKycStusUpdate.updateKyc1( payload);
             applicationStatus.push('Review');
@@ -202,7 +202,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
                 kyc_application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             await  pendingKycStusUpdate.updateKyc1( payload);
 

@@ -223,16 +223,16 @@ function DocumentReviewStep({ onNext, onBack }) {
               <thead className="bg-gray-100">
                 <tr>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
-                    File Name
+                   Document Type
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
-                    Preview
+                    Image
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
                     Signature
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
-                    Photograph
+                    Photo
                   </th>
                   <th className="py-2 px-4 border-b border-gray-200 text-left">
                     Created At

@@ -12,6 +12,7 @@ function p3({ onNext, onBack }) {
     const [extractionResults, setExtractionResults] = useState({});
     const [isProcessing, setIsProcessing] = useState(false);
     const { id } = useParams();
+  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const API_URL = 'https://dao.payvance.co.in:8091/ext/api/detect';
     const bearerToken = localStorage.getItem('accessToken');
@@ -132,7 +133,7 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Reject');
@@ -166,7 +167,7 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Review');
@@ -184,7 +185,7 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             const response = pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Approved');
@@ -344,10 +345,10 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Document Type</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Image</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photograph</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>

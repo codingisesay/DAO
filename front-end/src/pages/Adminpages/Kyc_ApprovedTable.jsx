@@ -158,7 +158,7 @@ function KycApprovedTable() {
               onFilter={handleFilter}
               onPageChange={handlePageChange}
               loading={loading}
-              primaryKeys={["id"]}
+              primaryKeys={["kyc_application_id"]}
               editButtonDisabled={true}
             />
           </div>

@@ -227,7 +227,7 @@ const p6 = ({ onNext, onBack }) => {
 
       Swal.fire({
         icon: "success",
-        title: "Enrollment Details Approved Successfully",
+        title: "Agent Photo Approved Successfully",
         timer: 2000, // alert stays for 2 seconds
         showConfirmButton: false, // no "OK" button
         allowOutsideClick: false, // optional: prevent closing by clicking outside
