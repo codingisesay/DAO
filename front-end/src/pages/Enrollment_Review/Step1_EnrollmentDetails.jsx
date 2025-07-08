@@ -415,11 +415,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommanInput
                                                     onChange={handleChange}
                                                     label="Enter Aadhaar Number"
-                                                    type="text"
+                                                    type="text"  disable={true}
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={12} disable={true}
+                                                    maxLength={12}  
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>
@@ -427,6 +427,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
+
                                                     disabled={
                                                         !localFormData.verifynumber ||
                                                         localFormData.verifynumber.length !== 12 ||
