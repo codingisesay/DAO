@@ -304,7 +304,7 @@ function toTitleCase(str) {
         .trim();
 }
     return (
-        <div className="p-4 mx-auto">
+        <div className="p-4 max-w-4xl mx-auto">
           
                 <div className="mb-8">
                     {/* <h2 className="font-bold mb-4 capitalize">{toTitleCase(type)}</h2> */}
