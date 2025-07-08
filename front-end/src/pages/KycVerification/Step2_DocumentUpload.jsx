@@ -346,8 +346,8 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                 <tr>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signatures</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photographs</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photograph</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>
