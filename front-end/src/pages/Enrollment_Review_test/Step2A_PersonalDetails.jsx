@@ -176,7 +176,7 @@ useEffect(() => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Mobile numbers must be different',
+                    text: 'Alternat number should be different',
                 })
             }
 

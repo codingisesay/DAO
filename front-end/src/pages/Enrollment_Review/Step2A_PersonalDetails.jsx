@@ -141,7 +141,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 errors.alt_mob_no = 'Alternate mobile must be 10 digits';
             }
             if (localFormData.alt_mob_no === localFormData.mobile) {
-                errors.alt_mob_no = 'Mobile numbers must be different';
+                errors.alt_mob_no = 'Alternat number should be different';
             }
         }
 
@@ -152,14 +152,14 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             if (!localFormData.pan_card) {
                 errors.pan_card = 'PAN is required';
             } else if (!panRegex.test(localFormData.pan_card.toUpperCase())) {
-                errors.pan_card = 'PAN format should be ABCDE1234F';
+                errors.pan_card = 'PAN number format should be ABCDE1234F';
             }
         }
 
 
         // Email validation
         if (localFormData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(localFormData.email)) {
-            errors.email = 'Invalid email format';
+            errors.email = 'Email format should be name@example.com';
         }
 
         // Name fields should not contain numbers
@@ -290,7 +290,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                 salutation: localFormData.salutation,
                 religion: localFormData.religion,
                 caste: localFormData.caste,
-                marital_status: localFormData.maritalStatus ? localFormData.maritalStatus.toUpperCase() : undefined,
+                marital_status: localFormData.maritalStatus,
                 alt_mob_no: localFormData.alt_mob_no,
                 email: localFormData.email,
                 adhar_card: localFormData.adhar_card,
@@ -608,16 +608,20 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
 
                     {/* Voter ID */}
                     <div>
-                        <CommanInput
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            label={labels.voterid.label}
-                            type="text"
-                            name="voterid"
-                            value={localFormData.voterid}
-                            max={10} min={10}
-                            validationType="ALPHANUMERIC"
-                            className={validationErrors.voterid && touchedFields.voterid ? 'border-red-500' : ''}
+                <CommanInput
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        label={labels.voterid.label}
+                        type="text"
+                        name="voterid"
+                        value={localFormData.voterid}
+                        max={10}
+                        min={10}
+                        validationType="ALPHANUMERIC"
+                        className={validationErrors.voterid && touchedFields.voterid ? 'border-red-500' : ''}
+                        onInput={e => {
+                            e.target.value = e.target.value.toUpperCase();
+                        }}
                         />
                         {validationErrors.voterid && touchedFields.voterid && (
                             <p className="text-red-500 text-xs">{validationErrors.voterid}</p>
