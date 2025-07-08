@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import CommonButton from "../../components/CommonButton";
 import Swal from 'sweetalert2';
-import {pendingAccountData, createAccountService} from '../../services/apiServices'; // Adjust the import path as necessary
+import {pendingAccountData, createAccountService, pendingKyc} from '../../services/apiServices'; // Adjust the import path as necessary
 
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ const VideoKYCInstructions = ({onNext}) => {
     const [showOptions, setShowOptions] = useState(false);
     const [assistKycCall, setAssistKycCall] = useState(false);
     const application_id = JSON.parse(localStorage.getItem('application_id')) || null;
-  const [agentId, setAgentId] = useState(null);
+  const [agentId, setAgentId] = useState(localStorage.getItem('userCode') || null);
   const [applicationId, setApplicationId] = useState(null);
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
@@ -39,16 +39,15 @@ const VideoKYCInstructions = ({onNext}) => {
   const fetchAndShowDetails = async (id) => { 
     try {
       if (id) {
-        const response = await pendingAccountData.getDetailsS2A(id); 
-        const application = response.details || {};  
-        // console.log('detais to send vcall : ', application);
+        const response = await pendingKyc.pedingKyc1(id);
+        const application = response.data.verify_cbs || {};  
+        // console.log('detais to send vcall send : ', application[0].kyc_cbs_first_name);
         if (application) {
-          setLocalFormData(application);
-
-            setAgentId(application.agent_id || null);
-            setApplicationId(application.application_id || null);
-            setCustomerName(application.first_name || '');
-            setCustomerEmail(application.email || '');
+          setLocalFormData(application); 
+            // setAgentId(application.agent_id || null);
+            setApplicationId(application[0].kyc_application_id || null);
+            setCustomerName( application[0].kyc_cbs_first_name || 'Sushant');
+            // setCustomerEmail(application.email || '');
         
         }
       }
@@ -113,7 +112,7 @@ const assistKyc = async () => {
     agent_id: agentId, // This might need to be dynamic based on your logic
     application_id: customerApplicationId, // Use the real application_id
     customer_name: customerName, // This should also be dynamic, from formData or user info
-    customer_email: customerEmail, // This should also be dynamic
+    customer_email: 'paresh.h@siltech.co.in', // This should also be dynamic
   };
 console.log("Payload for creating meeting:", payload); // Debugging line to check payload
   try {
