@@ -25,6 +25,7 @@
     "axios": "^1.9.0",
     "bootstrap-icons": "^1.12.1",
     "clsx": "^2.1.1",
+    "detect-camera-lighting": "^2.0.6",
     "face-api.js": "^0.22.2",
     "framer-motion": "^12.12.1",
     "highcharts": "^12.2.0",
