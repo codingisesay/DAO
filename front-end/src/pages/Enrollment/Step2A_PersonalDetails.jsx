@@ -539,10 +539,14 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
               validationType="NUMBER_ONLY"
               disabled={verificationMethod === 'Aadhaar Card'}
               className={validationErrors.adhar_card && touchedFields.adhar_card ? 'border-red-500' : ''}
+              
+             onInput={e => { 
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');}}
             />
             {validationErrors.adhar_card && touchedFields.adhar_card && (
               <p className="text-red-500 text-xs">{validationErrors.adhar_card}</p>
             )}
+            
           </div>
 
           {/* PAN */}
