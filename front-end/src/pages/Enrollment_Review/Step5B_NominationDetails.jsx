@@ -285,66 +285,65 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     }
   };
 
-  const handleChange = (section, e) => {
-    const { name, value } = e.target;
+const handleChange = (section, e) => {
+  const { name, value } = e.target;
 
-    if (name === "nomineeDOB") {
-      const age = calculateAge(value);
-      setCurrentNominee((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-          nomineeAge: age,
-        },
-      }));
-    } else if (name === "nomineePinCode") {
-      setCurrentNominee((prev) => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [name]: value,
-        },
-      }));
+  if (name === "nomineeDOB") {
+    const age = calculateAge(value);
+    setCurrentNominee((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: value,
+        nomineeAge: age,
+      },
+    }));
+  } else if (name === "nomineePinCode") {
+    setCurrentNominee((prev) => ({
+      ...prev,
+      address: {
+        ...prev.address,
+        [name]: value,
+      },
+    }));
 
-      if (!isSameAsPermanent) {
-        if (value.length === 6) {
-          // Optimistically clear error and set valid before fetching
-          setErrors((prev) => {
-            const newErrors = { ...prev };
-            delete newErrors.nomineePinCode;
-            return newErrors;
-          });
-          setIsPinCodeValid(true); // Assume valid for now, API will confirm
-          fetchAddressByPinCode(value);
-        } else {
-          setIsPinCodeValid(false); // Invalidate if not 6 digits
-          setErrors((prev) => ({
-            ...prev,
-            nomineePinCode: "Pin code must be 6 digits",
-          }));
-        }
-      }
-    } else {
-      setCurrentNominee((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value,
-        },
-      }));
-    }
-
-    // Clear error when user starts typing for fields other than pincode
-    // Pincode error handling is specific to its validation flow
-    if (errors[name] && name !== "nomineePinCode") {
+    if (value.length === 6) {
+      // Optimistically clear error and set valid before fetching
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[name];
+        delete newErrors.nomineePinCode;
         return newErrors;
       });
+      setIsPinCodeValid(true); // Assume valid for now, API will confirm
+      fetchAddressByPinCode(value);
+    } else {
+      setIsPinCodeValid(false); // Invalidate if not 6 digits
+      setErrors((prev) => ({
+        ...prev,
+        nomineePinCode: "Pin code must be 6 digits",
+      }));
     }
-  };
+  } else {
+    setCurrentNominee((prev) => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [name]: value,
+      },
+    }));
+  }
+
+  // Clear error when user starts typing for fields other than pincode
+  // Pincode error handling is specific to its validation flow
+  if (errors[name] && name !== "nomineePinCode") {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      delete newErrors[name];
+      return newErrors;
+    });
+  }
+};
+
 
   const handleBlur = (section, e) => {
     const { name } = e.target;
@@ -644,16 +643,16 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
         },
       }));
       // When unchecking, re-evaluate pincode validity if it's currently invalid
-      if (currentNominee.address.nomineePinCode.length !== 6) {
+      // if (currentNominee.address.nomineePinCode.length !== 6) {
         setIsPinCodeValid(false);
         setErrors((prev) => ({
           ...prev,
           nomineePinCode: "Pin code must be 6 digits",
         }));
-      } else {
-        // If it was 6 digits, re-fetch to validate it independently
-        fetchAddressByPinCode(currentNominee.address.nomineePinCode);
-      }
+      // } else {
+      //   // If it was 6 digits, re-fetch to validate it independently
+      //   fetchAddressByPinCode(currentNominee.address.nomineePinCode);
+      // }
     }
   };
 
