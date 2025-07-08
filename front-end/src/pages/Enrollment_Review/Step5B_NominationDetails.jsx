@@ -779,7 +779,26 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             label={`Percentage (Remaining: ${getRemainingPercentage()}%)`}
             name="nomineePercentage"
             value={currentNominee.details.nomineePercentage}
-            onChange={(e) => handleChange("details", e)}
+              onChange={(e) => {
+              // Allow only digits or empty value
+              const value = e.target.value;
+              if (value === "" || /^[0-9]+$/.test(value)) {
+                handleChange("details", e);
+              }
+            }}
+            onKeyDown={(e) => {
+              // Allow only digits and control keys
+              const allowedKeys = [
+                "Backspace",
+                "ArrowLeft",
+                "ArrowRight",
+                "Delete",
+                "Tab",
+              ];
+              if (!/^[0-9]$/.test(e.key) && !allowedKeys.includes(e.key)) {
+                e.preventDefault();
+              }
+            }}
             onBlur={(e) => handleBlur("details", e)}
             required type="number"
             max={3}
@@ -805,12 +824,14 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
             value={currentNominee.details.nomineeDOB}
             onChange={(e) => handleChange("details", e)}
             onBlur={(e) => handleBlur("details", e)}
+            max={new Date().toISOString().split("T")[0]}
             required
             className={
               errors.nomineeDOB && touchedFields.details?.nomineeDOB
                 ? "border-red-500"
                 : ""
             }
+
           />
           {errors.nomineeDOB && touchedFields.details?.nomineeDOB && (
             <p className="text-red-500 text-xs">{errors.nomineeDOB}</p>
