@@ -174,7 +174,7 @@ function toTitleCase(str) {
             Swal.fire({
                 icon: 'warning',
                 title: 'PIN Code Not Found',
-                text: 'Could not find address details for this PIN code. Please enter manually.',
+                text: 'Could not find address details for this PIN code.',
             });
             setInvalidPinCode(prev => ({ ...prev, per: true }));
         } finally {
@@ -217,7 +217,7 @@ function toTitleCase(str) {
         Swal.fire({
             icon: 'warning',
             title: 'PIN Code Not Found',
-            text: 'Could not find address details for this PIN code. Please enter manually.',
+            text: 'Could not find address details for this PIN code.',
         });
         setInvalidPinCode(prev => ({ ...prev, cor: true }));
     } finally {
