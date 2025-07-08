@@ -355,7 +355,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 <input
                                     type="radio"
                                     name="auth_type"
-                                    value="new"
+                                    value="new" 
                                     className="hidden peer"
                                     checked={selectedType === 'new'}
                                     onChange={() => setSelectedType('new')}
@@ -375,7 +375,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
+                                            name="option" disable={true}
                                             value="Aadhaar Card"
                                             checked={selectedOption === 'Aadhaar Card'}
                                             onChange={handleRadioChange}
@@ -387,7 +387,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
+                                            name="option" disable={true}
                                             value="Pan Card"
                                             checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
@@ -399,7 +399,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
+                                            name="option" disable={true}
                                             value="DigiLocker"
                                             checked={selectedOption === 'DigiLocker'}
                                             onChange={handleRadioChange}
@@ -419,7 +419,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={12}
+                                                    maxLength={12} disable={true}
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>
@@ -452,7 +452,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={10}
+                                                    maxLength={10} disable={true}
                                                     validationType="PAN"
                                                     onInput={(e) => {
                                                         e.target.value = e.target.value.toUpperCase();
