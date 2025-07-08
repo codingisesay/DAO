@@ -393,7 +393,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommanInput
                                                     onChange={handleChange}
                                                     label="Enter Aadhaar Number"
-                                                    type="text"
+                                                    type="number"
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
