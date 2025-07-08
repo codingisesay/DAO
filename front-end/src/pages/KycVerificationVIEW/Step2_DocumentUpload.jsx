@@ -230,10 +230,10 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                         <table className=" border border-gray-200" style={{ width: "100%", minWidth: "100%" }}>
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left " style={{ width: "60px", minWidth: "60px"}}>File Name</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Preview</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left " style={{ width: "60px", minWidth: "60px"}}>Document Type</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Image</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Signature</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Photograph</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Photo</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Created At</th>
                                 </tr>
                             </thead>

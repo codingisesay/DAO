@@ -216,7 +216,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
-                title: 'Application Created Successfully!', 
+                title: 'Application Updated Successfully!', 
                 text: 'Application Number : ' + id,
                 icon: 'success',
                 confirmButtonText: 'OK',

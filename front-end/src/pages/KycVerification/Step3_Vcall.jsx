@@ -11,6 +11,7 @@ function p4({ onNext, onBack }) {
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const { id } = useParams();
 
+  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
   
       const handleRejectClick = async () => {
           const result = await Swal.fire({
@@ -34,7 +35,7 @@ function p4({ onNext, onBack }) {
                   kyc_application_id: Number(id),
                   status: 'Rejected',
                   status_comment: result.value,
-                  admin_id: 1
+                  admin_id: admin_id
               };
               await pendingKycStusUpdate.updateKyc3( payload);
               applicationStatus.push('Reject');
@@ -67,7 +68,7 @@ function p4({ onNext, onBack }) {
                   kyc_application_id: Number(id),
                   status: 'Review',
                   status_comment: result.value,
-                  admin_id: 1
+                  admin_id: admin_id
               };
               await pendingKycStusUpdate.updateKyc3( payload);
               applicationStatus.push('Review');
@@ -84,7 +85,7 @@ function p4({ onNext, onBack }) {
                   kyc_application_id: Number(id),
                   status: 'Approved',
                   status_comment: '',
-                  admin_id: 1
+                  admin_id: admin_id
               }
               const response = pendingKycStusUpdate.updateKyc3( payload);
               applicationStatus.push('Approved');

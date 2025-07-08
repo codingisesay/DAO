@@ -297,7 +297,7 @@ const DocumentDetailsTable = ({ documentslist, extractedData }) => {
                         <thead className="bg-gray-100">
                             <tr>
                                 <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
-                                <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
+                                <th className="py-2 px-4 border-b border-gray-200 text-left">Image</th>
                                 <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
                                 <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th> 
                                 <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>

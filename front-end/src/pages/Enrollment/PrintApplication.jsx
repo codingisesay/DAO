@@ -171,7 +171,16 @@ const ApplicationPdf = () => {
         };
         fetchDetails();
     }, [applicationId]);
-
+// Format a date string (yyyy-mm-dd or ISO) to dd/mm/yyyy
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr; // fallback if invalid
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
     const KeyValueRow = ({ label, value, emptyValue = 'N/A', width = '200px' }) => (
         <tr style={{ pageBreakInside: 'avoid' }}>
             <td style={{ 
@@ -359,7 +368,7 @@ const ApplicationPdf = () => {
                                     width="120px"
                                 />
                                 <KeyValueRow label="Application ID" value={formData.application_id} />
-                                <KeyValueRow label="DOB" value={formData.DOB} />
+                                <KeyValueRow label="DOB" value={formatDate(formData.DOB)} />
                                 <KeyValueRow label="Gender" value={formData.gender} />
                                 <KeyValueRow label="Status" value={formData.status} />
                             </tbody>
@@ -397,7 +406,7 @@ const ApplicationPdf = () => {
                                 }}>
                                     <table style={{ width: '100%', pageBreakInside: 'avoid' }}>
                                         <tbody>
-                                            <KeyValueRow label={labels.dob.label} value={formData.DOB} />
+                                            <KeyValueRow label={labels.dob.label} value={formatDate(formData.DOB)} />
                                             <KeyValueRow label={labels.gender.label} value={formData.gender} />
                                             <KeyValueRow label={labels.religion.label} value={formData.religion} />
                                             <KeyValueRow label={labels.caste.label} value={formData.caste} />

@@ -99,7 +99,7 @@ function p3({ onNext, onBack }) {
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
-                title: 'Enrollment Details Approved Successfully',
+                title: 'Document Details Approved Successfully',
                 timer: 2000,               // alert stays for 2 seconds
                 showConfirmButton: false,  // no "OK" button
                 allowOutsideClick: false,  // optional: prevent closing by clicking outside
