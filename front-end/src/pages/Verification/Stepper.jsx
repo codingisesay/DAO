@@ -38,7 +38,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
         className="payvance-logo mx-auto"
       />
 
-      <ul className="max-w-md mx-auto my-3" onClick={() => navigate(-1)}>
+      <ul className="max-w-md mx-auto my-1" onClick={() => navigate(-1)}>
         <li
           className="flex items-center gap-2 px-4 py-2 rounded-full text-green-500 font-semibold cursor-pointer
              hover:text-green-600 hover:bg-green-50 transition-all duration-300"
@@ -47,13 +47,13 @@ const Stepper = ({ currentStep, complete, steps }) => {
           <span className="text-glow-pulse">Back To Dashboard</span>
         </li>
       </ul>
-      <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" />
-      <p className="my-3 text-center"> Account Opening</p>
+      {/* <hr className="h-px my-2 bg-gray-400 border-0 dark:bg-gray-700" /> */}
+      <p className="my-1 text-center"> Account Opening</p>
 
       <div className="sidebar-stepper-container">
-        <div className="vertical-stepper">
+        <div className="vertical-stepper pt-1">
           {steps.map((step, i) => (
-            <div
+            <div  style={{paddingBottom: '10px'}}
               key={i}
               className={`stepper-item ${
                 currentStep === i + 1 ? "active" : ""
@@ -66,10 +66,10 @@ const Stepper = ({ currentStep, complete, steps }) => {
                   <i className={step.icon}></i>
                 )}
               </div>
-              <div className="ms-2">
-                {/* <div className="stepper-subtitle">{step.subtitle}</div> */}
+                 <div className="ms-2">
+                <div className="stepper-subtitle text-xs">{step.subtitle}</div>
                 <div className="stepper-title">{step.title}</div>
-                <div
+                <div   style={{fontSize: '10px', marginTop:'-3px'}}
                   className={`stepper-status text-xs ${getStepStatus(i)
                     .toLowerCase()
                     .replace(" ", "-")}`}

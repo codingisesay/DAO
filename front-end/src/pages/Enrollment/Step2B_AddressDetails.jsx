@@ -204,25 +204,25 @@ function toTitleCase(str) {
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-  if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
-    setLoadingPinCode(prev => ({ ...prev, cor: true }));
-    try {
-        const addressData = await fetchAddressByPinCode(value, 'cor');
-        setLocalFormData(prev => ({
-            ...prev,
-            ...addressData
-        }));
-        setInvalidPinCode(prev => ({ ...prev, cor: false }));
-    } catch (error) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'PIN Code Not Found',
-            text: 'Could not find address details for this PIN code.',
-        });
-        setInvalidPinCode(prev => ({ ...prev, cor: true }));
-    } finally {
-        setLoadingPinCode(prev => ({ ...prev, cor: false }));
-    }
+ if (name === 'cor_pincode' && value.length === 6) {
+  setLoadingPinCode(prev => ({ ...prev, cor: true }));
+  try {
+    const addressData = await fetchAddressByPinCode(value, 'cor');
+    setLocalFormData(prev => ({
+      ...prev,
+      ...addressData
+    }));
+    setInvalidPinCode(prev => ({ ...prev, cor: false }));
+  } catch (error) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'PIN Code Not Found',
+      text: 'Could not find address details for this PIN code. Please enter manually.',
+    });
+    setInvalidPinCode(prev => ({ ...prev, cor: true }));
+  } finally {
+    setLoadingPinCode(prev => ({ ...prev, cor: false }));
+  }
 }
     };
 

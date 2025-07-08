@@ -355,7 +355,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                 <input
                                     type="radio"
                                     name="auth_type"
-                                    value="new"
+                                    value="new" 
                                     className="hidden peer"
                                     checked={selectedType === 'new'}
                                     onChange={() => setSelectedType('new')}
@@ -375,8 +375,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
-                                            value="Aadhaar Card" disabled={true}
+                                            name="option" disable={true}
+                                            value="Aadhaar Card"
                                             checked={selectedOption === 'Aadhaar Card'}
                                             onChange={handleRadioChange}
                                         />
@@ -387,8 +387,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
-                                            value="Pan Card" disabled={true}
+                                            name="option" disable={true}
+                                            value="Pan Card"
                                             checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
                                         />
@@ -398,9 +398,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <label className="flex me-4">
                                         <input
                                             className="me-2"
-                                            type="radio"
-                                            name="option"
-                                            value="DigiLocker" 
+                                            type="radio" 
+                                            name="option" disable={true}
+                                            value="DigiLocker"
                                             checked={selectedOption === 'DigiLocker'}
                                             onChange={handleRadioChange}
                                         />
@@ -415,11 +415,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommanInput
                                                     onChange={handleChange}
                                                     label="Enter Aadhaar Number"
-                                                    type="text"
+                                                    type="text"  disable={true}
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required disabled={true}
-                                                    maxLength={12}
+                                                    maxLength={12} 
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>
@@ -427,6 +427,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
+
                                                     disabled={
                                                         !localFormData.verifynumber ||
                                                         localFormData.verifynumber.length !== 12 ||
@@ -451,8 +452,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     type="text"
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required disabled={true}
-                                                    maxLength={10}
+                                                    required
+                                                    maxLength={10} disable={true}
                                                     validationType="PAN"
                                                     onInput={(e) => {
                                                         e.target.value = e.target.value.toUpperCase();
