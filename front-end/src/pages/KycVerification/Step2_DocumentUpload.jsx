@@ -331,7 +331,7 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
     };
 
     return (
-        <div className="p-4 max-w-4xl mx-auto">
+        <div className="p-4  mx-auto">
             {isProcessing && (
                 <Paper elevation={3} sx={{ p: 0, mb: 0, boxShadow:'none' }}>
                     <Typography variant="body1" align="center">Processing documents...</Typography> 

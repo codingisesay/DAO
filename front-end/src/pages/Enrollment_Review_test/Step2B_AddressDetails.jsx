@@ -235,7 +235,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 Swal.fire({
                     icon: 'warning',
                     title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
+                    text: 'Could not find address details for this PIN code.',
                 });
             } finally {
                 setLoadingPinCode(prev => ({ ...prev, per: false }));
@@ -276,7 +276,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 Swal.fire({
                     icon: 'warning',
                     title: 'PIN Code Not Found',
-                    text: 'Could not find address details for this PIN code. Please enter manually.',
+                    text: 'Could not find address details for this PIN code.',
                 });
             } finally {
                 setLoadingPinCode(prev => ({ ...prev, cor: false }));

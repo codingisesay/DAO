@@ -195,7 +195,7 @@ function toTitleCase(str) {
             Swal.fire({
                 icon: 'warning',
                 title: 'PIN Code Not Found',
-                text: 'Could not find address details for this PIN code. Please enter manually.',
+                text: 'Could not find address details for this PIN code.',
             });
             setInvalidPinCode(prev => ({ ...prev, per: true }));
         } finally {
@@ -624,15 +624,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
             )}
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.city.label}
                 name={`${prefix}_city`}
                 value={formData[`${prefix}_city`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] && (
@@ -641,15 +642,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
 
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.district.label}
                 name={`${prefix}_district`}
                 value={formData[`${prefix}_district`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] && (
@@ -658,15 +660,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
 
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.state.label}
                 name={`${prefix}_state`}
                 value={formData[`${prefix}_state`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] && (

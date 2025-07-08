@@ -398,7 +398,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <label className="flex me-4">
                                         <input
                                             className="me-2"
-                                            type="radio"
+                                            type="radio" 
                                             name="option" disable={true}
                                             value="DigiLocker"
                                             checked={selectedOption === 'DigiLocker'}
@@ -418,8 +418,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     type="text"  disable={true}
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required
-                                                    maxLength={12}  
+                                                    required disabled={true}
+                                                    maxLength={12} 
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>

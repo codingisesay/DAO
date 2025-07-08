@@ -269,7 +269,7 @@ console.log("Payload for creating meeting:", payload); // Debugging line to chec
                 {/* Removed the debug output of meetingUrl here for cleaner UI */} 
             {meetingUrl ? (
 
-            <a href={meetingUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline mb-4">Start</a>
+            // <a href={meetingUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline mb-4">Start</a>
             // <iframe
             //     src={meetingUrl}
             //     title="Assisted V-KYC"
@@ -278,6 +278,15 @@ console.log("Payload for creating meeting:", payload); // Debugging line to chec
             //     style={{ border: '1px solid #ccc', borderRadius: '8px' }}
             //     allow="camera; microphone; fullscreen"
             // />
+              <embed
+                src={meetingUrl}
+                title="Assisted V-KYC"
+                width="100%"
+                height="800"
+                style={{ border: '1px solid #ccc', borderRadius: '8px' }}
+                allow="camera; microphone; fullscreen"
+                 
+            />
             ) : (
             <div className="my-8">Creating meeting, please wait...</div>
             )}

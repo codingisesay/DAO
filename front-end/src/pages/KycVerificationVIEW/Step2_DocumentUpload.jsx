@@ -215,9 +215,9 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
             </Box>
         );
     };
-
+  
     return (
-        <div className="p-4 mx-auto">
+        <div className="p-4 mx-auto ">
             {isProcessing && (
                 <Paper elevation={3} sx={{ p: 0, mb: 0, boxShadow:'none' }}>
                     <Typography variant="body1" align="center">Processing documents...</Typography>
@@ -227,14 +227,14 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
             {Object.entries(groupedDocs).map(([type, docs]) => (
                 <div key={type} className="mb-8"> 
                     <div className="overflow-x-auto">
-                        <table className=" w-full border border-gray-200">
+                        <table className=" border border-gray-200" style={{ width: "100%", minWidth: "100%" }}>
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signatures</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photographs</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left " style={{ width: "60px", minWidth: "60px"}}>File Name</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Preview</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Signatures</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Photographs</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Created At</th>
                                 </tr>
                             </thead>
                             <tbody>
