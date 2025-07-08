@@ -398,7 +398,10 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     value={localFormData.verifynumber}
                                                     required
                                                     max={12} min={12}
-                                                    validationType="NUMBER_ONLY"
+                                                    validationType="NUMBER_ONLY" onInput={e => {
+                                                        // Remove any non-digit character (including '-')
+                                                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                                    }}
                                                 />
                                             </div>
                                             <div className="md:w-1/2">
