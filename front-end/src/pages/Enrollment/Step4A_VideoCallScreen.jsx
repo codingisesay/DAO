@@ -278,6 +278,15 @@ console.log("Payload for creating meeting:", payload); // Debugging line to chec
             //     style={{ border: '1px solid #ccc', borderRadius: '8px' }}
             //     allow="camera; microphone; fullscreen"
             // />
+            //   <embed
+            //     src={meetingUrl}
+            //     title="Assisted V-KYC"
+            //     width="100%"
+            //     height="800"
+            //     style={{ border: '1px solid #ccc', borderRadius: '8px' }}
+            //     allow="camera; microphone; fullscreen"
+                 
+            // />
             ) : (
             <div className="my-8">Creating meeting, please wait...</div>
             )}
