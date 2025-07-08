@@ -244,7 +244,7 @@ const CustomerDetailsPage = ({ formData, handleChange, subProgress, nextStep, pr
       });
 
       setUseAadhaarValues(newUseAadhaarValuesState);
-      // setCbsData(newCbsData);
+      setCbsData(newCbsData);
       setAfterVsCbsData(newAfterVsCbsData);
 
     } else {
