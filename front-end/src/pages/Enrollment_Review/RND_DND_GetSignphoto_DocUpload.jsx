@@ -107,7 +107,7 @@ const DocumentUpload = ({
         if (!hasGender) {
           showAlertMessage(
             "Error",
-            "This does not appear to be a valid Aadhaar card front side (gender not found)",
+            "This does not appear to be a valid Aadhaar card front side",
             "error"
           );
           return { isValid: false };
@@ -139,7 +139,7 @@ const DocumentUpload = ({
         if (!hasUIDAI) {
           showAlertMessage(
             "Error",
-            "This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)",
+            "This does not appear to be a valid Aadhaar card back side",
             "error"
           );
           return { isValid: false };
@@ -178,7 +178,7 @@ const DocumentUpload = ({
       if (!hasIncomeText) {
         showAlertMessage(
           "Error",
-          'This does not appear to be a valid PAN card ("INCOME" text not found)',
+          'This does not appear to be a valid PAN card ',
           "error"
         );
         return { isValid: false };
@@ -187,7 +187,7 @@ const DocumentUpload = ({
       if (!hasPANNumber) {
         showAlertMessage(
           "Error",
-          "This does not appear to be a valid PAN card (PAN number format not found)",
+          "This does not appear to be a valid PAN card ",
           "error"
         );
         return { isValid: false };

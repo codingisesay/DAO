@@ -32,33 +32,25 @@ const ImageCaptureValidator = ({
   };
 
   // Function to fetch address from coordinates
-  const fetchAddress = async (lat, lng) => {
-    setIsFetchingAddress(true);
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-      );
-      const data = await response.json();
+ const fetchAddress = async (lat, lng) => {
+  setIsFetchingAddress(true);
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+    );
+    const data = await response.json();
 
-      if (data.address) {
-        const addressParts = [];
-        if (data.address.road) addressParts.push(data.address.road);
-        if (data.address.village) addressParts.push(data.address.village);
-        if (data.address.town) addressParts.push(data.address.town);
-        if (data.address.city) addressParts.push(data.address.city);
-        if (data.address.state) addressParts.push(data.address.state);
-        if (data.address.country) addressParts.push(data.address.country);
-
-        return addressParts.join(", ");
-      }
-      return "Address not available";
-    } catch (error) {
-      console.error("Error fetching address:", error);
-      return "Error fetching address";
-    } finally {
-      setIsFetchingAddress(false);
+    if (data && data.display_name) {
+      return data.display_name;
     }
-  };
+    return "Address not available";
+  } catch (error) {
+    console.error("Error fetching address:", error);
+    return "Error fetching address";
+  } finally {
+    setIsFetchingAddress(false);
+  }
+};
 
   // Webcam onUserMedia handler
   const handleUserMedia = () => {
@@ -94,6 +86,7 @@ const ImageCaptureValidator = ({
               locationData.latitude,
               locationData.longitude
             );
+            
             setAddress(fetchedAddress);
           },
           (error) => {
