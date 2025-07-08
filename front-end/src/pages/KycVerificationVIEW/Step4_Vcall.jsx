@@ -20,7 +20,7 @@ function p4({ onNext, onBack }) {
                 <CommonButton className="btn-back border-0" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
-                <CommonButton className="btn-next border-0" onClick={() => navigate('/')}>
+                <CommonButton className="btn-next border-0" onClick={() => navigate('/admindashboard')}>
                     Cancel
                 </CommonButton>
             </div>

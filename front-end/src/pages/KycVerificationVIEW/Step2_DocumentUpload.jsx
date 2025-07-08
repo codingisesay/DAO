@@ -232,8 +232,8 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                 <tr>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left " style={{ width: "60px", minWidth: "60px"}}>File Name</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Preview</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Signatures</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Photographs</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Signature</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Photograph</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left "  style={{ width: "60px", minWidth: "60px"}}>Created At</th>
                                 </tr>
                             </thead>

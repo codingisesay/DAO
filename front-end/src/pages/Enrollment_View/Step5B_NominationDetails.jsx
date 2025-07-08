@@ -72,7 +72,7 @@ const NominationDetailsTable = () => {
                                     {nominee.nom_complex_name}, {nominee.nom_landmark}, {nominee.nom_district}, {nominee.nom_country}, {nominee.nom_pincode}
                                 </td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.relationship}</td>
-                                <td className="py-3 px-4 border-b border-gray-200">{nominee.dob}</td>
+                                <td className="py-3 px-4 border-b border-gray-200">{new Date(nominee.dob).toLocaleDateString('en-GB')}</td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.age}</td>
                                 <td className="py-3 px-4 border-b border-gray-200">{nominee.percentage}</td>
                             </tr>
