@@ -29,7 +29,6 @@ const FloatingInput = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const shouldFloat = isFocused || value;
-  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
   const handleBlur = (e) => {
     setIsFocused(false);
     if (rest.onBlur) rest.onBlur(e);
@@ -127,6 +126,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
         fetchAndStoreDetails(id);
   }, [id]);
  
+  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
     const handleRejectClick = async () => {
         const result = await Swal.fire({
             title: 'Reason for Rejection',
@@ -210,7 +210,7 @@ const CustomerDetailsPage = ({ formData, handleChange, updateProgress, subProgre
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
-                title: 'Enrollment Details Approved Successfully',
+                title: ' Details Approved Successfully',
                 timer: 2000,               // alert stays for 2 seconds
                 showConfirmButton: false,  // no "OK" button
                 allowOutsideClick: false,  // optional: prevent closing by clicking outside
