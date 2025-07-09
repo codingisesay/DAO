@@ -133,45 +133,51 @@ const ViewApplicationForm = () => {
                     photo: customerpic ? daodocbase + customerpic[0].path : null,
 
                     // Documents
-                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
-                        : "",
-
-                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
-                        : "",
-
-                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
-                        : "",
-
-                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
-                        : "",
-
-                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
-                        : "",
-
-                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
-                        : "",
-
-                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
-                        : "",
-
-                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
-                        : "",
-
-                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
-                        : "",
-
-                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
-                        : "",
+                     // Documents
+                                          passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
+                                              : "",
+                                          
+                                          aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
+                                              : "",
+                                          
+                                          aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
+                                              : "",
+                                          
+                                          pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
+                                              : "",
+                                          
+                                          voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
+                                              : "",
+                                          
+                                          drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
+                                              : "",
+                                          
+                                          utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
+                                              : "",
+                                          
+                                          rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
+                                              : "",
+                                          
+                                          propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
+                                              : "",
+                                          
+                                          bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
+                                              : "",
+                                          
+                                          signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
+                                              : "",
+                                           
 
                 });
             }
