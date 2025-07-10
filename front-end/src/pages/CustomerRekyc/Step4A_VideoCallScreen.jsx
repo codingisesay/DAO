@@ -110,7 +110,7 @@ const assistKyc = async () => {
   const customerApplicationId = localStorage.getItem('application_id');
   const payload = {
     agent_id: agentId, // This might need to be dynamic based on your logic
-    application_id: customerApplicationId, // Use the real application_id
+    kyc_application_id: customerApplicationId, // Use the real application_id
     customer_name: customerName, // This should also be dynamic, from formData or user info
     customer_email: 'paresh.h@siltech.co.in', // This should also be dynamic
   };

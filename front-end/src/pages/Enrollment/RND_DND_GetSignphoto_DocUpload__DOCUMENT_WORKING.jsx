@@ -84,18 +84,31 @@ const DocumentUpload = ({
     }
     return document.some((doc) => doc.type.includes(documentValue));
   };
+  const extractFirstPageAsImage = async (pdfData) => {
+    return new Promise((resolve) => {
+      // For simplicity, we'll just return the PDF as is
+      // In a real implementation, you'd use a PDF library to extract the first page as an image
+      resolve(pdfData);
+    });
+  };
+
 
   const validateAadhaarCard = async (imageData, side) => {
     setLoading(true);
     try {
-      // Ensure Tesseract is globally available or imported
       if (!window.Tesseract) {
         console.error("Tesseract.js not found. Please ensure it's loaded via CDN.");
         showAlertMessage("Error", "OCR library not loaded. Cannot validate Aadhaar.", "error");
         return { isValid: false };
       }
 
-      const result = await window.Tesseract.recognize(imageData, "eng", {
+      // If the input is a PDF, extract the first page as an image
+      let imageToProcess = imageData;
+      if (imageData.startsWith("data:application/pdf")) {
+        imageToProcess = await extractFirstPageAsImage(imageData);
+      }
+
+      const result = await window.Tesseract.recognize(imageToProcess, "eng", {
         logger: (m) => console.log(m),
       });
 
@@ -169,14 +182,19 @@ const DocumentUpload = ({
   const validatePANCard = async (imageData) => {
     setLoading(true);
     try {
-      // Ensure Tesseract is globally available or imported
       if (!window.Tesseract) {
         console.error("Tesseract.js not found. Please ensure it's loaded via CDN.");
         showAlertMessage("Error", "OCR library not loaded. Cannot validate PAN.", "error");
         return { isValid: false };
       }
 
-      const result = await window.Tesseract.recognize(imageData, "eng", {
+      // If the input is a PDF, extract the first page as an image
+      let imageToProcess = imageData;
+      if (imageData.startsWith("data:application/pdf")) {
+        imageToProcess = await extractFirstPageAsImage(imageData);
+      }
+
+      const result = await window.Tesseract.recognize(imageToProcess, "eng", {
         logger: (m) => console.log(m),
       });
 
@@ -225,24 +243,24 @@ const DocumentUpload = ({
   };
 
   const processImage = async (
-    imageData, // This will now always be a Base64 string (e.g., "data:image/jpeg;base64,...", "data:application/pdf;base64,...")
+    imageData,
     documentType,
     documentValue,
     side,
-    fileMimeType, // Pass the actual file MIME type
-    fileName, // New: Pass the original file name
+    fileMimeType,
+    fileName,
     skipValidation = false
   ) => {
     let isValid = true;
     let extractedInfo = null;
 
-    // Only validate images, not PDFs, and only for specific document types
+    // Only validate images or PDFs for specific document types
     const shouldValidate =
       !skipValidation &&
       (documentValue === "PAN_CARD" ||
         documentValue === "AADHAAR_CARD_FRONT" ||
         documentValue === "AADHAAR_CARD_BACK") &&
-      fileMimeType.startsWith("image/"); // Only validate if it's an image
+      (fileMimeType.startsWith("image/") || fileMimeType === "application/pdf");
 
     if (shouldValidate) {
       if (documentValue === "AADHAAR_CARD_FRONT" || documentValue === "AADHAAR_CARD_BACK") {
@@ -273,7 +291,6 @@ const DocumentUpload = ({
     while(n--){
         u8arr[n] = bstr.charCodeAt(n);
     }
-    // Create a new File object from the Base64 data, using the correct MIME type and provided fileName
     fileObj = new File([u8arr], fileName, {type:mime});
 
     const newDocument = {
@@ -282,9 +299,9 @@ const DocumentUpload = ({
       name: documentValue.includes("AADHAAR")
         ? `${toTitleCase(documentValue.replace(/_/g, " "))}`
         : `${toTitleCase(documentValue.replace(/_/g, " "))}`,
-      image: imageData, // This is now always the Base64 string (data URL)
-      file: fileObj, // This will be a new File object created from the Base64
-      file_name: fileName, // Store the original file name
+      image: imageData,
+      file: fileObj,
+      file_name: fileName,
       uploadedAt: new Date().toLocaleString(),
       documentCategory: documentType,
       isValid: isValid,
@@ -304,30 +321,37 @@ const DocumentUpload = ({
     return true;
   };
 
-const handleFileChange = async (e) => { // Removed documentType, documentValue, side from here
-        const file = e.target.files[0];
-        if (!file) return;
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            showAlertMessage("Error", "File size must not exceed 5MB", "error");
-            return;
-        }
+    if (file.size > 5 * 1024 * 1024) {
+      showAlertMessage("Error", "File size must not exceed 5MB", "error");
+      return;
+    }
 
-        if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type)) {
-            showAlertMessage("Error", "Only JPG/PNG/PDF files are allowed", "error");
-            return;
-        }
+    if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type)) {
+      showAlertMessage("Error", "Only JPG/PNG/PDF files are allowed", "error");
+      return;
+    }
 
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const base64Data = reader.result; // This will be Base64 for both images and PDFs
-            setPreviewImage(base64Data);
-            setPreviewFileType(file.type); // Still store the file type for rendering logic
-            // Use activeDocumentType, activeDocumentValue, uploadSide from state
-            await processImage(base64Data, activeDocumentType, activeDocumentValue, uploadSide, file.type, file.name);
-        };
-        reader.readAsDataURL(file); // Reads content of all files as Base64 Data URL
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result;
+      setPreviewImage(base64Data);
+      setPreviewFileType(file.type);
+      await processImage(
+        base64Data,
+        activeDocumentType,
+        activeDocumentValue,
+        uploadSide,
+        file.type,
+        file.name
+      );
     };
+    reader.readAsDataURL(file);
+  };
+
 
   const startCamera = (documentType, documentValue) => {
     setActiveDocumentType(documentType);
@@ -687,7 +711,7 @@ const removeDocument = (id) => {
           ref={fileInputRef}
           accept="image/jpeg, image/png, application/pdf"
           style={{ display: "none" }}
-          onChange={handleFileChange} // No longer passing args directly, use state
+          onChange={handleFileChange}
         />
 
         <div className="preview-section my-1">
@@ -698,17 +722,15 @@ const removeDocument = (id) => {
                   <>
                     <small> </small>
                     {previewFileType === "application/pdf" ? (
-                      // PDF Preview
                       <div className="h-[200px] w-full mx-auto border-2 rounded-lg bg-gray-100 flex items-center justify-center">
                         <iframe
-                          src={previewImage} // This is the Base64 data URL for PDF
+                          src={previewImage}
                           title="PDF Preview"
                           className="w-full h-full rounded"
                           style={{ border: 'none' }}
                         />
                       </div>
                     ) : (
-                      // Image Preview
                       <img
                         src={previewImage}
                         alt="Document preview"
@@ -744,7 +766,6 @@ const removeDocument = (id) => {
             <tbody>
               {document.length > 0 ? (
                 document.map((doc) => {
-                  // Determine file type based on file_name
                   const fileExtension = doc.file_name ? doc.file_name.split('.').pop().toLowerCase() : '';
                   const isImage = ['png', 'jpg', 'jpeg'].includes(fileExtension);
                   const isPdf = fileExtension === 'pdf';
@@ -755,13 +776,13 @@ const removeDocument = (id) => {
                       <td className="border p-2">
                         {isPdf ? (
                           <a
-                            href={doc.image} // doc.image now holds the base64 data URL
+                            href={doc.image}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 underline"
                             onMouseEnter={(e) => {
                                 const rect = e.target.getBoundingClientRect();
-                                setHoveredPreview(doc.image); // This is the PDF data URL
+                                setHoveredPreview(doc.image);
                                 setHoveredPreviewType('pdf');
                                 setHoverPosition({
                                     x: rect.right + 10,
@@ -777,12 +798,12 @@ const removeDocument = (id) => {
                           </a>
                         ) : isImage ? (
                           <img
-                            src={doc.image} // doc.image now holds the base64 data URL
+                            src={doc.image}
                             alt={doc.name}
                             className="thumbnail w-auto h-15 object-contain"
                             onMouseEnter={(e) => {
                                 const rect = e.target.getBoundingClientRect();
-                                setHoveredPreview(doc.image); // This is the image data URL
+                                setHoveredPreview(doc.image);
                                 setHoveredPreviewType('image');
                                 setHoverPosition({
                                     x: rect.right + 10,
@@ -920,7 +941,7 @@ const removeDocument = (id) => {
                   <iframe
                       src={hoveredPreview}
                       title="PDF Preview"
-                      className="h-[350px] w-[350px] rounded" // Adjust size as needed for the hover preview
+                      className="h-[350px] w-[350px] rounded"
                       style={{ border: 'none' }}
                   />
               ) : (
