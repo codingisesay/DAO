@@ -295,7 +295,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
         permanentRequiredFields.forEach(field => {
             if (!localFormData[field]) {
-                errors[field] = `${labels[field.replace('per_', '')]?.label || field} is required`;
+                errors[field] = `${labels[field.replace('per_', '')]?.label || field} is Required`;
             }
         });
 
@@ -313,7 +313,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
             correspondenceRequiredFields.forEach(field => {
                 if (!localFormData[field]) {
-                    errors[field] = `${labels[field.replace('cor_', '')]?.label || field} is required`;
+                    errors[field] = `${labels[field.replace('cor_', '')]?.label || field} is Required`;
                 }
             });
 
@@ -324,12 +324,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
         // Extra input validation
         if (!extraInputData.per_resident) {
-            errors.per_resident = 'Resident field is required';
+            errors.per_resident = 'Resident field is Required';
         } else if (extraInputData.per_resident === 'Yes') {
             if (!extraInputData.per_residence_status) {
-                errors.per_residence_status = 'Residential status is required';
+                errors.per_residence_status = 'Residential status is Required';
             } else if (extraInputData.per_residence_status === 'Resident' && !extraInputData.resi_doc) {
-                errors.resi_doc = 'Residence document is required';
+                errors.resi_doc = 'Residence document is Required';
             }
         }
 

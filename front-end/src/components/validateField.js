@@ -103,9 +103,9 @@ export const VALIDATION_PATTERNS = {
 };
 
 export const validateField = (fieldName, value, required = false) => {
-    // If the field is required but empty, return error
+    // If the field is Required but empty, return error
     if (required && (!value || value.toString().trim() === "")) {
-        return " is required";
+        return " is Required";
     }
 
     // Check if the field has a validation pattern defined

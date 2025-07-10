@@ -233,7 +233,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.response?.data?.message || 'Agent live phot capture is required.' 
+                text: error?.response?.data?.message || 'Agent live phot capture is Required.' 
             });
         } finally {
             setLocalIsSubmitting(false);

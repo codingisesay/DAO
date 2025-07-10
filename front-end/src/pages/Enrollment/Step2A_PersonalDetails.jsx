@@ -133,7 +133,7 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
       const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
 
       if (!localFormData.pan_card) {
-        errors.pan_card = 'PAN is required';
+        errors.pan_card = 'PAN is Required';
       } else if (!panRegex.test(localFormData.pan_card.toUpperCase())) {
         errors.pan_card = 'PAN number format should be ABCDE1234F';
       }
