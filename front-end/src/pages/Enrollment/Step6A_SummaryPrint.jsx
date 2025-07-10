@@ -21,7 +21,10 @@ const ViewApplicationForm = () => {
     const [nominees, setNominees] = useState([])
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
-    const [pdftoshow, setPdftoshow] = useState();
+    const [pdftoshow1, setPdftoshow1] = useState();
+    const [pdftoshow2, setPdftoshow2] = useState();
+    const [pdftoshow3, setPdftoshow3] = useState();
+    const [pdftoshow4, setPdftoshow4] = useState();
     const applicationId = localStorage.getItem('application_id');
 
     useEffect(() => {
@@ -104,21 +107,21 @@ const ViewApplicationForm = () => {
                     driving_license: personal_details?.driving_license || "",
                     voter_id: personal_details?.voter_id || "",
  
-                // Family Details (add all these fields)
-    maiden_prefix: account_personal_details?.maiden_prefix || "",
-    maiden_first_name: account_personal_details?.maiden_first_name || "",
-    maiden_middle_name: account_personal_details?.maiden_middle_name || "",
-    maiden_last_name: account_personal_details?.maiden_last_name || "",
-    father_prefix_name: account_personal_details?.father_prefix_name || "",
-    father_first_name: account_personal_details?.father_first_name || "",
-    father_middle_name: account_personal_details?.father_middle_name || "",
-    father_last_name: account_personal_details?.father_last_name || "",
-    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
-    mother_first_name: account_personal_details?.mother_first_name || "",
-    mother_middle_name: account_personal_details?.mother_middle_name || "",
-    mother_last_name: account_personal_details?.mother_last_name || "",
-    birth_place: account_personal_details?.birth_place || "",
-    birth_country: account_personal_details?.birth_country || "",
+                    // Family Details (add all these fields)
+                    maiden_prefix: account_personal_details?.maiden_prefix || "",
+                    maiden_first_name: account_personal_details?.maiden_first_name || "",
+                    maiden_middle_name: account_personal_details?.maiden_middle_name || "",
+                    maiden_last_name: account_personal_details?.maiden_last_name || "",
+                    father_prefix_name: account_personal_details?.father_prefix_name || "",
+                    father_first_name: account_personal_details?.father_first_name || "",
+                    father_middle_name: account_personal_details?.father_middle_name || "",
+                    father_last_name: account_personal_details?.father_last_name || "",
+                    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
+                    mother_first_name: account_personal_details?.mother_first_name || "",
+                    mother_middle_name: account_personal_details?.mother_middle_name || "",
+                    mother_last_name: account_personal_details?.mother_last_name || "",
+                    birth_place: account_personal_details?.birth_place || "",
+                    birth_country: account_personal_details?.birth_country || "",
 
 
                         // Occupation Details
@@ -178,8 +181,11 @@ const ViewApplicationForm = () => {
 
                         photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
-                    console.log('to show extention : ',   customerdoc[1].file_name)
-                    setPdftoshow(customerdoc[0].file_path)
+                    console.log('to show extention : ',   customerdoc)
+                    setPdftoshow1(customerdoc[0])
+                    setPdftoshow2(customerdoc[1])
+                    setPdftoshow3(customerdoc[2])
+                    setPdftoshow4(customerdoc[3]) 
                 }
             } catch (error) {
                 console.log(error)
@@ -1015,17 +1021,67 @@ const ViewApplicationForm = () => {
                 </div>
             </div>
             {/* show pdf below.. show pdf below */}
-            <div className='p-20 hidden'>
-                {/* <img src={} /> */}
-                <div style={{ width: '400px', height: '300px', border: '1px solid #ccc' }}>
-                <iframe
-                    src={`data:application/pdf;base64,${pdftoshow}`}
-                    title="PDF Viewer"
-                    style={{ width: '100%', height: '100%', border: 'none' }} 
-                    allowFullScreen s
-                />
-                </div>
-            </div>
+      
+<div>
+  {pdftoshow1 && pdftoshow1.file_name.toLowerCase().endsWith('.pdf') && (
+    <div className="p-20">
+      <div style={{ width: '350px', height: '280px', border: '1px solid #ccc' }}>
+        <iframe
+          src={`data:application/pdf;base64,${pdftoshow1.file_path}`}
+          title="PDF Viewer"
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          allowFullScreen
+        />
+      </div>
+    </div>
+  )}
+
+  {pdftoshow2 && pdftoshow2.file_name.toLowerCase().endsWith('.pdf') && (
+    <div className="p-20">
+      <div style={{ width: '350px', height: '280px', border: '1px solid #ccc' }}>
+        <iframe
+          src={`data:application/pdf;base64,${pdftoshow2.file_path}`}
+          title="PDF Viewer"
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          allowFullScreen
+        />
+      </div>
+    </div>
+  )}
+
+  {pdftoshow3 && pdftoshow3.file_name.toLowerCase().endsWith('.pdf') && (
+    <div className="p-20">
+      <div style={{ width: '350px', height: '280px', border: '1px solid #ccc' }}>
+        <iframe
+          src={`data:application/pdf;base64,${pdftoshow3.file_path}`}
+          title="PDF Viewer"
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          allowFullScreen
+        />
+      </div>
+    </div>
+  )}
+
+  {pdftoshow4 && pdftoshow4.file_name.toLowerCase().endsWith('.pdf') && (
+    <div className="p-20">
+      <div style={{ width: '350px', height: '280px', border: '1px solid #ccc' }}>
+        <iframe
+          src={`data:application/pdf;base64,${pdftoshow4.file_path}`}
+          title="PDF Viewer"
+          style={{ width: '100%', height: '100%', border: 'none' }}
+          allowFullScreen
+        />
+      </div>
+    </div>
+  )}
+</div>
+
+
+
+
+
+
+
         </div>
     );
 };

@@ -221,7 +221,6 @@ const P3 = ({ onNext, onBack }) => {
                         </div>
                     </div>
                 )}
-                    {/* <DocView /> */}
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
@@ -239,6 +238,7 @@ const P3 = ({ onNext, onBack }) => {
                 )}
 
             </div>
+                    {/* <DocView /> */}
             <div className="next-back-btns mt-6">
                 <CommonButton className="btn-back" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
