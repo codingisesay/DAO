@@ -87,13 +87,17 @@ const Step1PersonalInfo = ({
     
     if (selectedOption === 'Aadhaar Card' && !validateAadhaar(localFormData.auth_code)) {
       setError('Please enter a valid 12-digit Aadhaar number');
-      toast.error('Please enter a valid 12-digit Aadhaar number');
+      // toast.error('Please enter a valid 12-digit Aadhaar number');
       return;
     }
     
     if (selectedOption === 'Pan Card' && !validatePAN(localFormData.auth_code)) {
       setError('Please enter a valid PAN number (format: AAAAA9999A)');
-      toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+      
+Swal.fire({
+  icon: 'error', 
+  text: 'Please enter a valid PAN number (format: AAAAA9999A)',
+});
       return;
     }
     
@@ -131,7 +135,12 @@ const Step1PersonalInfo = ({
       }
     } catch (err) {
       setError(err.message || 'Verification failed');
-      toast.error(err.message || 'Verification failed');
+      // toast.error(err.message || 'Verification failed');
+      
+Swal.fire({
+  icon: 'error',
+  title: 'Verification failed', 
+});
     } finally {
       setLoading(false);
     }
@@ -231,27 +240,32 @@ const Step1PersonalInfo = ({
                         required
                         max={selectedOption === 'Aadhaar Card' ? 12 : 10} 
                         // disabled={localFormData.isVerified}
-                         onInput={e => {
-                            // Remove any non-digit character (including '-')
-                            e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                        }}
+                        onInput={(e) => {
+                            e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                          }}
                       />
                     </div>
                     <div className="md:w-1/2">
-                      <CommonButton
-                        className="btn-login"
-                        onClick={handleAadhaarSubmit}
-                        disabled={!localFormData.auth_code || loading || localFormData.isVerified}
-                      >
-                        {loading ? (
-                          <>
-                            <span className="animate-spin inline-block mr-2">↻</span>
-                            Verifying...
-                          </>
-                        ) : (
-                          localFormData.isVerified ? 'Verified' : 'Submit'
-                        )}
-                      </CommonButton>
+                 <CommonButton
+                      className="btn-login"
+                      onClick={handleAadhaarSubmit}
+                      disabled={
+                        !localFormData.auth_code ||
+                        loading ||
+                        localFormData.isVerified ||
+                        (selectedOption === 'Aadhaar Card' && localFormData.auth_code.length !== 12) ||
+                        (selectedOption === 'Pan Card' && localFormData.auth_code.length !== 10)
+                      }
+                    >
+                      {loading ? (
+                        <>
+                          <span className="animate-spin inline-block mr-2">↻</span>
+                          Verifying...
+                        </>
+                      ) : (
+                        localFormData.isVerified ? 'Verified' : 'Submit'
+                      )}
+                    </CommonButton>
                     </div>
                   </div>
                   {error && <small className="text-red-500 mt-2">{error}</small>}

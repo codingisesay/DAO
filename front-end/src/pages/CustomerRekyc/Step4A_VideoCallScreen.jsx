@@ -53,7 +53,11 @@ const VideoKYCInstructions = ({onNext}) => {
       }
     } catch (error) {
       console.error('Failed to fetch application details:', error);
-      toast.error('Failed to load personal details');
+     
+Swal.fire({
+  icon: 'error', 
+  text: 'Failed to load personal details',
+});
     }
   };
     
