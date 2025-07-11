@@ -173,7 +173,7 @@ const handleChange = (e) => {
 
     requiredFields.forEach(field => {
         if (!localFormData[field]) {
-            errors[field] = `${labels[field]?.label || field} is required`;
+            errors[field] = `${labels[field]?.label || field} Required`;
         }
     });
 

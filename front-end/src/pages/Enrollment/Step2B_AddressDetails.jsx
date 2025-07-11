@@ -239,7 +239,7 @@ permanentRequiredFields.forEach(field => {
         const label =
             labels[field.replace('per_', '')]?.label ||
             toTitleCase(field.replace('per_', ''));
-        errors[field] = `${label} is required`;
+        errors[field] = `${label} is Required`;
     }
 });
         // PIN code validation
@@ -258,7 +258,7 @@ correspondenceRequiredFields.forEach(field => {
         const label =
             labels[field.replace('cor_', '')]?.label ||
             toTitleCase(field.replace('cor_', ''));
-        errors[field] = `${label} is required`;
+        errors[field] = `${label} is Required`;
     }
 });
 
@@ -269,12 +269,12 @@ correspondenceRequiredFields.forEach(field => {
 
         // Extra input validation
         if (!extraInputData.per_resident) {
-            errors.per_resident = 'Resident field is required';
+            errors.per_resident = 'Resident field is Required';
         } else if (extraInputData.per_resident === 'Yes') {
             if (!extraInputData.per_residence_status) {
-                errors.per_residence_status = 'Residential status is required';
+                errors.per_residence_status = 'Residential status is Required';
             } else if (extraInputData.per_residence_status === 'Resident' && !extraInputData.resi_doc) {
-                errors.resi_doc = 'Residence document is required';
+                errors.resi_doc = 'Residence document is Required';
             }
         }
 

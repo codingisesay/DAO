@@ -84,7 +84,7 @@ function toTitleCase(str) {
 
             {showError && (
                 <p className="mt-1 text-xs text-red-500">
-                    {label} is required
+                    {label} Required
                 </p>
             )}
         </div>

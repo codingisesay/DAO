@@ -40,7 +40,7 @@ import OtpVerification from "./pages/ForgotPassword/OtpVerification";
 import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 import KYCView from './pages/KycVerificationVIEW/Enrollmentform';
 import AgentReview from './pages/Adminpages/Agent_Account_List_Approved';
-import Test from './pages/Profile'
+// import Test from './pages/Profile'
 
 import { useAuth } from "./auth/AuthContext";
 /// kyc_pending kyc_approved kyc_review
