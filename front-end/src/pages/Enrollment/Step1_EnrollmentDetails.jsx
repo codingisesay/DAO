@@ -210,7 +210,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     }));
                     setIsFetchDisabled(true); // Disable after success
                 } else {
-                    toast.error('Please enter a valid 12-digit Aadhaar number');
+                    // toast.error('Please enter a valid 12-digit Aadhaar number');
+                                            
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Please enter a valid 12-digit Aadhaar number', 
+                        });
                 }
             } else if (selectedOption === 'Pan Card') {
                 if (validatePAN(localFormData.verifynumber)) {
@@ -228,7 +233,12 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     }));
                     setIsFetchDisabled(true); // Disable after success
                 } else {
-                    toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                    // toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                    
+                    Swal.fire({
+                    icon: 'error', 
+                    text: 'Please enter a valid PAN number (format: AAAAA9999A)',
+                    });
                 }
             } else if (selectedOption === 'DigiLocker') {
                 Swal.fire({

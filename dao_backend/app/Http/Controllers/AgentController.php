@@ -891,7 +891,7 @@ public function getKycApplicationTrends(Request $request)
 
     // Safety check
     if (!$kycAgentId) {
-        return response()->json(['message' => 'kyc_agent_id is required.'], 400);
+        return response()->json(['message' => 'kyc_agent_id is Required.'], 400);
     }
 
     $currentYear = date('Y');
@@ -989,7 +989,7 @@ public function getApplicationsByAgeGroups(Request $request)
     $agentId = $request->input('agent_id');
 
     if (!$agentId) {
-        return response()->json(['message' => 'agent_id is required.'], 400);
+        return response()->json(['message' => 'agent_id is Required.'], 400);
     }
 
     $ageGroups = DB::table('customer_application_details')
@@ -1026,7 +1026,7 @@ public function getKycPendingApplicationsByAgent(Request $request)
     $agentId = $request->input('agent_id');
 
     if (!$agentId) {
-        return response()->json(['message' => 'agent_id is required.'], 400);
+        return response()->json(['message' => 'agent_id is Required.'], 400);
     }
 
     $data = DB::table('kyc_application_status')

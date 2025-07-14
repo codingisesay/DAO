@@ -147,10 +147,10 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
 
     // Details validation
     if (!nominee.details.nomineeSalutation) {
-      newErrors.nomineeSalutation = "Salutation is required";
+      newErrors.nomineeSalutation = "Salutation is Required";
     }
     if (!nominee.details.nomineeFirstName) {
-      newErrors.nomineeFirstName = "First name is required";
+      newErrors.nomineeFirstName = "First name is Required";
     } else if (/\d/.test(nominee.details.nomineeFirstName)) {
       newErrors.nomineeFirstName = "First name cannot contain numbers";
     }
@@ -161,15 +161,15 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       newErrors.nomineeMiddleName = "Middle name cannot contain numbers";
     }
     if (!nominee.details.nomineeLastName) {
-      newErrors.nomineeLastName = "Last name is required";
+      newErrors.nomineeLastName = "Last name is Required";
     } else if (/\d/.test(nominee.details.nomineeLastName)) {
       newErrors.nomineeLastName = "Last name cannot contain numbers";
     }
     if (!nominee.details.nomineeRelation) {
-      newErrors.nomineeRelation = "Relation is required";
+      newErrors.nomineeRelation = "Relation is Required";
     }
     if (!nominee.details.nomineePercentage) {
-      newErrors.nomineePercentage = "Percentage is required";
+      newErrors.nomineePercentage = "Percentage is Required";
     } else if (
       isNaN(nominee.details.nomineePercentage) ||
       parseFloat(nominee.details.nomineePercentage) <= 0
@@ -179,7 +179,7 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
       newErrors.nomineePercentage = "Percentage cannot exceed 100";
     }
     if (!nominee.details.nomineeDOB) {
-      newErrors.nomineeDOB = "Date of birth is required";
+      newErrors.nomineeDOB = "Date of birth is Required";
     } else if (new Date(nominee.details.nomineeDOB) > new Date()) {
       newErrors.nomineeDOB = "Future date not allowed";
     }
@@ -187,34 +187,34 @@ function NominationForm({ formData, updateFormData, onBack, onNext }) {
     // Address validation (only if not same as permanent)
     // if (!isSameAsPermanent) {
       if (!nominee.address.nomineeComplexName) {
-        newErrors.nomineeComplexName = "Complex name is required";
+        newErrors.nomineeComplexName = "Complex name is Required";
       }
       if (!nominee.address.nomineeBuildingName) {
-        newErrors.nomineeBuildingName = "Building name is required";
+        newErrors.nomineeBuildingName = "Building name is Required";
       }
       if (!nominee.address.nomineeArea) {
-        newErrors.nomineeArea = "Area is required";
+        newErrors.nomineeArea = "Area is Required";
       }
       if (!nominee.address.nomineeCountry) {
-        newErrors.nomineeCountry = "Country is required";
+        newErrors.nomineeCountry = "Country is Required";
       }
       if (!nominee.address.nomineePinCode) {
-        newErrors.nomineePinCode = "Pin code is required";
+        newErrors.nomineePinCode = "Pin code is Required";
       } else if (!/^\d{6}$/.test(nominee.address.nomineePinCode)) {
         newErrors.nomineePinCode = "Pin code must be 6 digits";
       }
       if (!nominee.address.nomineeCity) {
-        newErrors.nomineeCity = "City is required";
+        newErrors.nomineeCity = "City is Required";
       } else if (/\d/.test(nominee.address.nomineeCity)) {
         newErrors.nomineeCity = "City cannot contain numbers";
       }
       if (!nominee.address.nomineeDistrict) {
-        newErrors.nomineeDistrict = "District is required";
+        newErrors.nomineeDistrict = "District is Required";
       } else if (/\d/.test(nominee.address.nomineeDistrict)) {
         newErrors.nomineeDistrict = "District cannot contain numbers";
       }
       if (!nominee.address.nomineeState) {
-        newErrors.nomineeState = "State is required";
+        newErrors.nomineeState = "State is Required";
       } else if (/\d/.test(nominee.address.nomineeState)) {
         newErrors.nomineeState = "State cannot contain numbers";
       }

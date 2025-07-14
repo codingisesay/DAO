@@ -1,29 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import dataService from '../utils/reasonervices'; // Adjust the path as necessary
 
 function MyPage() {
     const [reason, setReason] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { id } = useParams(); // Assuming 'id' is coming from URL parameters
+    const { id } = useParams();
+
+    const APIURL = 'https://vcall.payvance.co.in/api/fetch-video-details';
 
     useEffect(() => {
         const loadReason = async () => {
             try {
                 setLoading(true);
-                const fetchedReason = await dataService.fetchReasonById(49);
-                setReason(fetchedReason);
+                const response = await fetch(APIURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ kyc_application_id: 37 })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                setReason(data);
             } catch (error) {
-                // Handle error, e.g., show a user-friendly message
-                console.error("Error loading reason in component:", error);
-                setReason(null); // Clear reason on error
+                console.error("Error loading reason:", error);
+                setReason(null);
             } finally {
                 setLoading(false);
             }
         };
 
         loadReason();
-    }, [id]); // Re-run effect if 'id' changes
+    }, [id]);
 
     if (loading) {
         return <div>Loading reason...</div>;
@@ -35,10 +47,14 @@ function MyPage() {
 
     return (
         <div>
-            <h1>Reason Details</h1>
-            <p>Reason ID: {reason.id}</p>
-            <p>Comment: {reason.status_comment}</p>
-            {/* Render other properties of 'reason' as needed */}
+            <h3>API Response:</h3>
+            <pre>{JSON.stringify(reason, null, 2)}</pre>
+            {reason.data && reason.data[0] &&
+                <>
+                    <video controls width="70%" className="videoPlayer" src={`https://vcall.payvance.co.in/storage/${reason.data[0].file_path}`}></video>
+                    <a href={`https://vcall.payvance.co.in/storage/${reason.data[0].file_path}`}>call</a>
+                </>
+            }
         </div>
     );
 }
