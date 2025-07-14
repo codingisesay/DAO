@@ -26,7 +26,7 @@ import Kyc_ReviewTable from './pages/Adminpages/Kyc_Review';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 // import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './RND_DND_GetSignphoto';
+// import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
 import Kycverification from './pages/KycVerification/Enrollmentform';
 import StartKyc from './pages/Enrollment/4B';  
@@ -220,11 +220,6 @@ export const App = () => {
           <Route path="/enrollment_rejected_tbl" element={
             <ProtectedRoute>
               <Enrollment_Reject_Tbl />
-            </ProtectedRoute>
-          } />
-          <Route path="/dao_extraction" element={
-            <ProtectedRoute>
-              <DAOExtraction />
             </ProtectedRoute>
           } />
           <Route path="/create-meeting" element={
