@@ -153,6 +153,8 @@ Route::post('admin/kyc-application-status/update', [kycAgentController::class, '
 //This is for getting the application status by agent id
 Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
 // dashboard agent routes 
+// This is for getting the data for the table based on status and agent
+Route::get('agent/cardstable/by-status/{agentId}/{status}', [AgentController::class, 'getApplicationsByAgentAndStatusForTable']);
 // status count 
 Route::get('/account-status-by-agent', [AgentController::class, 'getAccountStatusByAgent']);
 // all applications for the agent
