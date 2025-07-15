@@ -136,7 +136,7 @@ Route::post('/agent/account-personal-details', [AgentController::class, 'saveAcc
 Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
 Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
 // This is for deleting the application document by agent 
-Route::delete('/agent/application-document', [AgentController::class, 'deleteApplicationDocument']);
+Route::delete('/agent/application-document-delete', [AgentController::class, 'deleteApplicationDocument']);
 //rekyc
 Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
@@ -153,6 +153,8 @@ Route::post('admin/kyc-application-status/update', [kycAgentController::class, '
 //This is for getting the application status by agent id
 Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
 // dashboard agent routes 
+// This is for getting the data for the table based on any status and agent
+Route::get('agent/cardstable/by-status/{agentId}/{status}', [AgentController::class, 'getApplicationsByAgentAndStatusForTable']);
 // status count 
 Route::get('/account-status-by-agent', [AgentController::class, 'getAccountStatusByAgent']);
 // all applications for the agent

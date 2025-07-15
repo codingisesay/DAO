@@ -87,7 +87,7 @@ public function EnrollmentDetails(Request $request)
         'middle_name' => 'nullable|string',
         'last_name' => 'nullable|string',
         'DOB' => 'nullable|date',
-        'gender' => 'nullable|in:Male,Female,Others',
+        'gender' => 'nullable',
         'mobile' => 'nullable|string',
         'complex_name' => 'nullable|string',
         'flat_no' => 'nullable|string',
@@ -166,6 +166,13 @@ public function savePersonalDetails(Request $request)
         'driving_license' => 'nullable|string|max:191',
         'voter_id' => 'nullable|string|max:191',
         'status' => 'nullable',
+        //
+        'firstname' => 'nullable',
+        'middlename' => 'nullable',
+        'lastname' => 'nullable',
+        'dateofbirth' => 'nullable',
+        'gender' => 'nullable',
+        
     ]);
 
     $personalDetails = \App\Models\ApplicationPersonalDetails::where('application_id', $validated['application_id'])->first();
@@ -234,6 +241,7 @@ public function saveLivePhoto(Request $request)
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
+        'address' => 'nullable',
         'status' => 'nullable|in:Pending,Approved,Reject,Review',
         'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
@@ -252,6 +260,7 @@ public function saveLivePhoto(Request $request)
             'application_id' => $validated['application_id'],
             'longitude' => $validated['longitude'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
+            'address' => $validated['address'] ?? null,
             'name' => $filename,
             'path' => $binaryContent, // Save as mediumblob
             'status' => $validated['status'] ?? null,
@@ -272,9 +281,10 @@ public function saveAgentLivePhoto(Request $request)
         'application_id' => 'required|exists:customer_application_details,id',
         'longitude' => 'required|string|max:255',
         'latitude' => 'required|string|max:255',
+        'address' => 'nullable',
         'status' => 'nullable|in:Pending,Approved,Reject,Review',
         'status_comment' => 'nullable|string|max:255',
-        'photo' => 'nullable|max:5120', // max 5MB
+        'photo' => 'required|image|max:5120', // max 5MB 
     ]);
 
     $file = $request->file('photo');
@@ -289,6 +299,7 @@ public function saveAgentLivePhoto(Request $request)
             'application_id' => $validated['application_id'],
             'longitude' => $validated['longitude'],
             'latitude' => $validated['latitude'],
+            'address' => $validated['address'] ?? null,
             'name' => $filename,
             'path' => $binaryContent, // Save as mediumblob
             'status' => $validated['status'] ?? null,
@@ -795,6 +806,55 @@ public function getPendingApplicationsByAgent($agentId)
 
     return response()->json([
         'message' => 'Pending applications fetched successfully.',
+        'data' => $applications
+    ]);
+}
+
+
+// data for the table based on status and agent
+// eg --
+// agent/applications/by-status/123/review
+// agent/applications/by-status/123/rejected
+// agent/applications/by-status/123/approved 
+public function getApplicationsByAgentAndStatusForTable($agentId, $status)
+{
+    $applications = DB::table('customer_appliction_status')
+        ->leftJoin('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
+        ->leftJoin('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
+        ->leftJoin('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
+        ->leftJoin('agent_live_photos', 'customer_appliction_status.application_id', '=', 'agent_live_photos.application_id')
+        ->leftJoin('applicant_live_photos', 'customer_appliction_status.application_id', '=', 'applicant_live_photos.application_id')
+        ->leftJoin('application_personal_details', 'customer_appliction_status.application_id', '=', 'application_personal_details.application_id')
+        ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
+        ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
+        ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->where('customer_application_details.agent_id', $agentId)
+        ->where('customer_appliction_status.status', $status)
+        ->select(
+            'customer_application_details.*',
+            'customer_application_details.id as application_id',
+            'customer_appliction_status.status as full_application_status',
+            'account_personal_details.status as account_personal_details_status',
+            'account_personal_details.status_comment as account_personal_details_status_comment',
+            'application_address_details.status as application_address_details_status',
+            'application_address_details.status_comment as application_address_details_status_comment',
+            'agent_live_photos.status as agent_live_photos_status',
+            'agent_live_photos.status_comment as agent_live_photos_status_comment',
+            'applicant_live_photos.status as applicant_live_photos_status',
+            'applicant_live_photos.status_comment as applicant_live_photos_status_comment',
+            'application_personal_details.status as application_personal_details_status',
+            'application_personal_details.status_comment as application_personal_details_status_comment',
+            'application_service_status.status as application_service_status_status',
+            'application_service_status.status_comment as application_service_status_status_comment',
+            'document_approved_status.status as document_approved_status_status',
+            'document_approved_status.status_comment as document_approved_status_status_comment',
+            'nominee_approved_status.status as nominee_approved_status_status',
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
+        )
+        ->get();
+
+    return response()->json([
+        'message' => ucfirst($status) . ' applications fetched successfully.',
         'data' => $applications
     ]);
 }
