@@ -115,7 +115,6 @@ public function getApprovedApplications()
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->select(
             'customer_appliction_status.*',
-            'customer_application_details.agent_id as agent_id',
             'customer_application_details.first_name as first_name',
             'customer_application_details.middle_name as middle_name',
             'customer_application_details.last_name as last_name',
@@ -251,9 +250,9 @@ public function getRejectedApplications($status)
         ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
         ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
         ->select(
-            'customer_application_details.*',
-            'customer_appliction_status.status as full_application_status',
-            'account_personal_details.status as account_personal_details_status',
+            'customer_application_details.*', 
+            'customer_appliction_status.status as full_application_status', 
+            'account_personal_details.status as account_personal_details_status', 
             'account_personal_details.status_comment as account_personal_details_status_comment',
             'application_address_details.status as application_address_details_status',
             'application_address_details.status_comment as application_address_details_status_comment',
@@ -750,6 +749,7 @@ public function updateAgentLivePhotos($application_id, Request $request)
             'status_comment' => $status_comment,
         ]);
 
+
         $updatedFinalStatus = DB::table('customer_appliction_status')
         ->where('application_id', $application_id)
         ->update([
@@ -760,6 +760,27 @@ public function updateAgentLivePhotos($application_id, Request $request)
     return response()->json([
         'success' => (bool)$updated,
         'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
+    ], 200);
+}
+// full enrollment Update customer application status
+public function updateCustomerApplicationStatus(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:customer_appliction_status.application_id',
+        'status' => 'required|string',
+        'status_comment' => 'nullable|string'
+    ]);
+
+    $updated = DB::table('customer_appliction_status')
+        ->where('application_id', $validated['application_id'])
+        ->update([
+            'status' => $validated['status'],
+            'status_comment' => $validated['status_comment'] ?? null,
+        ]);
+
+    return response()->json([
+        'success' => (bool)$updated,
+        'message' => $updated ? 'Status updated successfully.' : 'No changes made.',
     ], 200);
 }
 
@@ -1128,7 +1149,7 @@ public function getMonthlyAuthTypeCounts()
         ->orderBy('month')
         ->get();
 
-    $authTypes = ['Pan Card', 'Aadhaar Card', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
     $months = range(1, 12);
 
     $data = [];
@@ -1171,7 +1192,7 @@ public function getWeeklyAuthTypeCounts()
         ->orderBy('week')
         ->get();
 
-    $authTypes = ['Pan Card', 'Aadhaar Card', 'DIGILOCKER'];
+    $authTypes = ['Pan Card', 'Aadhar Card', 'DIGILOCKER'];
     $weeks = range(1, 53); // ISO weeks
 
     $data = [];

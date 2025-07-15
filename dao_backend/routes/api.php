@@ -136,7 +136,7 @@ Route::post('/agent/account-personal-details', [AgentController::class, 'saveAcc
 Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNominee']);
 Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
 // This is for deleting the application document by agent 
-Route::delete('/agent/application-document', [AgentController::class, 'deleteApplicationDocument']);
+Route::delete('/agent/application-document-delete', [AgentController::class, 'deleteApplicationDocument']);
 //rekyc
 Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
