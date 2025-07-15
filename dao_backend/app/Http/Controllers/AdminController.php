@@ -235,7 +235,7 @@ public function getReviewApplicationsDetailsAgentById($agentId)
 }
 
 // Get all Rejected applications
-
+// can be use for all the cards table in the admin dashboard
 public function getRejectedApplications($status)
 {
     $rejectedApplications = DB::table('customer_appliction_status')
