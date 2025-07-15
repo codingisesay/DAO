@@ -80,8 +80,14 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch application details:', error);
-      toast.error('Failed to load personal details');
+      // console.error('Failed to fetch application details:', error);
+    
+Swal.fire({
+  icon: 'error',
+  title: 'Oops...',
+  text: 'Failed to load personal details',
+});
+      
     }
   };
   function toTitleCase(str) {

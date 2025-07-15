@@ -13,6 +13,7 @@ class AgentLivePhoto extends Model
         'application_id',
         'longitude',
         'latitude',
+        'address',
         'name',
         'path',
         'status',

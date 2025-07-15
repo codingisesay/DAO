@@ -25,5 +25,10 @@ class ApplicationPersonalDetails extends Model
         'driving_license',
         'voter_id',
         'status',
+        'firstname',
+        'middlename',
+        'lastname',
+        'dateofbirth',
+        'gender', 
     ];
 }
