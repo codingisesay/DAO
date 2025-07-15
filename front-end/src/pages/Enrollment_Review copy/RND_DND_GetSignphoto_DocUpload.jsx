@@ -71,17 +71,17 @@ const DocumentUpload = ({
  
   const signatureProofOption = { value: "SIGNATURE", label: "Signature" };
  
-const isDocumentUploaded = (documentValue) => {
-  // For Aadhaar, we want to allow uploading both front and back
-  if (documentValue === "AADHAAR_CARD_FRONT") {
-    return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
-  }
-  if (documentValue === "AADHAAR_CARD_BACK") {
-    return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
-  }
-  // For other documents, prevent re-uploading the same type
-  return document.some((doc) => doc.type && doc.type.includes(documentValue));
-};
+  const isDocumentUploaded = (documentValue) => {
+    // For Aadhaar, we want to allow uploading both front and back
+    if (documentValue === "AADHAAR_CARD_FRONT") {
+      return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
+    }
+    if (documentValue === "AADHAAR_CARD_BACK") {
+      return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
+    }
+    // For other documents, prevent re-uploading the same type
+    return document.some((doc) => doc.type.includes(documentValue));
+  };
  
   const isAadhaarFrontUploaded = () => {
     return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");

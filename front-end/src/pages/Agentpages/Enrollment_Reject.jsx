@@ -131,7 +131,7 @@ function PendingTable() {
             <DataTable
               data={data}
               columns={columns}
-              basePath="/verify-account"
+              basePath="/agent_enrollmentform"
               onSort={handleSort}
               onFilter={handleFilter}
               onPageChange={handlePageChange}

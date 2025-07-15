@@ -150,7 +150,7 @@ function ApprovedTable() {
             <DataTable
               data={data}
               columns={columns}
-              basePath="/verify-account"
+              basePath="/admin_enrollmentform"
               onSort={handleSort}
               onFilter={handleFilter}
               onPageChange={handlePageChange}

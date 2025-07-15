@@ -6,7 +6,9 @@ import CameraCapture from './Step2C_CustoemerLivePhoto';
 import '../../assets/css/StepperForm.css';
 import CommonButton from '../../components/CommonButton';
 import { createAccountService } from '../../services/apiServices';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
+import { form } from 'framer-motion/client';
+import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
 const P2 = ({ onNext, onBack, formData, updateFormData }) => { 
     const [activeStep, setActiveStep] = useState(0);

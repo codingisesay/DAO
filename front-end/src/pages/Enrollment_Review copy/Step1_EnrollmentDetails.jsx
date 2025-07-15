@@ -6,7 +6,7 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import {  createAccountService, pendingAccountData, agentService,pendingAccountStatusUpdate } from '../../services/apiServices';
+import {  createAccountService, pendingAccountData, agentService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 
@@ -17,11 +17,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const agent_id =localStorage.getItem('userCode');
-    const [loading, setLoading] = useState(false);
-    const [reason, setReason] = useState(null); 
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isView, setIsView] = useState(false);
-    const admin_id= localStorage.getItem('userCode');
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -43,95 +40,147 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         agent_id: agent_id || '',
         state: formData.state || ''
     });
-       
+      
+    
     // Fetch details if application_id exists
     // const id = localStorage.getItem('application_id');
     const {id} = useParams();
-    useEffect(()=>{ if (id) {  fetchAndShowDetails(id);fetchReason(id); }}, [id])
-    useEffect(() => {
-        const role = localStorage.getItem("roleName");
-        setIsAdmin(role.includes("admin") || role.includes("Admin"));
-        setIsView(window.location.href.includes("view")); 
-     }, []);
-
-    const fetchReason = async (id) => { 
-        if (!id) return;
-        try {
-            setLoading(true);
-            const response = await agentService.refillApplication(id); 
-            setReason(response.data[0]);
-        } catch (error) {
-            console.error("Failed to fetch review applications:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
     
-    const fetchAndShowDetails = async (id) => {
-        try {
-            // alert('called')
-            if (id) {
-                const response = await pendingAccountData.getDetailsS1(id);
-                // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                const application = response.details || {};
-                    
-
-                if (application.auth_type === 'Aadhaar Card') {
-                application.auth_code = application.adhar_card || '';
-                application.verifynumber = application.adhar_card || '';
-                } else if (application.auth_type === 'Pan Card') {
-                application.auth_code = application.pan_card || '';
-                application.verifynumber = application.pan_card || '';
-                }
-
-                    if(application.auth_type && application.auth_code){
-                        setSelectedOption(application.auth_type)
-                    setLocalFormData({  ...application ,
-                    first_name: application.first_name || '',
-                    middle_name: application.middle_name || '',
-                    last_name: application.last_name || '',
-                    auth_type: application.auth_type || '',
-                    auth_code: application.auth_code || '',
-                    DOB: application.DOB || '',
-                    gender: application.gender || '',
-                    mobile: application.mobile || '',
-                    verifynumber: application.auth_code || '',
-
-                    complex_name: application.complex_name || '',
-                    flat_no: application.flat_no || '',
-                    area: application.area || '',
-                    landmark: application.landmark || '',
-                    country: application.country || '',
-                    pincode: application.pincode || '',
-                    city: application.city || '',
-                    district: application.district || '',
-                    state: application.state || '',
-
-                    agent_id: application.agent_id || '',
-                    admin_id: application.admin_id || '',
-                    status: application.status || '',
-                    application_id: application.application_id || '',
-                    application_no: application.application_no || '',
-                    salutation: application.salutation || '',
-                    religion: application.religion || '',
-                    caste: application.caste || '',
-                    marital_status: application.marital_status || '',
-                    alt_mob_no: application.alt_mob_no || '',
-                    email: application.email || '',
-                    adhar_card: application.adhar_card || '',
-                    pan_card: application.pan_card || '',
-                    passport: application.passport || '',
-                    driving_license: application.driving_license || '',
-                    voter_id: application.voter_id || ''
-                    });
-                    setShowData(true)
-                    }
-                // alert(localFormData.photo);
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error('Failed to fetch application details:', error);
+        };
+     
+        fetchReason(id);
+    }, [id]); 
+    
+
+        // clear local storage from below code
+        // ...existing code...
+    useEffect(() => {
+        setIsFetchDisabled(true)
+    const checkAndClearLocalStorage = async () => {
+        const hasCustomerPhoto = !!localStorage.getItem('customerPhotoData');
+        const hasDocuments = !!localStorage.getItem('documentData');
+        console.log('Checking for existing data:', { hasCustomerPhoto, hasDocuments });
+
+        if (hasCustomerPhoto || hasDocuments) {
+            const messages = [];
+            if (hasCustomerPhoto) messages.push('Customer Photo Data');
+            if (hasDocuments) messages.push('Document Data');
+
+            console.log('About to show Swal');
+            const result = await Swal.fire({
+                title: 'Clear Existing Data?',
+                html: `Form Contains Data :<br><strong>${messages.join(', ')}</strong><br><br>Do you want to clear this data?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, clear it!',
+                cancelButtonText: 'No, keep it',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            });
+            console.log('Swal result:', result);
+
+            if (result.isConfirmed) {
+                localStorage.removeItem('customerPhotoData'); 
+                localStorage.removeItem('documentData');
+                localStorage.removeItem('application_id');
+                await Swal.fire(
+                    'Cleared!',
+                    'The existing data has been cleared.',
+                    'success'
+                );
+                window.location.reload();
+            } else { console.log('no data cleared')
+                // await Swal.fire(
+                //     'Kept',
+                //     'The existing data was not cleared.',
+                //     'info'
+                // );
+            }
         }
     };
+
+    checkAndClearLocalStorage();
+}, []);
+// ...existing code...
+
+        const fetchAndShowDetails = async (id) => {
+            try {
+                // alert('called')
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS1(id);
+                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                    const application = response.details || {};
+                     
+
+                    if (application.auth_type === 'Aadhaar Card') {
+                    application.auth_code = application.adhar_card || '';
+                    application.verifynumber = application.adhar_card || '';
+                    } else if (application.auth_type === 'Pan Card') {
+                    application.auth_code = application.pan_card || '';
+                    application.verifynumber = application.pan_card || '';
+                    }
+ 
+                        if(application.auth_type && application.auth_code){
+                            setSelectedOption(application.auth_type)
+                        setLocalFormData({  ...application ,
+                        first_name: application.first_name || '',
+                        middle_name: application.middle_name || '',
+                        last_name: application.last_name || '',
+                        auth_type: application.auth_type || '',
+                        auth_code: application.auth_code || '',
+                        DOB: application.DOB || '',
+                        gender: application.gender || '',
+                        mobile: application.mobile || '',
+                        verifynumber: application.auth_code || '',
+
+                        complex_name: application.complex_name || '',
+                        flat_no: application.flat_no || '',
+                        area: application.area || '',
+                        landmark: application.landmark || '',
+                        country: application.country || '',
+                        pincode: application.pincode || '',
+                        city: application.city || '',
+                        district: application.district || '',
+                        state: application.state || '',
+
+                        agent_id: application.agent_id || '',
+                        admin_id: application.admin_id || '',
+                        status: application.status || '',
+                        application_id: application.application_id || '',
+                        application_no: application.application_no || '',
+                        salutation: application.salutation || '',
+                        religion: application.religion || '',
+                        caste: application.caste || '',
+                        marital_status: application.marital_status || '',
+                        alt_mob_no: application.alt_mob_no || '',
+                        email: application.email || '',
+                        adhar_card: application.adhar_card || '',
+                        pan_card: application.pan_card || '',
+                        passport: application.passport || '',
+                        driving_license: application.driving_license || '',
+                        voter_id: application.voter_id || ''
+                        });
+                        setShowData(true)
+                        }
+                    // alert(localFormData.photo);
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
 
 
     const handleChange = (e) => {
@@ -158,7 +207,9 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
         return panRegex.test(panNumber);
     };
- 
+
+  
+
     const fetchShowData = (e) => {
         e.preventDefault();
         try {
@@ -286,153 +337,6 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         }
     };
 
-  /**
-   * Handles admin-side form submission and proceeds to the next step.
-   *
-   * @async
-   * @function handleNextStepAdmin
-   * @param {React.FormEvent} e - The form submission event.
-   * @returns {Promise<void>}
-   *
-   * @description
-   * - Prevents default form behavior and sets submitting state.
-   * - Updates local form data with selected authentication type.
-   * - Builds a payload including user and authentication details.
-   * - Sends the payload to the server via `enrollment_s1` API.
-   * - On success, updates form data and saves application ID in localStorage.
-   * - Displays success or error messages using SweetAlert.
-   * - Triggers `onNext()` to move to the next form step.
-   */ 
-    const handleApproveClick = async () => {
-        // alert('called')
-        try {
-            const payload = {
-                application_id: Number(id),
-                status: 'Approved',
-                status_comment: '',
-                admin_id: admin_id
-            }
-            await pendingAccountStatusUpdate.updateS1(id, payload); 
-            Swal.fire({
-                icon: 'success',
-                title: 'Enrollment Details Approved Successfully',
-                timer: 2000,               // alert stays for 2 seconds
-                showConfirmButton: false,  // no "OK" button
-                allowOutsideClick: false,  // optional: prevent closing by clicking outside
-                allowEscapeKey: false,     // optional: prevent closing with Escape key
-                didOpen: () => {
-                    Swal.showLoading();   // optional: show loading spinner
-                },
-                willClose: () => {
-                    onNext(); // proceed after alert closes
-                }
-            });
-        }
-        catch (error) {
-            // console.error('Error updating status:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong while updating the status!',
-            });
-        }
-    }
-
-
-  /**
-   * Handles the rejection of an application with a reason prompt.
-   *
-   * @async
-   * @function handleRejectClick
-   * @returns {Promise<void>}
-   *
-   * @description
-   * - Prompts the user with a SweetAlert input dialog to enter a rejection reason.
-   * - Validates that a reason is entered.
-   * - If confirmed, constructs a payload and updates application status to "Rejected" via API.
-   * - Logs the payload and proceeds to the next step.
-   * - If dismissed, logs that the rejection was canceled.
-   */
-  const handleRejectClick = async () => {
-    const result = await Swal.fire({
-      title: "Reason for Rejection",
-      input: "text",
-      inputLabel: "Please provide a reason",
-      inputPlaceholder: "Enter reason here...",
-      showCancelButton: true,
-      confirmButtonText: "Submit",
-      cancelButtonText: "Cancel",
-      className: "btn-login",
-      inputValidator: (value) => {
-        if (!value) {
-          return "You need to write a reason!";
-        }
-      },
-    });
-
-    if (result.isConfirmed && result.value) {
-      const payload = {
-        application_id: Number(id),
-        status: "Rejected",
-        status_comment: result.value,
-        admin_id: admin_id,
-      };
-      await pendingAccountStatusUpdate.updateS1(id, payload);
-      console.log("Payload:", payload);
-      onNext(); // pass the payload forward
-    } else if (result.isDismissed) {
-      console.log("Rejection canceled");
-    }
-  };
-
-  /**
-   * Handles moving an application to "Review" status with a reason prompt.
-   *
-   * @async
-   * @function handleReviewClick
-   * @returns {Promise<void>}
-   *
-   * @description
-   * - Opens a SweetAlert modal prompting the user to provide a reason for review.
-   * - Ensures the reason input is not empty.
-   * - If the user confirms and provides a reason:
-   *    - Constructs the review payload.
-   *    - Sends the payload to the API to update the application status.
-   *    - Proceeds to the next step by calling `onNext()`.
-   * - If the user cancels or dismisses the modal, logs the cancellation.
-   */
-  const handleReviewClick = async () => {
-    const result = await Swal.fire({
-      title: "Reason for Review",
-      input: "text",
-      inputLabel: "Please provide a reason",
-      inputPlaceholder: "Enter reason here...",
-      showCancelButton: true,
-      confirmButtonText: "Submit",
-      cancelButtonText: "Cancel",
-      className: "btn-login",
-      inputValidator: (value) => {
-        if (!value) {
-          return "You need to write a reason!";
-        }
-      },
-    });
-
-    if (result.isConfirmed && result.value) {
-      const payload = {
-        application_id: Number(id),
-        status: "Review",
-        status_comment: result.value,
-        admin_id: admin_id,
-      };
-      await pendingAccountStatusUpdate.updateS1(id, payload);
-      console.log("Payload:", payload);
-      onNext(); // pass the payload forward
-    } else if (result.isDismissed) {
-      console.log("Rejection canceled");
-    }
-  };
-
     return (
         <>
             {isSubmitting && (
@@ -514,8 +418,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     type="text"  disable={true}
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required 
-                                                    // disabled={true}
+                                                    required disabled={true}
                                                     maxLength={12} 
                                                     validationType="NUMBER_ONLY"
                                                 />
@@ -550,8 +453,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={10} 
-                                                    // disable={true}
+                                                    maxLength={10} disable={true}
                                                     validationType="PAN"
                                                     onInput={(e) => {
                                                         e.target.value = e.target.value.toUpperCase();
@@ -764,66 +666,28 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                             {/* Other form fields remain the same... */}
 
                         </div>
-                 
+
                         <div className="next-back-btns">
- 
-                            {!isView ? (<>                              
-                                {isAdmin ? (                            
+                            <CommonButton
+                                className="btn-next"
+                                onClick={handleNextStep}
+                                disabled={!showData || isSubmitting}
+                            >
+                                {isSubmitting ? (
                                     <>
-                                    <CommonButton
-                                        className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                                        onClick={handleRejectClick}
-                                    >
-                                        Reject & Continue
-                                    </CommonButton>
-
-                                    <CommonButton
-                                        className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                                        onClick={handleReviewClick}
-                                    >
-                                        Review & Continue
-                                    </CommonButton>
-
-                                    <CommonButton
-                                        className="btn-next"
-                                        onClick={handleApproveClick}
-                                    >
-                                        Accept & Continue
-                                    </CommonButton>
-                                    </>
-                                ) 
-                                : (
-                                <>
-                                    <CommonButton
-                                    className="btn-next"
-                                    onClick={handleNextStep}
-                                    disabled={isSubmitting}
-                                    >
-                                    {isSubmitting ? (
-                                        <>
-                                        <span className="animate-spin inline-block mr-2">
-                                            ↻
-                                        </span>
+                                        <span className="animate-spin inline-block mr-2">↻</span>
                                         Processing...
-                                        </>
-                                    ) : (
-                                        <>
+                                    </>
+                                ) : (
+                                    <>
                                         Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                                        </>
-                                    )}
-                                    </CommonButton>
-                                </>
-                                )} 
-                            </>) : (<>
-                               <CommonButton  className="btn-next"  onClick={onNext}  >  
-                                    Next&nbsp;<i className="bi bi-chevron-double-right"></i> 
-                                </CommonButton>                            
-                            </>)}
-                              
+                                    </>
+                                )}
+                            </CommonButton>
                         </div>
-                        </>
-                    )}
-            </div> 
+                    </>
+                )}
+            </div>
         </>
     );
 }

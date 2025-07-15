@@ -7,7 +7,7 @@ import { maritalStatusOptions } from '../../data/data';
 import { salutation, gender, religion, caste } from '../../data/data';
 import workingman from '../../assets/imgs/workingman2.png';
 import Swal from 'sweetalert2';
-import { pendingAccountData, createAccountService, agentService,pendingAccountStatusUpdate } from '../../services/apiServices';
+import { pendingAccountData, createAccountService, agentService } from '../../services/apiServices';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,9 +18,6 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
     const [touchedFields, setTouchedFields] = useState({}); 
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null); 
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isView, setIsView] = useState(false);
-    const admin_id= localStorage.getItem('userCode');
     const id = localStorage.getItem('application_id');
     const [localFormData, setLocalFormData] = useState({
         salutation: formData.salutation || '',
@@ -43,27 +40,28 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
         status: 'Pending'
     });
 
-    useEffect(() => {   if (id) {   fetchAndShowDetails(id);  fetchReason(id);  }    }, [id]);
- 
-     useEffect(() => {
-         const role = localStorage.getItem("roleName");
-         setIsAdmin(role.includes("admin") || role.includes("Admin"));
-         setIsView(window.location.href.includes("view")); 
-      }, []);
-
-    const fetchReason = async (id) => { 
-        if (!id) return;
-        try {
-            setLoading(true);
-            const response = await agentService.refillApplication(id); 
-            setReason(response.data[0]);
-        } catch (error) {
-            console.error("Failed to fetch review applications:", error);
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (id) {
+            fetchAndShowDetails(id);
         }
-    };
+    }, []);
+
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
      
+        fetchReason(id);
+    }, [id]); 
     const fetchAndShowDetails = async (id) => {
         try {
             if (id) {
@@ -326,99 +324,6 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
             setIsSubmitting(false);
         }
     };
-    // admin controls below
-
-    const handleRejectClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Rejection',
-            input: 'text',
-            inputLabel: 'Personal Details Rejection Reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: id,
-                status: 'Rejected',
-                status_comment: result.value,
-                admin_id: admin_id
-            };
-            await pendingAccountStatusUpdate.updateS2A(id, payload); 
-           onNext();
-        } else if (result.isDismissed) {
-         //   console.log('Rejection canceled');
-        }
-    };
-
-    const handleReviewClick = async () => {
-        const result = await Swal.fire({
-            title: 'Reason for Review',
-            input: 'text',
-            inputLabel: 'Personal Details Review Reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Review',
-                status_comment: result.value,
-                admin_id: admin_id
-            };
-            await pendingAccountStatusUpdate.updateS2A(id, payload); 
-           onNext();
-        } else if (result.isDismissed) {
-           // console.log('Review canceled');
-        }
-    };
-
-    const handleApproveClick = () => {
-        try {
-            const payload = {
-                applicaiton_id: Number(id),
-                status: 'Approved',
-                status_comment: '',
-                admin_id: admin_id
-            }
-            pendingAccountStatusUpdate.updateS2A(id, payload); 
-            Swal.fire({
-                icon: 'success',
-                title: 'Personal Details Approved Successfully',
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            });
-           onNext();
-        }
-        catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error?.response?.data?.message,
-            });
-        }
-    }
-
-    // admin controls above
 
 
     return (
@@ -754,53 +659,23 @@ function PersonalDetailsForm({ formData, updateFormData, onNext, onBack }) {
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
 
- 
-                {!isView ? (<>                    
-                    {isAdmin ? (            
-                    <>
-                    <CommonButton
-                        className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                        onClick={handleRejectClick}
-                    >
-                        Reject & Continue
-                    </CommonButton>
-
-                    <CommonButton
-                        className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                        onClick={handleReviewClick}
-                    >
-                        Review & Continue
-                    </CommonButton>
-
-                    <CommonButton
-                        className="btn-next"
-                        onClick={handleApproveClick}
-                    >
-                        Accept & Continue
-                    </CommonButton>
-                    </>
-                    ) 
-                    : (
-                    <> 
-                    <CommonButton  className="btn-next"  onClick={handleSubmit}
-                        iconRight={<i className="bi bi-chevron-double-right"></i>}
-                        disabled={isSubmitting} >
-                        {isSubmitting ? (
-                            <> <span className="animate-spin inline-block mr-2">↻</span>  Processing...  </>
-                        ) : (
-                            <>
-                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                            </>
-                        )}
-                    </CommonButton>
-                    </>
-                    )} 
-                </>) : (<>
-                    <CommonButton  className="btn-next"  onClick={onNext}  >  
-                        Next&nbsp;<i className="bi bi-chevron-double-right"></i> 
-                    </CommonButton>                            
-                </>)}
-                    
+                <CommonButton
+                    className="btn-next"
+                    onClick={handleSubmit}
+                    iconRight={<i className="bi bi-chevron-double-right"></i>}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? (
+                        <>
+                            <span className="animate-spin inline-block mr-2">↻</span>
+                            Processing...
+                        </>
+                    ) : (
+                        <>
+                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                        </>
+                    )}
+                </CommonButton>
             </div>
             <ToastContainer position="top-right" autoClose={5000} />
         </form>

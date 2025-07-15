@@ -177,11 +177,46 @@ export const App = () => {
               <AgentDashboard />
             </ProtectedRoute>
           } />
-          <Route path="/enrollmentform" element={
-            <ProtectedRoute>
-              <Enrollmentform />
+          {/* unique page redirection below */}
+          <Route path="/agent_enrollmentform" element={
+            <ProtectedRoute> 
+              <Enrollment_Review_Edit />
             </ProtectedRoute>
           } />
+          <Route path="/agent_enrollmentform/edit/:id" element={
+            <ProtectedRoute>
+              <Enrollment_Review_Edit />
+            </ProtectedRoute>
+          } />
+          <Route path="/agent_enrollmentform/view/:id" element={
+            <ProtectedRoute>
+              <Enrollment_Review_Edit />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin_enrollmentform/edit/:id" element={
+            <ProtectedRoute>
+              <Enrollment_Review_Edit />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin_enrollmentform/view/:id" element={
+            <ProtectedRoute>
+              <Enrollment_Review_Edit />
+            </ProtectedRoute>
+          } />
+
+
+
+          {/* unique page redirection above */}
+
+
+
+
+
+
+
+
+
+
           <Route path="/start_rekyc" element={
             <ProtectedRoute>
               <Rekyc />

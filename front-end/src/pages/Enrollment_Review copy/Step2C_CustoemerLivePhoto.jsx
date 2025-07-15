@@ -4,40 +4,22 @@ import ImageCaptureValidator from "./CustomerPhotoCapture";
 import CommonButton from "../../components/CommonButton";
 import Swal from "sweetalert2";
 import {useParams} from "react-router-dom";
-import { agentService,pendingAccountStatusUpdate,  createAccountService,  pendingAccountData,} from "../../services/apiServices";
-import ViewonlyImg from './Step2C_ViewOnly'
+import { agentService,
+  createAccountService,
+  pendingAccountData,
+} from "../../services/apiServices";
 
 const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {  
   const [photoData, setPhotoData] = useState(null);
   const [localIsSubmitting, setLocalIsSubmitting] = useState(false);
   const [apiPhotoData, setApiPhotoData] = useState(null); 
-  const [loading, setLoading] = useState(false);
-  const [reason, setReason] = useState(null);   const {id}=useParams();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isView, setIsView] = useState(false);
-  const admin_id= localStorage.getItem('userCode');
-  const application_id =  localStorage.getItem("application_id");  
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null);   const {id}=useParams();
+  const application_id =
+    localStorage.getItem("application_id") || formData.application_id;
+  
   const storageKey = "customerPhotoData";
-  useEffect(() => { fetchReason(id);  }, [id]); 
- 
-  useEffect(() => {
-      const role = localStorage.getItem("roleName");
-      setIsAdmin(role.includes("admin") || role.includes("Admin"));
-      setIsView(window.location.href.includes("view")); 
-  }, []);
-  const fetchReason = async (id) => { 
-      if (!id) return;
-      try {
-          setLoading(true);
-          const response = await agentService.refillApplication(id); 
-          setReason(response.data[0]);
-      } catch (error) {
-          console.error("Failed to fetch review applications:", error);
-      } finally {
-          setLoading(false);
-      }
-  };
- 
+
   // Use useCallback for fetchAndShowDetails to prevent unnecessary re-renders/re-creations
   const fetchAndShowDetails = useCallback(async (id) => {
     try {
@@ -159,7 +141,24 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
     };
     localStorage.setItem(storageKey, JSON.stringify(storageData));
   };
- 
+
+  
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
   const submitPhoto = async (e) => {
     // Removed the check for apiPhotoData here.
     // If a new photo is captured (photoData will be updated), it will be submitted.
@@ -264,103 +263,6 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
     }
   };
 
-  // admin controls below
-  const handelPhotoReview = async () => {
-      const result = await Swal.fire({
-          title: 'Reason for Review',
-          input: 'text',
-          inputLabel: 'Customer Photo Review Reason',
-          inputPlaceholder: 'Enter reason here...',
-          showCancelButton: true,
-          confirmButtonText: 'Submit',
-          cancelButtonText: 'Cancel',
-          className: 'btn-login',
-          inputValidator: (value) => {
-              if (!value) {
-                  return 'You need to write a reason!';
-              }
-          },
-      });
-
-      if (result.isConfirmed && result.value) {
-          const payload = {
-              application_id: Number(id),
-              status: 'Review',
-              status_comment: result.value,
-              admin_id: admin_id
-          };
-          await pendingAccountStatusUpdate.updateS2C(id, payload); 
-          onNext();
-      } else if (result.isDismissed) {
-          console.log('Rejection canceled');
-      }
-
-  };
-
-  const handelPhotoAccept = () => {
-
-      try {
-          const payload = {
-              applicaiton_id: Number(id),
-              status: 'Approved',
-              status_comment: '',
-              admin_id: admin_id
-          }
-          pendingAccountStatusUpdate.updateS2C(id, payload);
-          Swal.fire({
-              icon: 'success',
-              title: 'Customer Photo Approved Successfully',
-              timer: 2000,
-              showConfirmButton: false,
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-          }); 
-          onNext();
-      }
-      catch (error) {
-          Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: error?.response?.data?.message,
-          });
-      }
-
-  };
-
-  const handelPhotoReject = async () => {
-      const result = await Swal.fire({
-          title: 'Reason for Rejection',
-          input: 'text',
-          inputLabel: 'Customer Photo Rejection Reason',
-          inputPlaceholder: 'Enter reason here...',
-          showCancelButton: true,
-          confirmButtonText: 'Submit',
-          cancelButtonText: 'Cancel',
-          className: 'btn-login',
-          inputValidator: (value) => {
-              if (!value) {
-                  return 'You need to write a reason!';
-              }
-          },
-      });
-
-      if (result.isConfirmed && result.value) {
-          const payload = {
-              application_id: Number(id),
-              status: 'Rejected',
-              status_comment: result.value,
-              admin_id: admin_id
-          };
-          await pendingAccountStatusUpdate.updateS2C(id, payload); 
-          onNext();
-      } else if (result.isDismissed) {
-          console.log('Rejection canceled');
-      }
-
-  };
-
-  // admin controls above
-
   return (
     <div className="space-y-8">
       {(isSubmitting || localIsSubmitting) && (
@@ -371,9 +273,6 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
 
    <h2 className="text-xl font-bold m-2">Customer Photo</h2>
       {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.applicant_live_photos_status_comment}</p> }
-      {isView || isAdmin ?   <ViewonlyImg/>   :<>
-      
-      
       <ImageCaptureValidator
         onCapture={handlePhotoCapture}
         photoType="customer"
@@ -382,64 +281,36 @@ const PhotoCaptureApp = ({ formData, onNext, onBack, isSubmitting }) => {
         hasExistingPhoto={apiPhotoData} // Keep this for displaying existing photo details
       />
 
-      </> }
-     
       <div className="next-back-btns z-10">
-        <CommonButton onClick={onBack}
-          variant="outlined"  className="btn-back z-10"
+        <CommonButton
+          onClick={onBack}
+          variant="outlined"
+          className="btn-back z-10"
           disabled={isSubmitting || localIsSubmitting}
           type="button"
-        >  <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+        >
+          <i className="bi bi-chevron-double-left"></i>&nbsp;Back
         </CommonButton>
-
-
-          {!isView ? (<>                    
-              {isAdmin ? (            
-              <>
-              <CommonButton
-                  className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                  onClick={handelPhotoReject}
-              >
-                  Reject & Continue
-              </CommonButton>
-
-              <CommonButton
-                  className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                  onClick={handelPhotoReview}
-              >
-                  Review & Continue
-              </CommonButton>
-
-              <CommonButton
-                  className="btn-next"
-                  onClick={handelPhotoAccept}
-              >
-                  Accept & Continue
-              </CommonButton>
-              </>
-              ) 
-              : (
-              <>                   
-                <CommonButton
-                  onClick={(e) => { e.preventDefault(); submitPhoto();  }}
-                  variant="contained"
-                  className="btn-next z-10"
-                  type="button"
-                >
-                  {isSubmitting || localIsSubmitting ? (
-                    <> <span className="animate-spin inline-block mr-2">↻</span> Processing... </>
-                  ) : (
-                    <> Next&nbsp;<i className="bi bi-chevron-double-right"></i> </>
-                  )}
-                </CommonButton>
-              </>
-              )} 
-          </>) : (<>
-              <CommonButton  className="btn-next"  onClick={onNext}  >  
-                  Next&nbsp;<i className="bi bi-chevron-double-right"></i> 
-              </CommonButton>                            
-          </>)
-          } 
+        <CommonButton
+          onClick={(e) => {
+            e.preventDefault();
+            submitPhoto();
+          }}
+          variant="contained"
+          className="btn-next z-10"
+          type="button"
+        >
+          {isSubmitting || localIsSubmitting ? (
+            <>
+              <span className="animate-spin inline-block mr-2">↻</span>
+              Processing...
+            </>
+          ) : (
+            <>
+              Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+            </>
+          )}
+        </CommonButton>
       </div>
     </div>
   );

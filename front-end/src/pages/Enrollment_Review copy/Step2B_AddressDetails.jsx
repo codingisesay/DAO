@@ -3,7 +3,7 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { agentService, applicationDetailsService, createAccountService, pendingAccountStatusUpdate } from '../../services/apiServices';
+import { agentService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
 import {useParams} from 'react-router-dom'
@@ -12,13 +12,8 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     const applicationId = localStorage.getItem('application_id');    
     const {id} =useParams()
     const [invalidPinCode, setInvalidPinCode] = useState({ per: false, cor: false }); 
-    const [loading, setLoading] = useState(false);
-    const [reason, setReason] = useState(null); 
-    const [validationErrors, setValidationErrors] = useState({});
-    const [touchedFields, setTouchedFields] = useState({});
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isView, setIsView] = useState(false);
-    const admin_id= localStorage.getItem('userCode');
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
@@ -45,90 +40,90 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         per_resident: formData.per_resident || '',
         per_residence_status: formData.per_residence_status || '',
         resi_doc: formData.resi_doc || ''
-    }); 
+    });
+
     const [sameAsAbove, setSameAsAbove] = useState(
         formData.correspondenceAddressSame || false
-    ); 
+    );
+
     const [loadingPinCode, setLoadingPinCode] = useState({
         per: false,
         cor: false
     });
 
-    function toTitleCase(str) {
-        return str
-            .replace(/_/g, ' ')
-            .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
-    }
-    
-     useEffect(() => {
-         const role = localStorage.getItem("roleName");
-         setIsAdmin(role.includes("admin") || role.includes("Admin"));
-         setIsView(window.location.href.includes("view")); 
-      }, []);
-
+    const [validationErrors, setValidationErrors] = useState({});
+    const [touchedFields, setTouchedFields] = useState({});
+function toTitleCase(str) {
+    return str
+        .replace(/_/g, ' ')
+        .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
     // Fetch address details when component mounts
     useEffect(() => {
         if (!applicationId) return;
-        fetchDetails(); fetchReason(id);
+        const fetchDetails = async () => {
+            try {
+                const response = await applicationDetailsService.getFullDetails(applicationId);
+                if (response.data) {
+                    const { application_addresss } = response.data; 
+                    const addressFromDB = application_addresss[0];
+
+                    const resetFormData = {
+                        per_complex_name: addressFromDB?.per_complex_name || formData.complex_name || '',
+                        per_flat_no: addressFromDB?.per_flat_no || formData.flat_no || '',
+                        per_area: addressFromDB?.per_area || formData.area || '',
+                        per_landmark: addressFromDB?.per_landmark || formData.landmark || '',
+                        per_country: addressFromDB?.per_country || formData.country || 'INDIA',
+                        per_pincode: addressFromDB?.per_pincode || formData.pincode || '',
+                        per_city: addressFromDB?.per_city || formData.city || '',
+                        per_district: addressFromDB?.per_district || formData.district || '',
+                        per_state: addressFromDB?.per_state || formData.state || '',
+                        cor_complex_name: addressFromDB?.cor_complex_name || '',
+                        cor_flat_no: addressFromDB?.cor_flat_no || '',
+                        cor_area: addressFromDB?.cor_area || '',
+                        cor_landmark: addressFromDB?.cor_landmark || '',
+                        cor_country: addressFromDB?.cor_country || '',
+                        cor_pincode: addressFromDB?.cor_pincode || '',
+                        cor_city: addressFromDB?.cor_city || '',
+                        cor_district: addressFromDB?.cor_district || '',
+                        cor_state: addressFromDB?.cor_state || '',
+                        status: addressFromDB?.status || 'Pending'
+                    };
+
+                    setLocalFormData(resetFormData);
+
+                    const resetExtraInputData = {
+                        per_resident: addressFromDB?.per_resident || '',
+                        per_residence_status: addressFromDB?.per_residence_status || '',
+                        resi_doc: addressFromDB?.resi_doc || ''
+                    };
+
+                    setExtraInputData(resetExtraInputData);
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        fetchDetails();
     }, [applicationId]);
 
-    const fetchDetails = async () => {
-        try {
-            const response = await applicationDetailsService.getFullDetails(applicationId);
-            if (response.data) {
-                const { application_addresss } = response.data; 
-                const addressFromDB = application_addresss[0];
-
-                const resetFormData = {
-                    per_complex_name: addressFromDB?.per_complex_name || formData.complex_name || '',
-                    per_flat_no: addressFromDB?.per_flat_no || formData.flat_no || '',
-                    per_area: addressFromDB?.per_area || formData.area || '',
-                    per_landmark: addressFromDB?.per_landmark || formData.landmark || '',
-                    per_country: addressFromDB?.per_country || formData.country || 'INDIA',
-                    per_pincode: addressFromDB?.per_pincode || formData.pincode || '',
-                    per_city: addressFromDB?.per_city || formData.city || '',
-                    per_district: addressFromDB?.per_district || formData.district || '',
-                    per_state: addressFromDB?.per_state || formData.state || '',
-                    cor_complex_name: addressFromDB?.cor_complex_name || '',
-                    cor_flat_no: addressFromDB?.cor_flat_no || '',
-                    cor_area: addressFromDB?.cor_area || '',
-                    cor_landmark: addressFromDB?.cor_landmark || '',
-                    cor_country: addressFromDB?.cor_country || '',
-                    cor_pincode: addressFromDB?.cor_pincode || '',
-                    cor_city: addressFromDB?.cor_city || '',
-                    cor_district: addressFromDB?.cor_district || '',
-                    cor_state: addressFromDB?.cor_state || '',
-                    status: addressFromDB?.status || 'Pending'
-                };
-
-                setLocalFormData(resetFormData);
-
-                const resetExtraInputData = {
-                    per_resident: addressFromDB?.per_resident || '',
-                    per_residence_status: addressFromDB?.per_residence_status || '',
-                    resi_doc: addressFromDB?.resi_doc || ''
-                };
-
-                setExtraInputData(resetExtraInputData);
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    };
     
-    const fetchReason = async (id) => { 
-        if (!id) return;
-        try {
-            setLoading(true);
-            const response = await agentService.refillApplication(id); 
-            setReason(response.data[0]);
-        } catch (error) {
-            console.error("Failed to fetch review applications:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-      
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
     // Function to fetch address details from PIN code API
     const fetchAddressByPinCode = async (pincode, prefix) => {
         try {
@@ -434,110 +429,10 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
     };
 
-    // admin controller below
-
-    const handleApproveClickadder = async () => {            
-        try {
-            const payload = {
-                application_id: Number(id),
-                status: 'Approved',
-                status_comment: '',
-                admin_id: admin_id
-            };
-            await pendingAccountStatusUpdate.updateS2B(id, payload); 
-            Swal.fire({
-                icon: 'success',
-                title: 'Address Details Approved Successfully',
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            });
-            onNext();
-        }
-        catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error?.response?.data?.message,
-            });
-        }
-    }
-    const handleReviewClickadder = async (e) => { 
-        e.preventDefault();    
-        const result = await Swal.fire({
-            title: 'Reason for Review',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-        if (result.isConfirmed && result.value) {
-            try {
-                const payload = {
-                    application_id: Number(id),
-                    status: 'Review',
-                    status_comment: result.value,
-                    admin_id: admin_id
-                };
-                await pendingAccountStatusUpdate.updateS2B(id, payload); 
-                onNext();
-            } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error?.response?.data?.message || 'Failed to update status',
-                });
-            }
-        } else if (result.isDismissed) {
-            console.log('Review canceled');
-        }
-    }; 
-    const handleRejectClickAddr  = async()=>{
-        const result = await Swal.fire({
-            title: 'Reason for Rejection',
-            input: 'text',
-            inputLabel: 'Please provide a reason',
-            inputPlaceholder: 'Enter reason here...',
-            showCancelButton: true,
-            confirmButtonText: 'Submit',
-            cancelButtonText: 'Cancel',
-            className: 'btn-login',
-            inputValidator: (value) => {
-                if (!value) {
-                    return 'You need to write a reason!';
-                }
-            },
-        });
-        if (result.isConfirmed && result.value) {
-            const payload = {
-                application_id: Number(id),
-                status: 'Rejected',
-                status_comment: result.value,
-                admin_id: admin_id
-            };
-            await pendingAccountStatusUpdate.updateS2B(id, payload); 
-            onNext();
-        } else if (result.isDismissed) {
-            console.log('Rejection canceled');
-        }
-    }
-
-
-    // admin controller above
-
     return (
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
-                {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
                 <AddressSection
                     formData={localFormData}
                     handleChange={handlePermanentChange}
@@ -595,56 +490,23 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
- 
-                {!isView ? (<>                    
-                    {isAdmin ? (            
-                    <>
-                    <CommonButton
-                        className="text-red-500 border border-red-500 hover:bg-red-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                        onClick={handleRejectClickAddr}
-                    >
-                        Reject & Continue
-                    </CommonButton>
-
-                    <CommonButton
-                        className="text-amber-500 border border-amber-500 hover:bg-amber-50 transition-colors my-auto px-4 rounded-md py-1 mx-2"
-                        onClick={handleReviewClickadder}
-                    >
-                        Review & Continue
-                    </CommonButton>
-
-                    <CommonButton
-                        className="btn-next"
-                        onClick={handleApproveClickadder}
-                    >
-                        Accept & Continue
-                    </CommonButton>
-                    </>
-                    ) 
-                    : (
-                    <>  
-                    <CommonButton
-                        onClick={submitaddress}
-                        variant="contained"
-                        className="btn-next"
-                        disabled={isSubmitting || invalidPinCode.per || invalidPinCode.cor}
-                    >
-                        {isSubmitting ? (
-                            <> <span className="animate-spin inline-block mr-2">↻</span>  Processing... </>
-                        ) : (
-                            <>
-                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                            </>
-                        )}
-                    </CommonButton>
-                    </>
-                    )} 
-                </>) : (<>
-                    <CommonButton  className="btn-next"  onClick={onNext}  >  
-                        Next&nbsp;<i className="bi bi-chevron-double-right"></i> 
-                    </CommonButton>                            
-                </>)}
-                    
+                <CommonButton
+                    onClick={submitaddress}
+                    variant="contained"
+                    className="btn-next"
+                    disabled={isSubmitting || invalidPinCode.per || invalidPinCode.cor}
+                >
+                    {isSubmitting ? (
+                        <>
+                            <span className="animate-spin inline-block mr-2">↻</span>
+                            Processing...
+                        </>
+                    ) : (
+                        <>
+                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                        </>
+                    )}
+                </CommonButton>
             </div>
         </div>
     );

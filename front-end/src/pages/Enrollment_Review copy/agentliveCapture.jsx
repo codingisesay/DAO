@@ -1,44 +1,29 @@
-
-
 import React, { useState, useRef, useEffect } from "react";
 import scan_face from "../../assets/imgs/scan_face.gif";
 import scan_ray from "../../assets/imgs/scan_ray.gif";
 import instruction from "../../assets/imgs/photo_instructions.png";
 import Webcam from "react-webcam";
-import * as cocoSsd from "@tensorflow-models/coco-ssd";
-import "@tensorflow/tfjs";
 
 const ImageCaptureValidator = ({
   onCapture,
-  photoType = "customer",
+  photoType = "agent",
   showLocation = true,
   initialPhoto = null,
-  hasExistingPhoto =false
+  hasExistingPhoto = false
 }) => {
   const webcamRef = useRef(null);
   const [imgSrc, setImgSrc] = useState(initialPhoto?.previewUrl || null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [isWebcamReady, setIsWebcamReady] = useState(false);
-  const [webcamError, setWebcamError] = useState(null);const [tempAddress, setTempAddress] = useState();
-  const [validation, setValidation] = useState(
-    initialPhoto?.metadata?.validation || {
-      hasFace: false,
-      lightingOk: false,
-      singlePerson: false,
-    }
-  );
-  
-  const [hints, setHints] = useState(
-    hasExistingPhoto ? "Existing photo loaded" : "Position your face in the frame"
-  );
-  const [personCount, setPersonCount] = useState(0);
+  const [webcamError, setWebcamError] = useState(null);
   const [location, setLocation] = useState(
     initialPhoto?.metadata?.location || null
   );
   const [locationError, setLocationError] = useState(null);
   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
+  const [tempAddress, setTempAddress] = useState(''); // Initialize with empty string
 
   // Check browser support
   const isWebcamSupported = () => {
@@ -46,9 +31,7 @@ const ImageCaptureValidator = ({
   };
 
   // Function to fetch address from coordinates
-
-//   // Function to fetch address from coordinates
- const fetchAddress = async (lat, lng) => {
+const fetchAddress = async (lat, lng) => {
   setIsFetchingAddress(true);
   try {
     const response = await fetch(
@@ -80,9 +63,6 @@ const ImageCaptureValidator = ({
     setWebcamError(error.message || "Could not access camera");
     setIsWebcamReady(false);
     setIsCameraActive(false);
-    setHints(
-      "Camera access error. Please check permissions or try another browser."
-    );
   };
 
   // Get geolocation if enabled
@@ -134,7 +114,6 @@ const ImageCaptureValidator = ({
     setIsCameraActive(true);
     setImgSrc(null);
     setWebcamError(null);
-    setHints("Position your face in the frame");
   };
 
   const stopCamera = () => {
@@ -142,151 +121,37 @@ const ImageCaptureValidator = ({
     setIsWebcamReady(false);
   };
 
-  // Face Detection Setup
-  useEffect(() => {
-    let mounted = true;
-    let model;
-    let detectionInterval;
-
-    const loadModel = async () => {
-      if (!isCameraActive || !isWebcamReady) return;
-
-      try {
-        setIsLoading(true);
-        model = await cocoSsd.load();
-
-        const detect = async () => {
-          if (!mounted || !webcamRef.current || !webcamRef.current.video) {
-            return;
-          }
-
-          const video = webcamRef.current.video;
-
-          if (
-            video.readyState !== 4 ||
-            video.videoWidth === 0 ||
-            video.videoHeight === 0
-          ) {
-            return;
-          }
-
-          try {
-            const predictions = await model.detect(video);
-            const people = predictions.filter((p) => p.class === "person");
-            const { hasFace, lightingOk } = analyzeFrame(video);
-
-            if (mounted) {
-              setValidation({
-                hasFace,
-                lightingOk,
-                singlePerson: people.length === 1,
-              });
-
-              setPersonCount(people.length);
-              if (people.length === 0) {
-                setHints("No face detected. Position your face in the frame");
-              } else if (people.length > 1) {
-                setHints(
-                  "Multiple people detected. Only one person should be in frame"
-                );
-              } else if (!hasFace) {
-                setHints("Face not clearly visible. Move into better lighting");
-              } else if (!lightingOk) {
-                setHints("Lighting not optimal. Adjust your environment");
-              } else {
-                setHints("Ready to capture");
-              }
-            }
-          } catch (error) {
-            console.error("Detection error:", error);
-          }
-        };
-
-        detectionInterval = setInterval(detect, 500);
-      } catch (error) {
-        console.error("Model loading error:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (isCameraActive && isWebcamReady) {
-      loadModel();
-    }
-
-    return () => {
-      mounted = false;
-      clearInterval(detectionInterval);
-      model?.dispose();
-    };
-  }, [isCameraActive, isWebcamReady]);
-
-  // Frame analysis for face and lighting
-  const analyzeFrame = (video) => {
-    if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
-      return { hasFace: false, lightingOk: false };
-    }
-
-    const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-
-    let brightnessSum = 0;
-    let skinTonePixels = 0;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      brightnessSum += (r + g + b) / 3;
-
-      if (
-        r > 95 &&
-        g > 40 &&
-        b > 20 &&
-        r > g &&
-        r > b &&
-        Math.abs(r - g) > 15
-      ) {
-        skinTonePixels++;
-      }
-    }
-
-    const avgBrightness = brightnessSum / (data.length / 4);
-    const skinToneRatio = skinTonePixels / (data.length / 4);
-
-    return {
-      hasFace: skinToneRatio > 0.05,
-      lightingOk: avgBrightness > 100 && avgBrightness < 220,
-    };
-  };
-
   // Convert base64 to Blob
   const dataURLtoBlob = (dataURL) => {
-    const arr = dataURL.split(",");
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
+    try {
+      const arr = dataURL.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    } catch (error) {
+      console.error("Error in dataURLtoBlob:", error);
+      console.log("Problematic dataURL prefix:", dataURL.substring(0, 100));
+      return null;
     }
-    return new Blob([u8arr], { type: mime });
   };
 
   // Capture image
-  const capture = () => {
+  const capture = async () => {
     if (!webcamRef.current || !isWebcamReady) return;
 
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
 
     const blob = dataURLtoBlob(imageSrc);
+    if (!blob) {
+      console.error("Failed to convert image to Blob.");
+      return;
+    }
     const file = blob;
     const previewUrl = URL.createObjectURL(file);
 
@@ -298,7 +163,6 @@ const ImageCaptureValidator = ({
         location: location || null,
         locationError: locationError || null,
         address: address || null,
-        validation: photoType === "customer" ? validation : null,
       },
     };
 
@@ -308,18 +172,11 @@ const ImageCaptureValidator = ({
 
     stopCamera();
   };
-
+  
   // Retake photo
   const retake = () => {
     setImgSrc(null);
     startCamera();
-  };
-
-  // Check if all validations pass
-  const allValid = () => {
-    return (
-      validation.hasFace && validation.singlePerson && validation.lightingOk
-    );
   };
 
   // Manual file upload handler
@@ -341,7 +198,6 @@ const ImageCaptureValidator = ({
           location: location || null,
           locationError: locationError || null,
           address: address || null,
-          validation: null, // Skip validation for uploaded files
         },
       };
 
@@ -351,7 +207,8 @@ const ImageCaptureValidator = ({
     };
     reader.readAsDataURL(file);
   };
-   async function printAddressFromLatLng(lat, lng) {
+
+  async function printAddressFromLatLng(lat, lng) {
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
@@ -359,7 +216,6 @@ const ImageCaptureValidator = ({
       const data = await response.json();
       if (data && data.display_name) {
         setTempAddress(data.display_name);
-        // console.log('to show at address : ',  data)
       } else {
         console.log("Address not found");
       }
@@ -376,7 +232,7 @@ const ImageCaptureValidator = ({
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-     
+      <h1 className="text-xl font-bold mb-2">{photoType === "agent" ? "Agent Live Photo" : "agent Live Photo"}</h1>
 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -386,19 +242,8 @@ const ImageCaptureValidator = ({
 
       <div className="flex flex-col md:flex-row gap-6">
         {/* Camera/Image Preview */}
-         
-
-
         <div className="flex-1">
-          <div
-            className={`border-2 rounded-lg overflow-hidden transition-all ${
-              imgSrc
-                ? "border-gray-300"
-                : allValid()
-                ? "border-green-500"
-                : "border-red-500"
-            }`}
-          >  
+          <div className="border-2 rounded-lg overflow-hidden transition-all border-gray-300">
             {imgSrc ? (
               <div className="relative" style={{ aspectRatio: "4/3" }}>
                 <img
@@ -470,12 +315,8 @@ const ImageCaptureValidator = ({
             ) : isCameraActive && isWebcamSupported() ? (
               <button
                 onClick={capture}
-                disabled={!allValid() || isLoading}
-                className={`w-full py-3 rounded-lg font-medium transition-colors ${
-                  allValid() && !isLoading
-                    ? "bg-green-600 hover:bg-green-700 text-white"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                disabled={isLoading || !isWebcamReady}
+                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
               >
                 {isLoading ? "Processing..." : "Capture Photo"}
               </button>
@@ -495,69 +336,53 @@ const ImageCaptureValidator = ({
           </div>
         </div>
 
-        {/* Validation Panel */}
+        {/* Location Panel */}
         <div className="flex-1">
           <div className="text-center">
             {showLocation && location && imgSrc ? (
-              <div className=" text-start"><br />
-                <div> <i className="bi bi-send"></i> Latitude : {location.latitude.toFixed(5)}</div><br />
-                <div> <i className="bi bi-send"></i> Longitude : {location.longitude.toFixed(5)}</div><br />
-                 {address && <div> <i className="bi bi-geo-alt"></i> Address : {address}</div>} 
+              <div className="text-start">
+                <br />
+                <div><i className="bi bi-send"></i> Latitude: {location && location.latitude && location.latitude.toFixed(5)}</div>
+                <br />
+                <div><i className="bi bi-send"></i> Longitude: {location && location.longitude && location.longitude.toFixed(5)}</div>
+                <br />
+                {address && <div><i className="bi bi-geo-alt"></i> Address: {address}</div>}
+              </div>
+            ) : (
+              <>
+                {hasExistingPhoto ? (
+                  <>
+                    <div className="max-w-sm mx-auto overflow-hidden space-y-4">
+                      <img
+                        className="h-52 w-52 object-cover border rounded-lg mx-auto"
+                        src={`data:image/jpeg;base64,${hasExistingPhoto.path}`}
+                        alt="Uploaded"
+                      />
 
-                 <hr />
-                 
-                  <div className="space-y-3">
-                    {photoType === 'customer' && (
-                      <>
-                        <br />
-                        <div className={`flex items-center p-3 rounded ${
-                          validation.lightingOk ? 'bg-green-100' : 'bg-red-100'
-                        }`}>
-                          <span className="font-medium mr-2">
-                            {validation.lightingOk ? '✓' : '✗'} Good lighting
-                          </span>
-                        </div>
-                        <div className={`flex items-center p-3 rounded ${
-                          validation.singlePerson ? 'bg-green-100' : 'bg-red-100'
-                        }`}>
-                          <span className="font-medium mr-2">
-                            {validation.singlePerson ? '✓' : '✗'} Person in frame
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                    </div>
-                  ) : (
-                    <> 
-                      {hasExistingPhoto ?
-                        ( 
-                          <>
-                        <img className="border rounded-lg h-[200px] w-[200px] mx-auto" src={`data:image/jpeg;base64,${hasExistingPhoto.path}`} /> 
-                          <br />
-                        {/* <div> <i className="bi bi-send"></i> Latitude : {hasExistingPhoto.latitude}</div> 
-                        <div> <i className="bi bi-send"></i> Longitude : {hasExistingPhoto.longitude}</div><br /> */}
-                                   <div className="flex gap-2">
-                           <i className="bi bi-send text-green-500" style={{ transform: 'rotate(-45deg)' }}></i>
-                           <p><strong className="inline-block w-15 text-start">Latitude:</strong> {hasExistingPhoto.latitude}</p>
-                         </div>
-
-                         <div className="flex gap-2">
-                           <i className="bi bi-send text-green-500"></i>
-                           <p><strong className="inline-block w-15 text-start">Longitude:</strong> {hasExistingPhoto.longitude}</p>
+                      <div className="text-gray-700 space-y-2">
+                        <div className="flex gap-2">
+                          <i className="bi bi-send text-green-500" style={{ transform: 'rotate(-45deg)' }}></i>
+                          <p><strong className="inline-block w-15 text-start">Latitude:</strong> {hasExistingPhoto.latitude}</p>
                         </div>
 
-                         {tempAddress && (
+                        <div className="flex gap-2">
+                          <i className="bi bi-send text-green-500"></i>
+                          <p><strong className="inline-block w-15 text-start">Longitude:</strong> {hasExistingPhoto.longitude}</p>
+                        </div>
+
+                        {tempAddress && (
                           <div className="flex text-start gap-2">
                             <i className="bi bi-geo-alt text-green-500"></i>
                             <p><strong className="inline-block w-15 text-start">Address:</strong> {tempAddress}</p>
                           </div>
                         )}
-                        </>
-                      ):
-                        (<>
-                        <div className="">
-                            <div className="relative py-8 w-[160px] mx-auto">
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="">
+                      <div className="relative py-8 w-[160px] mx-auto">
                         <img
                           src={scan_face}
                           className="absolute top-0 w-[130px] h-[130px]"
@@ -569,42 +394,17 @@ const ImageCaptureValidator = ({
                           alt="scan"
                         />
                       </div>
-                      <img src={instruction} className="  mt-20 mx-auto" />
-
-                      <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded mt-3">
-                        {hints}
-                      </div>
-
-                        </div>
-                        </>   
-                        ) 
-                      }
-                    </>
-                   )}
+                      <img src={instruction} className="mt-20 mx-auto" />
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </div>
-
-
-
-
       </div>
     </div>
   );
 };
 
 export default ImageCaptureValidator;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 

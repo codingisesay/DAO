@@ -68,7 +68,7 @@ const Dashboard = () => {
   }, [showHelp, showProfile, showNotification]);
   const handleRedireact = () => {
     localStorage.removeItem("application_id"); // Clear any previous application ID
-    navigate("/enrollmentform"); // Change to your route
+    navigate("/agent_enrollmentform"); // Change to your route
   };
   const handlekyc = () => {
     navigate("/start_rekyc"); // Change to your route
