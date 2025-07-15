@@ -191,9 +191,14 @@ const AdminDashboard = () => {
                                 </div>
 
                                 {showProfile && (
-                                    <div ref={profileRef} className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3  left-[-125px]">
-                                        <Profilecard />
-                                    </div>
+                             <div
+                                ref={profileRef}
+                                className="dropdown-box absolute w-[240px] h-[225px] overflow-y-auto shadow-md mt-3"
+                                style={{ left: "-120px" }}
+                              >
+                                <Profilecard />
+                              </div>
+                            
                                 )}
                             </div>
 

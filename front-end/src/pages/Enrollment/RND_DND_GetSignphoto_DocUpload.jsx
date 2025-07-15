@@ -1,3 +1,4 @@
+// RND_DND_GetSignphoto_DocUpload.jsx
 import { useState, useRef, useEffect } from "react";
 import Tesseract from "tesseract.js";
 import { Upload, Camera, X, Trash2, Info } from "lucide-react";
@@ -71,12 +72,14 @@ const DocumentUpload = ({
   const signatureProofOption = { value: "SIGNATURE", label: "Signature" };
 
   const isDocumentUploaded = (documentValue) => {
+    // For Aadhaar, we want to allow uploading both front and back
     if (documentValue === "AADHAAR_CARD_FRONT") {
       return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
     }
     if (documentValue === "AADHAAR_CARD_BACK") {
       return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
     }
+    // For other documents, prevent re-uploading the same type
     return document.some((doc) => doc.type.includes(documentValue));
   };
 
@@ -88,7 +91,7 @@ const DocumentUpload = ({
     return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
   };
 
-  const validateAadharCard = async (imageData, side) => {
+  const validateAadhaarCard = async (imageData, side) => {
     setLoading(true);
     try {
       const result = await Tesseract.recognize(imageData, "eng", {
@@ -107,7 +110,7 @@ const DocumentUpload = ({
         if (!hasGender) {
           showAlertMessage(
             "Error",
-            "This does not appear to be a valid Aadhaar card front side (gender not found)",
+            "This does not appear to be a valid Aadhaar card front side ",
             "error"
           );
           return { isValid: false };
@@ -139,7 +142,7 @@ const DocumentUpload = ({
         if (!hasUIDAI) {
           showAlertMessage(
             "Error",
-            "This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)",
+            "This does not appear to be a valid Aadhaar card back side ",
             "error"
           );
           return { isValid: false };
@@ -150,7 +153,7 @@ const DocumentUpload = ({
 
       return { isValid: true };
     } catch (error) {
-      console.error("Aadhar validation error:", error);
+      console.error("Aadhaar validation error:", error);
       showAlertMessage(
         "Error",
         "Failed to process Aadhaar card image",
@@ -178,7 +181,7 @@ const DocumentUpload = ({
       if (!hasIncomeText) {
         showAlertMessage(
           "Error",
-          'This does not appear to be a valid PAN card ("INCOME" text not found)',
+          'This does not appear to be a valid PAN card ',
           "error"
         );
         return { isValid: false };
@@ -187,7 +190,7 @@ const DocumentUpload = ({
       if (!hasPANNumber) {
         showAlertMessage(
           "Error",
-          "This does not appear to be a valid PAN card (PAN number format not found)",
+          "This does not appear to be a valid PAN card ",
           "error"
         );
         return { isValid: false };
@@ -235,7 +238,7 @@ const DocumentUpload = ({
         documentValue === "AADHAAR_CARD_FRONT" ||
         documentValue === "AADHAAR_CARD_BACK"
       ) {
-        const validationResult = await validateAadharCard(
+        const validationResult = await validateAadhaarCard(
           imageData,
           documentValue === "AADHAAR_CARD_FRONT" ? "FRONT" : "BACK"
         );
@@ -289,25 +292,51 @@ const DocumentUpload = ({
       onProcessDocument(newDocument);
     }
 
-    // showAlertMessage('Document Uploaded', `${newDocument.name} has been successfully uploaded`, 'success');
-
-    if (!documentValue.includes("AADHAAR")) {
-      // Reset selection if not Aadhaar
-    } else {
-      const frontUploaded = isAadhaarFrontUploaded();
-      const backUploaded = isAadhaarBackUploaded();
-
-      if (frontUploaded && backUploaded) {
-        // setSelectedAddressProof('');
-      } else if (documentValue === "AADHAAR_CARD_FRONT" && !backUploaded) {
+    // New logic for Aadhaar card pairing
+    if (documentValue === "AADHAAR_CARD_FRONT") {
+      // If front is uploaded, and back is not, suggest uploading back
+      if (!isAadhaarBackUploaded()) {
         setTimeout(() => {
           showAlertMessage(
             "Upload Back Side",
-            "Please upload the back side of your Aadhaar card to complete the process",
+            "Please upload the back side of your Aadhaar card to complete the process.",
             "info",
             3000
           );
+          // Pre-select Aadhaar Card Back in the Address Proof dropdown
+          setSelectedAddressProof("AADHAAR_CARD_BACK");
         }, 1000);
+      } else {
+        // If both are uploaded, clear the selection for Aadhaar in both dropdowns
+        setSelectedIdentityProof("");
+        setSelectedAddressProof("");
+      }
+    } else if (documentValue === "AADHAAR_CARD_BACK") {
+      // If back is uploaded, and front is not, suggest uploading front
+      if (!isAadhaarFrontUploaded()) {
+        setTimeout(() => {
+          showAlertMessage(
+            "Upload Front Side",
+            "Please upload the front side of your Aadhaar card to complete the process.",
+            "info",
+            3000
+          );
+          // Pre-select Aadhaar Card Front in the Identity Proof dropdown
+          setSelectedIdentityProof("AADHAAR_CARD_FRONT");
+        }, 1000);
+      } else {
+        // If both are uploaded, clear the selection for Aadhaar in both dropdowns
+        setSelectedIdentityProof("");
+        setSelectedAddressProof("");
+      }
+    } else {
+      // For non-Aadhaar documents, clear the current selection
+      if (documentType === "identity") {
+        setSelectedIdentityProof("");
+      } else if (documentType === "address") {
+        setSelectedAddressProof("");
+      } else if (documentType === "signature") {
+        setSelectedSignatureProof("");
       }
     }
 
@@ -391,7 +420,7 @@ const DocumentUpload = ({
         "Error",
         "Cannot capture photo: Browser environment or video stream not ready.",
         "error"
-      );
+        );
       return;
     }
 
@@ -438,21 +467,42 @@ const DocumentUpload = ({
       "success"
     );
 
-    if (docToRemove?.type.includes("AADHAAR")) {
-      if (docToRemove.type === "AADHAAR_CARD_FRONT") {
-        setSelectedAddressProof("AADHAAR_CARD_FRONT");
-      } else if (docToRemove.type === "AADHAAR_CARD_BACK") {
-        setSelectedAddressProof("AADHAAR_CARD_BACK");
+    // Logic to handle Aadhaar pairing when one is removed
+    if (docToRemove?.type === "AADHAAR_CARD_FRONT") {
+      // If Aadhaar Front was removed, and Aadhaar Back is still present,
+      // ensure Aadhaar Front can be selected again for re-upload.
+      if (isAadhaarBackUploaded()) {
+        setSelectedIdentityProof("AADHAAR_CARD_FRONT"); // Pre-select for re-upload
+      } else {
+        setSelectedIdentityProof(""); // Clear if both were removed or only front was there
+      }
+    } else if (docToRemove?.type === "AADHAAR_CARD_BACK") {
+      // If Aadhaar Back was removed, and Aadhaar Front is still present,
+      // ensure Aadhaar Back can be selected again for re-upload.
+      if (isAadhaarFrontUploaded()) {
+        setSelectedAddressProof("AADHAAR_CARD_BACK"); // Pre-select for re-upload
+      } else {
+        setSelectedAddressProof(""); // Clear if both were removed or only back was there
+      }
+    } else {
+      // For other documents, clear their respective selections
+      if (docToRemove?.documentCategory === "identity") {
+        setSelectedIdentityProof("");
+      } else if (docToRemove?.documentCategory === "address") {
+        setSelectedAddressProof("");
+      } else if (docToRemove?.documentCategory === "signature") {
+        setSelectedSignatureProof("");
       }
     }
 
-    if (document.length === 1) {
+    if (updatedDocuments.length === 0) {
       setPreviewImage(null);
     }
   };
 
   const triggerFileInput = (documentType, documentValue, side) => {
-    if (!documentValue || isDocumentUploaded(documentValue)) return;
+    // For Aadhaar, we specifically want to allow re-upload if the other side is missing
+    if (!documentValue || (isDocumentUploaded(documentValue) && !documentValue.includes("AADHAAR"))) return;
 
     if (documentValue.includes("AADHAAR")) {
       setUploadSide(documentValue === "AADHAAR_CARD_FRONT" ? "FRONT" : "BACK");
@@ -524,9 +574,20 @@ const DocumentUpload = ({
                   <option
                     key={option.value}
                     value={option.value}
-                    disabled={isDocumentUploaded(option.value)}
+                    // Disable if already uploaded, unless it's an Aadhaar card and the other side is missing
+                    disabled={
+                      isDocumentUploaded(option.value) &&
+                      !(
+                        (option.value === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                        (option.value === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                      )
+                    }
                   >
-                    {isDocumentUploaded(option.value)
+                    {isDocumentUploaded(option.value) &&
+                    !(
+                      (option.value === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                      (option.value === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                    )
                       ? `${option.label} (Uploaded)`
                       : option.label}
                   </option>
@@ -534,7 +595,11 @@ const DocumentUpload = ({
               </select>{" "}
               &emsp;
               {selectedIdentityProof &&
-                !isDocumentUploaded(selectedIdentityProof) && (
+                !(isDocumentUploaded(selectedIdentityProof) &&
+                  !(
+                    (selectedIdentityProof === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                    (selectedIdentityProof === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                  )) && (
                   <div className="mt-2 flex flex-col">
                     <div className="flex justify-center gap-4">
                       <button
@@ -581,13 +646,20 @@ const DocumentUpload = ({
                   <option
                     key={option.value}
                     value={option.value}
+                    // Disable if already uploaded, unless it's an Aadhaar card and the other side is missing
                     disabled={
-                      option.value.includes("AADHAAR")
-                        ? isDocumentUploaded(option.value)
-                        : isDocumentUploaded(option.value)
+                      isDocumentUploaded(option.value) &&
+                      !(
+                        (option.value === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                        (option.value === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                      )
                     }
                   >
-                    {isDocumentUploaded(option.value)
+                    {isDocumentUploaded(option.value) &&
+                    !(
+                      (option.value === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                      (option.value === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                    )
                       ? `${option.label} (Uploaded)`
                       : option.label}
                   </option>
@@ -595,7 +667,11 @@ const DocumentUpload = ({
               </select>{" "}
               &emsp;
               {selectedAddressProof &&
-                !isDocumentUploaded(selectedAddressProof) && (
+                !(isDocumentUploaded(selectedAddressProof) &&
+                  !(
+                    (selectedAddressProof === "AADHAAR_CARD_FRONT" && !isAadhaarBackUploaded()) ||
+                    (selectedAddressProof === "AADHAAR_CARD_BACK" && !isAadhaarFrontUploaded())
+                  )) && (
                   <div className="mt-2">
                     <div className="flex flex-col">
                       <div className="flex justify-center gap-4">
@@ -882,3 +958,5 @@ const DocumentUpload = ({
 };
 
 export default DocumentUpload;
+
+ 

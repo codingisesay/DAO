@@ -39,6 +39,8 @@ export const createAccountService = {
     ),
   getBankingFacilitiesService: () =>
     apiService.get(API_ENDPOINTS.CREATE_ACCOUNT.GET_BANKING_FACILITIES_SERVICE),
+  vcallGuidlineAccept: (id, data) =>
+    apiService.post(API_ENDPOINTS.CREATE_ACCOUNT.VCALL_GUIDLINE_ACCEPTANCE(id), data),
 };
 
 export const agentService = {
@@ -80,6 +82,7 @@ export const personalDetailsService = {
     apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.CREATE, data),
   // update: (id, data) => apiService.post(API_ENDPOINTS.PERSONAL_DETAILS.UPDATE(id), data),
 };
+ 
 
 export const addressDetailsService = {
   create: (data) => apiService.post(API_ENDPOINTS.ADDRESS_DETAILS.CREATE, data),
@@ -127,7 +130,7 @@ export const applicationDetailsService = {
 };
 
 export const applicationDetailsServices = {
-  getByAadhar: (auth_code) =>
+  getByAadhaar: (auth_code) =>
     apiService.post("/api/application/by-aadhar", { auth_code }),
   // ...other methods
 };
@@ -543,4 +546,16 @@ export const accountService = {
 
   moduletype: (id) =>
     apiService.get(API_ENDPOINTS.ACCOUNT.ACCOUNT_MODULETYPE(id)),
+};
+
+
+export const lookUp = {
+  lookUp: (id) => apiService.post(API_ENDPOINTS.LOOKUPS.GET, id),
+  duplicatecodetypecheack: (codeType) =>
+    apiService.get(API_ENDPOINTS.LOOKUPS.LOOKUP_DUPLICATION(codeType)),
+
+  lookUp: (id, id2) => apiService.get(API_ENDPOINTS.PINCODE.GET(id, id2)),
+  getCountries: () => apiService.get(API_ENDPOINTS.PINCODE.GET_COUNTRI),
+  getPincodes: (id, id2) =>
+    apiService.get(API_ENDPOINTS.PINCODE.GET_PINCODE(id, id2)),
 };

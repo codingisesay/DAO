@@ -3,13 +3,17 @@ import CommanInput from '../../components/CommanInput';
 import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { addressDetailsService, applicationDetailsService, createAccountService } from '../../services/apiServices';
+import { agentService, applicationDetailsService, createAccountService } from '../../services/apiServices';
 import CommanSelect from '../../components/CommanSelect';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
+import {useParams} from 'react-router-dom'
 
 function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting }) {
     const applicationId = localStorage.getItem('application_id');    
-    const [invalidPinCode, setInvalidPinCode] = useState({ per: false, cor: false });
+    const {id} =useParams()
+    const [invalidPinCode, setInvalidPinCode] = useState({ per: false, cor: false }); 
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         per_complex_name: formData.complex_name || '',
         per_flat_no: formData.flat_no || '',
@@ -49,7 +53,11 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
     const [validationErrors, setValidationErrors] = useState({});
     const [touchedFields, setTouchedFields] = useState({});
-
+function toTitleCase(str) {
+    return str
+        .replace(/_/g, ' ')
+        .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
     // Fetch address details when component mounts
     useEffect(() => {
         if (!applicationId) return;
@@ -99,6 +107,23 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         fetchDetails();
     }, [applicationId]);
 
+    
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
     // Function to fetch address details from PIN code API
     const fetchAddressByPinCode = async (pincode, prefix) => {
         try {
@@ -170,7 +195,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
             Swal.fire({
                 icon: 'warning',
                 title: 'PIN Code Not Found',
-                text: 'Could not find address details for this PIN code. Please enter manually.',
+                text: 'Could not find address details for this PIN code.',
             });
             setInvalidPinCode(prev => ({ ...prev, per: true }));
         } finally {
@@ -200,25 +225,25 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
         }
 
         // Auto-fill address when PIN code is entered (6 digits)
-  if (name === 'cor_pincode' && value.length === 6 && !sameAsAbove) {
-    setLoadingPinCode(prev => ({ ...prev, cor: true }));
-    try {
-        const addressData = await fetchAddressByPinCode(value, 'cor');
-        setLocalFormData(prev => ({
-            ...prev,
-            ...addressData
-        }));
-        setInvalidPinCode(prev => ({ ...prev, cor: false }));
-    } catch (error) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'PIN Code Not Found',
-            text: 'Could not find address details for this PIN code. Please enter manually.',
-        });
-        setInvalidPinCode(prev => ({ ...prev, cor: true }));
-    } finally {
-        setLoadingPinCode(prev => ({ ...prev, cor: false }));
-    }
+ if (name === 'cor_pincode' && value.length === 6) {
+  setLoadingPinCode(prev => ({ ...prev, cor: true }));
+  try {
+    const addressData = await fetchAddressByPinCode(value, 'cor');
+    setLocalFormData(prev => ({
+      ...prev,
+      ...addressData
+    }));
+    setInvalidPinCode(prev => ({ ...prev, cor: false }));
+  } catch (error) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'PIN Code Not Found',
+      text: 'Could not find address details for this PIN code. Please enter manually.',
+    });
+    setInvalidPinCode(prev => ({ ...prev, cor: true }));
+  } finally {
+    setLoadingPinCode(prev => ({ ...prev, cor: false }));
+  }
 }
     };
 
@@ -230,13 +255,14 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
             'per_complex_name', 'per_flat_no', 'per_area', 'per_landmark',
             'per_country', 'per_pincode', 'per_city', 'per_district', 'per_state'
         ];
-
         permanentRequiredFields.forEach(field => {
             if (!localFormData[field]) {
-                errors[field] = `${labels[field.replace('per_', '')]?.label || field} is required`;
+                const label =
+                    labels[field.replace('per_', '')]?.label ||
+                    toTitleCase(field.replace('per_', ''));
+                errors[field] = `${label} is Required`;
             }
         });
-
         // PIN code validation
         if (localFormData.per_pincode && localFormData.per_pincode.length !== 6) {
             errors.per_pincode = 'PIN code must be 6 digits';
@@ -248,10 +274,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                 'cor_complex_name', 'cor_flat_no', 'cor_area', 'cor_landmark',
                 'cor_country', 'cor_pincode', 'cor_city', 'cor_district', 'cor_state'
             ];
-
             correspondenceRequiredFields.forEach(field => {
                 if (!localFormData[field]) {
-                    errors[field] = `${labels[field.replace('cor_', '')]?.label || field} is required`;
+                    const label =
+                        labels[field.replace('cor_', '')]?.label ||
+                        toTitleCase(field.replace('cor_', ''));
+                    errors[field] = `${label} is Required`;
                 }
             });
 
@@ -262,12 +290,12 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
 
         // Extra input validation
         if (!extraInputData.per_resident) {
-            errors.per_resident = 'Resident field is required';
+            errors.per_resident = 'Resident Field is Required';
         } else if (extraInputData.per_resident === 'Yes') {
             if (!extraInputData.per_residence_status) {
-                errors.per_residence_status = 'Residential status is required';
+                errors.per_residence_status = 'Residential Status is Required';
             } else if (extraInputData.per_residence_status === 'Resident' && !extraInputData.resi_doc) {
-                errors.resi_doc = 'Residence document is required';
+                errors.resi_doc = 'Residence Document is Required';
             }
         }
 
@@ -404,6 +432,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
     return (
         <div className="address-form">
             <h2 className="text-xl font-bold mb-2">Permanent Address</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
                 <AddressSection
                     formData={localFormData}
                     handleChange={handlePermanentChange}
@@ -427,7 +456,7 @@ function AddressForm({ formData, updateFormData, onNext, onBack, isSubmitting })
                         onChange={handleSameAsAboveToggle}
                         className="mr-2"
                     />
-                    <label className="font-light">Same As Above</label>
+                    <label className="font-light">Same as above</label>
                 </div>
 
                 {!sameAsAbove && (
@@ -595,15 +624,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
             )}
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.city.label}
                 name={`${prefix}_city`}
                 value={formData[`${prefix}_city`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_city`] && touchedFields[`${prefix}_city`] && (
@@ -612,15 +642,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
 
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.district.label}
                 name={`${prefix}_district`}
                 value={formData[`${prefix}_district`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_district`] && touchedFields[`${prefix}_district`] && (
@@ -629,15 +660,16 @@ function AddressSection({ formData, handleChange, handleBlur, prefix, extraInput
 
             </div>
             <div>
-            <CommanInput
-                validationType={'EVERYTHING'}
+            <CommanInput 
                 label={labels.state.label}
                 name={`${prefix}_state`}
                 value={formData[`${prefix}_state`] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 required
-                max={30}
+                max={30}  onInput={e => {
+        e.target.value = e.target.value.replace(/[0-9]/g, '');
+    }}
                 className={validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] ? 'border-red-500' : ''}
             />
             {validationErrors[`${prefix}_state`] && touchedFields[`${prefix}_state`] && (
@@ -693,7 +725,7 @@ const ExtraInput = ({ extraInputData, validationErrors, touchedFields, setTouche
                 <CommanSelect
                     onChange={handleExtraChange}
                     onBlur={() => setTouchedFields(prev => ({ ...prev, per_resident: true }))}
-                    label="Resident Y/N"
+                    label="Resident"
                     value={extraInputData.per_resident || ''}
                     name="per_resident"
                     required

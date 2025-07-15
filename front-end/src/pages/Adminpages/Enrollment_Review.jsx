@@ -52,12 +52,18 @@ function ReviewTable() {
   };
 
   const columns = [
+        {
+          ...COLUMN_DEFINITIONS.agent_id,
+          field: "agent_id", 
+        },
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    { 
+      header: "Customer Name", field: "fullName",   type: "text",
+    }, 
     { ...COLUMN_DEFINITIONS.review_admin_id, field: "admin_id", type: "text" },
     {
-      header: "Review Comments",
+      header: "Review Reason",
       field: "review_comments",
       type: "text",
       render: (rowData) => getReviewComments(rowData),
@@ -78,10 +84,11 @@ function ReviewTable() {
         ...filters,
       });
 
-      // Process the data to include all review comments
+      // Process the data to include 'fullName' and all review comments
       const processedData = response.data
         ? response.data.map((item) => ({
             ...item,
+            fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(), // Added fullName
             review_comments: getReviewComments(item),
           }))
         : [];
@@ -203,4 +210,4 @@ function ReviewTable() {
   );
 }
 
-export default ReviewTable;
+export default ReviewTable; 

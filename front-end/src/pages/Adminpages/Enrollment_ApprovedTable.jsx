@@ -18,19 +18,31 @@ function ApprovedTable() {
 
   const columns = [
     {
-      ...COLUMN_DEFINITIONS.application_id,
-      field: "application_id",
+      ...COLUMN_DEFINITIONS.agent_id,
+      field: "agent_id", 
+    },
+    {
+      ...COLUMN_DEFINITIONS.application_no,
+      field: "application_id", // Changed to application_no based on provided JSON
       type: "text",
     },
-    { ...COLUMN_DEFINITIONS.first_name, field: "status", type: "text" },
-    { ...COLUMN_DEFINITIONS.last_name, field: "first_name", type: "date" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    // { ...COLUMN_DEFINITIONS.status, field: "status", type: "text" }, 
+    {
+      ...COLUMN_DEFINITIONS.middle_name,
+      field: "fullName", // New field to display full name
+      header: "Customer Name", // Change header for clarity
+      type: "text",
+    },
+    {
+      ...COLUMN_DEFINITIONS.approved_admin_id,
+      field: "admin_id", 
+    },
     {
       ...COLUMN_DEFINITIONS.account_open_date,
-      field: "account_open_date",
+      field: "created_at", // This field doesn't exist in the provided JSON, consider removing or mapping to created_at/updated_at if relevant
       type: "date",
     },
-    { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
+    { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" }, // This field doesn't exist in the provided JSON
   ];
 
   const countColumns = [
@@ -46,8 +58,15 @@ function ApprovedTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] });
+
+      // Process the data to include a 'fullName' field
+      const processedData = response.data.map(item => ({
+        ...item,
+        fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(),
+      }));
+
+      setTbldata(processedData || []);
+      setData({ content: processedData || [] });
     } catch (error) {
       console.error("Failed to fetch approved applications:", error);
     } finally {
@@ -58,7 +77,7 @@ function ApprovedTable() {
   const fetchDataCount = async () => {
     try {
       setCountLoading(true);
-      const response = await adminService.approvedApplicationCountByAgent(); 
+      const response = await adminService.approvedApplicationCountByAgent();
       console.log('agent counts : ', response)
       setCountData({ content: response.data || [] });
     } catch (error) {
@@ -121,7 +140,7 @@ function ApprovedTable() {
                 : "bg-gray-200"
             }`}
           >
-            List by Agent 
+            List by Agent
           </button>
         </div>
 
@@ -136,7 +155,7 @@ function ApprovedTable() {
               onFilter={handleFilter}
               onPageChange={handlePageChange}
               loading={loading}
-              primaryKeys={["application_id"]}
+              primaryKeys={["application_id"]} 
               editButtonDisabled={true}
             />
           </div>
@@ -160,5 +179,5 @@ function ApprovedTable() {
   );
 }
 
-export default ApprovedTable;
+export default ApprovedTable; 
  

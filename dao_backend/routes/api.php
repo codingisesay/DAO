@@ -138,7 +138,7 @@ Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceT
 // This is for deleting the application document by agent 
 Route::delete('/agent/application-document', [AgentController::class, 'deleteApplicationDocument']);
 //rekyc
-Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhar']);
+Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
 //Admin routes
 //This is for starting the KYC process by agent

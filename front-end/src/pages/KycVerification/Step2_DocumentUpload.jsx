@@ -12,11 +12,11 @@ function p3({ onNext, onBack }) {
     const [extractionResults, setExtractionResults] = useState({});
     const [isProcessing, setIsProcessing] = useState(false);
     const { id } = useParams();
+  const admin_id=localStorage.getItem('userCode') || 1; // Default to 1 if not set
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const API_URL = 'https://dao.payvance.co.in:8091/ext/api/detect';
     const bearerToken = localStorage.getItem('accessToken');
-      const [hoveredImage, setHoveredImage] = useState(null);
-      const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+    // Removed hoveredImage and hoverPosition from here, moving to DocumentDetailsTable
 
     useEffect(() => {
         const fetchAndProcessDocuments = async () => {
@@ -25,8 +25,8 @@ function p3({ onNext, onBack }) {
                     setIsProcessing(true);
                     const response = await pendingKyc.pendingKyc2(id);
                     localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    const application = response.data || [];
-                    
+                    const application = response.data.documents || [];
+                    console.log(response)
                     // Initialize extraction results
                     const initialResults = {};
                     application.forEach(doc => {
@@ -133,7 +133,7 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Rejected',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Reject');
@@ -167,7 +167,7 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Review',
                 status_comment: result.value,
-                admin_id: 1
+                admin_id: admin_id
             };
             await pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Review');
@@ -185,14 +185,14 @@ function p3({ onNext, onBack }) {
                 kyc_application_id: Number(id),
                 status: 'Approved',
                 status_comment: '',
-                admin_id: 1
+                admin_id: admin_id
             }
             const response = pendingKycStusUpdate.updateKyc2(payload);
             applicationStatus.push('Approved');
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
-                title: 'Enrollment Details Approved Successfully',
+                title: 'Details Approved Successfully',
                 timer: 2000,
                 showConfirmButton: false,
                 allowOutsideClick: false,
@@ -250,6 +250,10 @@ function p3({ onNext, onBack }) {
 }
 
 const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }) => {
+    // Moved hoveredImage and hoverPosition states here
+    const [hoveredImage, setHoveredImage] = useState(null);
+    const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+
     if (!documentslist || !Array.isArray(documentslist)) {
         return <p>No documents found.</p>;
     }
@@ -285,38 +289,53 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
         return `${day}/${month}/${year}`;
     }
 
-    const renderExtractedItems = (items) => {
-        if (!items || items.length === 0) return 'Processing documents...';
+    const renderExtractedItems = (items, docId, type) => {
+        if (!extractionResults[docId] || extractionResults[docId].status === 'processing') {
+            return <Typography variant="caption">Processing...</Typography>;
+        }
         
+        if (!items || items.length === 0) return 'Not detected';
+        
+        // Only show the first item
         const item = items[0];
         
         return (
             <Box>
                 <Box
                     component="img"
-                    // src={`data:image/jpeg;base64,${item.image}`}
-                    alt={`Extracted ${item.class_id === 1 ? 'photograph' : 'signature'}`}
-                    sx={{ display:'none',
-                        width: item.class_id === 1 ? '60px' : '120px',
-                        height: item.class_id === 1 ? '60px' : '30px',
+                    src={`data:image/jpeg;base64,${item.image}`}
+                    alt={`Extracted ${type}`}
+                    sx={{
+                        width: type === 'photograph' ? '60px' : '120px',
+                        height: type === 'photograph' ? '60px' : '30px',
                         objectFit: 'contain',
                         borderRadius: '6px',
                         border: '1px solid #ddd'
                     }}
+                    onMouseEnter={(e) => handleImageHover(e, `data:image/jpeg;base64,${item.image}`)}
+                    onMouseLeave={() => setHoveredImage(null)}
                 />
-                <p variant="caption" display="block">Processing documents...
-                    {/* {item.confidence ? `${(item.confidence * 100).toFixed(1)}%` : ' '} */}
-                </p>
+                <Typography variant="caption" display="block">
+                    {item.confidence ? `${(item.confidence * 100).toFixed(1)}%` : ' '}
+                </Typography>
             </Box>
         );
     };
 
+    const handleImageHover = (e, imageUrl) => {
+        const rect = e.target.getBoundingClientRect();
+        setHoveredImage(imageUrl);
+        setHoverPosition({
+            x: rect.right + 10,
+            y: rect.top - 170,
+        });
+    };
+
     return (
-        <div className="p-4 max-w-4xl mx-auto">
+        <div className="p-4  mx-auto">
             {isProcessing && (
                 <Paper elevation={3} sx={{ p: 0, mb: 0, boxShadow:'none' }}>
-                    <Typography variant="body1" align="center"></Typography> 
-                    {/* document loader here  */}
+                    <Typography variant="body1" align="center">Processing documents...</Typography> 
                 </Paper>
             )}
             
@@ -326,10 +345,10 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                         <table className="min-w-full border border-gray-200">
                             <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">File Name</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Preview</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signatures</th>
-                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photographs</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Document Type</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Image</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Signature</th>
+                                    <th className="py-2 px-4 border-b border-gray-200 text-left">Photo</th>
                                     <th className="py-2 px-4 border-b border-gray-200 text-left">Created At</th>
                                 </tr>
                             </thead>
@@ -338,30 +357,21 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                     <tr key={doc.id}>
                                         <td className="py-2 px-4 border-b border-gray-200">{toTitleCase(doc.kyc_document_type)}</td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                            <a href={daodocbase + `/${doc.kyc_file_path}`} target="_blank" rel="noopener noreferrer">
+                                            <a href={daodocbase + `${doc.kyc_file_path}`} target="_blank" rel="noopener noreferrer">
                                                 <img
                                                     src={daodocbase + `${doc.kyc_file_path}`}
                                                     alt="document"
                                                     className="h-auto w-20 object-contain border rounded"
-                                                              onMouseEnter={(e) => {
-                                                                    const rect = e.target.getBoundingClientRect();
-                                                                    setHoveredImage(
-                                                                    `data:image/jpeg;base64,${doc.file_path}`
-                                                                    );
-                                                                    setHoverPosition({
-                                                                    x: rect.right + 10,
-                                                                    y: rect.top - 170,
-                                                                    });
-                                                                }}
-                                                                onMouseLeave={() => setHoveredImage(null)}
+                                                    onMouseEnter={(e) => handleImageHover(e, daodocbase + doc.kyc_file_path)} // Corrected path
+                                                    onMouseLeave={() => setHoveredImage(null)}
                                                 />
                                             </a>
                                         </td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                            {renderExtractedItems(extractionResults[doc.id]?.signatures)}
+                                            {renderExtractedItems(extractionResults[doc.id]?.signatures, doc.id, 'signature')}
                                         </td>
                                         <td className="py-2 px-4 border-b border-gray-200">
-                                            {renderExtractedItems(extractionResults[doc.id]?.photographs)}
+                                            {renderExtractedItems(extractionResults[doc.id]?.photographs, doc.id, 'photograph')}
                                         </td>
                                         <td className="py-2 px-4 border-b border-gray-200">
                                             {formatDate(doc.created_at)}
@@ -370,29 +380,33 @@ const DocumentDetailsTable = ({ documentslist, extractionResults, isProcessing }
                                 ))}
                             </tbody>
                         </table>
-                        
                     </div>
                 </div>
             ))}
-                                {/* {hoveredImage && (
-            <div
-              className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
-              style={{
-                top: `${hoverPosition.y}px`,
-                left: `${hoverPosition.x}px`,
-              }}
-            >
-              <img
-                src={hoveredImage}
-                alt="Zoomed Preview"
-                className="h-[200px] w-auto rounded"
-              />
-            </div>
-          )} */}
+            
+            {hoveredImage && (
+                <div
+                    className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+                    style={{
+                        top: `${hoverPosition.y}px`,
+                        left: `${hoverPosition.x}px`,
+                    }}
+                >
+                    <img
+                        src={hoveredImage}
+                        alt="Zoomed Preview"
+                        className="h-[200px] w-auto rounded"
+                    />
+                </div>
+            )}
         </div>
-
     );
 };
 
 export default p3;
+
+
+
+
+
  

@@ -1,3 +1,5 @@
+ 
+
 import { useState, useRef, useEffect } from "react";
 import Tesseract from "tesseract.js";
 import { Upload, Camera, X, Trash2, Info } from "lucide-react";
@@ -13,7 +15,7 @@ const DocumentUpload = ({
   const [selectedAddressProof, setSelectedAddressProof] = useState("");
   const [selectedSignatureProof, setSelectedSignatureProof] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
-  const [previewFileType, setPreviewFileType] = useState(null); // New state to store the file type
+  const [previewFileType, setPreviewFileType] = useState(null); // New state to store the file type (e.g., 'image/jpeg', 'application/pdf')
   const [uploadSide, setUploadSide] = useState("");
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,7 @@ const DocumentUpload = ({
   const [document, setDocuments] = useState(documents || []);
   const [showAlert, setShowAlert] = useState(false);
   const [hoveredPreview, setHoveredPreview] = useState(null); // Can be image data URL or PDF object URL
-const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'image' or 'pdf' 
+  const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'image' or 'pdf'
   const [alertConfig, setAlertConfig] = useState({
     title: "",
     message: "",
@@ -82,19 +84,31 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
     }
     return document.some((doc) => doc.type.includes(documentValue));
   };
-
-  const isAadhaarFrontUploaded = () => {
-    return document.some((doc) => doc.type === "AADHAAR_CARD_FRONT");
+  const extractFirstPageAsImage = async (pdfData) => {
+    return new Promise((resolve) => {
+      // For simplicity, we'll just return the PDF as is
+      // In a real implementation, you'd use a PDF library to extract the first page as an image
+      resolve(pdfData);
+    });
   };
 
-  const isAadhaarBackUploaded = () => {
-    return document.some((doc) => doc.type === "AADHAAR_CARD_BACK");
-  };
 
-  const validateAadharCard = async (imageData, side) => {
+  const validateAadhaarCard = async (imageData, side) => {
     setLoading(true);
     try {
-      const result = await Tesseract.recognize(imageData, "eng", {
+      if (!window.Tesseract) {
+        console.error("Tesseract.js not found. Please ensure it's loaded via CDN.");
+        showAlertMessage("Error", "OCR library not loaded. Cannot validate Aadhaar.", "error");
+        return { isValid: false };
+      }
+
+      // If the input is a PDF, extract the first page as an image
+      let imageToProcess = imageData;
+      if (imageData.startsWith("data:application/pdf")) {
+        imageToProcess = await extractFirstPageAsImage(imageData);
+      }
+
+      const result = await window.Tesseract.recognize(imageToProcess, "eng", {
         logger: (m) => console.log(m),
       });
 
@@ -142,7 +156,7 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
         if (!hasUIDAI) {
           showAlertMessage(
             "Error",
-            "This does not appear to be a valid Aadhaar card back side (UIDAI reference not found)",
+            "This does not appear to be a valid Aadhaar card back side (Address keyword not found)",
             "error"
           );
           return { isValid: false };
@@ -153,7 +167,7 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
 
       return { isValid: true };
     } catch (error) {
-      console.error("Aadhar validation error:", error);
+      console.error("Aadhaar validation error:", error);
       showAlertMessage(
         "Error",
         "Failed to process Aadhaar card image",
@@ -168,7 +182,19 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
   const validatePANCard = async (imageData) => {
     setLoading(true);
     try {
-      const result = await Tesseract.recognize(imageData, "eng", {
+      if (!window.Tesseract) {
+        console.error("Tesseract.js not found. Please ensure it's loaded via CDN.");
+        showAlertMessage("Error", "OCR library not loaded. Cannot validate PAN.", "error");
+        return { isValid: false };
+      }
+
+      // If the input is a PDF, extract the first page as an image
+      let imageToProcess = imageData;
+      if (imageData.startsWith("data:application/pdf")) {
+        imageToProcess = await extractFirstPageAsImage(imageData);
+      }
+
+      const result = await window.Tesseract.recognize(imageToProcess, "eng", {
         logger: (m) => console.log(m),
       });
 
@@ -215,36 +241,37 @@ const [hoveredPreviewType, setHoveredPreviewType] = useState(null); // Stores 'i
       setLoading(false);
     }
   };
-const processImage = async (
-    imageData, // This will now always be a Base64 string (e.g., "data:image/jpeg;base64,...", "data:application/pdf;base64,...")
+
+  const processImage = async (
+    imageData,
     documentType,
     documentValue,
     side,
+    fileMimeType,
+    fileName,
     skipValidation = false
   ) => {
     let isValid = true;
     let extractedInfo = null;
 
-    // Only validate images, not PDFs
+    // Only validate images or PDFs for specific document types
     const shouldValidate =
       !skipValidation &&
       (documentValue === "PAN_CARD" ||
         documentValue === "AADHAAR_CARD_FRONT" ||
-        documentValue === "AADHAAR_CARD_BACK");
+        documentValue === "AADHAAR_CARD_BACK") &&
+      (fileMimeType.startsWith("image/") || fileMimeType === "application/pdf");
 
-    // Corrected validation condition: check if the Base64 string starts with the PDF prefix
-    if (shouldValidate && !imageData.startsWith("data:application/pdf")) {
-      // Your existing validation logic here. Tesseract.recognize can generally handle data URLs (Base64).
-      // Example:
-      // if (documentValue === "AADHAAR_CARD_FRONT" || documentValue === "AADHAAR_CARD_BACK") {
-      //     const validationResult = await validateAadharCard(imageData, side);
-      //     isValid = validationResult.isValid;
-      //     extractedInfo = validationResult.extractedInfo;
-      // } else if (documentValue === "PAN_CARD") {
-      //     const validationResult = await validatePANCard(imageData);
-      //     isValid = validationResult.isValid;
-      //     extractedInfo = validationResult.extractedInfo;
-      // }
+    if (shouldValidate) {
+      if (documentValue === "AADHAAR_CARD_FRONT" || documentValue === "AADHAAR_CARD_BACK") {
+          const validationResult = await validateAadhaarCard(imageData, side);
+          isValid = validationResult.isValid;
+          extractedInfo = validationResult.extractedInfo;
+      } else if (documentValue === "PAN_CARD") {
+          const validationResult = await validatePANCard(imageData);
+          isValid = validationResult.isValid;
+          extractedInfo = validationResult.extractedInfo;
+      }
     }
 
     let docType =
@@ -254,11 +281,8 @@ const processImage = async (
         ? "AADHAAR_CARD_BACK"
         : `${documentValue}`;
 
-    let fileObj, preview = imageData; // preview is simply the Base64 data URL
-
-    // Convert Base64 back to a File object if you need to store the File object
-    // This part is crucial for `newDocument.file` to contain a File object
-    // with correct type and filename, even if the source was Base64.
+    let fileObj;
+    // Convert Base64 back to a File object
     const arr = imageData.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -267,8 +291,7 @@ const processImage = async (
     while(n--){
         u8arr[n] = bstr.charCodeAt(n);
     }
-    // Create a new File object from the Base64 data
-    fileObj = new File([u8arr], `${documentValue}.${mime.split('/')[1]}`, {type:mime});
+    fileObj = new File([u8arr], fileName, {type:mime});
 
     const newDocument = {
       id: Date.now(),
@@ -276,8 +299,9 @@ const processImage = async (
       name: documentValue.includes("AADHAAR")
         ? `${toTitleCase(documentValue.replace(/_/g, " "))}`
         : `${toTitleCase(documentValue.replace(/_/g, " "))}`,
-      image: preview, // This is now always the Base64 string (data URL)
-      file: fileObj, // This will be a new File object created from the Base64
+      image: imageData,
+      file: fileObj,
+      file_name: fileName,
       uploadedAt: new Date().toLocaleString(),
       documentCategory: documentType,
       isValid: isValid,
@@ -297,29 +321,37 @@ const processImage = async (
     return true;
   };
 
-const handleFileChange = async (e, documentType, documentValue, side) => {
-        const file = e.target.files[0];
-        if (!file) return;
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-        if (file.size > 5 * 1024 * 1024) {
-            showAlertMessage("Error", "File size must not exceed 5MB", "error");
-            return;
-        }
+    if (file.size > 5 * 1024 * 1024) {
+      showAlertMessage("Error", "File size must not exceed 5MB", "error");
+      return;
+    }
 
-        if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type)) {
-            showAlertMessage("Error", "Only JPG/PNG/PDF files are allowed", "error");
-            return;
-        }
+    if (!["image/jpeg", "image/png", "application/pdf"].includes(file.type)) {
+      showAlertMessage("Error", "Only JPG/PNG/PDF files are allowed", "error");
+      return;
+    }
 
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const base64Data = reader.result; // This will be Base64 for both images and PDFs
-            setPreviewImage(base64Data);
-            setPreviewFileType(file.type); // Still store the file type for rendering logic
-            await processImage(base64Data, documentType, documentValue, side);
-        };
-        reader.readAsDataURL(file); // Reads content of all files as Base64 Data URL
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result;
+      setPreviewImage(base64Data);
+      setPreviewFileType(file.type);
+      await processImage(
+        base64Data,
+        activeDocumentType,
+        activeDocumentValue,
+        uploadSide,
+        file.type,
+        file.name
+      );
     };
+    reader.readAsDataURL(file);
+  };
+
 
   const startCamera = (documentType, documentValue) => {
     setActiveDocumentType(documentType);
@@ -387,6 +419,7 @@ const handleFileChange = async (e, documentType, documentValue, side) => {
 
     const imageData = canvas.toDataURL("image/jpeg");
     setPreviewImage(imageData);
+    setPreviewFileType("image/jpeg"); // Captured photo is always an image
 
     // Only skip validation for non-PAN and non-Aadhaar documents
     const skipValidation = ![
@@ -399,7 +432,9 @@ const handleFileChange = async (e, documentType, documentValue, side) => {
       imageData,
       activeDocumentType,
       activeDocumentValue,
-      "",
+      "", // Side is not relevant for camera capture generally
+      "image/jpeg", // MIME type for captured image
+      `captured_photo_${Date.now()}.jpeg`, // Unique filename for captured photo
       skipValidation
     );
 
@@ -422,10 +457,11 @@ const removeDocument = (id) => {
             "success"
         );
 
-        // No need to revokeObjectURL anymore as PDFs are now Base64
-        // if (docToRemove && docToRemove.file && docToRemove.file.type === "application/pdf" && docToRemove.image) {
-        //     URL.revokeObjectURL(docToRemove.image);
-        // }
+        // If the removed document was the one being previewed, clear the preview
+        if (previewImage === docToRemove.image) {
+            setPreviewImage(null);
+            setPreviewFileType(null);
+        }
 
         if (docToRemove?.type.includes("AADHAAR")) {
             if (docToRemove.type === "AADHAAR_CARD_FRONT") {
@@ -435,7 +471,8 @@ const removeDocument = (id) => {
             }
         }
 
-        if (document.length === 1) {
+        // If no documents left, clear preview
+        if (updatedDocuments.length === 0) {
             setPreviewImage(null);
             setPreviewFileType(null);
         }
@@ -444,21 +481,16 @@ const removeDocument = (id) => {
   const triggerFileInput = (documentType, documentValue, side) => {
     if (!documentValue || isDocumentUploaded(documentValue)) return;
 
-    if (documentValue.includes("AADHAAR")) {
-      setUploadSide(documentValue === "AADHAAR_CARD_FRONT" ? "FRONT" : "BACK");
-    }
+    // Set active states before triggering file input
+    setActiveDocumentType(documentType);
+    setActiveDocumentValue(documentValue);
+    setUploadSide(side); // Set side for Aadhaar if applicable
 
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = ""; // Clear previous selection
     }
 
     fileInputRef.current.click();
-
-    const originalOnChange = fileInputRef.current.onchange;
-    fileInputRef.current.onchange = (e) => {
-      handleFileChange(e, documentType, documentValue, side);
-      fileInputRef.current.onchange = originalOnChange;
-    };
   };
 
   useEffect(() => {
@@ -485,13 +517,14 @@ const removeDocument = (id) => {
       });
     }
   }, [showAlert]);
+
   return (
     <div className="document-upload-container p-4 mx-auto">
       <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
       <div className="text-sm text-gray-600 mb-6 flex items-center text-green-700">
         <Info size={16} className="mr-1" />
         <span>
-          All documents must be scanned copy in jpg/png format - size must not
+          All documents must be scanned copy in jpg/png/pdf format - size must not
           exceed 5mb
         </span>
       </div>
@@ -678,31 +711,30 @@ const removeDocument = (id) => {
           ref={fileInputRef}
           accept="image/jpeg, image/png, application/pdf"
           style={{ display: "none" }}
+          onChange={handleFileChange}
         />
 
         <div className="preview-section my-1">
           <div className="text-center p-1 rounded">
-            {/* {console.log("pdf priview ; ", previewImage)} */}
             <div className="preview-section my-1">
               <div className="text-center p-1 rounded">
                 {previewImage ? (
                   <>
                     <small> </small>
-                    {previewFileType === "application/pdf" ? ( // Use previewFileType for comparison
-                      // PDF Preview
+                    {previewFileType === "application/pdf" ? (
                       <div className="h-[200px] w-full mx-auto border-2 rounded-lg bg-gray-100 flex items-center justify-center">
                         <iframe
-                          src={previewImage} // This is the object URL
+                          src={previewImage}
                           title="PDF Preview"
                           className="w-full h-full rounded"
+                          style={{ border: 'none' }}
                         />
                       </div>
                     ) : (
-                      // Image Preview
                       <img
                         src={previewImage}
                         alt="Document preview"
-                        className="h-[200px] w-auto mx-auto border-2 rounded-lg"
+                        className="h-[200px] w-auto mx-auto border-2 rounded-lg object-contain"
                       />
                     )}
                   </>
@@ -710,7 +742,7 @@ const removeDocument = (id) => {
                   <img
                     src={workingman}
                     alt="logo"
-                    className="h-[200px] w-auto mx-auto"
+                    className="h-[200px] w-auto mx-auto object-contain"
                   />
                 )}
               </div>
@@ -733,121 +765,119 @@ const removeDocument = (id) => {
             </thead>
             <tbody>
               {document.length > 0 ? (
-                document.map((doc) => (
-                  <tr key={doc.id} className="border">
-                    <td className="border p-2">{doc.name}</td>
-                    <td className="border p-2">
-                      {doc.file && doc.file.type === "application/pdf" ? (
-                        // <a
-                        //   href={doc.image}
-                        //   target="_blank"
-                        //   rel="noopener noreferrer"
-                        //   className="text-blue-600 underline"
-                        // >
-                        //  <i class="bi bi-file-pdf text-2xl"></i>
-                        // </a>
-                        <a
+                document.map((doc) => {
+                  const fileExtension = doc.file_name ? doc.file_name.split('.').pop().toLowerCase() : '';
+                  const isImage = ['png', 'jpg', 'jpeg'].includes(fileExtension);
+                  const isPdf = fileExtension === 'pdf';
+
+                  return (
+                    <tr key={doc.id} className="border">
+                      <td className="border p-2">{doc.name}</td>
+                      <td className="border p-2">
+                        {isPdf ? (
+                          <a
                             href={doc.image}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 underline"
                             onMouseEnter={(e) => {
                                 const rect = e.target.getBoundingClientRect();
-                                setHoveredPreview(doc.image); // This is the PDF object URL
+                                setHoveredPreview(doc.image);
                                 setHoveredPreviewType('pdf');
                                 setHoverPosition({
-                                    x: rect.right ,
-                                    y: rect.top - 170, // Adjust as needed for PDF iframe height
+                                    x: rect.right + 10,
+                                    y: rect.top - 170,
                                 });
                             }}
                             onMouseLeave={() => {
                                 setHoveredPreview(null);
                                 setHoveredPreviewType(null);
                             }}
-                        >
+                          >
                             <i className="bi bi-file-pdf text-2xl"></i>
-                        </a>
-                      ) : doc.image ? (
-                <img
-                    src={doc.image}
-                    alt={doc.name}
-                    className="thumbnail w-auto h-15"
-                    onMouseEnter={(e) => {
-                        const rect = e.target.getBoundingClientRect();
-                        setHoveredPreview(doc.image); // This is the image data URL
-                        setHoveredPreviewType('image');
-                        setHoverPosition({
-                            x: rect.right ,
-                            y: rect.top - 170,
-                        });
-                    }}
-                    onMouseLeave={() => {
-                        setHoveredPreview(null);
-                        setHoveredPreviewType(null);
-                    }}
-                />
-                      ) : null}
-                    </td>
+                          </a>
+                        ) : isImage ? (
+                          <img
+                            src={doc.image}
+                            alt={doc.name}
+                            className="thumbnail w-auto h-15 object-contain"
+                            onMouseEnter={(e) => {
+                                const rect = e.target.getBoundingClientRect();
+                                setHoveredPreview(doc.image);
+                                setHoveredPreviewType('image');
+                                setHoverPosition({
+                                    x: rect.right + 10,
+                                    y: rect.top - 170,
+                                });
+                            }}
+                            onMouseLeave={() => {
+                                setHoveredPreview(null);
+                                setHoveredPreviewType(null);
+                            }}
+                          />
+                        ) : null}
+                      </td>
 
-                    <td className="border p-2">
-                      {doc.signatures && doc.signatures.length > 0 ? (
-               <img
-    src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
-    alt="Signature"
-    className="w-auto h-100 rounded-md object-contain shadow-sm"
-    onMouseEnter={(e) => {
-        const rect = e.target.getBoundingClientRect();
-        setHoveredPreview(`data:image/jpeg;base64,${doc.signatures[0].image}`);
-        setHoveredPreviewType('image');
-        setHoverPosition({
-            x: rect.right ,
-            y: rect.top - 170,
-        });
-    }}
-    onMouseLeave={() => {
-        setHoveredPreview(null);
-        setHoveredPreviewType(null);
-    }}
-/>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="border p-2">
-                      {doc.photographs && doc.photographs.length > 0 ? (
-       <img
-    src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
-    alt="Photograph"
-    className="w-auto h-[50px] rounded-md object-contain shadow-sm"
-    onMouseEnter={(e) => {
-        const rect = e.target.getBoundingClientRect();
-        setHoveredPreview(`data:image/jpeg;base64,${doc.photographs[0].image}`);
-        setHoveredPreviewType('image');
-        setHoverPosition({
-            x: rect.right ,
-            y: rect.top - 170,
-        });
-    }}
-    onMouseLeave={() => {
-        setHoveredPreview(null);
-        setHoveredPreviewType(null);
-    }}
-/>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td className="border p-2">
-                      <button
-                        onClick={() => removeDocument(doc.id)}
-                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors duration-200"
-                        title="Remove Document"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                      <td className="border p-2">
+                        {doc.signatures && doc.signatures.length > 0 ? (
+                          <img
+                              src={`data:image/jpeg;base64,${doc.signatures[0].image}`}
+                              alt="Signature"
+                              className="w-auto h-100 rounded-md object-contain shadow-sm"
+                              onMouseEnter={(e) => {
+                                  const rect = e.target.getBoundingClientRect();
+                                  setHoveredPreview(`data:image/jpeg;base64,${doc.signatures[0].image}`);
+                                  setHoveredPreviewType('image');
+                                  setHoverPosition({
+                                      x: rect.right + 10,
+                                      y: rect.top - 170,
+                                  });
+                              }}
+                              onMouseLeave={() => {
+                                  setHoveredPreview(null);
+                                  setHoveredPreviewType(null);
+                              }}
+                          />
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="border p-2">
+                        {doc.photographs && doc.photographs.length > 0 ? (
+                          <img
+                              src={`data:image/jpeg;base64,${doc.photographs[0].image}`}
+                              alt="Photograph"
+                              className="w-auto h-[50px] rounded-md object-contain shadow-sm"
+                              onMouseEnter={(e) => {
+                                  const rect = e.target.getBoundingClientRect();
+                                  setHoveredPreview(`data:image/jpeg;base64,${doc.photographs[0].image}`);
+                                  setHoveredPreviewType('image');
+                                  setHoverPosition({
+                                      x: rect.right + 10,
+                                      y: rect.top - 170,
+                                  });
+                              }}
+                              onMouseLeave={() => {
+                                  setHoveredPreview(null);
+                                  setHoveredPreviewType(null);
+                              }}
+                          />
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td className="border p-2">
+                        <button
+                          onClick={() => removeDocument(doc.id)}
+                          className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-100 transition-colors duration-200"
+                          title="Remove Document"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr className="border">
                   <td
@@ -899,32 +929,38 @@ const removeDocument = (id) => {
           </div>
         </div>
       )}
-{hoveredPreview && (
-    <div
-        className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
-        style={{
-            top: `${hoverPosition.y}px`,
-            left: `${hoverPosition.x}px`,
-        }}
-    >
-        {hoveredPreviewType === 'pdf' ? (
-            <iframe
-                src={hoveredPreview}
-                title="PDF Preview"
-                className="h-[350px] w-[350px] rounded" // Adjust size as needed for the hover preview
-                style={{ border: 'none' }}
-            />
-        ) : (
-            <img
-                src={hoveredPreview}
-                alt="Zoomed Preview"
-                className="h-[200px] w-auto rounded"
-            />
-        )}
-    </div>
-)}
+      {hoveredPreview && (
+          <div
+              className="fixed z-50 bg-white border rounded shadow-lg p-2 transition-opacity duration-200"
+              style={{
+                  top: `${hoverPosition.y}px`,
+                  left: `${hoverPosition.x}px`,
+              }}
+          >
+              {hoveredPreviewType === 'pdf' ? (
+                  <iframe
+                      src={hoveredPreview}
+                      title="PDF Preview"
+                      className="h-[350px] w-[350px] rounded"
+                      style={{ border: 'none' }}
+                  />
+              ) : (
+                  <img
+                      src={hoveredPreview}
+                      alt="Zoomed Preview"
+                      className="h-[200px] w-auto rounded"
+                  />
+              )}
+          </div>
+      )}
     </div>
   );
 };
 
 export default DocumentUpload;
+
+
+
+
+
+ 

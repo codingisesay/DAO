@@ -1,8 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import scan_face from "../../assets/imgs/scan_face.gif";
-import scan_ray from "../../assets/imgs/scan_ray.gif";
-import instruction from "../../assets/imgs/photo_instructions.png";
-import Webcam from "react-webcam";
+ import React, { useState, useRef, useEffect } from "react";
+// Replaced image imports with placeholder URLs
+const scan_face_placeholder = "https://placehold.co/130x130/cccccc/000000?text=Scan+Face";
+const scan_ray_placeholder = "https://placehold.co/130x130/cccccc/000000?text=Scan+Ray";
+const instruction_placeholder = "https://placehold.co/300x150/cccccc/000000?text=Photo+Instructions";
+
+// Removed direct imports for Webcam, cocoSsd, and tfjs as they will be handled via native APIs or assumed global
+// import Webcam from "react-webcam";
+// import * as cocoSsd from "@tensorflow-models/coco-ssd";
+// import "@tensorflow/tfjs";
 
 const ImageCaptureValidator = ({
   onCapture,
@@ -11,7 +16,7 @@ const ImageCaptureValidator = ({
   initialPhoto = null,
   hasExistingPhoto = false
 }) => {
-  const webcamRef = useRef(null);
+  const webcamRef = useRef(null); // This will now refer to the <video> element
   const [imgSrc, setImgSrc] = useState(initialPhoto?.previewUrl || null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -23,7 +28,22 @@ const ImageCaptureValidator = ({
   const [locationError, setLocationError] = useState(null);
   const [address, setAddress] = useState(initialPhoto?.metadata?.address || null);
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
-  const [tempAddress, setTempAddress] = useState(''); // Initialize with empty string
+  const [tempAddress, setTempAddress] = useState('');
+
+  // State for validation, now including faceCovered
+  const [validation, setValidation] = useState(
+    initialPhoto?.metadata?.validation || {
+      hasFace: false,
+      lightingOk: false,
+      singlePerson: false,
+      faceCovered: false, // New validation property
+    }
+  );
+  const [hints, setHints] = useState(
+    hasExistingPhoto ? "Existing photo loaded" : "Position your face in the frame"
+  );
+  const [personCount, setPersonCount] = useState(0);
+
 
   // Check browser support
   const isWebcamSupported = () => {
@@ -39,16 +59,8 @@ const ImageCaptureValidator = ({
       );
       const data = await response.json();
 
-      if (data.address) {
-        const addressParts = [];
-        if (data.address.road) addressParts.push(data.address.road);
-        if (data.address.village) addressParts.push(data.address.village);
-        if (data.address.town) addressParts.push(data.address.town);
-        if (data.address.city) addressParts.push(data.address.city);
-        if (data.address.state) addressParts.push(data.address.state);
-        if (data.address.country) addressParts.push(data.address.country);
-
-        return addressParts.join(", ");
+      if (data && data.display_name) {
+        return data.display_name;
       }
       return "Address not available";
     } catch (error) {
@@ -59,18 +71,21 @@ const ImageCaptureValidator = ({
     }
   };
 
-  // Webcam onUserMedia handler
+  // Webcam onUserMedia handler (for native video element)
   const handleUserMedia = () => {
     setIsWebcamReady(true);
     setWebcamError(null);
   };
 
-  // Webcam error handler
+  // Webcam error handler (for native video element)
   const handleUserMediaError = (error) => {
     console.error("Webcam error:", error);
     setWebcamError(error.message || "Could not access camera");
     setIsWebcamReady(false);
     setIsCameraActive(false);
+    setHints(
+      "Camera access error. Please check permissions or try another browser."
+    );
   };
 
   // Get geolocation if enabled
@@ -114,7 +129,7 @@ const ImageCaptureValidator = ({
   }, [showLocation, location]);
 
   // Camera control functions
-  const startCamera = () => {
+  const startCamera = async () => {
     if (!isWebcamSupported()) {
       setWebcamError("Webcam not supported in this browser");
       return;
@@ -122,11 +137,182 @@ const ImageCaptureValidator = ({
     setIsCameraActive(true);
     setImgSrc(null);
     setWebcamError(null);
+    setHints("Position your face in the frame");
+
+    // Get media stream and set to video element
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: false,
+      });
+      if (webcamRef.current) {
+        webcamRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      handleUserMediaError(error);
+    }
   };
 
   const stopCamera = () => {
     setIsCameraActive(false);
     setIsWebcamReady(false);
+    // Stop all tracks on the stream
+    if (webcamRef.current && webcamRef.current.srcObject) {
+      webcamRef.current.srcObject.getTracks().forEach(track => track.stop());
+      webcamRef.current.srcObject = null;
+    }
+  };
+
+  // Face Detection Setup
+  useEffect(() => {
+    let mounted = true;
+    let model;
+    let detectionInterval;
+
+    const loadModel = async () => {
+      if (!isCameraActive || !isWebcamReady) return;
+
+      // Check for global availability of tf and cocoSsd
+      if (!window.tf || !window.cocoSsd) {
+        const errorMessage = "Face detection libraries (TensorFlow.js or COCO-SSD) not found. Please ensure they are loaded via CDN scripts.";
+        console.error(errorMessage);
+        setWebcamError(errorMessage); // Set a critical error
+        setIsLoading(false);
+        setHints(errorMessage);
+        // Do not proceed with model loading or detection if libraries are missing
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        // Use window.cocoSsd assuming it's loaded via CDN scripts
+        model = await window.cocoSsd.load();
+
+        const detect = async () => {
+          if (!mounted || !webcamRef.current || !webcamRef.current.videoWidth) { // Check videoWidth for readiness
+            return;
+          }
+
+          const video = webcamRef.current;
+
+          if (
+            video.readyState !== 4 ||
+            video.videoWidth === 0 ||
+            video.videoHeight === 0
+          ) {
+            return;
+          }
+
+          try {
+            const predictions = await model.detect(video);
+            const people = predictions.filter((p) => p.class === "person");
+            const { hasFace, lightingOk } = analyzeFrame(video);
+
+            let currentHasFace = hasFace;
+            let currentLightingOk = lightingOk;
+            let currentSinglePerson = people.length === 1;
+            let currentFaceCovered = false; // Initialize
+
+            if (currentSinglePerson) {
+                if (!currentHasFace) {
+                    // If a single person is detected by coco-ssd, but our skin tone analysis says no clear face,
+                    // it's a weak indicator of a covered face.
+                    currentFaceCovered = true;
+                    setHints("Face might be covered. Please ensure your face is fully visible.");
+                } else if (!currentLightingOk) {
+                    setHints("Lighting not optimal. Adjust your environment");
+                } else {
+                    setHints("Ready to capture");
+                }
+            } else if (people.length === 0) {
+                setHints("No face detected. Position your face in the frame");
+            } else if (people.length > 1) {
+                setHints("Multiple people detected. Only one person should be in frame");
+            }
+
+            if (mounted) {
+              setValidation({
+                hasFace: currentHasFace,
+                lightingOk: currentLightingOk,
+                singlePerson: currentSinglePerson,
+                faceCovered: currentFaceCovered, // Update validation state
+              });
+              setPersonCount(people.length);
+            }
+          } catch (error) {
+            console.error("Detection error:", error);
+          }
+        };
+
+        detectionInterval = setInterval(detect, 500);
+      } catch (error) {
+        console.error("Model loading error:", error);
+        setHints("Error loading detection model.");
+        setWebcamError("Error loading detection model. Try refreshing."); // Set error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isCameraActive && isWebcamReady) {
+      loadModel();
+    }
+
+    return () => {
+      mounted = false;
+      clearInterval(detectionInterval);
+      model?.dispose();
+    };
+  }, [isCameraActive, isWebcamReady]);
+
+  // Frame analysis for face and lighting
+  const analyzeFrame = (video) => {
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+      return { hasFace: false, lightingOk: false };
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    let brightnessSum = 0;
+    let skinTonePixels = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      brightnessSum += (r + g + b) / 3;
+
+      // Simple skin tone detection (can be improved)
+      if (
+        r > 95 &&
+        g > 40 &&
+        b > 20 &&
+        r > g &&
+        r > b &&
+        Math.abs(r - g) > 15
+      ) {
+        skinTonePixels++;
+      }
+    }
+
+    const avgBrightness = brightnessSum / (data.length / 4);
+    const skinToneRatio = skinTonePixels / (data.length / 4);
+
+    return {
+      hasFace: skinToneRatio > 0.05, // Threshold for face presence
+      lightingOk: avgBrightness > 100 && avgBrightness < 220, // Optimal brightness range
+    };
   };
 
   // Convert base64 to Blob
@@ -152,7 +338,14 @@ const ImageCaptureValidator = ({
   const capture = async () => {
     if (!webcamRef.current || !isWebcamReady) return;
 
-    const imageSrc = webcamRef.current.getScreenshot();
+    const video = webcamRef.current;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageSrc = canvas.toDataURL("image/jpeg"); // Get image from canvas
+
     setImgSrc(imageSrc);
 
     const blob = dataURLtoBlob(imageSrc);
@@ -171,6 +364,7 @@ const ImageCaptureValidator = ({
         location: location || null,
         locationError: locationError || null,
         address: address || null,
+        validation: validation, // Include validation for agent photos as well
       },
     };
 
@@ -185,6 +379,13 @@ const ImageCaptureValidator = ({
   const retake = () => {
     setImgSrc(null);
     startCamera();
+  };
+
+  // Check if all validations pass, now including faceCovered
+  const allValid = () => {
+    return (
+      validation.hasFace && validation.singlePerson && validation.lightingOk && !validation.faceCovered
+    );
   };
 
   // Manual file upload handler
@@ -206,6 +407,7 @@ const ImageCaptureValidator = ({
           location: location || null,
           locationError: locationError || null,
           address: address || null,
+          validation: null, // Skip validation for uploaded files
         },
       };
 
@@ -240,7 +442,9 @@ const ImageCaptureValidator = ({
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-xl font-bold mb-2">{photoType === "agent" ? "Agent Live Photo" : "agent Live Photo"}</h1>
+      <h1 className="text-xl font-bold mb-2">
+        {photoType === "agent" ? "Agent Live Photo" : "Customer Live Photo"}
+      </h1>
 
       {webcamError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -251,7 +455,15 @@ const ImageCaptureValidator = ({
       <div className="flex flex-col md:flex-row gap-6">
         {/* Camera/Image Preview */}
         <div className="flex-1">
-          <div className="border-2 rounded-lg overflow-hidden transition-all border-gray-300">
+          <div
+            className={`border-2 rounded-lg overflow-hidden transition-all ${
+              imgSrc
+                ? "border-gray-300"
+                : allValid()
+                ? "border-green-500"
+                : "border-red-500"
+            }`}
+          >
             {imgSrc ? (
               <div className="relative" style={{ aspectRatio: "4/3" }}>
                 <img
@@ -262,19 +474,16 @@ const ImageCaptureValidator = ({
               </div>
             ) : isCameraActive && isWebcamSupported() ? (
               <div className="relative" style={{ aspectRatio: "4/3" }}>
-                <Webcam
-                  audio={false}
+                {/* Replaced Webcam component with native video element */}
+                <video
                   ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  videoConstraints={{
-                    facingMode: "user",
-                    width: 1280,
-                    height: 720,
-                  }}
+                  autoPlay
+                  playsInline
+                  muted
                   className="w-full h-full object-cover"
-                  onUserMedia={handleUserMedia}
-                  onUserMediaError={handleUserMediaError}
-                />
+                  onLoadedMetadata={handleUserMedia} // Equivalent to onUserMedia for video readiness
+                  onError={handleUserMediaError} // For video element errors
+                ></video>
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="border-2 border-dashed border-white rounded-full w-48 h-64 opacity-50"></div>
                 </div>
@@ -323,8 +532,12 @@ const ImageCaptureValidator = ({
             ) : isCameraActive && isWebcamSupported() ? (
               <button
                 onClick={capture}
-                disabled={isLoading || !isWebcamReady}
-                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
+                disabled={!allValid() || isLoading} // Disable if not valid or loading
+                className={`w-full py-3 rounded-lg font-medium transition-colors ${
+                  allValid() && !isLoading
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
               >
                 {isLoading ? "Processing..." : "Capture Photo"}
               </button>
@@ -344,17 +557,45 @@ const ImageCaptureValidator = ({
           </div>
         </div>
 
-        {/* Location Panel */}
+        {/* Validation and Location Panel */}
         <div className="flex-1">
           <div className="text-center">
             {showLocation && location && imgSrc ? (
               <div className="text-start">
                 <br />
-                <div><i className="bi bi-send"></i> Latitude: {location && location.latitude && location.latitude.toFixed(5)}</div>
+                <div><i className="bi bi-send"></i> Latitude: {location && location.latitude ? location.latitude.toFixed(5) : <></>}</div>
                 <br />
-                <div><i className="bi bi-send"></i> Longitude: {location && location.longitude && location.longitude.toFixed(5)}</div>
+                <div><i className="bi bi-send"></i> Longitude: {location && location.longitude ? location.longitude.toFixed(5) : <></>}</div>
                 <br />
                 {address && <div><i className="bi bi-geo-alt"></i> Address: {address}</div>}
+                
+                <hr />
+                 
+                <div className="space-y-3">
+                  {/* Validation checks for agent photos */}
+                  <br />
+                  <div className={`flex items-center p-3 rounded ${
+                    validation.lightingOk ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {validation.lightingOk ? '✓' : '✗'} Good lighting
+                    </span>
+                  </div>
+                  <div className={`flex items-center p-3 rounded ${
+                    validation.singlePerson ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {validation.singlePerson ? '✓' : '✗'} Person in frame
+                    </span>
+                  </div>
+                   <div className={`flex items-center p-3 rounded ${
+                    !validation.faceCovered ? 'bg-green-100' : 'bg-red-100'
+                  }`}>
+                    <span className="font-medium mr-2">
+                      {!validation.faceCovered ? '✓' : '✗'} Face not covered
+                    </span>
+                  </div>
+                </div>
               </div>
             ) : (
               <>
@@ -392,17 +633,21 @@ const ImageCaptureValidator = ({
                     <div className="">
                       <div className="relative py-8 w-[160px] mx-auto">
                         <img
-                          src={scan_face}
+                          src={scan_face_placeholder} // Using placeholder
                           className="absolute top-0 w-[130px] h-[130px]"
                           alt="scan"
                         />
                         <img
-                          src={scan_ray}
+                          src={scan_ray_placeholder} // Using placeholder
                           className="absolute top-0 w-[130px] h-[130px]"
                           alt="scan"
                         />
                       </div>
-                      <img src={instruction} className="mt-20 mx-auto" />
+                      <img src={instruction_placeholder} className="mt-20 mx-auto" alt="instructions" /> {/* Using placeholder */}
+                      {/* Hints for live capture */}
+                      <div className="text-sm text-gray-600 p-3 bg-gray-50 rounded mt-3">
+                        {hints}
+                      </div>
                     </div>
                   </>
                 )}

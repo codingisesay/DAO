@@ -33,7 +33,7 @@ const labels = {
         label: "Alternate Mobile Number",
     },
     adhar_card: {
-        label: "Aadhar Card No.",
+        label: "Aadhaar Card No.",
     },
     pannumber: {
         label: "Pan Card No.",

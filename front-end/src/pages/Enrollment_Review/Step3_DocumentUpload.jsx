@@ -1,4 +1,7 @@
  
+
+
+
  import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
@@ -12,7 +15,8 @@ import { useParams } from 'react-router-dom';
 const P3 = ({ onNext, onBack }) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [Loading, setLoading] = React.useState(false);
-    const [localFormData, setLocalFormData]=useState([]);
+    const [localFormData, setLocalFormData]=useState([]); 
+
     const [documents, setDocuments] = useState(() => {
 
         try {
@@ -112,8 +116,8 @@ const P3 = ({ onNext, onBack }) => {
         }
 
         // Check Aadhaar front/back pairing
-        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         
         if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
             return {

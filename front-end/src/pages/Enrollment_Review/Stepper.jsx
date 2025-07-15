@@ -4,6 +4,7 @@ import ThemeToggle from "../../components/Toggle";
 import { useAuth } from "../../auth/AuthContext";
 import useLocalStorage from "use-local-storage";
 import { useNavigate } from "react-router-dom";
+import DashboardHeaderRight from '../DashboardHeaderComponents/ToolsBottom';
 
 const Stepper = ({ currentStep, complete, steps }) => {
   const navigate = useNavigate();
@@ -21,11 +22,12 @@ const Stepper = ({ currentStep, complete, steps }) => {
   };
 
   const getStepStatus = (stepIndex) => {
-    if (complete) return "";
-    if (stepIndex + 1 < currentStep) return "";
-    if (stepIndex + 1 === currentStep) return "";
-    return "";
+    if (complete) return "Completed";
+    if (stepIndex + 1 < currentStep) return "Completed";
+    if (stepIndex + 1 === currentStep) return "In Progress";
+    return "Pending";
   };
+
 
   return (
     <div className=" stepper-container max-w-md mx-auto p-5 relative ">
@@ -36,7 +38,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       />
 
       <ul
-        className="max-w-md mx-auto my-3 dark:text-white"
+        className="max-w-md mx-auto my-1 dark:text-white"
         onClick={() => navigate(-1)}
       >
         <li
@@ -53,7 +55,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       <div className="sidebar-stepper-container ">
         <div className="vertical-stepper ">
           {steps.map((step, i) => (
-            <div
+            <div style={{paddingBottom: '10px'}}
               key={i}
               className={`stepper-item ${
                 currentStep === i + 1 ? "active" : ""
@@ -69,7 +71,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
               <div className="ms-2">
                 <div className="stepper-subtitle text-xs">{step.subtitle}</div>
                 <div className="stepper-title">{step.title}</div>
-                <div
+                <div   style={{fontSize: '10px', marginTop:'-3px'}}
                   className={`stepper-status text-xs ${getStepStatus(i)
                     .toLowerCase()
                     .replace(" ", "-")}`}
@@ -96,12 +98,9 @@ const Stepper = ({ currentStep, complete, steps }) => {
             <small className="font-normal"> {userrole}</small>
           </span>
         </div>
-        <div className="flex items-center justify-between footer-icon-collection">
-          <ThemeToggle />
-          <i className="mx-2 bi  bi-bell"></i>
-          <i className="mx-2 bi  bi-question-circle"></i>
-          <i className="mx-2 bi  bi-globe2"></i>
-          <i className="mx-2 bi  bi-box-arrow-right" onClick={handleLogout}></i>
+     
+        <div className="py-2">
+          <DashboardHeaderRight /> 
         </div>
       </div>
     </div>

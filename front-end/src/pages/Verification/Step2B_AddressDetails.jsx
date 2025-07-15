@@ -184,7 +184,7 @@ const AddressInputs = () => {
                             readOnly={true} />
                             
             <CommanSelect
-                label="Resident Y/N"
+                label="Resident"
                 value={formData.per_resident || ''}
                 name="per_resident" 
                 options={YN}
@@ -371,15 +371,7 @@ const handleReviewClickadder = async (e) => { // Add 'e' (event object) as a par
             };
             await pendingAccountStatusUpdate.updateS2B(id, payload);
             applicationStatus.push('Review');
-            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
-            Swal.fire({
-                icon: 'success',
-                title: 'Address Details Marked for Review',
-                timer: 2000,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-            });
+            localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus)); 
             onNext();
         } catch (error) {
             Swal.fire({

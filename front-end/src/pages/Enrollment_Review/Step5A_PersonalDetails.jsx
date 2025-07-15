@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { pendingAccountData, applicationDetailsService, createAccountService } from '../../services/apiServices';
+import { pendingAccountData, applicationDetailsService, createAccountService , agentService} from '../../services/apiServices';
 import CommanInput from '../../components/CommanInput';
 import CommanSelect from '../../components/CommanSelect';
 import { maritalStatusOptions } from '../../data/data';
@@ -8,9 +8,12 @@ import labels from '../../components/labels';
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
 import { salutation, religion, caste, salaryrange } from '../../data/data';
+import { useParams } from "react-router-dom";
 
 function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
-    const applicationId = localStorage.getItem('application_id');
+    const applicationId = localStorage.getItem('application_id'); 
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null);   const {id}=useParams();
     const [localFormData, setLocalFormData] = useState({
         application_id: applicationId,
         maidenPrefixName: '',
@@ -66,6 +69,23 @@ function PersonalOccupationForm({ formData, updateFormData, onBack, onNext }) {
 
         fetchAndStoreDetails();
     }, [applicationId]);
+
+       useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
 const handleChange = (e) => {
     const { name, value } = e.target;
     const updatedLocalFormData = { ...localFormData, [name]: value };
@@ -153,7 +173,7 @@ const handleChange = (e) => {
 
     requiredFields.forEach(field => {
         if (!localFormData[field]) {
-            errors[field] = `${labels[field]?.label || field} is required`;
+            errors[field] = `${labels[field]?.label || field} Required`;
         }
     });
 
@@ -254,7 +274,8 @@ const handleChange = (e) => {
     return (
    <div className="max-w-screen-xl mx-auto mb-10" style={{ marginTop: '-6px' }}>
             <h2 className="text-xl font-bold mb-2">Personal Details</h2>
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.account_personal_details_status_comment}</p> }
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3"> 
                 {/* Maiden Name Section */}
                 <div>
                     <CommanSelect

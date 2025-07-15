@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 // import LivePhoto from './2C'; 
 import CommonButton from '../../components/CommonButton';
 
@@ -12,7 +12,38 @@ function p4({ onNext, onBack }) {
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
     const { id } = useParams();
+ const [reason, setReason] = useState(null);
+    const [loading, setLoading] = useState(true); 
+    const APIURL = 'https://vcall.payvance.co.in/api/fetch-video-details';
 
+    useEffect(() => {
+        const loadReason = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(APIURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ kyc_application_id: id })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                setReason(data);
+            } catch (error) {
+                console.error("Error loading reason:", error);
+                setReason(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadReason();
+    }, [id]);
     const admin_id= localStorage.getItem('userCode');
     const handleRejectClick = async () => {
         const result = await Swal.fire({
@@ -96,7 +127,7 @@ function p4({ onNext, onBack }) {
             localStorage.setItem("approveStatusArray", JSON.stringify(applicationStatus));
             Swal.fire({
                 icon: 'success',
-                title: 'Enrollment Details Approved Successfully',
+                title: 'Video Call Approved Successfully',
                 timer: 2000,               // alert stays for 2 seconds
                 showConfirmButton: false,  // no "OK" button
                 allowOutsideClick: false,  // optional: prevent closing by clicking outside
@@ -125,6 +156,22 @@ function p4({ onNext, onBack }) {
 
             <p className="text-xl font-bold">Video - KYC</p>
 
+      {reason && reason.data ? 
+            
+            (
+            reason.data[0] ?
+                <><video
+                    controls
+                    className="w-[50%] mx-auto mt-5 rounded-lg shadow-lg border-8 border-green-300"
+                    src={`https://vcall.payvance.co.in/storage/${reason.data[0].file_path}`}
+                    />
+
+                </>
+                :<></> 
+                
+            )
+                :<>No Video Call Available</>
+            }
 
             <div className="next-back-btns">
                 <CommonButton

@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import { pendingAccountData } from '../../services/apiServices'; // <-- Import your service
 import { daodocbase } from '../../data/data';
 import { pendingAccountStatusUpdate } from '../../services/apiServices';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 
 function P1({ onNext, onBack, formData, updateFormData }) {
@@ -35,63 +36,81 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     });
     const { id } = useParams();
 
+    const [reason, setReason] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const loadReason = async () => {
+        try {
+            setLoading(true);
+            const fetchedReason = await dataService.fetchReasonById(id);
+            setReason(fetchedReason);
+        } catch (error) {
+            // Handle error, e.g., show a user-friendly message
+            console.error("Error loading reason in component:", error);
+            setReason(null); // Clear reason on error
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAndStoreDetails = async () => {
+        try {
+            // alert('called')
+            if (id) {
+                const response = await pendingAccountData.getDetailsS1(id);
+                // localStorage.setItem('applicationDetails', JSON.stringify(response));
+                // console.log('got data :', response.data.details);
+                const application = response.details || {};
+                // const personal = response?.data?.personal_details || {};
+
+                setLocalFormData({
+                    salutation: application.salutation || '',
+                    first_name: application.first_name || '',
+                    middle_name: application.middle_name || '',
+                    last_name: application.last_name || '',
+                    DOB: application.DOB || '',
+                    gender: application.gender || '',
+                    mobile: application.mobile || '',
+                    complex_name: application.complex_name || '',
+                    flat_no: application.flat_no || '',
+                    area: application.area || '',
+                    landmark: application.landmark || '',
+                    country: application.country || '',
+                    pincode: application.pincode || '',
+                    city: application.city || '',
+                    district: application.district || '',
+                    state: application.state || '',
+                    photo: daodocbase + application.live_photo_path || '',
+
+                });
+                // alert(localFormData.photo);
+            }
+        } catch (error) {
+            console.error('Failed to fetch application details:', error);
+        }
+    };
+ 
+
     useEffect(() => {
         localStorage.setItem('application_id', id);
-        const fetchAndStoreDetails = async () => {
-            try {
-                // alert('called')
-                if (id) {
-                    const response = await pendingAccountData.getDetailsS1(id);
-                    // localStorage.setItem('applicationDetails', JSON.stringify(response));
-                    // console.log('got data :', response.data.details);
-                    const application = response.details || {};
-                    // const personal = response?.data?.personal_details || {};
-
-                    setLocalFormData({
-                        salutation: application.salutation || '',
-                        first_name: application.first_name || '',
-                        middle_name: application.middle_name || '',
-                        last_name: application.last_name || '',
-                        DOB: application.DOB || '',
-                        gender: application.gender || '',
-                        mobile: application.mobile || '',
-                        complex_name: application.complex_name || '',
-                        flat_no: application.flat_no || '',
-                        area: application.area || '',
-                        landmark: application.landmark || '',
-                        country: application.country || '',
-                        pincode: application.pincode || '',
-                        city: application.city || '',
-                        district: application.district || '',
-                        state: application.state || '',
-                        photo: daodocbase + application.live_photo_path || '',
-
-                    });
-                    // alert(localFormData.photo);
-                }
-            } catch (error) {
-                console.error('Failed to fetch application details:', error);
-            }
-        };
-
         fetchAndStoreDetails();
-    }, [id]);
+        loadReason();
+    }, [id]); // Re-run effect if 'id' changes
+
     if (!localStorage.getItem("approveStatusArray")) {
         localStorage.setItem("approveStatusArray", JSON.stringify([]));
 
 
     }
-
-
+ 
     return (
         <>
             <>
-                <div className='form-container'>
-                    <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>
-                    <div className="flex flex-wrap items-top">
-                        <div className="lg:w-3/4 md:full sm:w-full"><br />
-                            <p>Customer Application Form Details</p> <br />
-                            <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
+            <div className='form-container pb-10'>
+                <h2 className="text-xl font-bold mb-2">Pending Application : {id}</h2>    {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.status_comment}</p> }
+                <div className="flex flex-wrap items-top">
+                    <div className="lg:w-3/4 md:full sm:w-full"><br />
+                        <p>Customer Application Form Details</p> <br />
+                        <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 gap-5">
                                 {/* Salutation - Select field */}
                                 <CommanSelect
 

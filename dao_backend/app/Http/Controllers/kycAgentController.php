@@ -130,7 +130,7 @@ public function saveAllKycData(Request $request)
 
 //     // Validate incoming request data (excluding application_no since it will be generated)
 //     $validatedData = $request->validate([
-//         'auth_type' => 'nullable|in:Pan Card,Aadhar Card,Digilocker',
+//         'auth_type' => 'nullable|in:Pan Card,Aadhaar Card,Digilocker',
 //         'auth_code' => 'nullable|string',
 //         'auth_status' => 'nullable|string',
 //         'first_name' => 'nullable|string',

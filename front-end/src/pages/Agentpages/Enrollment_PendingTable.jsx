@@ -16,11 +16,16 @@ function PendingTable() {
 
     // Columns for the main applications table
     const columns = [
-        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
-        { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-        { ...COLUMN_DEFINITIONS.application_no, field: "id", type: "text" },
-        { ...COLUMN_DEFINITIONS.middle_name, field: "first_name", type: "text" },
         { ...COLUMN_DEFINITIONS.open_date, field: "created_at", type: "date" },
+        { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+        {
+            // Updated column for Applicant Name
+            header: "Applicant Name", // Changed header for clarity
+            field: "fullName", // This field will be created in fetchData
+            type: "text",
+        },
+        { ...COLUMN_DEFINITIONS.applicant_no, field: "", type: "text" },
+        { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     ];
 
     const fetchData = async () => {
@@ -31,8 +36,17 @@ function PendingTable() {
                 sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
                 ...filters,
             });
-            setTbldata(response.data || []);
-            setData({ content: response.data || [] });
+
+            // Process the data to include 'fullName'
+            const processedData = response.data
+                ? response.data.map(item => ({
+                    ...item,
+                    fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(), // Combine first_name and last_name
+                }))
+                : [];
+
+            setTbldata(processedData || []);
+            setData({ content: processedData || [] });
         } catch (error) {
             console.error("Failed to fetch pending applications:", error);
         } finally {
@@ -41,7 +55,6 @@ function PendingTable() {
     };
     useEffect(() => {
         fetchData();
-        // fetchDataCount();
     }, [currentPage, sortConfig, filters]);
 
     const handleSort = (field, order) => {
@@ -83,8 +96,6 @@ function PendingTable() {
                             editButtonDisabled={true}
                         />
                     </div>
-
-
                 </div>
             </div>
         </>
@@ -92,3 +103,4 @@ function PendingTable() {
 }
 
 export default PendingTable;
+ 

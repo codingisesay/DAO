@@ -4,12 +4,13 @@ import labels from '../../components/labels';
 import { useParams } from 'react-router-dom';
 import { salutation, gender, religion, caste } from '../../data/data';
 import { pendingAccountData } from '../../services/apiServices';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
        const { id } = useParams();
-  const [localFormData, setLocalFormData] = useState({
+        const [localFormData, setLocalFormData] = useState({
         salutation: '',
         first_name: '',
         middle_name: '',
@@ -33,7 +34,24 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         auth_status: '',
         agent_id: '',
         admin_id: ''
-    });
+        });
+
+        
+        const [reason, setReason] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const loadReason = async () => {
+            try {
+                setLoading(true);
+                const fetchedReason = await dataService.fetchReasonById(id);
+                setReason(fetchedReason);
+            } catch (error) {
+                // Handle error, e.g., show a user-friendly message
+                console.error("Error loading reason in component:", error);
+                setReason(null); // Clear reason on error
+            } finally {
+                setLoading(false);
+            }
+        };
 
 
     useEffect(() => {
@@ -79,13 +97,14 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         };
 
         fetchAndStoreDetails();
+        loadReason();
     }, [id]);
 
 
 
     return (
             <div className="personal-details-form">
-            <h2 className="text-xl font-bold mb-2">Personal Details</h2>
+            <h2 className="text-xl font-bold mb-2">Personal Details</h2>   {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_personal_details_status_comment}</p> }
   <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {/* Personal Information */}
         
@@ -178,7 +197,7 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
 
                 {/* Identity Documents */}
                 <CommanInput
-                    label="Aadhar Card"
+                    label="Aadhaar Card"
                     type="text"
                     name="adhar_card"
                     value={localFormData.adhar_card}

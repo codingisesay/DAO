@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import { gender, salutation, religion, caste, maritalStatusOptions } from '../../data/data';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ApplicationPdf = () => {
     const [formData, setFormData] = useState({});
+  const contentRef = useRef(null); // Ref to the main content area
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ 
         filename: 'application-form.pdf',
@@ -112,48 +113,48 @@ const ApplicationPdf = () => {
                         signature: signatureDoc?.file_path ? `${daodocbase}${signatureDoc.file_path}` : null,
 
                         // Documents
-                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
                             : "",
                         
-                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
                             : "",
                         
-                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
                             : "",
                         
-                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
                             : "",
                         
-                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
                             : "",
                         
-                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
                             : "",
                         
-                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
                             : "",
                         
-                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
                             : "",
                         
-                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
                             : "",
                         
-                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
                             : "",
                         
-                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE_JPG'))
-                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE_JPG')).file_path
+                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
                             : "",
                          
                         // photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
@@ -170,7 +171,16 @@ const ApplicationPdf = () => {
         };
         fetchDetails();
     }, [applicationId]);
-
+// Format a date string (yyyy-mm-dd or ISO) to dd/mm/yyyy
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr; // fallback if invalid
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
     const KeyValueRow = ({ label, value, emptyValue = 'N/A', width = '200px' }) => (
         <tr style={{ pageBreakInside: 'avoid' }}>
             <td style={{ 
@@ -215,32 +225,81 @@ const ApplicationPdf = () => {
     );
 
     return (
-        <div className='print-tbl' style={{ 
+        <div className='print-tbl ' style={{ 
             fontFamily: 'Arial, sans-serif', 
             maxWidth: '1000px', 
             margin: '0 auto', 
             padding: '20px',
             pageBreakInside: 'avoid'
         }}>
-            {/* Print Styles */}
-            <style>
-                {`
-                    @media print {
-                        body, div, table, tr, td, th, h2 {
-                            page-break-inside: avoid !important;
-                        }
-                        h2 {
-                            page-break-after: avoid !important;
-                        }
-                        .print-tbl {
-                            padding: 0 !important;
-                        }
-                    }
-                `}
-            </style>
+      <style>
+        {`
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact; /* For background colors/images */
+            print-color-adjust: exact;
+          }
+
+          /* General styling to ensure content fits */
+          .print-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          /* Avoid breaking content within logical sections */
+          .section-to-keep-together {
+            page-break-inside: avoid;
+            break-inside: avoid-page; /* Modern alternative */
+          }
+
+          /* Force new page before certain sections, e.g., major headings or large blocks */
+          .new-page-section {
+            page-break-before: always;
+            break-before: page; /* Modern alternative */
+          }
+
+          /* Hide elements not needed for print, e.g., navigation, buttons */
+          .no-print {
+            display: none !important;
+          }
+
+          /* Adjust font sizes if needed for print readability */
+          h1, h2, h3 {
+            font-size: 2em; /* Slightly smaller for print */
+          }
+          p, span, div {
+            font-size: 1em; /* Adjust paragraph text size */
+          }
+
+          /* Ensure tables don't break mid-row */
+          table {
+            page-break-inside: auto; /* Allow tables to break, but prefer not to */
+            width: 100%; /* Ensure table takes full print width */
+            border-collapse: collapse; /* For cleaner borders */
+          }
+          tr {
+            page-break-inside: avoid; /* Keep table rows from breaking */
+            page-break-after: auto;
+          }
+          thead {
+            display: table-header-group; /* Repeat table headers on new pages */
+          }
+          tfoot {
+            display: none; /* Repeat table footers on new pages */
+          }
+
+          /* Adjust margins for printing to reduce wasted space */
+          @page {
+            margin: 0.5in; /* Example: set uniform margins */
+          }
+        }
+        `}
+      </style>
 
             {/* Download Button */}
-            <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+            {/* <div style={{ textAlign: 'right', marginBottom: '20px' }}>
                 <button
                     onClick={() => toPDF()}
                     style={{
@@ -263,9 +322,17 @@ const ApplicationPdf = () => {
                     </svg>
                     Download PDF
                 </button>
-            </div>
-
-            <div ref={targetRef} style={{ 
+            </div> */}
+    <div className="no-print" style={{ marginTop: '20px', textAlign: 'center' }}>
+          {/* Assuming you have CommonButton imported and configured */}
+          {/* <CommonButton onClick={() => window.print()} variant="contained">
+            Print Application
+          </CommonButton> */}
+          <button onClick={() => window.print()} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            Print Application
+          </button>
+        </div>
+            <div className='print-application-container' ref={contentRef} style={{ 
                 backgroundColor: 'white', 
                 padding: '30px', 
                 borderRadius: '8px', 
@@ -301,7 +368,7 @@ const ApplicationPdf = () => {
                                     width="120px"
                                 />
                                 <KeyValueRow label="Application ID" value={formData.application_id} />
-                                <KeyValueRow label="DOB" value={formData.DOB} />
+                                <KeyValueRow label="DOB" value={formatDate(formData.DOB)} />
                                 <KeyValueRow label="Gender" value={formData.gender} />
                                 <KeyValueRow label="Status" value={formData.status} />
                             </tbody>
@@ -339,7 +406,7 @@ const ApplicationPdf = () => {
                                 }}>
                                     <table style={{ width: '100%', pageBreakInside: 'avoid' }}>
                                         <tbody>
-                                            <KeyValueRow label={labels.dob.label} value={formData.DOB} />
+                                            <KeyValueRow label={labels.dob.label} value={formatDate(formData.DOB)} />
                                             <KeyValueRow label={labels.gender.label} value={formData.gender} />
                                             <KeyValueRow label={labels.religion.label} value={formData.religion} />
                                             <KeyValueRow label={labels.caste.label} value={formData.caste} />

@@ -1,3 +1,13 @@
+ 
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import CommanInput from '../../components/CommanInput';
 import workingman from '../../assets/imgs/workingman1.png';
@@ -16,6 +26,7 @@ const ViewApplicationForm = () => {
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
+    const [nominees, setNominees] = useState([])
 
     // const id = localStorage.getItem('application_id');
     const { id } = useParams();
@@ -25,13 +36,15 @@ const ViewApplicationForm = () => {
 
             const response = await applicationDetailsService.getFullDetails(id);
             if (response) {
-                const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
+                const { application, personal_details, account_personal_details,account_nominees, application_addresss, customerdoc, customerpic } = response.data;
                 const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                 const signatureDoc = customerdoc.find(doc =>
                     doc.document_type.toLowerCase().includes('signature')
                 );
-                // console.log('photo :', customerpic[0].path);
-
+                console.log('photo :', customerpic[0].path);
+                    if (account_nominees && account_nominees.length > 0) {
+                        setNominees(account_nominees);
+                    }
                 setFormData({
                     application_id: id,
                     // Authentication
@@ -120,45 +133,51 @@ const ViewApplicationForm = () => {
                     photo: customerpic ? daodocbase + customerpic[0].path : null,
 
                     // Documents
-                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
-                        : "",
-
-                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
-                        : "",
-
-                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
-                        : "",
-
-                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
-                        : "",
-
-                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
-                        : "",
-
-                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
-                        : "",
-
-                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
-                        : "",
-
-                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
-                        : "",
-
-                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
-                        : "",
-
-                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
-                        ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
-                        : "",
+                     // Documents
+                                          passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
+                                              : "",
+                                          
+                                          aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
+                                              : "",
+                                          
+                                          aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
+                                              : "",
+                                          
+                                          pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
+                                              : "",
+                                          
+                                          voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
+                                              : "",
+                                          
+                                          drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
+                                              : "",
+                                          
+                                          utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
+                                              : "",
+                                          
+                                          rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
+                                              : "",
+                                          
+                                          propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
+                                              : "",
+                                          
+                                          bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
+                                              : "",
+                                          
+                                          signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                                              ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
+                                              : "",
+                                           
 
                 });
             }
@@ -600,6 +619,50 @@ const ViewApplicationForm = () => {
                     </div>
                 </div>
 
+                   {/* Nominee Details */}
+                {nominees.length > 0 && (
+                    <div className="pdf-section mb-8">
+                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+                        <div className="w-full mb-8 border rounded p-4">
+                        <table className="min-w-fit table-auto border border-collapse mb-4">
+                            <thead>
+                            <tr className="bg-gray-100 text-left">
+                                <th  className="border px-4 py-2">Name of the Nominee</th>
+                                <th  className="border px-4 py-2">Address</th>
+                                <th  className="border px-4 py-2">Relationship</th>
+                                <th  className="border px-4 py-2">Date of Birth</th>
+                                <th  className="border px-4 py-2">Age</th>
+                                <th  className="border px-4 py-2">Percentage</th> 
+                            </tr>
+                            </thead>
+
+                            {nominees.map((nominee, index) => (
+                            <tbody key={index}>
+                                <tr>
+                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                    {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+                                </td>
+                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                    {nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}
+                                </td>
+                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.relationship}</td>
+                                <td className="border px-4 py-2" style={{ verticalAlign: 'top', minWidth: '100px' }}>
+                        {nominee.dob ? new Date(nominee.dob).toLocaleDateString('en-GB') : 'N/A'}
+                        </td>
+
+                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.age}</td>
+                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.percentage}</td> 
+                                </tr>
+                            </tbody>
+                            ))}
+                        </table>
+                        </div>
+
+
+                    </div>
+                )}
+
+ 
                 {/* Family Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>

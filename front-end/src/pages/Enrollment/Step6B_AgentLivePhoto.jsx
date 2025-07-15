@@ -142,43 +142,45 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     };
 
     const submitPhoto = async (e) => { 
-        if(apiPhotoData && photoData) { 
+        // if(apiPhotoData && photoData) { 
      
-            Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : ' + id,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('customerPhotoData');
-                    localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData');
-                    window.location.href = '/agentdashboard'; 
-                }
-            });
-            return;
-        }
+        //     Swal.fire({
+        //         title: 'Application Created Successfully!', 
+        //         text: 'Application Number : ' + id,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK',
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             localStorage.removeItem('customerPhotoData');
+        //             localStorage.removeItem('agentPhotoData');
+        //             localStorage.removeItem('documentData');
+        //             window.location.href = '/agentdashboard'; 
+        //         }
+        //     });
+        //     return;
+        // }
 
-        if (!photoData || !photoData.file) {
-            const result = await Swal.fire({
-                icon: "warning",
-                title: "No Photo Captured",
-                text: "You have not captured a photo. Do you want to proceed without uploading a photo?",
-                showCancelButton: true,
-                confirmButtonText: "Yes, Skip",
-                cancelButtonText: "No, Go Back",
-            });
-            if (result.isConfirmed) {
-                localStorage.removeItem('customerPhotoData');
-                localStorage.removeItem('agentPhotoData');
-                localStorage.removeItem('documentData');
-                window.location.href = '/agentdashboard'; 
-            }
-            return;
-        }
+        // if (!photoData || !photoData.file) {
+        //     const result = await Swal.fire({
+        //         icon: "warning",
+        //         title: "No Photo Captured",
+        //         text: "You have not captured a photo. Do you want to proceed without uploading a photo?",
+        //         showCancelButton: true,
+        //         confirmButtonText: "Yes, Skip",
+        //         cancelButtonText: "No, Go Back",
+        //     });
+        //     if (result.isConfirmed) {
+        //         localStorage.removeItem('customerPhotoData');
+        //         localStorage.removeItem('agentPhotoData');
+        //         localStorage.removeItem('documentData');
+        //         window.location.href = '/agentdashboard'; 
+        //     }
+        //     return;
+        // }
 
-        setLocalIsSubmitting(true);
+      
+        try {
+              setLocalIsSubmitting(true);
 
         const submitFormData = new FormData();
         submitFormData.append('application_id', localStorage.getItem('application_id'));
@@ -210,7 +212,6 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
         submitFormData.append('timestamp', photoData.timestamp);
         submitFormData.append('status', 'Pending');
 
-        try {
             await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
@@ -231,7 +232,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save photo. Please try again.' 
+                // text: error?.response?.data?.message || 'Failed to save photo. Please try again.'
+                text: 'Photo is mendatory' || 'Failed to save photo. Please try again.' 
             });
         } finally {
             setLocalIsSubmitting(false);

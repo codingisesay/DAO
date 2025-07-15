@@ -6,8 +6,9 @@ import CommonButton from '../../components/CommonButton';
 import { gender, userdummydata } from '../../data/data';
 import CommanSelect from '../../components/CommanSelect';
 import Swal from 'sweetalert2';
-import {  createAccountService, pendingAccountData } from '../../services/apiServices';
+import {  createAccountService, pendingAccountData, agentService } from '../../services/apiServices';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 
 function P1({ onNext, onBack, formData, updateFormData }) {
     const [selectedOption, setSelectedOption] = useState(formData.verificationOption || '');
@@ -16,6 +17,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
     const [isFetchDisabled, setIsFetchDisabled] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const agent_id =localStorage.getItem('userCode');
+        const [loading, setLoading] = useState(false);
+        const [reason, setReason] = useState(null); 
     const [localFormData, setLocalFormData] = useState({
         first_name: formData.first_name || '',
         middle_name: formData.middle_name || '',
@@ -40,8 +43,26 @@ function P1({ onNext, onBack, formData, updateFormData }) {
       
     
     // Fetch details if application_id exists
-    const id = localStorage.getItem('application_id');
+    // const id = localStorage.getItem('application_id');
+    const {id} = useParams();
     useEffect(()=>{ if (id) {  fetchAndShowDetails(id); }}, [id])
+    
+    useEffect(() => {     
+        const fetchReason = async (id) => { 
+            if (!id) return;
+            try {
+                setLoading(true);
+                const response = await agentService.refillApplication(id); 
+                setReason(response.data[0]);
+            } catch (error) {
+                console.error("Failed to fetch review applications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+     
+        fetchReason(id);
+    }, [id]); 
     
 
         // clear local storage from below code
@@ -104,7 +125,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     const application = response.details || {};
                      
 
-                    if (application.auth_type === 'Aadhar Card') {
+                    if (application.auth_type === 'Aadhaar Card') {
                     application.auth_code = application.adhar_card || '';
                     application.verifynumber = application.adhar_card || '';
                     } else if (application.auth_type === 'Pan Card') {
@@ -193,24 +214,28 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         e.preventDefault();
         try {
             setIsSubmitting(true);
-            if (selectedOption === 'Aadhar Card') {
+            if (selectedOption === 'Aadhaar Card') {
                 if (validateAadhaar(localFormData.verifynumber)) {
                     
                     Swal.fire({
                         icon: 'success',
-                        title: 'Aadhar Card verified!',
+                        title: 'Aadhaar Card verified!',
                         showConfirmButton: false,
                         timer: 1500
                     });
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
-                        ...userdummydata.aadhardetails,
+                        ...userdummydata.aadhaardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success
-                } else {
-                    toast.error('Please enter a valid 12-digit Aadhaar number');
+                } else { 
+                    
+                    Swal.fire({
+                    icon: 'error', 
+                    text: 'Please enter a valid 12-digit Aadhaar number',
+                    });
                 }
             } else if (selectedOption === 'Pan Card') {
                 if (validatePAN(localFormData.verifynumber)) {
@@ -223,12 +248,15 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
-                        ...userdummydata.aadhardetails,
+                        ...userdummydata.aadhaardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success
-                } else {
-                    toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                } else { 
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Please enter a valid PAN number (format: AAAAA9999A)' 
+                    });
                 }
             } else if (selectedOption === 'DigiLocker') {
                 Swal.fire({
@@ -265,7 +293,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             auth_code: localFormData.auth_code,
             first_name: localFormData.first_name,
             auth_status: "Pending",
-            adhar_card: selectedOption === 'Aadhar Card' ? localFormData.auth_code : '',
+            adhar_card: selectedOption === 'Aadhaar Card' ? localFormData.auth_code : '',
             pan_card: selectedOption === 'Pan Card' ? localFormData.auth_code : '',
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
@@ -324,16 +352,17 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 </div>
             )}
 
-            <div className='form-container'>
+            <div className='form-container pb-10'>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
-                        <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
+                        <h2 className="text-xl font-bold mb-2">Enrollment Form</h2>
+                        {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.status_comment}</p> }
                         <div className="application-type-container">
                             <label className="application-type">
                                 <input
                                     type="radio"
                                     name="auth_type"
-                                    value="new"
+                                    value="new" 
                                     className="hidden peer"
                                     checked={selectedType === 'new'}
                                     onChange={() => setSelectedType('new')}
@@ -353,19 +382,19 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
-                                            value="Aadhar Card"
-                                            checked={selectedOption === 'Aadhar Card'}
+                                            name="option" disable={true}
+                                            value="Aadhaar Card"
+                                            checked={selectedOption === 'Aadhaar Card'}
                                             onChange={handleRadioChange}
                                         />
-                                        Aadhar Number
+                                        Aadhaar Number
                                     </label>
 
                                     <label className="flex me-4">
                                         <input
                                             className="me-2"
                                             type="radio"
-                                            name="option"
+                                            name="option" disable={true}
                                             value="Pan Card"
                                             checked={selectedOption === 'Pan Card'}
                                             onChange={handleRadioChange}
@@ -376,8 +405,8 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                     <label className="flex me-4">
                                         <input
                                             className="me-2"
-                                            type="radio"
-                                            name="option"
+                                            type="radio" 
+                                            name="option" disable={true}
                                             value="DigiLocker"
                                             checked={selectedOption === 'DigiLocker'}
                                             onChange={handleRadioChange}
@@ -385,19 +414,19 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         DigiLocker
                                     </label>
                                 </form>
-                                {selectedOption === 'Aadhar Card' && (
+                                {selectedOption === 'Aadhaar Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)</p>
+                                        <p className='mb-3 text-sm'>Enter 12 Digit Aadhaar Number (Format: xxxx xxxx xxxx)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
                                                     onChange={handleChange}
-                                                    label="Enter Aadhar Number"
-                                                    type="text"
+                                                    label="Enter Aadhaar Number"
+                                                    type="text"  disable={true}
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
-                                                    required
-                                                    maxLength={12}
+                                                    required disabled={true}
+                                                    maxLength={12} 
                                                     validationType="NUMBER_ONLY"
                                                 />
                                             </div>
@@ -405,6 +434,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                 <CommonButton
                                                     className="btn-login px-6"
                                                     onClick={fetchShowData}
+
                                                     disabled={
                                                         !localFormData.verifynumber ||
                                                         localFormData.verifynumber.length !== 12 ||
@@ -420,7 +450,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
                                 {selectedOption === 'Pan Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Please enter a valid PAN (format: AAAAA9999A)</p>
+                                        <p className='mb-3 text-sm'>Please Enter a Valid PAN(Format: AAAAA9999A)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
@@ -430,7 +460,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={10}
+                                                    maxLength={10} disable={true}
                                                     validationType="PAN"
                                                     onInput={(e) => {
                                                         e.target.value = e.target.value.toUpperCase();

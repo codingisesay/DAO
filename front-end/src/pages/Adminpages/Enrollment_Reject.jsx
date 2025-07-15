@@ -47,9 +47,18 @@ function RejectTable() {
   };
 
   const columns = [
+      {
+        ...COLUMN_DEFINITIONS.agent_id,
+        field: "agent_id", 
+      },
     { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
     { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
+    {
+      // Updated column for Applicant Name
+      header: "Customer Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
     { ...COLUMN_DEFINITIONS.rejected_by, field: "admin_id", type: "text" },
     {
       ...COLUMN_DEFINITIONS.rejected_reason,
@@ -73,9 +82,10 @@ function RejectTable() {
         ...filters,
       });
 
-      // Process the data to include all rejection reasons
+      // Process the data to include 'fullName' and all rejection reasons
       const processedData = response.data ? response.data.map(item => ({
         ...item,
+        fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(), // Added fullName
         rejected_reason: getRejectionReasons(item)
       })) : [];
 
@@ -175,7 +185,7 @@ function RejectTable() {
               basePath=""
               loading={countLoading}
               primaryKeys={["agent_id"]}
-              hidePagination={true}  showActions={false} 
+              hidePagination={true} showActions={false}
             />
           </div>
         )}
@@ -185,6 +195,7 @@ function RejectTable() {
 }
 
 export default RejectTable;
+
 
 
 

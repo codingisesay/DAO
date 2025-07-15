@@ -104,7 +104,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     const application = response.details || {};
                      
 
-                    if (application.auth_type === 'Aadhar Card') {
+                    if (application.auth_type === 'Aadhaar Card') {
                     application.auth_code = application.adhar_card || '';
                     application.verifynumber = application.adhar_card || '';
                     } else if (application.auth_type === 'Pan Card') {
@@ -193,24 +193,29 @@ function P1({ onNext, onBack, formData, updateFormData }) {
         e.preventDefault();
         try {
             setIsSubmitting(true);
-            if (selectedOption === 'Aadhar Card') {
+            if (selectedOption === 'Aadhaar Card') {
                 if (validateAadhaar(localFormData.verifynumber)) {
                     
                     Swal.fire({
                         icon: 'success',
-                        title: 'Aadhar Card verified!',
+                        title: 'Aadhaar Card verified!',
                         showConfirmButton: false,
                         timer: 1500
                     });
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
-                        ...userdummydata.aadhardetails,
+                        ...userdummydata.aadhaardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success
                 } else {
-                    toast.error('Please enter a valid 12-digit Aadhaar number');
+                    // toast.error('Please enter a valid 12-digit Aadhaar number');
+                                            
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Please enter a valid 12-digit Aadhaar number', 
+                        });
                 }
             } else if (selectedOption === 'Pan Card') {
                 if (validatePAN(localFormData.verifynumber)) {
@@ -223,12 +228,17 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                     setShowData(true);
                     setLocalFormData(prev => ({
                         ...prev,
-                        ...userdummydata.aadhardetails,
+                        ...userdummydata.aadhaardetails,
                         auth_code: prev.verifynumber
                     }));
                     setIsFetchDisabled(true); // Disable after success
                 } else {
-                    toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                    // toast.error('Please enter a valid PAN number (format: AAAAA9999A)');
+                    
+                    Swal.fire({
+                    icon: 'error', 
+                    text: 'Please enter a valid PAN number (format: AAAAA9999A)',
+                    });
                 }
             } else if (selectedOption === 'DigiLocker') {
                 Swal.fire({
@@ -265,7 +275,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
             auth_code: localFormData.auth_code,
             first_name: localFormData.first_name,
             auth_status: "Pending",
-            adhar_card: selectedOption === 'Aadhar Card' ? localFormData.auth_code : '',
+            adhar_card: selectedOption === 'Aadhaar Card' ? localFormData.auth_code : '',
             pan_card: selectedOption === 'Pan Card' ? localFormData.auth_code : '',
             middle_name: localFormData.middle_name,
             last_name: localFormData.last_name,
@@ -324,7 +334,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                 </div>
             )}
 
-            <div className='form-container'>
+            <div className='form-container pb-10'>
                 <div className="flex flex-wrap items-top">
                     <div className="lg:w-1/2 md:full sm:w-full my-4">
                         <h2 className="text-xl font-bold mb-2">New Enrollment Form</h2>
@@ -354,11 +364,11 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                             className="me-2"
                                             type="radio"
                                             name="option"
-                                            value="Aadhar Card"
-                                            checked={selectedOption === 'Aadhar Card'}
+                                            value="Aadhaar Card"
+                                            checked={selectedOption === 'Aadhaar Card'}
                                             onChange={handleRadioChange}
                                         />
-                                        Aadhar Number
+                                        Aadhaar Number
                                     </label>
 
                                     <label className="flex me-4">
@@ -385,20 +395,23 @@ function P1({ onNext, onBack, formData, updateFormData }) {
                                         DigiLocker
                                     </label>
                                 </form>
-                                {selectedOption === 'Aadhar Card' && (
+                                {selectedOption === 'Aadhaar Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Enter 12 digit Aadhaar number (format: XXXX XXXX XXXX)</p>
+                                        <p className='mb-3 text-sm'>Enter 12 Digit Aadhaar Number (Format: xxxx xxxx xxxx)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput
                                                     onChange={handleChange}
-                                                    label="Enter Aadhar Number"
-                                                    type="text"
+                                                    label="Enter Aadhaar Number"
+                                                    type="number"
                                                     name="verifynumber"
                                                     value={localFormData.verifynumber}
                                                     required
-                                                    maxLength={12}
-                                                    validationType="NUMBER_ONLY"
+                                                    max={12} min={12}
+                                                    validationType="NUMBER_ONLY" onInput={e => {
+                                                        // Remove any non-digit character (including '-')
+                                                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                                                    }}
                                                 />
                                             </div>
                                             <div className="md:w-1/2">
@@ -420,7 +433,7 @@ function P1({ onNext, onBack, formData, updateFormData }) {
 
                                 {selectedOption === 'Pan Card' && (
                                     <div className="mt-3">
-                                        <p className='mb-3 text-sm'>Please enter a valid PAN (format: AAAAA9999A)</p>
+                                        <p className='mb-3 text-sm'>Please Enter a Valid PAN (Format: AAAAA9999A)</p>
                                         <div className="flex items-center">
                                             <div className="md:w-1/2 me-4">
                                                 <CommanInput

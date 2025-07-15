@@ -4,6 +4,7 @@ import ThemeToggle from "../../components/Toggle";
 import { useAuth } from "../../auth/AuthContext";
 import useLocalStorage from "use-local-storage";
 import { useNavigate } from "react-router-dom";
+import DashboardHeaderRight from '../DashboardHeaderComponents/ToolsBottom';
 
 const Stepper = ({ currentStep, complete, steps }) => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Stepper = ({ currentStep, complete, steps }) => {
       <p className="mb-2 ps-11"> Account Opening</p>
 
       <div className="sidebar-stepper-container">
-        <div className="vertical-stepper">
+        <div className="vertical-stepper pt-2">
           {steps.map((step, i) => (
             <div
               key={i}
@@ -96,12 +97,9 @@ const Stepper = ({ currentStep, complete, steps }) => {
             <small className="font-normal"> {userrole}</small>
           </span>
         </div>
-        <div className="flex items-center justify-between footer-icon-collection">
-          <ThemeToggle />
-          <i className="mx-2 bi  bi-bell"></i>
-          <i className="mx-2 bi  bi-question-circle"></i>
-          <i className="mx-2 bi  bi-globe2"></i>
-          <i className="mx-2 bi  bi-box-arrow-right" onClick={handleLogout}></i>
+   
+        <div className="py-2">
+          <DashboardHeaderRight /> 
         </div>
       </div>
     </div>

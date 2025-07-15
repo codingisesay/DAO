@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import ImageCaptureValidator from './agentliveCapture'; // Make sure this path is correct
 import CommonButton from '../../components/CommonButton';
 import Swal from 'sweetalert2';
-import { createAccountService, agentService, pendingAccountData } from '../../services/apiServices';
+import { createAccountService, agentService, pendingAccountData, } from '../../services/apiServices';
+import { useParams } from 'react-router-dom';
 
 const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubmitting }) => {
     const [photoData, setPhotoData] = useState(null);
@@ -10,8 +11,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     const [apiPhotoData, setApiPhotoData] = useState(null); 
     const storageKey = 'agentPhotoData';
     
-    const id = localStorage.getItem('application_id');
-    const application_id = localStorage.getItem('application_id');
+    const {id} = useParams(); 
 
     const [loading, setLoading] = useState(false);
     const [reason, setReason] = useState(null);
@@ -25,6 +25,8 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
+
+                console.log(response)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -142,23 +144,23 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
     };
 
     const submitPhoto = async (e) => { 
-        if(apiPhotoData && photoData) { 
+        // if(apiPhotoData && photoData) { 
      
-            Swal.fire({
-                title: 'Application Created Successfully!', 
-                text: 'Application Number : ' + id,
-                icon: 'success',
-                confirmButtonText: 'OK',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('customerPhotoData');
-                    localStorage.removeItem('agentPhotoData');
-                    localStorage.removeItem('documentData');
-                    window.location.href = '/agentdashboard'; 
-                }
-            });
-            return;
-        }
+        //     Swal.fire({
+        //         title: 'Application Created Successfully!', 
+        //         text: 'Application Number : ' + id,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK',
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             localStorage.removeItem('customerPhotoData');
+        //             localStorage.removeItem('agentPhotoData');
+        //             localStorage.removeItem('documentData');
+        //             window.location.href = '/agentdashboard'; 
+        //         }
+        //     });
+        //     return;
+        // }
 
         if (!photoData || !photoData.file) {
             const result = await Swal.fire({
@@ -214,7 +216,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             await createAccountService.agentLivePhoto_s6b(submitFormData);
 
             Swal.fire({
-                title: 'Application Created Successfully!', 
+                title: 'Application Updated Successfully!', 
                 text: 'Application Number : ' + id,
                 icon: 'success',
                 confirmButtonText: 'OK',
@@ -231,7 +233,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error?.response?.data?.message || 'Failed to save photo. Please try again.' 
+                text: error?.response?.data?.message || 'Agent live phot capture is Required.' 
             });
         } finally {
             setLocalIsSubmitting(false);
@@ -240,7 +242,7 @@ const AgentPhotoCaptureApp = ({ formData, updateFormData, onNext, onBack, isSubm
 
     return (
         <div className="space-y-1">
-            {reason && <p className="text-red-500">Review For: {reason.applicant_live_photos_status_comment}</p>}
+            {reason && <p className="text-red-500">Review For: {reason.agent_live_photos_status_comment}</p>}
             
             {(isSubmitting || localIsSubmitting) && (
                 <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center">

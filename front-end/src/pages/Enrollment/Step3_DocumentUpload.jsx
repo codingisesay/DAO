@@ -1,3 +1,6 @@
+ 
+
+
 
 import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
@@ -89,8 +92,8 @@ const P3 = ({ onNext, onBack }) => {
         }
 
         // Check Aadhaar front/back pairing
-        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_FRONT_JPG');
-        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_BACK_JPG');
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
         
         if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
             return {
@@ -206,7 +209,7 @@ const P3 = ({ onNext, onBack }) => {
     };
 
     return (
-        <div className='form-container'>
+        <div className='form-container pb-10'>
             <div className="relative ">
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -218,7 +221,6 @@ const P3 = ({ onNext, onBack }) => {
                         </div>
                     </div>
                 )}
-                    {/* <DocView /> */}
                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
@@ -236,6 +238,7 @@ const P3 = ({ onNext, onBack }) => {
                 )}
 
             </div>
+                    {/* <DocView /> */}
             <div className="next-back-btns mt-6">
                 <CommonButton className="btn-back" onClick={onBack}>
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back

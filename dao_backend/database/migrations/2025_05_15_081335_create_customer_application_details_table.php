@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('customer_application_details', function (Blueprint $table) {
             $table->id();
             $table->string('application_no')->unique();
-            $table->enum('auth_type', ['Pan Card','Aadhar Card','Digilocker'])->nullable();
+            $table->enum('auth_type', ['Pan Card','Aadhaar Card','Digilocker'])->nullable();
             $table->string('auth_code')->nullable();
             $table->string('auth_status')->nullable();
             $table->string('first_name')->nullable();

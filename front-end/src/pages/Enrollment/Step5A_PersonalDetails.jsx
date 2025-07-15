@@ -153,7 +153,7 @@ const handleChange = (e) => {
 
     requiredFields.forEach(field => {
         if (!localFormData[field]) {
-            errors[field] = `${labels[field]?.label || field} is required`;
+            errors[field] = `${labels[field]?.label || field} is Required`;
         }
     });
 
@@ -221,6 +221,7 @@ const handleChange = (e) => {
                 occoupation_type: localFormData.occupationType,
                 occupation_name: localFormData.businessName,
                 if_salaryed: localFormData.salariedWith,
+                nationality :localFormData.nationality || 'Indian',
                 designation: localFormData.designation,
                 nature_of_occoupation: localFormData.organisationNature,
                 qualification: localFormData.educationQualification,

@@ -1,10 +1,4 @@
  
-
-
-
-
-
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import React from "react";
 import "./assets/css/theme.css";
@@ -32,7 +26,7 @@ import Kyc_ReviewTable from './pages/Adminpages/Kyc_Review';
 import Rekyc from './pages/CustomerRekyc/AccountOpeningForm';
 // import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import DAOExtraction from './RND_DND_GetSignphoto';
+// import DAOExtraction from './RND_DND_GetSignphoto';
 import PrintApplication from './pages/Enrollment/PrintApplication';
 import Kycverification from './pages/KycVerification/Enrollmentform';
 import StartKyc from './pages/Enrollment/4B';  
@@ -46,6 +40,7 @@ import OtpVerification from "./pages/ForgotPassword/OtpVerification";
 import ChangePassword from "./pages/ForgotPassword/ChangePassword";
 import KYCView from './pages/KycVerificationVIEW/Enrollmentform';
 import AgentReview from './pages/Adminpages/Agent_Account_List_Approved';
+// import Test from './pages/Profile'
 
 import { useAuth } from "./auth/AuthContext";
 /// kyc_pending kyc_approved kyc_review
@@ -85,6 +80,7 @@ export const App = () => {
         <Routes>
           
  
+    {/* <Route path="/" element={<Test />}   /> */}
     <Route path="/forgotpassword" element={<ForgotPassword />}   />
     <Route path="/otpvarification" element={<OtpVerification />} />
     <Route path="/changepass" element={<ChangePassword />}   />
@@ -224,11 +220,6 @@ export const App = () => {
           <Route path="/enrollment_rejected_tbl" element={
             <ProtectedRoute>
               <Enrollment_Reject_Tbl />
-            </ProtectedRoute>
-          } />
-          <Route path="/dao_extraction" element={
-            <ProtectedRoute>
-              <DAOExtraction />
             </ProtectedRoute>
           } />
           <Route path="/create-meeting" element={
