@@ -471,7 +471,7 @@ public function getApplicationPersonalDetails($application_id)
         ->join('customer_application_details', 'application_personal_details.application_id', '=', 'customer_application_details.id')
         ->select(
             'application_personal_details.*',
-            'customer_application_details.*'
+            // 'customer_application_details.*'
             // Add more fields from customer_application_details if needed
         )
         ->where('application_personal_details.application_id', $application_id)
@@ -762,7 +762,7 @@ public function updateAgentLivePhotos($application_id, Request $request)
         'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
     ], 200);
 }
-// full enrollment Update customer application status
+// full enrollment Update customer application status by admin 
 public function updateCustomerApplicationStatus(Request $request)
 {
     $validated = $request->validate([
