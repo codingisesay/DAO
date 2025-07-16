@@ -71,7 +71,7 @@ Route::get('admin/applications/rejected/{status}', [AdminController::class, 'get
 Route::get('admin/applications/reson/{status}/{application_id}', [AdminController::class, 'getResonApplications']);
 // get status and comments for the applications by application id for buttons 
 Route::get('/admin/application-details-comments/{application_id}', [AdminController::class, 'getApplicationDetailsFullComments']);
-// This is for getting the comments of applications by status and application id for KYC Anikta
+// This is for getting the comments of applications by status and application id for KYC 
 Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminController::class, 'getKycReasonApplications']);
 // API route for the table of rejected Enrollment Applications
 Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
@@ -92,7 +92,7 @@ Route::get('admin/kyc/rejected/agent/{agentId}/{status}', [AdminController::clas
 Route::get('/admin/kyc-applications/pending', [AdminController::class, 'getKycPendingApplications']);
 Route::get('admin/kyc/pending/count-by-agent', [AdminController::class, 'getKycPendingApplicationsAgentCount']);
 Route::get('admin/kyc/pending/agent/{agentId}', [AdminController::class, 'getKycPendingApplicationsByAgentId']);
-// kyc all application fetch route Anikta
+// kyc all application fetch route 
 Route::get('admin/kyc/details/{id}', [AdminController::class, 'getAllKycDetails']);
 // monthly account count 
 Route::get('admin/kyc-applications/approved/monthly', [AdminController::class, 'getMonthlyApprovedApplications']);
@@ -122,6 +122,8 @@ Route::post('/admin/updateAccountPersonalDetails/{application_id}', [AdminContro
 Route::post('/admin/updateAccountNominees/{application_id}', [AdminController::class, 'updateAccountNominees']);
 Route::post('/admin/updateServiceToCustomer/{application_id}', [AdminController::class, 'updateServiceToCustomer']);
 Route::post('/admin/updateAgentLivePhotos/{application_id}', [AdminController::class, 'updateAgentLivePhotos']);
+// This is for updating the full application status by admin
+Route::post('/admin/application-status/update', [AdminController::class, 'updateCustomerApplicationStatus']);
 // });
 
 // Route::middleware('role:agent')->group(function () {

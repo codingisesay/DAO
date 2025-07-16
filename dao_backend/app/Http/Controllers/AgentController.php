@@ -326,14 +326,71 @@ public function saveAgentLivePhoto(Request $request)
 
 
 
+// public function saveApplicationDocument(Request $request)
+// {
+//     $validated = $request->validate([
+//         'application_id' => 'required|integer|exists:customer_application_details,id',
+//         'document_types' => 'required|array|min:1',
+//         'document_types.*' => 'required|string|max:191',
+//         'files' => 'required|array|min:1',
+//         'files.*' => 'required|string', // Expecting base64 string
+//     ]);
+
+//     // 1. Delete all existing documents for this application_id
+//     \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])->delete();
+
+//     // 2. Insert new documents
+//     $documents = [];
+//     foreach ($validated['files'] as $index => $base64File) {
+//         $documentType = $validated['document_types'][$index] ?? null;
+
+//         // Extract file extension from base64 string (optional, for file_name)
+//         if (preg_match('/^data:.*?\/(.*?);base64,/', $base64File, $match)) {
+//             $extension = $match[1];
+//             $base64File = preg_replace('/^data:.*?;base64,/', '', $base64File);
+//         } else {
+//             $extension = 'bin';
+//         }
+
+//         $filename = uniqid('doc_') . '.' . $extension;
+//         $binaryData = base64_decode($base64File);
+
+//         // Save to DB using Eloquent (insert)
+//         $doc = \App\Models\ApplicationDocument::create([
+//             'application_id' => $validated['application_id'],
+//             'document_type' => $documentType,
+//             'file_name' => $filename,
+//             'file_path' => $binaryData, // Save as mediumblob
+//         ]);
+
+//         $documents[] = $doc->makeHidden(['file_path']);
+//     }
+
+//     \DB::table('document_approved_status')->updateOrInsert(
+//         ['application_id' => $validated['application_id']],
+//         ['status' => 'Pending']
+//     );
+
+//     return response()->json([
+//         'message' => 'Documents uploaded successfully.',
+//         'data' => $documents,
+//     ], 201);
+// }
+
 public function saveApplicationDocument(Request $request)
 {
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
+        'document_type_ids' => 'required|array|min:1',
+        'document_type_ids.*' => 'required|integer',
         'files' => 'required|array|min:1',
         'files.*' => 'required|string', // Expecting base64 string
+        'signatures' => 'nullable|array',
+        'signatures.*' => 'nullable|string', // base64 string or null
+        'photos' => 'nullable|array',
+        'photos.*' => 'nullable|string', // base64 string or null
     ]);
 
     // 1. Delete all existing documents for this application_id
@@ -343,6 +400,9 @@ public function saveApplicationDocument(Request $request)
     $documents = [];
     foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
+        $documentTypeId = $validated['document_type_ids'][$index] ?? null;
+        $signature = $validated['signatures'][$index] ?? null;
+        $photo = $validated['photos'][$index] ?? null;
 
         // Extract file extension from base64 string (optional, for file_name)
         if (preg_match('/^data:.*?\/(.*?);base64,/', $base64File, $match)) {
@@ -359,8 +419,11 @@ public function saveApplicationDocument(Request $request)
         $doc = \App\Models\ApplicationDocument::create([
             'application_id' => $validated['application_id'],
             'document_type' => $documentType,
+            'document_type_id' => $documentTypeId,
             'file_name' => $filename,
             'file_path' => $binaryData, // Save as mediumblob
+            'signature' => $signature,
+            'photo' => $photo,
         ]);
 
         $documents[] = $doc->makeHidden(['file_path']);
