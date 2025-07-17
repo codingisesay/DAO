@@ -52,22 +52,22 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
 // only for status count 
 Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
-//pending 
+//pending admin dashboard 
 Route::get('/admin/pendingApplication', [AdminController::class, 'getPendingApplications']);
 Route::get('/admin/pendingApplicationCount', [AdminController::class, 'getPendingApplicationsAgentCount']);
 Route::get('/admin/pendingApplicationDetails/{agentId}', [AdminController::class, 'getPendingApplicationsDetailsAgentById']);
 Route::get('/admin/pendingApplicationDetailsByID/{application_id}', [AdminController::class, 'getDetailsForCustomerDetails']);
-//approved
+//approved admin dashboard 
 Route::get('/admin/approvedApplication', [AdminController::class, 'getApprovedApplications']);
 Route::get('/admin/approvedApplicationCount', [AdminController::class, 'getApprovedApplicationsAgentCount']);
 Route::get('/admin/approvedApplicationDetails/{agentId}', [AdminController::class, 'getApprovedApplicationsDetailsAgentById']);
-//review
+//review admin dashboard
 Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplications']);
 Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
 Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
-//This is for getting the applications by status(Approved,Review)
+//This is for getting the applications by status(Approved,Review) changing name of the route and making it to universal for all status in admin dashboard 
 Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
-    // API route for the table of Enrollment Applications  / // get the comments of the applications
+    // API route for the table of Enrollment Applications / get the comments of the applications
 Route::get('admin/applications/reson/{status}/{application_id}', [AdminController::class, 'getResonApplications']);
 // get status and comments for the applications by application id for buttons 
 Route::get('/admin/application-details-comments/{application_id}', [AdminController::class, 'getApplicationDetailsFullComments']);
@@ -159,7 +159,7 @@ Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::cla
 Route::get('agent/cardstable/by-status/{agentId}/{status}', [AgentController::class, 'getApplicationsByAgentAndStatusForTable']);
 // status count 
 Route::get('/account-status-by-agent', [AgentController::class, 'getAccountStatusByAgent']);
-// all applications for the agent
+// all applications for the agent table 
 Route::get('agent/applications/by-agent/{agentId}', [AgentController::class, 'getApplicationsByAgent']);
 // Approved applications for the agent table 
 Route::get('agent/applications/approved/{agentId}', [AgentController::class, 'getApprovedApplicationsByAgent']);
@@ -169,7 +169,7 @@ Route::get('agent/applications/pending/{agentId}', [AgentController::class, 'get
 Route::get('agent/applications/review/{agentId}', [AgentController::class, 'getReviewApplicationsByAgent']);
 // rejected application for the agent table 
 Route::get('agent/applications/rejected/{agentId}', [AgentController::class, 'getRejectedApplicationsByAgent']);
-    // applications for the agent
+ // full details of application by agrent id
 Route::get('/agent/full-applications/{agent_id}', [AgentController::class, 'getFullApplicationsByAgent']);
 // full details of application by id 
 Route::get('/agent/full-application-details/{id}', [AgentController::class, 'getFullApplicationDetails']);

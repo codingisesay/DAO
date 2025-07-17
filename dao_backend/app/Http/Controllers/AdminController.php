@@ -47,6 +47,7 @@ public function getPendingApplications()
         ->join('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->select(
             'customer_appliction_status.*',
+            'customer_application_details.id as id',
             'customer_application_details.agent_id as agent_id',
             'customer_application_details.first_name as first_name',
             'customer_application_details.middle_name as middle_name',
@@ -445,8 +446,10 @@ $details = DB::table('customer_application_details')
     ->leftJoin('application_personal_details', 'customer_application_details.id', '=', 'application_personal_details.application_id')
     ->leftJoin('applicant_live_photos', 'customer_application_details.id', '=', 'applicant_live_photos.application_id')
     ->select(
+         'customer_application_details.id as application_id',
         'customer_application_details.*',
-        'application_personal_details.*',
+        // 'application_personal_details.*',
+        'customer_application_details.gender as gender',
         'applicant_live_photos.name as live_photo_name',
         'applicant_live_photos.path as live_photo_path'
     )
