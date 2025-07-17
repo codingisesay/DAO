@@ -437,6 +437,30 @@ public function saveApplicationDocument(Request $request)
     ], 201);
 }
 
+// Delete application document
+public function deleteApplicationDocument(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required',
+        'id' => 'required',
+    ]);
+
+    $deleted = \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])
+        ->where('id', $validated['id'])
+        ->delete();
+
+    if ($deleted) {
+        return response()->json([
+            'message' => 'Document deleted successfully.'
+            
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Document not found or already deleted.'
+        ], 404);
+    }
+}
+
 
 // Store account personal details
 public function saveAccountPersonalDetails(Request $request)
