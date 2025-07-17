@@ -520,7 +520,14 @@ public function getApplicantLivePhotosDetails($application_id)
 public function getApplicationDocuments($application_id)
 {
     $documents = DB::table('application_documents')
-        ->where('application_id', $application_id)
+        ->leftJoin('document_approved_status', 'application_documents.application_id', '=', 'document_approved_status.application_id')
+        ->where('application_documents.application_id', $application_id)
+        ->select(
+            'document_approved_status.status as document_status',
+            'document_approved_status.status_comment as document_status_comment',
+            'application_documents.*'
+            
+        )
         ->get();
 
     // Base64 encode the BLOB for each document
@@ -549,26 +556,36 @@ public function getAccountPersonalDetails($application_id)
 
 public function getAccountNominees($application_id)
 {
-    $documents = DB::table('account_nominees')
-        ->where('application_id', $application_id)
+    $nominees = DB::table('account_nominees')
+        ->leftJoin('nominee_approved_status', 'account_nominees.application_id', '=', 'nominee_approved_status.application_id')
+        ->where('account_nominees.application_id', $application_id)
+        ->select(
+            'account_nominees.*',
+            'nominee_approved_status.status as nominee_status',
+            'nominee_approved_status.status_comment as nominee_status_comment'
+        )
         ->get();
 
     return response()->json([
-        'documents' => $documents,
+        'documents' => $nominees,
     ], 200);
-
 }
 
 function getServiceToCustomer($application_id)
 {
     $services = DB::table('service_to_customers')
-        ->where('application_id', $application_id)
+        ->leftJoin('application_service_status', 'service_to_customers.application_id', '=', 'application_service_status.application_id')
+        ->where('service_to_customers.application_id', $application_id)
+        ->select(
+            'service_to_customers.*',
+            'application_service_status.status as service_status',
+            'application_service_status.status_comment as service_status_comment'
+        )
         ->get();
 
     return response()->json([
         'services' => $services,
     ], 200);
-
 }
 
 function fetchAgentLivePhotos($application_id)
