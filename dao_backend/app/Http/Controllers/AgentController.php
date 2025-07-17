@@ -393,10 +393,7 @@ public function saveApplicationDocument(Request $request)
         'photos.*' => 'nullable|string', // base64 string or null
     ]);
 
-    // 1. Delete all existing documents for this application_id
-    \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])->delete();
-
-    // 2. Insert new documents
+    // Only insert new documents, do not delete existing ones
     $documents = [];
     foreach ($validated['files'] as $index => $base64File) {
         $documentType = $validated['document_types'][$index] ?? null;
@@ -439,30 +436,6 @@ public function saveApplicationDocument(Request $request)
         'data' => $documents,
     ], 201);
 }
-
-// detete application document while enrollment it has the mapping of application_id and document id
-public function deleteApplicationDocument(Request $request)
-{
-    $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
-        'id' => 'required|integer|exists:application_documents,id',
-    ]);
-
-    $deleted = \App\Models\ApplicationDocument::where('application_id', $validated['application_id'])
-        ->where('id', $validated['id'])
-        ->delete();
-
-    if ($deleted) {
-        return response()->json([
-            'message' => 'Document deleted successfully.',
-        ], 200);
-    } else {
-        return response()->json([
-            'message' => 'Document not found or already deleted.',
-        ], 404);
-    }
-}
-
 
 
 // Store account personal details
