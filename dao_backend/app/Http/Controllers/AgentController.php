@@ -565,6 +565,29 @@ public function saveAccountNominee(Request $request)
         'data' => $savedNominees,
     ], 201);
 }
+// Function to handle Delete account nominee details
+// This function deletes a nominee based on application_id and nominee id
+public function deleteAccountNominee(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required|integer|exists:account_nominees,application_id',
+        'id' => 'required|integer|exists:account_nominees,id',
+    ]);
+
+    $deleted = \App\Models\AccountNominee::where('application_id', $validated['application_id'])
+        ->where('id', $validated['id'])
+        ->delete();
+
+    if ($deleted) {
+        return response()->json([
+            'message' => 'Nominee deleted successfully.'
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Nominee not found or already deleted.'
+        ], 404);
+    }
+}
 
 // Store service to customer
 public function saveServiceToCustomer(Request $request)

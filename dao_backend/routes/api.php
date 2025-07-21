@@ -121,8 +121,8 @@ Route::post('/admin/updateApplicationDocuments/{application_id}', [AdminControll
 Route::post('/admin/updateAccountPersonalDetails/{application_id}', [AdminController::class, 'updateAccountPersonalDetails']);
 Route::post('/admin/updateAccountNominees/{application_id}', [AdminController::class, 'updateAccountNominees']);
 Route::post('/admin/updateServiceToCustomer/{application_id}', [AdminController::class, 'updateServiceToCustomer']);
-Route::post('/admin/updateAgentLivePhotos/{application_id}', [AdminController::class, 'updateAgentLivePhotos']);
-// This is for updating the full application status by admin
+// Update Final customer application table status based on application_id (status for the last final submit of application (submit button and reject button) by admin
+// This is for updating the customer application status by admin
 Route::post('/admin/application-status/update', [AdminController::class, 'updateCustomerApplicationStatus']);
 // });
 
@@ -139,6 +139,8 @@ Route::post('/agent/account-nominee', [AgentController::class, 'saveAccountNomin
 Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceToCustomer']);
 // This is for deleting the application document by agent 
 Route::delete('/agent/application-document-delete', [AgentController::class, 'deleteApplicationDocument']);
+// This route deletes a nominee based on application_id and nominee id
+Route::delete('/agent/account-nominee-delete', [AgentController::class, 'deleteAccountNominee']);
 //rekyc
 Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);

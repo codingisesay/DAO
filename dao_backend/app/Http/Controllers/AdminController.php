@@ -570,7 +570,7 @@ public function getAccountNominees($application_id)
         ->get();
 
     return response()->json([
-        'documents' => $nominees,
+        'nominees' => $nominees,
     ], 200);
 }
 
