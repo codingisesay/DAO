@@ -672,6 +672,14 @@ public function getFullApplicationDetails($applicationId)
             return $item;
         });
 
+        //Fetch service to customer
+        $serviceToCustomer = DB::table('service_to_customers as stc')
+    ->join('banking_services_facilities as f', 'stc.banking_services_facilities_id', '=', 'f.id')
+    ->join('banking_services as s', 'f.banking_service_id', '=', 's.id')
+    ->where('stc.application_id', $applicationId)
+    ->select('s.name as service_name', 'f.name as facility_name')
+    ->get();
+
 
     if (!$application) {
         return response()->json(['message' => 'Application not found'], 404);
@@ -687,6 +695,7 @@ public function getFullApplicationDetails($applicationId)
             'application_addresss' => $applicationAddresss,
             'customerpic' => $custlivepic,
             'customerdoc' => $custumerdoc,
+            'service_to_customer' => $serviceToCustomer,
         ]
     ]);
 }
