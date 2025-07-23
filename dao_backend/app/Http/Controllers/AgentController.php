@@ -911,6 +911,7 @@ public function getApplicationsByAgentAndStatusForTable($agentId, $status)
         ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
         ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
         ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->leftjoin('video_kyc_status', 'customer_appliction_status.application_id', '=', 'video_kyc_status.application_id')
         ->where('customer_application_details.agent_id', $agentId)
         ->where('customer_appliction_status.status', $status)
         ->select(
@@ -932,7 +933,9 @@ public function getApplicationsByAgentAndStatusForTable($agentId, $status)
             'document_approved_status.status as document_approved_status_status',
             'document_approved_status.status_comment as document_approved_status_status_comment',
             'nominee_approved_status.status as nominee_approved_status_status',
-            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment',
+            'video_kyc_status.status as video_kyc_status',
+            'video_kyc_status.comments as video_kyc_status_comment'
         )
         ->get();
 
@@ -1190,5 +1193,71 @@ public function getKycPendingApplicationsByAgent(Request $request)
     return response()->json(['data' => $data], 200);
 }
 
+public function videoKycStatus(Request $request)
+{
+      try {
+        $validated = $request->validate([
+            'application_id' => 'required',
+            'status' => 'required',
+            'comments' => 'nullable|string|max:255',
+        ]);
+
+        DB::table('video_kyc_status')->updateOrInsert(
+            ['application_id' => $validated['application_id']],
+            [
+                'status' => $validated['status'],
+                'comments' => $validated['comments'] ?? null,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'Document approved status updated successfully.',
+            'data' => [
+                'application_id' => $validated['application_id'],
+                'status' => $validated['status'],
+                'comments' => $validated['comments'] ?? null,
+            ],
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error updating document approved status.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+public function kycVideoKycStatus(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'kyc_application_id' => 'required',
+            'status' => 'required',
+            'comments' => 'nullable|string|max:255',
+        ]);
+
+        DB::table('kyc_video_kyc_status')->updateOrInsert(
+            ['kyc_application_id' => $validated['kyc_application_id']],
+            [
+                'status' => $validated['status'],
+                'comments' => $validated['comments'] ?? null,
+            ]
+        );
+
+        return response()->json([
+            'message' => 'KYC video KYC status updated successfully.',
+            'data' => [
+                'kyc_application_id' => $validated['kyc_application_id'],
+                'status' => $validated['status'],
+                'comments' => $validated['comments'] ?? null,
+            ],
+        ], 200);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error updating KYC video KYC status.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+
+}
 
 }
