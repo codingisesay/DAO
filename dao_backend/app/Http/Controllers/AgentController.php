@@ -570,8 +570,8 @@ public function saveAccountNominee(Request $request)
 public function deleteAccountNominee(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:account_nominees,application_id',
-        'id' => 'required|integer|exists:account_nominees,id',
+        'application_id' => 'required',
+        'id' => 'required',
     ]);
 
     $deleted = \App\Models\AccountNominee::where('application_id', $validated['application_id'])
