@@ -13,7 +13,7 @@ function CustomerForm() {
     const [formData, setFormData] = useState({
         // Authentication Details
         begin_process: null,
-        auth_type: null, // 'Pan Card', 'Aadhar Card', 'Digilocker'
+        auth_type: '', // 'Pan Card', 'Aadhaar Card', 'Digilocker'
         auth_code: '',
         status: 'pending',
 
@@ -266,12 +266,12 @@ function CustomerForm() {
         e.preventDefault();
         console.log("Form submitted:", formData);
         setProgress({ ...progress, 5: "completed" });
-        alert("Form submitted successfully!");
+        // alert("Form submitted successfully!");
     };
  
 
     // Add this handler
-    const handleAadharDataFetched = (data) => {
+    const handleAadhaarDataFetched = (data) => {
         setFormData(prev => ({
             ...prev,
             ...data // Merge fetched data into formData
@@ -295,20 +295,24 @@ function CustomerForm() {
                 </div>
                 <div className='xl:w-4/5 lg:w-3/4 md:w-4/6 sm:w-2/3 p-1'>
                 {/* {currentStep} */}
-                    <div className='work-area dark:bg-gray-900'>
+                    <div className='work-area dark:bg-gray-900 '>
                         <div className="form-container">
                             <form onSubmit={handleSubmit}>
-                                {currentStep === 1 && (
-                                    <Step1PersonalInfo
-                                        formData={formData}
-                                        handleChange={handleChange}
-                                        onAadharDataFetched={handleAadharDataFetched} // <-- Pass handler
-                                    />
-                                )}
+                          {currentStep === 1 && (
+                            <Step1PersonalInfo
+                                formData={formData}
+                                handleChange={handleChange}
+                                setFormData={setFormData}
+                                onAadhaarDataFetched={handleAadhaarDataFetched}
+                                onNext={nextStep}
+                                onBack={prevStep}
+                            />
+                            )}
 
                                 {currentStep === 2 && (
                                     <Step2JobDetails
                                         formData={formData}
+                                        setFormData={setFormData}
                                         handleChange={handleChange} 
                                         subProgress={subProgress} 
                                         nextStep={nextStep}

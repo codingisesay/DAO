@@ -4,12 +4,13 @@ import labels from '../../components/labels';
 import { useParams } from 'react-router-dom';
 import { salutation, gender, religion, caste } from '../../data/data';
 import { pendingAccountData } from '../../services/apiServices';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 
 function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
     const verificationMethod = formData.verificationOption || '';
        const { id } = useParams();
-    const [localFormData, setLocalFormData] = useState({
+        const [localFormData, setLocalFormData] = useState({
         salutation: '',
         first_name: '',
         middle_name: '',
@@ -17,16 +18,41 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         DOB: '',
         gender: '',
         mobile: '',
-        complexName: '',
-        flatNoRoomNo: '',
-        area: '',
-        landmark: '',
-        country: '',
-        pincode: '',
-        city: '',
-        district: '',
-        state: ''
-    });
+        alt_mob_no: '',
+        email: '',
+        religion: '',
+        caste: '',
+        marital_status: '', 
+        adhar_card: '',
+        pan_card: '',
+        passport: '',
+        driving_license: '',
+        voter_id: '',
+        application_no: '',
+        auth_type: '',
+        auth_code: '',
+        auth_status: '',
+        agent_id: '',
+        admin_id: ''
+        });
+
+        
+        const [reason, setReason] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const loadReason = async () => {
+            try {
+                setLoading(true);
+                const fetchedReason = await dataService.fetchReasonById(id);
+                setReason(fetchedReason);
+            } catch (error) {
+                // Handle error, e.g., show a user-friendly message
+                console.error("Error loading reason in component:", error);
+                setReason(null); // Clear reason on error
+            } finally {
+                setLoading(false);
+            }
+        };
+
 
     useEffect(() => {
         const fetchAndStoreDetails = async () => {
@@ -39,25 +65,31 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
                     const application = response.details || {};
                     // const personal = response?.data?.personal_details || {};
 
-                    setLocalFormData({
-                        salutation: application.salutation || '',
-                        first_name: application.first_name || '',
-                        middle_name: application.middle_name || '',
-                        last_name: application.last_name || '',
-                        DOB: application.DOB || '',
-                        gender: application.gender || '',
-                        mobile: application.mobile || '',
-                        complexName: application.complex_name || '',
-                        flatNoRoomNo: application.flat_no || '',
-                        area: application.area || '',
-                        landmark: application.landmark || '',
-                        country: application.country || '',
-                        pincode: application.pincode || '',
-                        city: application.city || '',
-                        district: application.district || '',
-                        state: application.state || '',
-
-                    });
+                  setLocalFormData({
+                                 salutation: application.salutation || '',
+                                 first_name: application.first_name || '',
+                                 middle_name: application.middle_name || '',
+                                 last_name: application.last_name || '',
+                                 DOB: application.DOB || '',
+                                 gender: application.gender || '',
+                                 mobile: application.mobile || '',
+                                 alt_mob_no: application.alt_mob_no || '',
+                                 email: application.email || '',
+                                 religion: application.religion || '',
+                                 caste: application.caste || '',
+                                 marital_status: application.marital_status || '',
+                                 adhar_card: application.adhar_card || '',
+                                 pan_card: application.pan_card || '',
+                                 passport: application.passport || '',
+                                 driving_license: application.driving_license || '',
+                                 voter_id: application.voter_id || '',
+                                 application_no: application.application_no || '',
+                                 auth_type: application.auth_type || '',
+                                 auth_code: application.auth_code || '',
+                                 auth_status: application.auth_status || '',
+                                 agent_id: application.agent_id || '',
+                                 admin_id: application.admin_id || ''
+                             });
                 }
             } catch (error) {
                 console.error('Failed to fetch application details:', error);
@@ -65,145 +97,146 @@ function PersonalDetailsForm({ formData, updateFormData, isSubmitting }) {
         };
 
         fetchAndStoreDetails();
+        loadReason();
     }, [id]);
 
 
 
     return (
             <div className="personal-details-form">
-            <h2 className="text-xl font-bold mb-2">Personal Details</h2>
-
-            <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2  gap-5">
+            <h2 className="text-xl font-bold mb-2">Personal Details</h2>   {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_personal_details_status_comment}</p> }
+  <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-5">
+                {/* Personal Information */}
+        
                 <CommanInput
-                    
                     label={labels.salutation.label}
                     name="salutation"
                     value={localFormData.salutation}
-                    // options={salutation}
-                    required
+                    readOnly={true}
                 />
-
                 <CommanInput
-                    
                     label={labels.firstname.label}
                     type="text"
-                    name="firstName"
+                    name="first_name"
                     value={localFormData.first_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
                     label={labels.middlename.label}
                     type="text"
-                    name="middleName"
+                    name="middle_name"
                     value={localFormData.middle_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
                     label={labels.lastname.label}
                     type="text"
-                    name="lastName"
+                    name="last_name"
                     value={localFormData.last_name}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
                     label={labels.dob.label}
                     type="date"
-                    name="dob"
+                    name="DOB"
                     value={localFormData.DOB}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
                     label={labels.gender.label}
                     type="text"
                     name="gender"
                     value={localFormData.gender}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
+                    label="Religion"
+                    type="text"
+                    name="religion"
+                    value={localFormData.religion}
+                    readOnly={true}
+                />
+                <CommanInput
+                    label="Caste"
+                    type="text"
+                    name="caste"
+                    value={localFormData.caste}
+                    readOnly={true}
+                />
+                <CommanInput
+                    label="Marital Status"
+                    type="text"
+                    name="marital_status"
+                    value={localFormData.marital_status}
+                    readOnly={true}
+                />
+
+                {/* Contact Information */}
+                <CommanInput
                     label={labels.mobile.label}
                     type="text"
                     name="mobile"
                     value={localFormData.mobile}
-                    required
-                    readOnly={true} />
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label={labels.complexname.label}
+                    label="Alternate Mobile"
                     type="text"
-                    name="complexName"
-                    value={localFormData.complexName}
-                    required
-                    readOnly={true} />
+                    name="alt_mob_no"
+                    value={localFormData.alt_mob_no}
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label='Flat no/Room no'
-                    type="text"
-                    name="flatNoRoomNo"
-                    value={localFormData.flatNoRoomNo}
-                    required
-                    readOnly={true} />
+                    label="Email"
+                    type="email"
+                    name="email"
+                    value={localFormData.email}
+                    readOnly={true}
+                />
+  
+
+                {/* Identity Documents */}
                 <CommanInput
-                    
-                    label={labels.area.label}
+                    label="Aadhaar Card"
                     type="text"
-                    name="area"
-                    value={localFormData.area}
-                    required
-                    readOnly={true} />
+                    name="adhar_card"
+                    value={localFormData.adhar_card}
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label={labels.landmark.label}
+                    label="PAN Card"
                     type="text"
-                    name="landmark"
-                    value={localFormData.landmark}
-                    required
-                    readOnly={true} />
+                    name="pan_card"
+                    value={localFormData.pan_card}
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label={labels.country.label}
+                    label="Passport"
                     type="text"
-                    name="country"
-                    value={localFormData.country}
-                    required
-                    readOnly={true} />
+                    name="passport"
+                    value={localFormData.passport}
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label={labels.pincode.label}
+                    label="Driving License"
                     type="text"
-                    name="pincode"
-                    value={localFormData.pincode}
-                    required
-                    readOnly={true} />
+                    name="driving_license"
+                    value={localFormData.driving_license}
+                    readOnly={true}
+                />
                 <CommanInput
-                    
-                    label={labels.city.label}
+                    label="Voter ID"
                     type="text"
-                    name="city"
-                    value={localFormData.city}
-                    required
-                    readOnly={true} />
-                <CommanInput
-                    
-                    label={labels.district.label}
-                    type="text"
-                    name="district"
-                    value={localFormData.district}
-                    required
-                    readOnly={true} />
-                <CommanInput
-                    
-                    label={labels.state.label}
-                    type="text"
-                    name="state"
-                    value={localFormData.state}
-                    required
-                    readOnly={true} />
+                    name="voter_id"
+                    value={localFormData.voter_id}
+                    readOnly={true}
+                />
+
+       
+
+ 
             </div>
+
 
 
         </div>

@@ -15,6 +15,7 @@ class ApplicantLivePhoto extends Model
         'application_id',
         'longitude',
         'latitude',
+        'address',
         'name',
         'path',
         'status',

@@ -15,6 +15,9 @@ class kycApplicationDocument extends Model
         'kyc_application_id',
         'kyc_application_no',
         'kyc_document_type',
+        'kyc_document_type_id',
+        'kyc_signature',
+        'kyc_photo',
         'kyc_file_name',
         'kyc_file_path',
     ];

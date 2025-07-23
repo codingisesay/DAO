@@ -1,30 +1,68 @@
-
 import { useAuth } from '../../auth/AuthContext';
-import { kycPendingApplicationsService, kycReviewApplicationsService } from '../../services/apiServices'; // <-- Import your service
+import { adminService, kycReviewApplicationsService } from '../../services/apiServices';
 import DataTable from '../../components/DataTable';
-import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig'; // <-- Import your column definitions
-import React, { useState, useEffect } from "react"; // Import necessary hooks from React
+import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConfig';
+import React, { useState, useEffect } from "react";
 
-
-
-function KycRviewTable() {
-
+function KycReviewTable() {
   const [tbldata, setTbldata] = React.useState([]);
-
+  const [countLoading, setCountLoading] = useState(false);
+  const [countData, setCountData] = useState({ content: [] });
   const [data, setData] = useState({ content: [] });
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
   const [filters, setFilters] = useState({});
+  const [activeView, setActiveView] = useState('applications'); // 'applications' or 'agents'
 
+  const getReviewComments = (item) => {
+    const comments = [];
 
-  const columns = [
-    { ...COLUMN_DEFINITIONS.id, field: "application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
-    { ...COLUMN_DEFINITIONS.kyc_application_id, field: "kyc_application_id", type: "text" },
-    { ...COLUMN_DEFINITIONS.middle_name, field: "middle_name", type: "text" },
+    const statusFields = [
+      'kyc_data_after_vs_cbs_status_comment',
+      'kyc_document_approved_status_comment',
+    ];
+
+    statusFields.forEach(field => {
+      if (item[field]) {
+        const fieldName = field
+          .replace('kyc_', '')
+          .replace(/_comment$/, '')
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase());
+        comments.push(`${fieldName}: ${item[field]}`);
+      }
+    });
+
+    return comments.length > 0 ? comments.join('; ') : 'No review comments';
+  };
+
+  const countColumns = [
+    { header: "Agent ID", field: "kyc_agent_id", type: "text" },
+    { header: "Review Count", field: "review_count", type: "text" }
   ];
 
+  const columns = [
+          { ...COLUMN_DEFINITIONS.agent_id, field: "kyc_agent_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.id, field: "id", type: "text" },
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
+    {
+      // Updated column for Applicant Name
+      header: "Customer Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
+    {...COLUMN_DEFINITIONS.reject_admin_id,
+      field: "kyc_admin_id",
+      type: "text"
+    },
+    {
+      header: "Rejected Reason",
+      field: "review_comments",
+      type: "text",
+      render: (rowData) => getReviewComments(rowData)
+    },
+  ];
 
   const fetchData = async () => {
     try {
@@ -34,30 +72,43 @@ function KycRviewTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
-      // Set both states correctly
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] }); // This is what DataTable expects
+
+      // Process the data to include 'fullName' and all review comments
+      const processedData = response.data ? response.data.map(item => ({
+        ...item,
+        // Assuming 'kyc_vscbs_last_name' is the field for last name
+        fullName: `${item.kyc_vscbs_first_name || ''} ${item.kyc_vscbs_last_name || ''}`.trim(),
+        review_comments: getReviewComments(item)
+      })) : [];
+
+      setTbldata(processedData);
+      setData({ content: processedData });
     } catch (error) {
-      console.error("Failed to fetch pending applications:", error);
+      console.error("Failed to fetch review applications:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  /*
-  The `useEffect` hook is used to perform side effects in the component.
-  In this case, it ensures that `fetchBranches()` is called whenever 
-  certain dependencies change.
-*/
+  const fetchDataCount = async () => {
+    try {
+      setCountLoading(true);
+      const response = await adminService.kycReviewApplicationCountByAgent();
+      setCountData({ content: response.data || [] });
+    } catch (error) {
+      console.error("Failed to fetch agent counts:", error);
+    } finally {
+      setCountLoading(false);
+    }
+  };
 
-  /*
-  `fetchBranches();`
-  - Calls the function to fetch bank data from the API.
-  - This ensures that the latest data is retrieved whenever filters, sorting, or pagination change.
-*/
   useEffect(() => {
-    fetchData();
-  }, [currentPage, sortConfig, filters]);
+    if (activeView === 'applications') {
+      fetchData();
+    } else {
+      fetchDataCount();
+    }
+  }, [currentPage, sortConfig, filters, activeView]);
 
   const handleSort = (field, order) => {
     setSortConfig({ field, order });
@@ -67,35 +118,43 @@ function KycRviewTable() {
     setFilters(newFilters);
     setCurrentPage(0);
   };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const toggleView = (view) => {
+    setActiveView(view);
+    setCurrentPage(0);
+  };
 
   return (
-    <>
-
-      <div className="container mx-auto">
-        <br />
-        <div
-          className="Usermaster-main-div"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            borderRadius: "30px",
-          }}
-        >
-          {/* Header and Search section */}
-          <div
-            className="search-user-container"
-            style={{ display: "flex", justifyContent: "space-between" }}
+    <div className="container mx-auto">
+      <br />
+      <div className="Usermaster-main-div" style={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: "30px",
+      }}>
+        {/* View Toggle Buttons */}
+        <div className="flex mb-4">
+          <button
+            onClick={() => toggleView('applications')}
+            className={`px-4 py-2 rounded-l ${activeView === 'applications' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
           >
+            Review Applications
+          </button>
+          <button
+            onClick={() => toggleView('agents')}
+            className={`px-4 py-2 rounded-r ${activeView === 'agents' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+          >
+            Reviews by Agent
+          </button>
+        </div>
 
-            {/* Action Buttons */}
-            <div className="button-section"> </div>
-          </div>
-
-          <div className="bank-master" >
+        {/* Review Applications Table */}
+        {activeView === 'applications' && (
+          <div className="bank-master">
             <DataTable
               data={data}
               columns={columns}
@@ -108,14 +167,29 @@ function KycRviewTable() {
               editButtonDisabled={true}
             />
           </div>
-        </div>
+        )}
+
+        {/* Agent Count Table */}
+        {activeView === 'agents' && (
+          <div className="bank-master w-300px min-w-300px">
+            <DataTable
+              data={countData}
+              columns={countColumns}
+              basePath=""
+              loading={countLoading}
+              primaryKeys={["kyc_agent_id"]}
+              hidePagination={true} showActions={false}
+            />
+          </div>
+        )}
       </div>
-
-
-
-    </>);
+    </div>
+  );
 }
 
-export default KycRviewTable;
+export default KycReviewTable;
 
 
+
+
+ 

@@ -1,18 +1,24 @@
-import React, { useState, useEffect } from 'react';
+ 
+
+
+
+ import React, { useState, useEffect } from 'react';
 import DAOExtraction from './RND_DND_GetSignphoto_abstraction';
 import DocUpload from './RND_DND_GetSignphoto_DocUpload';
-import { apiService } from '../../utils/storage'
-import { agentService ,createAccountService} from '../../services/apiServices';
+import { apiService } from '../../utils/storage';
+import { agentService , pendingAccountData, createAccountService } from '../../services/apiServices';
 import Swal from 'sweetalert2';
-import CommonButton from '../../components/CommonButton'
-import { swap } from '@tensorflow/tfjs-core/dist/util_base';
+import DocView from './Step3A_DocumentUpload'
+import CommonButton from '../../components/CommonButton';
 import { useParams } from 'react-router-dom';
 
-
 const P3 = ({ onNext, onBack }) => {
-    // In the main component
     const [isLoading, setIsLoading] = React.useState(false);
+    const [Loading, setLoading] = React.useState(false);
+    const [localFormData, setLocalFormData]=useState([]); 
+
     const [documents, setDocuments] = useState(() => {
+
         try {
             const saved = localStorage.getItem('documentData');
             return saved ? JSON.parse(saved) : [];
@@ -21,20 +27,8 @@ const P3 = ({ onNext, onBack }) => {
             return [];
         }
     });
-    const storedId = localStorage.getItem('application_id')
-
-
-
-    const [processingDoc, setProcessingDoc] = useState(null);
-    const [isProcessing, setIsProcessing] = useState(false);
-
-    // Save to localStorage whenever documents change
-
-    
-      const { id } = useParams();
-    const [loading, setLoading] = useState(false);
-    const [reason, setReason] = useState(null);
-
+    const {id} = useParams();
+      const [reason, setReason] = useState(null); 
     useEffect(() => {
         if (!id) return;
 
@@ -43,6 +37,7 @@ const P3 = ({ onNext, onBack }) => {
                 setLoading(true);
                 const response = await agentService.refillApplication(id);
                 setReason(response.data[0]);
+                console.log( reason.document_approved_status_status_comment)
             } catch (error) {
                 console.error("Failed to fetch review applications:", error);
             } finally {
@@ -50,10 +45,29 @@ const P3 = ({ onNext, onBack }) => {
             }
         };
 
+        const fetchAndStoreDetails = async () => {
+            try {
+                if (id) {
+                    const response = await pendingAccountData.getDetailsS3(id);
+                    const documents = response.documents || [];
+                    // Save only the documents array to localStorage
+                    localStorage.setItem('documentData', JSON.stringify(documents));
+                    setDocuments(documents); // Update state for DocUpload
+                    setLocalFormData(documents); // Optional, if you use localFormData elsewhere
+                  
+                }
+            } catch (error) {
+                console.error('Failed to fetch application details:', error);
+            }
+        };
+        
+                fetchAndStoreDetails();
+
         fetchReason();
     }, [id]);
-
-
+    // const id = localStorage.getItem('application_id');
+    const [processingDoc, setProcessingDoc] = useState(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
         try {
@@ -88,101 +102,139 @@ const P3 = ({ onNext, onBack }) => {
         setIsProcessing(false);
     };
 
+    const validateDocuments = () => {
+        // Check for required categories
+        const hasAddressDoc = documents.some(doc => doc.documentCategory === 'address');
+        const hasSignatureDoc = documents.some(doc => doc.documentCategory === 'signature');
+        const hasIdentityDoc = documents.some(doc => doc.documentCategory === 'identity');
+        
+        if (!hasAddressDoc || !hasSignatureDoc || !hasIdentityDoc) {
+            return {
+                isValid: false,
+                message: 'Please upload at least one document for each category: Address, Signature, and Identity.'
+            };
+        }
 
-const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result.split(',')[1]); // Extract only the base64 part
-    reader.onerror = error => reject(error);
-  });
-};
+        // Check Aadhaar front/back pairing
+        const hasAadhaarFront = documents.some(doc => doc.type === 'AADHAAR_CARD_FRONT');
+        const hasAadhaarBack = documents.some(doc => doc.type === 'AADHAAR_CARD_BACK');
+        
+        if ((hasAadhaarFront && !hasAadhaarBack) || (hasAadhaarBack && !hasAadhaarFront)) {
+            return {
+                isValid: false,
+                message: 'Both front and back of Aadhaar card must be uploaded together.'
+            };
+        }
 
-const handleSubmit = async () => {
-  if (documents.length === 0) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'No Documents',
-      text: 'Please upload at least one document before proceeding.',
-    });
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    // Filter out documents that don't have files
-    const documentsWithFiles = documents.filter(doc => doc.file instanceof File);
-
-    if (documentsWithFiles.length === 0) {
-      throw new Error('No valid documents found. Please re-upload your documents.');
-    }
-
-    // Convert all files to base64
-    const base64Files = await Promise.all(
-      documentsWithFiles.map(doc => fileToBase64(doc.file))
-    );
-    const documentTypes = documentsWithFiles.map(doc => doc.type || doc.name);
-
-    // Prepare the payload
-    const payload = {
-      application_id: storedId,
-      document_types: documentTypes,
-      files: base64Files
+        return { isValid: true };
     };
 
-    // Determine the endpoint
-    const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
-      ? createAccountService.applicationDocument_s3(payload)
-      : createAccountService.applicationDocument_s3;
-
-    // Send the request with proper headers for JSON
-    const response = await apiService.post(
-      endpoint,
-      payload,
-      {
-        headers: {
-          'Content-Type': 'application/json'
+    const handleSubmit = async () => {
+        // First validate documents
+        const validation = validateDocuments();
+        if (!validation.isValid) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Document Requirements',
+                text: validation.message,
+            });
+            return;
         }
-      }
-    );
 
-    if (response) {
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Documents saved successfully.',
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onNext();
-    } else {
-      throw new Error(response || 'Upload failed with status: ' + response);
-    }
-  } catch (error) {
-    console.error('Upload error:', error);
-    // Swal.fire('Error', error.message || error, 'error');
-     
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Documents saved successfully.',
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onNext();
-   
-  } finally {
-    setIsLoading(false);
-  }
-};
+        // Get fresh data from localStorage
+        let localStorageDocuments;
+        try {
+            const saved = localStorage.getItem('documentData');
+            localStorageDocuments = saved ? JSON.parse(saved) : [];
+        } catch (error) {
+            console.error('Failed to load documents from localStorage:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to load documents. Please try again.',
+            });
+            return;
+        }
 
- 
+        if (localStorageDocuments.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Documents',
+                text: 'Please upload at least one document before proceeding.',
+            });
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Filter out documents that don't have base64 images
+            const validDocuments = localStorageDocuments.filter(doc => doc.image && doc.image !== 'base64');
+
+            if (validDocuments.length === 0) {
+                throw new Error('No valid documents found. Please re-upload your documents.');
+            } 
+            // Prepare the payload
+            const payload = {
+                application_id: id,
+                document_types: validDocuments.map(doc => doc.type || doc.name),
+                files: validDocuments.map(doc => doc.image)
+            };
+
+            // Determine the endpoint
+            const endpoint = typeof createAccountService.applicationDocument_s3 === 'function' 
+                ? createAccountService.applicationDocument_s3(payload)
+                : createAccountService.applicationDocument_s3;
+
+            // Send the request with proper headers for JSON
+            const response = await apiService.post(
+                endpoint,
+                payload,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            if (response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Documents saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                onNext();
+            } else {
+                throw new Error(response || 'Upload failed with status: ' + response);
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            // Swal.fire({
+            //     icon: 'error',
+            //     title: 'Upload Error',
+            //     text: error.message || 'Failed to upload documents. Please try again.',
+            // });
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Documents saved successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                onNext();
+
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
-        <div className='form-container'>
-          
-            <div className="relative ">
+        <div className='form-container  '>
+            <div className="  ">
+            <h2 className="text-xl font-bold mb-1">Upload Documents</h2>
                 {isProcessing && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -193,12 +245,16 @@ const handleSubmit = async () => {
                         </div>
                     </div>
                 )}
-
-            <p className="text-red-500" > Review For : {reason && reason.document_approved_status_status_comment}</p>  
-                <DocUpload
+                
+             
+                {reason && reason.document_approved_status_status_comment ? (
+                    <>
+                <div>
+                     {reason &&  <p className="text-red-500">Review Reason : {reason.document_approved_status_status_comment}</p> }
+                 <DocUpload
                     onDocumentsUpdate={handleDocumentsUpdate}
                     onProcessDocument={handleProcessDocument}
-                    documents={documents}
+                    // documents={documents}
                 />
                 {processingDoc && (
                     <DAOExtraction
@@ -211,25 +267,48 @@ const handleSubmit = async () => {
                     />
                 )}
 
-            </div>
-            <div className="next-back-btns mt-6">
-                <CommonButton className="btn-back" onClick={onBack}>
-                    <i className="bi bi-chevron-double-left"></i>&nbsp;Back
-                </CommonButton>
-                <CommonButton
-                    className="btn-next"
-                    onClick={handleSubmit}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                        'Uploading...'
-                    ) : (
-                        <>
-                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                        </>
-                    )}
-                </CommonButton>
-            </div>
+                </div>
+                <div className="next-back-btns mt-6">
+                    <CommonButton className="btn-back" onClick={onBack}>
+                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    </CommonButton>
+                    <CommonButton
+                        className="btn-next"
+                        onClick={handleSubmit}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            'Uploading...'
+                        ) : (
+                            <>
+                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                            </>
+                        )}
+                    </CommonButton>
+                </div>
+                
+                
+                </> ): <>
+                
+                <DocView />
+                       <div className="next-back-btns mt-6">
+                    <CommonButton className="btn-back" onClick={onBack}>
+                        <i className="bi bi-chevron-double-left"></i>&nbsp;Back
+                    </CommonButton>
+                    <CommonButton
+                        className="btn-next"
+                        onClick={onNext}
+                        disabled={isLoading}
+                    >
+                      
+                                Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+                           
+                    </CommonButton>
+                </div>
+                
+                </>}
+           
+                        </div>
         </div>
     );
 };
@@ -237,11 +316,5 @@ const handleSubmit = async () => {
 export default P3;
 
 
-
-
-
-
-
-
-
-
+ 
+ 

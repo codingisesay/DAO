@@ -22,8 +22,8 @@ import { useNavigate } from "react-router-dom";
 import InputField from '../../components/CommanInput';
 import Button from "../../components/CommonButton"; 
 import { useForm, Controller } from "react-hook-form"; 
-import { forgotpass } from "../../../services/apiServices";
-import BackButton from "../../common/BackButton/BackButton";
+import { forgotpass } from "../../services/apiServices";
+import BackButton from "../../components/CommonButton";
 
 const ForgotPassword = () => {
   const [username, setUsername] = useState("");
@@ -129,15 +129,9 @@ const ForgotPassword = () => {
   // ankita code above
   return (
     <body className="Login-Border">
-      <div className="Login-Page-Main">
-        <div className="Home_Top">
+      <div className="flex items-center justify-center h-screen">
        
-          <div className="Mid_portion">
-            <div className="Mid_portion_Internal"></div>
-          </div>
-          <div className="Top_right"></div>
-        </div>
-        <div className="Login-Form-Bottom">
+        <div className="bg-white w-3/4 m-auto rounded-xl p-4 ">
           <div
             className="Login-Page-Interal-div"
             style={{ flexDirection: "row-reverse" }}
@@ -148,8 +142,8 @@ const ForgotPassword = () => {
                 <BackButton to="/" />
               </div>
  
-              <h3 className="LogIn-Main-Heading">Forgot Password</h3>
-              <h6 className="LogIn-Heading">Please enter your credentials</h6>
+              <h3 className="text-2xl font-bold">Forgot Password</h3>
+              <h6 className="LogIn-Heading my-4">Please enter your credentials</h6>
               <form onSubmit={handleLogin} className="Main-Form login-input ">
                 <div style={{ position: "relative" }}>
                   <InputField
@@ -165,12 +159,20 @@ const ForgotPassword = () => {
                   />
       
                 </div>
-
+                {/* 
                 <Button
                   type="submit"
                   text="Send OTP"
                   styleClass="green_btn Login-Button-Temp"
-                />
+                /> */}
+
+
+                <div className="text-center">
+                  <button type="submit" 
+                  className="bg-green-500 p-2 px-4 rounded text-white mt-10 mx-auto">SUBMIT</button>
+                </div>
+
+
               </form>
             </div>
           </div>

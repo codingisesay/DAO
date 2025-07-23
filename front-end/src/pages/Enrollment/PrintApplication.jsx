@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef} from 'react';
 import workingman from '../../assets/imgs/workingman1.png';
 import labels from '../../components/labels';
 import { gender, salutation, religion, caste, maritalStatusOptions } from '../../data/data';
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ApplicationPdf = () => {
     const [formData, setFormData] = useState({});
+  const contentRef = useRef(null); // Ref to the main content area
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ 
         filename: 'application-form.pdf',
@@ -110,6 +111,53 @@ const ApplicationPdf = () => {
 
                         photo: customerpic?.[0]?.path ? `${daodocbase}${customerpic[0].path}` : workingman,
                         signature: signatureDoc?.file_path ? `${daodocbase}${signatureDoc.file_path}` : null,
+
+                        // Documents
+                        passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT')).file_path
+                            : "",
+                        
+                        aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_FRONT')).file_path
+                            : "",
+                        
+                        aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_CARD_BACK')).file_path
+                            : "",
+                        
+                        pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD')).file_path
+                            : "",
+                        
+                        voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD')).file_path
+                            : "",
+                        
+                        drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE')).file_path
+                            : "",
+                        
+                        utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL')).file_path
+                            : "",
+                        
+                        rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT')).file_path
+                            : "",
+                        
+                        propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT')).file_path
+                            : "",
+                        
+                        bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT')).file_path
+                            : "",
+                        
+                        signaturedoc: customerdoc?.find(doc => doc.document_type.includes('SIGNATURE'))
+                            ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path
+                            : "",
+                         
+                        // photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : ""
                     });
                 }
             } catch (error) {
@@ -123,34 +171,135 @@ const ApplicationPdf = () => {
         };
         fetchDetails();
     }, [applicationId]);
-
+// Format a date string (yyyy-mm-dd or ISO) to dd/mm/yyyy
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d)) return dateStr; // fallback if invalid
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
     const KeyValueRow = ({ label, value, emptyValue = 'N/A', width = '200px' }) => (
-        <tr>
-            <td style={{ fontWeight: 'bold', padding: '6px 0', verticalAlign: 'top', width }}>{label}:</td>
-            <td style={{ padding: '6px 0' }}>{value || emptyValue}</td>
+        <tr style={{ pageBreakInside: 'avoid' }}>
+            <td style={{ 
+                fontWeight: 'bold', 
+                padding: '6px 0', 
+                verticalAlign: 'top', 
+                width,
+                pageBreakInside: 'avoid' 
+            }}>
+                {label}:
+            </td>
+            <td style={{ 
+                padding: '6px 0',
+                pageBreakInside: 'avoid' 
+            }}>
+                {value || emptyValue}
+            </td>
         </tr>
     );
 
     const Section = ({ title, children }) => (
-        <div style={{ marginBottom: '24px', pageBreakInside: 'avoid' }}>
+        <div style={{ 
+            marginBottom: '24px', 
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid-page'
+        }}>
             <h2 style={{ 
                 fontSize: '18px', 
                 fontWeight: '600', 
                 marginBottom: '12px', 
                 borderBottom: '1px solid #ddd', 
                 paddingBottom: '6px',
-                color: '#10B981'
+                color: '#10B981',
+                pageBreakAfter: 'avoid'
             }}>
                 {title}
             </h2>
-            {children}
+            <div style={{ pageBreakInside: 'avoid' }}>
+                {children}
+            </div>
         </div>
     );
 
     return (
-        <div className='print-tbl' style={{ fontFamily: 'Arial, sans-serif', maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
+        <div className='print-tbl ' style={{ 
+            fontFamily: 'Arial, sans-serif', 
+            maxWidth: '1000px', 
+            margin: '0 auto', 
+            padding: '20px',
+            pageBreakInside: 'avoid'
+        }}>
+      <style>
+        {`
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact; /* For background colors/images */
+            print-color-adjust: exact;
+          }
+
+          /* General styling to ensure content fits */
+          .print-container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          /* Avoid breaking content within logical sections */
+          .section-to-keep-together {
+            page-break-inside: avoid;
+            break-inside: avoid-page; /* Modern alternative */
+          }
+
+          /* Force new page before certain sections, e.g., major headings or large blocks */
+          .new-page-section {
+            page-break-before: always;
+            break-before: page; /* Modern alternative */
+          }
+
+          /* Hide elements not needed for print, e.g., navigation, buttons */
+          .no-print {
+            display: none !important;
+          }
+
+          /* Adjust font sizes if needed for print readability */
+          h1, h2, h3 {
+            font-size: 2em; /* Slightly smaller for print */
+          }
+          p, span, div {
+            font-size: 1em; /* Adjust paragraph text size */
+          }
+
+          /* Ensure tables don't break mid-row */
+          table {
+            page-break-inside: auto; /* Allow tables to break, but prefer not to */
+            width: 100%; /* Ensure table takes full print width */
+            border-collapse: collapse; /* For cleaner borders */
+          }
+          tr {
+            page-break-inside: avoid; /* Keep table rows from breaking */
+            page-break-after: auto;
+          }
+          thead {
+            display: table-header-group; /* Repeat table headers on new pages */
+          }
+          tfoot {
+            display: none; /* Repeat table footers on new pages */
+          }
+
+          /* Adjust margins for printing to reduce wasted space */
+          @page {
+            margin: 0.5in; /* Example: set uniform margins */
+          }
+        }
+        `}
+      </style>
+
             {/* Download Button */}
-            <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+            {/* <div style={{ textAlign: 'right', marginBottom: '20px' }}>
                 <button
                     onClick={() => toPDF()}
                     style={{
@@ -173,11 +322,30 @@ const ApplicationPdf = () => {
                     </svg>
                     Download PDF
                 </button>
-            </div>
-
-            <div ref={targetRef} style={{ backgroundColor: 'white', padding: '30px', borderRadius: '8px', boxShadow: '0 0 10px rgba(0,0,0,0.05)' }}>
+            </div> */}
+    <div className="no-print" style={{ marginTop: '20px', textAlign: 'center' }}>
+          {/* Assuming you have CommonButton imported and configured */}
+          {/* <CommonButton onClick={() => window.print()} variant="contained">
+            Print Application
+          </CommonButton> */}
+          <button onClick={() => window.print()} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+            Print Application
+          </button>
+        </div>
+            <div className='print-application-container' ref={contentRef} style={{ 
+                backgroundColor: 'white', 
+                padding: '30px', 
+                borderRadius: '8px', 
+                boxShadow: '0 0 10px rgba(0,0,0,0.05)',
+                pageBreakInside: 'avoid'
+            }}>
                 {/* Header with Photo */}
-                <div style={{ display: 'flex', marginBottom: '30px', alignItems: 'flex-start' }}>
+                <div style={{ 
+                    display: 'flex', 
+                    marginBottom: '30px', 
+                    alignItems: 'flex-start',
+                    pageBreakInside: 'avoid'
+                }}>
                     <img 
                         src={formData.photo} 
                         alt="Applicant" 
@@ -187,11 +355,12 @@ const ApplicationPdf = () => {
                             border: '2px solid #10B981', 
                             borderRadius: '4px',
                             objectFit: 'cover',
-                            marginRight: '25px'
+                            marginRight: '25px',
+                            pageBreakInside: 'avoid'
                         }} 
                     />
-                    <div style={{ flex: 1 }}>
-                        <table style={{ width: '100%' }}>
+                    <div style={{ flex: 1, pageBreakInside: 'avoid' }}>
+                        <table style={{ width: '100%', pageBreakInside: 'avoid' }}>
                             <tbody>
                                 <KeyValueRow 
                                     label="Name" 
@@ -199,7 +368,7 @@ const ApplicationPdf = () => {
                                     width="120px"
                                 />
                                 <KeyValueRow label="Application ID" value={formData.application_id} />
-                                <KeyValueRow label="DOB" value={formData.DOB} />
+                                <KeyValueRow label="DOB" value={formatDate(formData.DOB)} />
                                 <KeyValueRow label="Gender" value={formData.gender} />
                                 <KeyValueRow label="Status" value={formData.status} />
                             </tbody>
@@ -209,11 +378,20 @@ const ApplicationPdf = () => {
 
                 {/* Personal Information */}
                 <Section title="Personal Information">
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <table style={{ 
+                        width: '100%', 
+                        borderCollapse: 'collapse',
+                        pageBreakInside: 'avoid'
+                    }}>
                         <tbody>
-                            <tr>
-                                <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
-                                    <table style={{ width: '100%' }}>
+                            <tr style={{ pageBreakInside: 'avoid' }}>
+                                <td style={{ 
+                                    width: '50%', 
+                                    verticalAlign: 'top', 
+                                    paddingRight: '20px',
+                                    pageBreakInside: 'avoid'
+                                }}>
+                                    <table style={{ width: '100%', pageBreakInside: 'avoid' }}>
                                         <tbody>
                                             <KeyValueRow label={labels.salutation.label} value={formData.salutation} />
                                             <KeyValueRow label={labels.firstname.label} value={formData.first_name} />
@@ -222,10 +400,13 @@ const ApplicationPdf = () => {
                                         </tbody>
                                     </table>
                                 </td>
-                                <td style={{ verticalAlign: 'top' }}>
-                                    <table style={{ width: '100%' }}>
+                                <td style={{ 
+                                    verticalAlign: 'top',
+                                    pageBreakInside: 'avoid'
+                                }}>
+                                    <table style={{ width: '100%', pageBreakInside: 'avoid' }}>
                                         <tbody>
-                                            <KeyValueRow label={labels.dob.label} value={formData.DOB} />
+                                            <KeyValueRow label={labels.dob.label} value={formatDate(formData.DOB)} />
                                             <KeyValueRow label={labels.gender.label} value={formData.gender} />
                                             <KeyValueRow label={labels.religion.label} value={formData.religion} />
                                             <KeyValueRow label={labels.caste.label} value={formData.caste} />
@@ -240,18 +421,29 @@ const ApplicationPdf = () => {
 
                 {/* Contact Information */}
                 <Section title="Contact Information">
-                    <table style={{ width: '100%' }}>
+                    <table style={{ 
+                        width: '100%',
+                        pageBreakInside: 'avoid'
+                    }}>
                         <tbody>
-                            <tr>
-                                <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
+                            <tr style={{ pageBreakInside: 'avoid' }}>
+                                <td style={{ 
+                                    width: '50%', 
+                                    verticalAlign: 'top', 
+                                    paddingRight: '20px',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.mobile.label} value={formData.mobile} />
                                 </td>
-                                <td style={{ verticalAlign: 'top' }}>
+                                <td style={{ 
+                                    verticalAlign: 'top',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.alt_mob_no.label} value={formData.alt_mob_no} />
                                 </td>
                             </tr>
-                            <tr>
-                                <td colSpan="2">
+                            <tr style={{ pageBreakInside: 'avoid' }}>
+                                <td colSpan="2" style={{ pageBreakInside: 'avoid' }}>
                                     <KeyValueRow label={labels.email.label} value={formData.email} />
                                 </td>
                             </tr>
@@ -261,16 +453,28 @@ const ApplicationPdf = () => {
 
                 {/* Permanent Address */}
                 <Section title="Permanent Address">
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <table style={{ 
+                        width: '100%', 
+                        borderCollapse: 'collapse',
+                        pageBreakInside: 'avoid'
+                    }}>
                         <tbody>
-                            <tr>
-                                <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
+                            <tr style={{ pageBreakInside: 'avoid' }}>
+                                <td style={{ 
+                                    width: '50%', 
+                                    verticalAlign: 'top', 
+                                    paddingRight: '20px',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.complexname.label} value={formData.complex_name} />
                                     <KeyValueRow label={labels.roomno.label} value={formData.flat_no} />
                                     <KeyValueRow label={labels.area.label} value={formData.area} />
                                     <KeyValueRow label={labels.landmark.label} value={formData.landmark} />
                                 </td>
-                                <td style={{ verticalAlign: 'top' }}>
+                                <td style={{ 
+                                    verticalAlign: 'top',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.country.label} value={formData.country} />
                                     <KeyValueRow label={labels.pincode.label} value={formData.pincode} />
                                     <KeyValueRow label={labels.city.label} value={formData.city} />
@@ -285,16 +489,28 @@ const ApplicationPdf = () => {
                 {/* Correspondence Address */}
                 {formData.per_complex_name && (
                     <Section title="Correspondence Address">
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <table style={{ 
+                            width: '100%', 
+                            borderCollapse: 'collapse',
+                            pageBreakInside: 'avoid'
+                        }}>
                             <tbody>
-                                <tr>
-                                    <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
+                                <tr style={{ pageBreakInside: 'avoid' }}>
+                                    <td style={{ 
+                                        width: '50%', 
+                                        verticalAlign: 'top', 
+                                        paddingRight: '20px',
+                                        pageBreakInside: 'avoid'
+                                    }}>
                                         <KeyValueRow label="Complex Name" value={formData.per_complex_name} />
                                         <KeyValueRow label="Flat No" value={formData.cor_flat_no} />
                                         <KeyValueRow label="Area" value={formData.cor_area} />
                                         <KeyValueRow label="Landmark" value={formData.cor_landmark} />
                                     </td>
-                                    <td style={{ verticalAlign: 'top' }}>
+                                    <td style={{ 
+                                        verticalAlign: 'top',
+                                        pageBreakInside: 'avoid'
+                                    }}>
                                         <KeyValueRow label="Country" value={formData.cor_country} />
                                         <KeyValueRow label="Pincode" value={formData.cor_pincode} />
                                         <KeyValueRow label="City" value={formData.cor_city} />
@@ -309,14 +525,26 @@ const ApplicationPdf = () => {
 
                 {/* Identity Documents */}
                 <Section title="Identity Documents">
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <table style={{ 
+                        width: '100%', 
+                        borderCollapse: 'collapse',
+                        pageBreakInside: 'avoid'
+                    }}>
                         <tbody>
-                            <tr>
-                                <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
+                            <tr style={{ pageBreakInside: 'avoid' }}>
+                                <td style={{ 
+                                    width: '50%', 
+                                    verticalAlign: 'top', 
+                                    paddingRight: '20px',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.adhar_card.label} value={formData.adhar_card} />
                                     <KeyValueRow label={labels.pannumber.label} value={formData.pan_card} />
                                 </td>
-                                <td style={{ verticalAlign: 'top' }}>
+                                <td style={{ 
+                                    verticalAlign: 'top',
+                                    pageBreakInside: 'avoid'
+                                }}>
                                     <KeyValueRow label={labels.passportno.label} value={formData.passport} />
                                     <KeyValueRow label={labels.drivinglicence.label} value={formData.driving_license} />
                                     <KeyValueRow label={labels.voterid.label} value={formData.voter_id} />
@@ -326,106 +554,54 @@ const ApplicationPdf = () => {
                     </table>
                 </Section>
 
-                {/* Family Details - Table Format */}
-                {/* <Section title="Family Details">
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '15px' }}>
-                        <thead>
-                            <tr>
-                                <th style={{ 
-                                    textAlign: 'left', 
-                                    padding: '10px 0', 
-                                    borderBottom: '1px solid #ddd', 
-                                    width: '50%',
-                                    color: '#10B981'
-                                }}>
-                                    Father's Details
-                                </th>
-                                <th style={{ 
-                                    textAlign: 'left', 
-                                    padding: '10px 0', 
-                                    borderBottom: '1px solid #ddd',
-                                    color: '#10B981'
-                                }}>
-                                    Mother's Details
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style={{ padding: '8px 0', verticalAlign: 'top' }}>
-                                    <table style={{ width: '100%' }}>
-                                        <tbody>
-                                            <KeyValueRow label="Prefix" value={formData.father_prefix_name} />
-                                            <KeyValueRow label="First Name" value={formData.father_first_name} />
-                                            <KeyValueRow label="Middle Name" value={formData.father_middle_name} />
-                                            <KeyValueRow label="Last Name" value={formData.father_last_name} />
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td style={{ padding: '8px 0', verticalAlign: 'top' }}>
-                                    <table style={{ width: '100%' }}>
-                                        <tbody>
-                                            <KeyValueRow label="Prefix" value={formData.mother_prefix_name} />
-                                            <KeyValueRow label="First Name" value={formData.mother_first_name} />
-                                            <KeyValueRow label="Middle Name" value={formData.mother_middle_name} />
-                                            <KeyValueRow label="Last Name" value={formData.mother_last_name} />
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <tbody>
-                            <tr>
-                                <td style={{ width: '50%', paddingRight: '20px' }}>
-                                    <KeyValueRow label="Birth Place" value={formData.birth_place} />
-                                </td>
-                                <td>
-                                    <KeyValueRow label="Birth Country" value={formData.birth_country} />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </Section> */}
-<div style={{
-  pageBreakBefore: 'always',
-  breakBefore: 'page',
-  margin:'20px'
-}}>
-  
-</div>
-
                 {/* Occupation Details */}
-                <Section title="Occupation Details no-break"   >
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <tbody>
-                            <tr>
-                                <td style={{ width: '50%', verticalAlign: 'top', paddingRight: '20px' }}>
-                                    <KeyValueRow label="Occupation Type" value={formData.occoupation_type} />
-                                    <KeyValueRow label="Occupation Name" value={formData.occupation_name} />
-                                    <KeyValueRow label="Salaried With" value={formData.if_salaryed} />
-                                </td>
-                                <td style={{ verticalAlign: 'top' }}>
-                                    <KeyValueRow label="Designation" value={formData.designation} />
-                                    <KeyValueRow label="Nature of Occupation" value={formData.nature_of_occoupation} />
-                                    <KeyValueRow label="Qualification" value={formData.qualification} />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan="2">
-                                    <KeyValueRow label="Annual Income" value={formData.anual_income} />
-                                    <KeyValueRow label="Remark" value={formData.remark} />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <Section title="Occupation Details">
+                    <div style={{ pageBreakInside: 'avoid' }}>
+                        <table style={{ 
+                            width: '100%', 
+                            borderCollapse: 'collapse',
+                            pageBreakInside: 'avoid'
+                        }}>
+                            <tbody>
+                                <tr style={{ pageBreakInside: 'avoid' }}>
+                                    <td style={{ 
+                                        width: '50%', 
+                                        verticalAlign: 'top', 
+                                        paddingRight: '20px',
+                                        pageBreakInside: 'avoid'
+                                    }}>
+                                        <KeyValueRow label="Occupation Type" value={formData.occoupation_type} />
+                                        <KeyValueRow label="Occupation Name" value={formData.occupation_name} />
+                                        <KeyValueRow label="Salaried With" value={formData.if_salaryed} />
+                                    </td>
+                                    <td style={{ 
+                                        verticalAlign: 'top',
+                                        pageBreakInside: 'avoid'
+                                    }}>
+                                        <KeyValueRow label="Designation" value={formData.designation} />
+                                        <KeyValueRow label="Nature of Occupation" value={formData.nature_of_occoupation} />
+                                        <KeyValueRow label="Qualification" value={formData.qualification} />
+                                    </td>
+                                </tr>
+                                <tr style={{ pageBreakInside: 'avoid' }}>
+                                    <td colSpan="2" style={{ pageBreakInside: 'avoid' }}>
+                                        <KeyValueRow label="Annual Income" value={formData.anual_income} />
+                                        <KeyValueRow label="Remark" value={formData.remark} />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </Section>
 
                 {/* Signature */}
                 {formData.signature && (
                     <Section title="Signature">
-                        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <div style={{ 
+                            textAlign: 'center', 
+                            marginTop: '20px',
+                            pageBreakInside: 'avoid'
+                        }}>
                             <img 
                                 src={formData.signature} 
                                 alt="Signature" 
@@ -433,21 +609,136 @@ const ApplicationPdf = () => {
                                     maxWidth: '300px', 
                                     maxHeight: '100px', 
                                     border: '1px solid #ddd',
-                                    objectFit: 'contain'
+                                    objectFit: 'contain',
+                                    pageBreakInside: 'avoid'
                                 }} 
                             />
                         </div>
                     </Section>
                 )}
+
+                {/* File Uploads */}
+                <Section title="Supporting Documents">
+                    <div style={{ pageBreakInside: 'avoid' }}>
+                        <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6">
+                            {formData.passportdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Passport</p>
+                                    <img
+                                        src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
+                                        alt="Passport"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.aadhaarFrontdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Aadhaar Front</p>
+                                    <img
+                                        src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
+                                        alt="Aadhaar Front"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.aadhaarBackdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Aadhaar Back</p>
+                                    <img
+                                        src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
+                                        alt="Aadhaar Back"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.pancarddoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>PAN Card</p>
+                                    <img
+                                        src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
+                                        alt="PAN"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.voteridoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Voter ID</p>
+                                    <img
+                                        src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
+                                        alt="Voter ID"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.drivinglicensedoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Driving License</p>
+                                    <img
+                                        src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
+                                        alt="Driving License"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.utilitybilldoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Utility Bill</p>
+                                    <img
+                                        src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
+                                        alt="Utility Bill"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.rentagreementdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Rent Agreement</p>
+                                    <img
+                                        src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
+                                        alt="Rent Agreement"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.propertytaxdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Property Tax Receipt</p>
+                                    <img
+                                        src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
+                                        alt="Property Tax Receipt"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                            
+                            {formData.bankstatementdoc && (
+                                <div style={{ pageBreakInside: 'avoid' }}>
+                                    <p style={{ fontWeight: 'bold', marginBottom: '4px' }}>Bank Statement</p>
+                                    <img
+                                        src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
+                                        alt="Bank Statement"
+                                        style={{ width: '100%', maxHeight: '200px', objectFit: 'contain', pageBreakInside: 'avoid' }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </Section>
             </div>
         </div>
     );
 };
 
 export default ApplicationPdf;
-
-
-
 
 
 

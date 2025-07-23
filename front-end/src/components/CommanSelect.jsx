@@ -22,7 +22,11 @@ const CommanSelect = ({
 
     const shouldFloat = isFocused || hasContent;
     const showError = required && touched && !value;
-
+function toTitleCase(str) {
+    return str
+        .replace(/_/g, ' ')
+        .replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+}
     return (
         <div className={clsx('floating-input-height relative w-full', className)}>
             <div className={clsx(
@@ -47,7 +51,7 @@ const CommanSelect = ({
                     }}
                     required={required}
                     className={clsx(
-                        'peer block w-full bg-transparent px-4 py-2 text-sm text-gray-900 dark:text-white',
+                        'peer block w-full bg-transparent px-3 py-2 text-sm text-gray-900 dark:text-white',
                         ' outline-none bg-transparent rounded-md',
                         {
                             'text-gray-400': !value,
@@ -63,22 +67,24 @@ const CommanSelect = ({
                     ))}
                 </select>
             </div>
-            <label
-                htmlFor={name}
-                className={clsx(
-                    'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none',
-                    {
-                        'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
-                        'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
-                    }
-                )}
-            >
-                {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-            </label>
+        
+        <label
+            htmlFor={name}
+            className={clsx(
+                'absolute left-3 top-2 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200 pointer-events-none',
+                {
+                    'bg-white dark:bg-gray-900 px-1 text-xs -translate-y-4': shouldFloat,
+                    'bg-white dark:bg-gray-900 w-9/12 text-gray-500 dark:text-gray-200 translate-y-0.5': !shouldFloat,
+                }
+            )}
+        >
+            {toTitleCase(label)}{required && <span className="text-red-500 ml-0.5">*</span>}
+        </label>
+
 
             {showError && (
                 <p className="mt-1 text-xs text-red-500">
-                    {label} is required
+                    {label} Required
                 </p>
             )}
         </div>

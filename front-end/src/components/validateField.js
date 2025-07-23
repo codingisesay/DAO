@@ -59,7 +59,7 @@ export const VALIDATION_PATTERNS = {
     },
     ALPHABETS_AND_SPACE: {
         pattern: /^[A-Za-z\s]*$/,
-        message: "Only alphabets and spaces allowed",
+        message: "Only alphabets allowed",
     },
 
     GRADE: {
@@ -103,9 +103,9 @@ export const VALIDATION_PATTERNS = {
 };
 
 export const validateField = (fieldName, value, required = false) => {
-    // If the field is required but empty, return error
+    // If the field is Required but empty, return error
     if (required && (!value || value.toString().trim() === "")) {
-        return " is required";
+        return " is Required";
     }
 
     // Check if the field has a validation pattern defined

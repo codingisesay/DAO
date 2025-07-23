@@ -22,7 +22,7 @@ import InputField from '../../components/CommanInput'
 import Button from "../../components/CommonButton";  
 // import { forgotpass } from "../../../services/apiServices";
 import { forgotpass } from "../../services/apiServices";
-import BackButton from "../../common/BackButton/BackButton";
+import BackButton from "../../components/CommonButton";
 import { useLocation } from "react-router-dom";
 
 const ChangePassword = () => {
@@ -123,15 +123,9 @@ const ChangePassword = () => {
 
   // ankita code above
   return (
-    <body className="Login-Border">
-      <div className="Login-Page-Main">
-        <div className="Home_Top">
-        
-          <div className="Mid_portion">
-            <div className="Mid_portion_Internal"></div>
-          </div>
-          <div className="Top_right"></div>
-        </div>
+    <body className="flex items-center justify-center h-screen">
+      <div className="bg-white w-3/4 m-auto rounded-xl p-4 ">
+     
         <div className="Login-Form-Bottom">
           <div
             className="Login-Page-Interal-div"
@@ -143,8 +137,8 @@ const ChangePassword = () => {
                 <BackButton to="/" />
               </div>
  
-              <h3 className="LogIn-Main-Heading">Create New Password</h3>
-              <h6 className="LogIn-Heading">Please set new Password</h6>
+              <h3 className="text-2xl font-bold">Create New Password</h3>
+              <h6 className="LogIn-Heading my-6">Please set new Password</h6>
               <form onSubmit={handleLogin} className="Main-Form login-input ">
                 <div style={{ position: "relative" }}>
                   <InputField
@@ -154,7 +148,7 @@ const ChangePassword = () => {
                       setPassword(e.target.value);
                       validatePassword(e.target.value);
                     }}
-                    className="inputfielddiv login-Inpute"
+                    className="inputfielddiv login-Inpute my-6"
                     required={true}
                     type={passwordVisible ? "text" : "password"}
                     value={password}
@@ -250,6 +244,16 @@ const ChangePassword = () => {
                     (error) => error
                   )}
                 />
+
+
+                  <div className="text-center">
+                  <button type="submit"       className="bg-green-500 p-2 px-4 rounded text-white mt-5 mx-auto"
+                  disabled={Object.values(validationErrors).some(
+                    (error) => error
+                  )}
+             >Submit</button>
+                  </div>
+           
               </form>
             </div>
           </div>

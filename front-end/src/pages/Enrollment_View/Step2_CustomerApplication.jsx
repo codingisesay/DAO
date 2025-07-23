@@ -68,9 +68,9 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                             </div>
                             <div className="step-title">Step {index + 1}</div>
                             <div className="step-label">{step.label}</div>
-                            <span className={`badge badge-${status.toLowerCase().replace(' ', '-')}`}>
+                            {/* <span className={`badge badge-${status.toLowerCase().replace(' ', '-')}`}>
                                 {status}
-                            </span>
+                            </span> */}
                         </div>
                     );
                 })}

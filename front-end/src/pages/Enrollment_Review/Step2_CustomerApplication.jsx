@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import { form } from 'framer-motion/client';
 import { swap } from '@tensorflow/tfjs-core/dist/util_base';
 
-const P2 = ({ onNext, onBack, formData, updateFormData }) => {
+const P2 = ({ onNext, onBack, formData, updateFormData }) => { 
     const [activeStep, setActiveStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,12 +37,12 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
     };
 
     const handleSubmit = async (e) => {
-        if (e && e.preventDefault) e.preventDefault(); 
+        if (e && e.preventDefault) e.preventDefault();
         setIsSubmitting(true);
-  
+
         try {
             if (activeStep === 0) {
-                // console.log('2A formadta : ', formData)
+                console.log('2A formadta : ', formData.personalDetails)
                 const pd = formData.personalDetails || {};
                 if (
                     /\d/.test(pd.first_name) ||
@@ -56,8 +56,23 @@ const P2 = ({ onNext, onBack, formData, updateFormData }) => {
                     return;
                 }
 
+             let missingFields = [];
 
-                else if (pd.mobile.length !== 10) {
+            if (!pd.email) missingFields.push("Email");
+            if (!pd.caste) missingFields.push("Caste");
+            if (!pd.religion) missingFields.push("Religion");
+
+            if (missingFields.length > 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Required Fields',
+                    html: 'Please fill the following fields:<br><b>' + missingFields.join('</b><br><b>') + '</b>',
+                });
+                return;
+            }
+
+
+                else if (pd.mobile.length != 10) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error saving personal details',

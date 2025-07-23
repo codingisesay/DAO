@@ -29,8 +29,8 @@ export const loginUser = async (userCode, password, loginBranchId) => {
     });
 
     return response.data;
-  } catch (error) {
-    throw error.message ||  error.response?.data || error;
+  } catch (error) { 
+    throw   error.response?.data  || error.data || error.message ||  'Login Failed';
   }
 };
 

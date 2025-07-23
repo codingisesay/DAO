@@ -9,26 +9,32 @@
   color: var(--text-color);
   transition: background-color 0.25s ease-in-out;
 }
+.dark .App, .dark.App {background-color: #363636 !important;}
 ::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i {
-  color: #f6f6f6;
-}
 
-.dark input {
-  color: white !important;
+.dark, .dark input, .dark select, .dark span, .dark small, .dark td, .dark .rdrDayNumber span, .dark .css-sc8y68-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root, .dark .rdrMonthAndYearPickers select, .dark li,
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 , .dark p, .dark label, .dark a,.dark .stepper-title, .dark .stepper-footer span,.dark .stepper-footer i ,.dark td.css-jiabcu-MuiTableCell-root,.dark svg{
+  color: #f6f6f6 !important;
+} 
+body {
+    background: var(--payvance-bodybg);
 }
-
-.dark {
-  color: white !important;
+ body.dark,
+.dark body {
+    background: #374151;
 }
+.dark .modal-content, .dark .css-1gtchvp-MuiPaper-root{background: #374151;}
 
+ .dark .rdrCalendarWrapper{background-color: #111827;border:1px solid #374151;border-radius: 6px; }
+ 
+tr:hover{background-color: transparent;}
 .title {
   color: var(--primary-text-color);
   margin-bottom: 50px;
 }
-
+.dropdown-box {left:0 ;z-index: 99}
 .box {
   padding: 20px;
   border-radius: 10px;

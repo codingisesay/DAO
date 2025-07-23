@@ -1,91 +1,88 @@
 .application-type-container {
-    display: flex;
-
+  display: flex;
 }
 
 .application-type-container .application-type i {
-    background: var(--payvance-color);
-    color: #fff;
-    padding: 5px 10px;
-    font-size: large;
-    border-radius: 6px;
-    margin-right: 10px;
+  background: var(--payvance-color);
+  color: #fff;
+  padding: 5px 10px;
+  font-size: large;
+  border-radius: 6px;
+  margin-right: 10px;
 }
 
 .application-type-container .application-type {
-    margin: 0 10px 10px 0;
-    width: 50%;
-    border-radius: 5px;
-    cursor: pointer;
+  margin: 0 10px 10px 0;
+  width: 50%;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .next-back-btns {
-    display: flex;
-    justify-content: end;
-    position: absolute;
-    bottom: 5px;
-    /* width: 98%; */
-    right: 20px;
-    background-color: white;
+  display: flex;
+  justify-content: end;
+  position: absolute;
+  bottom: 10px;
+  width: 95%;
+  right: 20px;
+  background-color: white;
+}
+
+.dark .next-back-btns {
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
 .btn-next,
 .btn-back {
-    border: 1px solid var(--payvance-color);
-    color: var(--payvance-color);
-    border-radius: 8px;
-    padding: 5px 20px;
-    margin: 10px;
+  border: 1px solid var(--payvance-color);
+  color: var(--payvance-color);
+  border-radius: 8px;
+  padding: 5px 20px;
+  margin: 10px;
 }
 
 input:-webkit-autofill {
-    transition: background-color 9999s ease-in-out 0s;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .payvcane-color {
-    color: var(--payvance-color);
+  color: var(--payvance-color);
 }
 
 /* /////////////////////////////////////////////////////// */
 
 /* camera css below */
 .good {
-    background: #d4edda;
-    color: #155724;
-    padding: 5px 10px;
-    margin: 4px auto;
-    border-radius: 6px;
-    width: 75%;
-
+  background: #d4edda;
+  color: #155724;
+  padding: 5px 10px;
+  margin: 4px auto;
+  border-radius: 6px;
+  width: 75%;
 }
 
 .bad {
-    background: #f8d7da;
-    color: #721c24;
-    padding: 5px 10px;
-    margin: 4px auto;
-    border-radius: 6px;
-    width: 75%;
-
+  background: #f8d7da;
+  color: #721c24;
+  padding: 5px 10px;
+  margin: 4px auto;
+  border-radius: 6px;
+  width: 75%;
 }
 
 .hints {
-    background: #fff3cd;
-    color: #856404;
-    padding: 5px 10px;
-    margin: 4px auto;
-    border-radius: 6px;
-    width: 75%;
-
+  background: #fff3cd;
+  color: #856404;
+  padding: 5px 10px;
+  margin: 4px auto;
+  border-radius: 6px;
+  width: 75%;
 }
-
-
 
 /* camera css bove */
 
 /* document css below */
 
- 
 /* 
 .table-header {
     display: flex;
@@ -95,386 +92,386 @@ input:-webkit-autofill {
 } */
 
 .btn-login:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
 
 .documents-table {
-    margin-top: 20px;
-    overflow-x: auto;
+  margin-top: 20px;
+  overflow-x: auto;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 th,
 td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 th {
-    background-color: var(--payvance-color);
-    color: white;
-    font-weight: 500;
+  background-color: var(--payvance-color);
+  color: white;
+  font-weight: 500;
 }
 
 tr:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .document-select {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  width: 100%;
 }
 
 .file-upload-btn {
-    background-color: #f8f9fa;
-    border: 1px dashed var(--payvance-color);
-    padding: 8px;
-    border-radius: 4px;
-    display: block;
-    text-align: center;
-    cursor: pointer;
-    color: var(--payvance-color);
+  background-color: #f8f9fa;
+  border: 1px dashed var(--payvance-color);
+  padding: 8px;
+  border-radius: 4px;
+  display: block;
+  text-align: center;
+  cursor: pointer;
+  color: var(--payvance-color);
 }
 
 .file-upload-btn:hover {
-    background-color: #e8f4fc;
+  background-color: #e8f4fc;
 }
 
 .thumbnail {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #ddd;
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
 }
 
 .clickable {
-    cursor: pointer;
-    transition: transform 0.2s;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .clickable:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .action-buttons {
-    display: flex;
-    gap: 8px;
+  display: flex;
+  gap: 8px;
 }
 
 .action-btn {
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  border: none;
 }
 
 .verify-btn {
-    background-color: #2ecc71;
-    color: white;
+  background-color: #2ecc71;
+  color: white;
 }
 
 .verify-btn:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
 
 .remove-btn {
-    background-color: #e74c3c;
-    color: white;
+  background-color: #e74c3c;
+  color: white;
 }
 
 /* Modal Styles */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
-    position: relative;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: auto;
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
 }
 
 .modal-image {
-    max-width: 100%;
-    max-height: 80vh;
-    display: block;
-    margin: 0 auto;
+  max-width: 100%;
+  max-height: 80vh;
+  display: block;
+  margin: 0 auto;
 }
 
 .modal-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #333;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
 }
 
 .modal-close:hover {
-    color: #000;
+  color: #000;
 }
 
 /* Add this to your Dashboard.css file */
 
 .documents-table table {
-    border-collapse: separate;
-    /* Required for border-radius to work */
-    border-spacing: 0;
-    border-radius: 10px;
-    /* Adjust this value as needed */
-    overflow: hidden;
-    /* This ensures the radius clips the content */
+  border-collapse: separate;
+  /* Required for border-radius to work */
+  border-spacing: 0;
+  border-radius: 10px;
+  /* Adjust this value as needed */
+  overflow: hidden;
+  /* This ensures the radius clips the content */
 }
 
 /* Optional: Add border to the table */
 .documents-table table {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 /* If you want rounded corners on the header cells */
 .documents-table table thead tr:first-child th:first-child {
-    border-top-left-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 .documents-table table thead tr:first-child th:last-child {
-    border-top-right-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .documents-table table tbody tr:last-child td:first-child {
-    border-bottom-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 
 .documents-table table tbody tr:last-child td:last-child {
-    border-bottom-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 /* documtn css above */
 .img-container {
-    width: 400px;
-    /* Fixed width */
-    height: 250px;
-    /* Fixed height */
-    overflow: hidden;
-    border-radius: 10px;
-    margin: auto;
-    /* Ensures zoom doesn't affect layout */
-    position: relative;
-    /* Optional: Helps with positioning */
+  width: 400px;
+  /* Fixed width */
+  height: 250px;
+  /* Fixed height */
+  overflow: hidden;
+  border-radius: 10px;
+  margin: auto;
+  /* Ensures zoom doesn't affect layout */
+  position: relative;
+  /* Optional: Helps with positioning */
 }
 
 .zoom-in-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Prevents distortion */
-    animation: zoomIn 30s infinite ease-in-out;
-    /* Smooth zoom effect */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Prevents distortion */
+  animation: zoomIn 30s infinite ease-in-out;
+  /* Smooth zoom effect */
 }
 
 @keyframes zoomIn {
-    0% {
-        transform: scale(1);
-    }
+  0% {
+    transform: scale(1);
+  }
 
-    100% {
-        transform: scale(1.5);
-        /* Adjust zoom level (1.2 = 20% zoom) */
-    }
+  100% {
+    transform: scale(1.5);
+    /* Adjust zoom level (1.2 = 20% zoom) */
+  }
 }
 
 /* can delete  */
 .photo-validator {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
 }
 
 .initial-state {
-    margin: 40px 0;
+  margin: 40px 0;
 }
 
 .camera-view {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 .webcam-feed {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 8px;
-    border: 2px solid #ddd;
-    margin-bottom: 15px;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  margin-bottom: 15px;
 }
 
 .camera-controls {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .photo-review {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 .captured-photo-container {
-    margin-bottom: 25px;
+  margin-bottom: 25px;
 }
 
 .captured-image {
-    width: 100%;
-    max-width: 500px;
-    border-radius: 8px;
-    border: 2px solid #ddd;
-    margin: 15px 0;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  margin: 15px 0;
 }
 
 .validation-results {
-    background: #f8f8f8;
-    padding: 15px;
-    border-radius: 8px;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: left;
+  background: #f8f8f8;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: left;
 }
 
 .validation-results ul {
-    list-style: none;
-    padding: 0;
-    margin: 10px 0 0 0;
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
 }
 
 .validation-results li {
-    padding: 5px 0;
+  padding: 5px 0;
 }
 
 .validation-results .valid {
-    color: #4CAF50;
+  color: #4caf50;
 }
 
 .validation-results .invalid {
-    color: #f44336;
+  color: #f44336;
 }
 
 .validation-loading {
-    color: #2196F3;
-    font-style: italic;
-    margin: 15px 0;
+  color: #2196f3;
+  font-style: italic;
+  margin: 15px 0;
 }
 
 .navigation-controls {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
 }
 
 .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    min-width: 120px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  min-width: 120px;
 }
 
 .btn-primary {
-    background-color: #4CAF50;
-    color: white;
+  background-color: #4caf50;
+  color: white;
 }
 
 .btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
+  background-color: #f0f0f0;
+  color: #333;
 }
 
 .btn-capture {
-    background-color: #2196F3;
-    color: white;
-    font-size: 18px;
-    padding: 12px 25px;
+  background-color: #2196f3;
+  color: white;
+  font-size: 18px;
+  padding: 12px 25px;
 }
 
 .btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 .image-upload-container {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 /* Aspect ratio container */
 .image-upload-container .relative {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .image-upload-container .absolute {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .document-upload-container table .bi {
-    color: red
+  color: red;
 }
 
 .document-upload-container .bi {
-    color: #00A86B;
+  color: #00a86b;
 }
 
 .no-borer,
 .no-borer td {
-    border: none !important;
-    border-bottom: none !important;
+  border: none !important;
+  border-bottom: none !important;
 }
 
 /* Loading spinner animation */
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin {
-    animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
 /* Blur overlay */
 .backdrop-blur-sm {
-    backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
 /* Disabled button styling */
 .btn-next:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* kyc below */
@@ -487,8 +484,8 @@ tr:hover {
   /* background-color: #f8fafc; */
 }
 
-.customer-details-container h1 { 
-  text-align: center; 
+.customer-details-container h1 {
+  text-align: center;
   font-weight: 600;
 }
 
@@ -503,7 +500,7 @@ tr:hover {
   border-radius: 8px;
   padding: 10px;
   /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); */
-  background-color: white;
+  /* background-color: white; */
 }
 
 .details-section h2 {
@@ -526,7 +523,6 @@ tr:hover {
   font-weight: 500;
   margin-bottom: 1.5rem;
 }
-  
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -538,7 +534,6 @@ tr:hover {
     width: 100%;
   }
 }
-
 
 /* to be removed deleted below*/
 .camera-container {
@@ -636,4 +631,114 @@ tr:hover {
   background-color: #b71c1c;
 }
 
-.css-53g0n7-MuiButtonBase-root-MuiIconButton-root.Mui-disabled{display: none;}
+.css-53g0n7-MuiButtonBase-root-MuiIconButton-root.Mui-disabled {
+  display: none;
+}
+
+.goog-te-combo {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  color: black;
+}
+
+/* Add this to your CSS file non working translator below */
+#google_translate_element {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.goog-te-menu-value span {
+  color: inherit !important;
+}
+
+.goog-te-menu-value {
+  display: flex !important;
+  align-items: center !important;
+}
+
+div.border-red-500 select {
+  --tw-border-opacity: 1;
+  border-color: red !important;
+  border: 1px solid red;
+}
+
+/* working langugae below */
+/* Google Translate styles */
+/* #google_translate_element {
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important;
+}
+
+.goog-te-gadget-simple {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.goog-te-menu-value {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.goog-te-menu-value span {
+  color: inherit !important;
+  font-size: 0 !important;
+}
+
+.goog-te-menu-value:before {
+  content: none !important;
+} */
+
+@keyframes glowPulse {
+
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+  }
+
+  50% {
+    text-shadow: 0 0 2px rgba(34, 197, 94, 0.2);
+  }
+}
+
+.text-glow-pulse {
+  animation: glowPulse 1.5s ease-in-out infinite;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.tss-1fbujeu-MUIDataTableHeadCell-toolButton{margin: 0 !important;}
+
+input:disabled,
+select:disabled {
+  color: gray;
+  /* important to keep color visible */
+}
+.stepper-subtitle.text-xs{font-size: 9px  !important;}
+.stepper-title{margin-top: -3px;}

@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import CommanSelect from '../../components/CommanSelect';
 import { pendingAccountData, pendingAccountStatusUpdate } from '../../services/apiServices';
 import { YN, RESIDENCE_DOCS, RESIDENTIAL_STATUS } from '../../data/data';
+import dataService from '../../utils/reasonervices'; // Adjust the path as necessary
 
 
 const AddressInputs = () => {
@@ -32,7 +33,7 @@ const AddressInputs = () => {
         cor_pincode: '',
         cor_city: '',
         cor_district: '',
-        cor_state: '', 
+        cor_state: '',
         per_resident: "",
         per_residence_status: "",
         resi_doc: "",
@@ -86,8 +87,26 @@ const AddressInputs = () => {
         };
 
         fetchAndStoreDetails();
+        loadReason();
     }, [id]);
     const [errors, setErrors] = useState({});
+
+    
+    const [reason, setReason] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const loadReason = async () => {
+        try {
+            setLoading(true);
+            const fetchedReason = await dataService.fetchReasonById(id);
+            setReason(fetchedReason);
+        } catch (error) {
+            // Handle error, e.g., show a user-friendly message
+            console.error("Error loading reason in component:", error);
+            setReason(null); // Clear reason on error
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -104,7 +123,7 @@ const AddressInputs = () => {
             <form  >
                 {/* Permanent Address Section */}
                 <div className=" pb-3">
-                    <h2 className="text-xl font-bold mb-4">Permanent Address</h2>
+                    <h2 className="text-xl font-bold mb-4">Permanent Address</h2>  {reason &&  <p className="text-red-500 mb-3 " > Review For :{ reason.application_address_details_status_comment}</p> }
                     <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-4">
                         <CommanInput
                             label="Complex Name"
@@ -180,39 +199,39 @@ const AddressInputs = () => {
                             error={errors.per_state}
                             readOnly={true} />
 
- 
-            <CommanSelect
-                label="Resident Y/N"
-                value={formData.per_resident || ''}
-                name="per_resident" 
-                options={YN}
-                error={errors.per_resident}
-                     disabled={true}              readOnly={true}
-            />
 
-       
-                <CommanSelect
-                    onChange={handleChange}
-                    label="Residential Status"
-                    value={formData.per_residence_status || ''}
-                    name="per_residence_status" 
-                    options={RESIDENTIAL_STATUS}
-                    error={errors.per_residence_status}
-                     disabled={true}              readOnly={true}
-                />
-     
+                        <CommanSelect
+                            label="Resident"
+                            value={formData.per_resident || ''}
+                            name="per_resident"
+                            options={YN}
+                            error={errors.per_resident}
+                            disabled={true} readOnly={true}
+                        />
 
-     
-                <CommanSelect
-                    onChange={handleChange}
-                    label="Residence Document"
-                    value={formData.resi_doc || ''}
-                    name="resi_doc" 
-                    options={RESIDENCE_DOCS}
-                    error={errors.resi_doc}
-                    disabled={true}        readOnly={true}
-                />
-            
+
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Residential Status"
+                            value={formData.per_residence_status || ''}
+                            name="per_residence_status"
+                            options={RESIDENTIAL_STATUS}
+                            error={errors.per_residence_status}
+                            disabled={true} readOnly={true}
+                        />
+
+
+
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Residence Document"
+                            value={formData.resi_doc || ''}
+                            name="resi_doc"
+                            options={RESIDENCE_DOCS}
+                            error={errors.resi_doc}
+                            disabled={true} readOnly={true}
+                        />
+
 
                     </div>
                 </div>
@@ -310,31 +329,31 @@ function AddressForm({ formData, updateFormData, onNext, onBack }) {
     const { id } = useParams();
 
     const applicationStatus = JSON.parse(localStorage.getItem("approveStatusArray")) || [];
- 
+
 
     return (
         <div className="address-form">
 
             <AddressInputs />
 
- 
+
             <div className="next-back-btns z-10">
                 <CommonButton
                     className="btn-back"
                     onClick={onBack}
-                    iconLeft={<i className="bi bi-chevron-double-left"></i>} 
+                    iconLeft={<i className="bi bi-chevron-double-left"></i>}
                 >
                     <i className="bi bi-chevron-double-left"></i>&nbsp;Back
                 </CommonButton>
 
                 <CommonButton
                     className="btn-next"
-                    onClick={onNext }
-                    iconRight={<i className="bi bi-chevron-double-right"></i>} 
+                    onClick={onNext}
+                    iconRight={<i className="bi bi-chevron-double-right"></i>}
                 >
-                    
-                            Next&nbsp;<i className="bi bi-chevron-double-right"></i>
-                     
+
+                    Next&nbsp;<i className="bi bi-chevron-double-right"></i>
+
                 </CommonButton>
             </div>
         </div>

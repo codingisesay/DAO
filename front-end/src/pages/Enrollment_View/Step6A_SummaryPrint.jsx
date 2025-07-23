@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ViewApplicationForm = () => {
     const [formData, setFormData] = useState({});
+        const [nominees, setNominees] = useState([])
     const navigate = useNavigate();
     const { toPDF, targetRef } = usePDF({ filename: 'application-form.pdf' });
     const handleChange = () => { };
@@ -26,9 +27,12 @@ const ViewApplicationForm = () => {
                 // alert('run')
                 const response = await applicationDetailsService.getFullDetails(applicationId);
                 if (response.data) {
-                    const { application, personal_details, account_personal_details, application_addresss, customerdoc, customerpic } = response.data;
+                    const { application, personal_details, account_personal_details, application_addresss,account_nominees, customerdoc, customerpic } = response.data;
                     const address = Array.isArray(application_addresss) ? application_addresss[0] : application_addresss;
                     
+                    if (account_nominees && account_nominees.length > 0) {
+                        setNominees(account_nominees);
+                    }
                     console.log('toshoe :', response);
                  setFormData({
                     application_id: applicationId,
@@ -83,6 +87,10 @@ const ViewApplicationForm = () => {
                     cor_city:address.cor_city || '',
                     cor_district:address.cor_district || '',
                     cor_state:address.cor_state || '',
+                    // Add these new address-related fields
+                    per_resident: address?.per_resident || "",
+                    per_residence_status: address?.per_residence_status || "",
+                    resi_doc: address?.resi_doc || "",
                             
 
                     // Identity Documents
@@ -91,18 +99,23 @@ const ViewApplicationForm = () => {
                     passport: personal_details?.passport,
                     driving_license: personal_details?.driving_license,
                     voter_id: personal_details?.voter_id,
+ 
+           // Family Details (add all these fields)
+    maiden_prefix: account_personal_details?.maiden_prefix || "",
+    maiden_first_name: account_personal_details?.maiden_first_name || "",
+    maiden_middle_name: account_personal_details?.maiden_middle_name || "",
+    maiden_last_name: account_personal_details?.maiden_last_name || "",
+    father_prefix_name: account_personal_details?.father_prefix_name || "",
+    father_first_name: account_personal_details?.father_first_name || "",
+    father_middle_name: account_personal_details?.father_middle_name || "",
+    father_last_name: account_personal_details?.father_last_name || "",
+    mother_prefix_name: account_personal_details?.mother_prefix_name || "",
+    mother_first_name: account_personal_details?.mother_first_name || "",
+    mother_middle_name: account_personal_details?.mother_middle_name || "",
+    mother_last_name: account_personal_details?.mother_last_name || "",
+    birth_place: account_personal_details?.birth_place || "",
+    birth_country: account_personal_details?.birth_country || "",
 
-                    // Family Details
-                    father_prefix_name: account_personal_details?.father_prefix_name,
-                    father_first_name: account_personal_details?.father_first_name,
-                    father_middle_name: account_personal_details?.father_middle_name,
-                    father_last_name: account_personal_details?.father_last_name,
-                    mother_prefix_name: account_personal_details?.mother_prefix_name,
-                    mother_first_name: account_personal_details?.mother_first_name,
-                    mother_middle_name: account_personal_details?.mother_middle_name,
-                    mother_last_name: account_personal_details?.mother_last_name,
-                    birth_place: account_personal_details?.birth_place,
-                    birth_country: account_personal_details?.birth_country,
 
                     // Occupation Details
                     occoupation_type: account_personal_details?.occoupation_type,
@@ -119,6 +132,49 @@ const ViewApplicationForm = () => {
                             ? daodocbase + customerdoc.find(doc => doc.document_type.includes('SIGNATURE')).file_path 
                             : null,
                     photo: customerpic?.length > 0 ? daodocbase + customerpic[0].path : null,
+
+                    
+                    // Documents
+                    passportdoc: customerdoc?.find(doc => doc.document_type.includes('PASSPORT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PASSPORT_JPG')).file_path
+                    : "",
+    
+                    aadhaarFrontdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_FRONT_JPG')).file_path
+                    : "",
+    
+                    aadhaarBackdoc: customerdoc?.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('AADHAAR_BACK_JPG')).file_path
+                    : "",
+    
+                    pancarddoc: customerdoc?.find(doc => doc.document_type.includes('PAN_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PAN_CARD_JPG')).file_path
+                    : "",
+    
+                    voteridoc: customerdoc?.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('VOTER_ID_CARD_JPG')).file_path
+                    : "",
+    
+                    drivinglicensedoc: customerdoc?.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('DRIVING_LICENSE_JPG')).file_path
+                    : "",
+    
+                    utilitybilldoc: customerdoc?.find(doc => doc.document_type.includes('UTILITY_BILL_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('UTILITY_BILL_JPG')).file_path
+                    : "",
+    
+                    rentagreementdoc: customerdoc?.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('RENT_AGREEMENT_JPG')).file_path
+                    : "",
+    
+                    propertytaxdoc: customerdoc?.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('PROPERTY_TAX_RECEIPT_JPG')).file_path
+                    : "",
+    
+                    bankstatementdoc: customerdoc?.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG'))
+                    ? daodocbase + customerdoc.find(doc => doc.document_type.includes('BANK_STATEMENT_JPG')).file_path
+                    : "",
+                        
                 });
                 }
             } catch (error) {
@@ -210,7 +266,6 @@ const ViewApplicationForm = () => {
                             value={formData.first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -220,7 +275,6 @@ const ViewApplicationForm = () => {
                             value={formData.middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -230,7 +284,6 @@ const ViewApplicationForm = () => {
                             value={formData.last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -238,8 +291,7 @@ const ViewApplicationForm = () => {
                             type="date"
                             name="DOB"
                             value={formData.DOB || ''}
-                            readOnly
-                            validationType="DATE"
+                            readOnly 
                         />
                         <CommanSelect
                             onChange={handleChange}
@@ -288,7 +340,6 @@ const ViewApplicationForm = () => {
                             value={formData.mobile || ''}
                             readOnly
                             max={10}
-                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -298,7 +349,6 @@ const ViewApplicationForm = () => {
                             value={formData.alt_mob_no || ''}
                             readOnly
                             max={10}
-                            validationType="PHONE"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -307,7 +357,6 @@ const ViewApplicationForm = () => {
                             name="email"
                             value={formData.email || ''}
                             readOnly
-                            validationType="EMAIL"
                         />
                     </div>
                 </div>
@@ -381,6 +430,28 @@ const ViewApplicationForm = () => {
                             readOnly
                             max={30}
                         />
+                        
+                            <CommanInput
+                                label="Permanent Resident"
+                                name="per_resident"
+                                value={formData.per_resident || ''}
+                                readOnly
+                                max={10}
+                            />
+                            <CommanInput
+                                label="Residence Status"
+                                name="per_residence_status"
+                                value={formData.per_residence_status || ''}
+                                readOnly
+                                max={20}
+                            />
+                            <CommanInput
+                                label="Residence Document"
+                                name="resi_doc"
+                                value={formData.resi_doc || ''}
+                                readOnly
+                                max={20}
+                            />
                         </div>
                     </div>
  
@@ -394,57 +465,52 @@ const ViewApplicationForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Complex Name"
+                                label=" Complex Name"
                                 type="text"
                                 name="per_complex_name"
                                 value={formData.per_complex_name || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Flat No"
+                                label=" Flat No"
                                 type="text"
                                 name="cor_flat_no"
                                 value={formData.cor_flat_no || ''}
                                 readOnly
                                 max={20}
-                                validationType="ALPHANUMERIC"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Area"
+                                label=" Area"
                                 type="text"
                                 name="cor_area"
                                 value={formData.cor_area || ''}
                                 readOnly
                                 max={50}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Landmark"
+                                label=" Landmark"
                                 type="text"
                                 name="cor_landmark"
                                 value={formData.cor_landmark || ''}
                                 readOnly
                                 max={50}
-                                validationType="EVERYTHING"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Country"
+                                label=" Country"
                                 type="text"
                                 name="cor_country"
                                 value={formData.cor_country || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence Pincode"
+                                label=" Pincode"
                                 type="text"
                                 name="cor_pincode"
                                 value={formData.cor_pincode || ''}
@@ -454,33 +520,30 @@ const ViewApplicationForm = () => {
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence City"
+                                label=" City"
                                 type="text"
                                 name="cor_city"
                                 value={formData.cor_city || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence District"
+                                label=" District"
                                 type="text"
                                 name="cor_district"
                                 value={formData.cor_district || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                             <CommanInput
                                 onChange={handleChange}
-                                label="Correspondence State"
+                                label=" State"
                                 type="text"
                                 name="cor_state"
                                 value={formData.cor_state || ''}
                                 readOnly
                                 max={30}
-                                validationType="ALPHABETS_AND_SPACE"
                             />
                         </div>
                     </div>
@@ -498,7 +561,6 @@ const ViewApplicationForm = () => {
                             value={formData.adhar_card || ''}
                             readOnly
                             max={12}
-                            validationType="NUMBER_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -508,7 +570,6 @@ const ViewApplicationForm = () => {
                             value={formData.pan_card || ''}
                             readOnly
                             max={10}
-                            validationType="PAN"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -518,7 +579,6 @@ const ViewApplicationForm = () => {
                             value={formData.passport || ''}
                             readOnly
                             max={20}
-                            validationType="ALPHANUMERIC"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -528,7 +588,6 @@ const ViewApplicationForm = () => {
                             value={formData.driving_license || ''}
                             readOnly
                             max={20}
-                            validationType="REGISTRATION_NO"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -538,15 +597,96 @@ const ViewApplicationForm = () => {
                             value={formData.voter_id || ''}
                             readOnly
                             max={20}
-                            validationType="REGISTRATION_NO"
                         />
                     </div>
                 </div>
 
+
+                  {/* Nominee Details */}
+                                {nominees.length > 0 && (
+                                    <div className="pdf-section mb-8">
+                                        <h2 className="text-xl font-semibold mb-4 border-b pb-2">Nominee Details</h2>
+                                        <div className="w-full mb-8 border rounded p-4">
+                                        <table className="min-w-fit table-auto border border-collapse mb-4">
+                                            <thead>
+                                            <tr className="bg-gray-100 text-left">
+                                                <th  className="border px-4 py-2">Name of the Nominee</th>
+                                                <th  className="border px-4 py-2">Address</th>
+                                                <th  className="border px-4 py-2">Relationship</th>
+                                                <th  className="border px-4 py-2">Date of Birth</th>
+                                                <th  className="border px-4 py-2">Age</th>
+                                                <th  className="border px-4 py-2">Percentage</th> 
+                                            </tr>
+                                            </thead>
+                
+                                            {nominees.map((nominee, index) => (
+                                            <tbody key={index}>
+                                                <tr>
+                                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                                    {nominee.salutation} {nominee.first_name} {nominee.middle_name} {nominee.last_name}
+                                                </td>
+                                                <td className="border px-4 py-2 break-words whitespace-normal" style={{verticalAlign:'top'}} >
+                                                    {nominee.nom_complex_name} {nominee.nom_flat_no} {nominee.nom_area} {nominee.nom_landmark} {nominee.nom_country} {nominee.nom_pincode} {nominee.nom_city} {nominee.nom_district} {nominee.nom_state}
+                                                </td>
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.relationship}</td>
+                                                <td className="border px-4 py-2" style={{ verticalAlign: 'top', minWidth: '100px' }}>
+                                        {nominee.dob ? new Date(nominee.dob).toLocaleDateString('en-GB') : 'N/A'}
+                                        </td>
+                
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.age}</td>
+                                                <td className="border px-4 py-2" style={{verticalAlign:'top'}} >{nominee.percentage}</td> 
+                                                </tr>
+                                            </tbody>
+                                            ))}
+                                        </table>
+                                        </div>
+                
+                
+                                    </div>
+                                )}
+                
                 {/* Family Details */}
                 <div className="pdf-section">
                     <h2 className="text-xl font-semibold mb-4 border-b pb-2">Family Details</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+                        {/* Maiden Name Fields */}
+                        <CommanSelect
+                            onChange={handleChange}
+                            label="Maiden Prefix"
+                            name="maiden_prefix"
+                            value={formData.maiden_prefix || ''}
+                            options={salutation}
+                            readOnly
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden First Name"
+                            type="text"
+                            name="maiden_first_name"
+                            value={formData.maiden_first_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Middle Name"
+                            type="text"
+                            name="maiden_middle_name"
+                            value={formData.maiden_middle_name || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Maiden Last Name"
+                            type="text"
+                            name="maiden_last_name"
+                            value={formData.maiden_last_name || ''}
+                            readOnly
+                            max={50}
+                        />
+
+                        {/* Father's Details */}
                         <CommanSelect
                             onChange={handleChange}
                             label="Father's Prefix"
@@ -563,7 +703,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -573,7 +712,6 @@ const ViewApplicationForm = () => {
                             value={formData.father_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -583,8 +721,9 @@ const ViewApplicationForm = () => {
                             value={formData.father_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
+
+                        {/* Mother's Details */}
                         <CommanSelect
                             onChange={handleChange}
                             label="Mother's Prefix"
@@ -601,7 +740,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_first_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -611,7 +749,6 @@ const ViewApplicationForm = () => {
                             value={formData.mother_middle_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -621,8 +758,9 @@ const ViewApplicationForm = () => {
                             value={formData.mother_last_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
+
+                        {/* Birth Place & Country */}
                         <CommanInput
                             onChange={handleChange}
                             label="Birth Place"
@@ -631,7 +769,6 @@ const ViewApplicationForm = () => {
                             value={formData.birth_place || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -641,10 +778,11 @@ const ViewApplicationForm = () => {
                             value={formData.birth_country || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                     </div>
                 </div>
+
+               
 
                 {/* Occupation Details */}
                 <div className="pdf-section">
@@ -658,7 +796,6 @@ const ViewApplicationForm = () => {
                             value={formData.occoupation_type || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -668,7 +805,6 @@ const ViewApplicationForm = () => {
                             value={formData.occupation_name || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -678,7 +814,6 @@ const ViewApplicationForm = () => {
                             value={formData.if_salaryed || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -688,7 +823,6 @@ const ViewApplicationForm = () => {
                             value={formData.designation || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -698,7 +832,6 @@ const ViewApplicationForm = () => {
                             value={formData.nature_of_occoupation || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -708,7 +841,6 @@ const ViewApplicationForm = () => {
                             value={formData.qualification || ''}
                             readOnly
                             max={50}
-                            validationType="TEXT_ONLY"
                         />
                         <CommanInput
                             onChange={handleChange}
@@ -716,6 +848,15 @@ const ViewApplicationForm = () => {
                             type="text"
                             name="anual_income"
                             value={formData.anual_income || ''}
+                            readOnly
+                            max={50}
+                        />
+                        <CommanInput
+                            onChange={handleChange}
+                            label="Remark"
+                            type="text"
+                            name="remark"
+                            value={formData.remark || ''}
                             readOnly
                             max={50}
                             validationType="TEXT_ONLY"
@@ -754,6 +895,116 @@ const ViewApplicationForm = () => {
                                 <span>No signature uploaded</span>
                             )}
                         </div>
+                    </div>
+                </div>
+
+                
+
+                
+                {/* File Uploads */}
+                <div className="pdf-section">
+                    <h2 className="text-xl font-semibold mb-4 border-b pb-2">File Uploads</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-4 sm:grid-cols-3 gap-5 mb-6"> 
+                          
+                            {formData.passportdoc ? (
+                                <img
+                                    src={typeof formData.passportdoc === 'string' ? formData.passportdoc : URL.createObjectURL(formData.passportdoc)}
+                                    alt="Passport"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.aadhaarFrontdoc ? (
+                                <img
+                                    src={typeof formData.aadhaarFrontdoc === 'string' ? formData.aadhaarFrontdoc : URL.createObjectURL(formData.aadhaarFrontdoc)}
+                                    alt="Aadhaar Front"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.aadhaarBackdoc ? (
+                                <img
+                                    src={typeof formData.aadhaarBackdoc === 'string' ? formData.aadhaarBackdoc : URL.createObjectURL(formData.aadhaarBackdoc)}
+                                    alt="Aadhaar Back"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.pancarddoc ? (
+                                <img
+                                    src={typeof formData.pancarddoc === 'string' ? formData.pancarddoc : URL.createObjectURL(formData.pancarddoc)}
+                                    alt="PAN"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.voteridoc ? (
+                                <img
+                                    src={typeof formData.voteridoc === 'string' ? formData.voteridoc : URL.createObjectURL(formData.voteridoc)}
+                                    alt="Voter ID"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.drivinglicensedoc ? (
+                                <img
+                                    src={typeof formData.drivinglicensedoc === 'string' ? formData.drivinglicensedoc : URL.createObjectURL(formData.drivinglicensedoc)}
+                                    alt="Driving License"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.utilitybilldoc ? (
+                                <img
+                                    src={typeof formData.utilitybilldoc === 'string' ? formData.utilitybilldoc : URL.createObjectURL(formData.utilitybilldoc)}
+                                    alt="Utility Bill"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.rentagreementdoc ? (
+                                <img
+                                    src={typeof formData.rentagreementdoc === 'string' ? formData.rentagreementdoc : URL.createObjectURL(formData.rentagreementdoc)}
+                                    alt="Rent Agreement"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.propertytaxdoc ? (
+                                <img
+                                    src={typeof formData.propertytaxdoc === 'string' ? formData.propertytaxdoc : URL.createObjectURL(formData.propertytaxdoc)}
+                                    alt="Property Tax Receipt"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )}
+                            
+                            {formData.bankstatementdoc ? (
+                                <img
+                                    src={typeof formData.bankstatementdoc === 'string' ? formData.bankstatementdoc : URL.createObjectURL(formData.bankstatementdoc)}
+                                    alt="Bank Statement"
+                                    className="w-50 h-40"
+                                />
+                            ) : (
+                               <></>
+                            )} 
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { getsignabstract } from '../../services/apiServices';
 import axios from 'axios';
 import {
     Box,
@@ -31,7 +32,9 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
     const [apiResponse, setApiResponse] = useState(null);
 
     // API configuration
-    const API_URL = 'http://172.16.1.224:5001/api/detect';
+    // const API_URL = 'http://172.16.1.224:5001/api/detect';
+    const API_URL ='https://dao.payvance.co.in:8091/ext/api/detect';
+    const bearer =localStorage.getItem('accessToken')
 
     useEffect(() => {
         if (document) {
@@ -55,43 +58,41 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
             const formData = new FormData();
             formData.append('image', document.file);
 
-            const response = await axios.post(API_URL, formData, {
+            const response = await getsignabstract.upload(formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data', 
                 },
                 timeout: 30000 // 30 seconds timeout
             });
 
-            setApiResponse(response.data);
+            setApiResponse(response);
 
             // Process detections into signatures and photographs
-            if (response.data.detections && response.data.detections.length > 0) {
-                const sigs = response.data.detections
-                    .filter(d => d.class_id === 2) // Signature is class_id 2
-                    .map(d => ({
-                        ...d,
-                        image: d.crop // Use the crop field directly
-                    }));
+       if (response.detections && response.detections.length > 0) {
+            const sigs = response.detections
+                .filter(d => d.class_id === 2)
+                .map(d => ({ ...d, image: d.crop }));
+            const photos = response.detections
+                .filter(d => d.class_id === 1)
+                .map(d => ({ ...d, image: d.crop }));
 
-                const photos = response.data.detections
-                    .filter(d => d.class_id === 1) // Photograph is class_id 1
-                    .map(d => ({
-                        ...d,
-                        image: d.crop // Use the crop field directly
-                    }));
+            setSignatures(sigs);
+            setPhotographs(photos);
 
-                setSignatures(sigs);
-                setPhotographs(photos);
-                
-                // Pass the extracted data back to parent
-                onExtractionComplete({
-                    signatures: sigs,
-                    photographs: photos
-                });
+            // Show error if both arrays are empty
+            if (sigs.length === 0 && photos.length === 0) {
+                setError('No signatures or photographs detected in the document');
             } else {
-                // setError('No signatures or photographs detected in the document');
-                
+                setError(undefined);
             }
+
+            onExtractionComplete({
+                signatures: sigs,
+                photographs: photos
+            });
+        } else {
+            setError('No signatures or photographs detected in the document');
+        }
         } catch (err) {
             handleApiError(err);
         } finally {
@@ -109,8 +110,8 @@ const DAOExtraction = ({ document,setDocuments, onClose, onExtractionComplete })
                 errorMessage = 'File too large. Please upload an image smaller than 5MB.';
             } else if (err.response.status === 500) {
                 errorMessage = 'Server error during image processing. Please try again.';
-            } else if (err.response.data && err.response.data.message) {
-                errorMessage = err.response.data.message;
+            } else if (err.response && err.response.message) {
+                errorMessage = err.response.message;
             }
         } else if (err.request) {
             if (err.code === 'ECONNABORTED') {
@@ -162,48 +163,40 @@ const renderExtractionResult = (items, title) => {
     </ExtractionResult>
   );
 };
-
+// Add this effect to auto-close after processing
+useEffect(() => {
+    if (!isLoading && document) {
+        // Wait a short moment to let user see the spinner, then close
+        const timer = setTimeout(() => {
+            onClose();
+        }, 1000); // 1 second delay, adjust as needed
+        return () => clearTimeout(timer);
+    }
+}, [isLoading, document, onClose]);
     return (
-        <Dialog open={!!document} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6">Processing Document: {document?.name}</Typography>
-                    <IconButton onClick={onClose}>
-                        <ClearIcon />
-                    </IconButton>
+<>
+    <Dialog open={!!document} onClose={onClose} maxWidth="md" fullWidth>
+        <DialogTitle>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h6">Processing Document: {document?.name}</Typography>
+                {/* <IconButton onClick={onClose}>
+                    <ClearIcon />
+                </IconButton> */}
+            </Box>
+        </DialogTitle>
+        <DialogContent>
+            <Box sx={{ p: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+                    <CircularProgress />
+                    <Typography variant="body1" sx={{ ml: 2 }}>
+                        Processing document...
+                    </Typography>
                 </Box>
-            </DialogTitle>
-            <DialogContent>
-                <Box sx={{ p: 2 }}>
-                    {isLoading && (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
-                            <CircularProgress />
-                            <Typography variant="body1" sx={{ ml: 2 }}>
-                                Processing document...
-                            </Typography>
-                        </Box>
-                    )}
-
-               { !isLoading &&  error ? (
-                        <Box sx={{ color: 'error.main', p: 2, border: '1px solid', borderColor: 'error.main', borderRadius: 1 }}>
-                            Document verifyed
-                             <Typography variant="body1">{error}</Typography>
-                        </Box>
-                    ):(
-                        
-                        <><Box   sx={{ color: 'success.main',textAlign:'center',fontSize:'20px',  p: 2 }} >Document verifyed!</Box></>
-                    )}
-                     
-                    {renderExtractionResult(signatures, 'Extracted Signatures')}
-                    {renderExtractionResult(photographs, 'Extracted Photographs')}
-                </Box>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose} color="primary">
-                    Close
-                </Button>
-            </DialogActions>
-        </Dialog>
+            </Box>
+        </DialogContent>
+        {/* Optionally, you can remove DialogActions if you want to auto-close only */}
+    </Dialog>
+</>
     );
 };
 

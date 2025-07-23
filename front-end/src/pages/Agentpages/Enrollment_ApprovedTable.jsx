@@ -6,8 +6,6 @@ import { COLUMN_DEFINITIONS } from '../../components/DataTable/config/columnConf
 
 import React, { useState, useEffect } from "react"; // Import necessary hooks from React
 
-
-
 function ApprovedTable() {
   const storedId = localStorage.getItem('userCode') || 1;
   const [tbldata, setTbldata] = React.useState([]);
@@ -18,17 +16,20 @@ function ApprovedTable() {
   const [sortConfig, setSortConfig] = useState({ field: "", order: "asc" });
   const [filters, setFilters] = useState({});
 
-
   const columns = [
+    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.application_no, field: "id", type: "text" },
-    { ...COLUMN_DEFINITIONS.first_name, field: "first_name", type: "text" },
-    { ...COLUMN_DEFINITIONS.customer_no, field: "customer_no", type: "date" },
+    {
+      // Updated column for Applicant Name
+      header: "Customer Name", // Changed header for clarity
+      field: "fullName", // This field will be created in fetchData
+      type: "text",
+    },
+    { ...COLUMN_DEFINITIONS.cust_no, field: "customer_no", type: "text" }, // Changed type to text as it's typically a string
+    { ...COLUMN_DEFINITIONS.approved_by, field: "admin_id", type: "text" },
+    { ...COLUMN_DEFINITIONS.account_open_date, field: "created_at", type: "date" },
     { ...COLUMN_DEFINITIONS.account_no, field: "account_no", type: "text" },
-    { ...COLUMN_DEFINITIONS.approved_by, field: "approved_by", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
-    { ...COLUMN_DEFINITIONS.created_at, field: "created_at", type: "text" },
   ];
-
 
   const fetchData = async () => {
     try {
@@ -38,27 +39,25 @@ function ApprovedTable() {
         sort: sortConfig.field ? `${sortConfig.field},${sortConfig.order}` : "",
         ...filters,
       });
+
+      // Process the data to include 'fullName'
+      const processedData = response.data
+        ? response.data.map(item => ({
+            ...item,
+            fullName: `${item.first_name || ''} ${item.last_name || ''}`.trim(), // Combine first_name and last_name
+          }))
+        : [];
+
       // Set both states correctly
-      setTbldata(response.data || []);
-      setData({ content: response.data || [] }); // This is what DataTable expects
+      setTbldata(processedData || []);
+      setData({ content: processedData || [] }); // This is what DataTable expects
     } catch (error) {
-      console.error("Failed to fetch pending applications:", error);
+      console.error("Failed to fetch approved applications:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  /*
-  The `useEffect` hook is used to perform side effects in the component.
-  In this case, it ensures that `fetchBranches()` is called whenever 
-  certain dependencies change.
-*/
-
-  /*
-  `fetchBranches();`
-  - Calls the function to fetch bank data from the API.
-  - This ensures that the latest data is retrieved whenever filters, sorting, or pagination change.
-*/
   useEffect(() => {
     fetchData();
   }, [currentPage, sortConfig, filters]);
@@ -75,10 +74,8 @@ function ApprovedTable() {
     setCurrentPage(page);
   };
 
-
   return (
     <>
-
       <div className="container mx-auto">
         <br />
         <div
@@ -94,7 +91,6 @@ function ApprovedTable() {
             className="search-user-container"
             style={{ display: "flex", justifyContent: "space-between" }}
           >
-
             {/* Action Buttons */}
             <div className="button-section"> </div>
           </div>
@@ -114,11 +110,11 @@ function ApprovedTable() {
           </div>
         </div>
       </div>
-
-
-
-    </>);
+    </>
+  );
 }
 
 export default ApprovedTable;
 
+
+ 

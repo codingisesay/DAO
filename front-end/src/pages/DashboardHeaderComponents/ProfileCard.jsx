@@ -1,10 +1,15 @@
-import React from 'react';
+
+import React, {useEffect} from 'react';
+import {userService} from '../../services/apiServices';
+
 
 export const ProfileCard = () => {
   const username=localStorage.getItem('userName');
+  const userCode=localStorage.getItem('userCode');
   const rolename=localStorage.getItem('roleName');
   const bacnkname=localStorage.getItem('bankName');
   const usercode=localStorage.getItem('bankName');
+  const [profileData, setProfileData] = React.useState(null);
 function toTitleCase(str) {
   return str.replace(/\w\S*/g, (txt) =>
     txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
@@ -12,11 +17,32 @@ function toTitleCase(str) {
 }
 
 
+const detailsServie =async(userCode)=> {
+    
+        try {
+            const response = await userService.getUserById(userCode);
+            setProfileData(response);
+            console.log('Login details : ', response.mobileNumber) 
+        } catch (error) {
+            console.error("Failed to fetch reason for application ID:", id, error);
+            throw error; // Re-throw to allow the calling component to handle it
+        }
+  
+    // You can add more common data fetching functions here
+};
+
+useEffect(() => {
+detailsServie(userCode)
+
+  },[userCode])
+
+
+
+
   return (
     <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden text-left">
       <div className="p-3">
-        <h1 className="text-xs font-bold text-gray-800 mb-2 text-center">Profile</h1>
-        
+        <h1 className="text-xs font-bold text-gray-800 mb-2 text-center">Profile</h1>        
         <div className=" ">
           <div className='text-center'>
                   <img
@@ -32,8 +58,8 @@ function toTitleCase(str) {
                     }}
                 />
         
-            <h2 className="text-xs font-semibold text-gray-700 mb-0">{toTitleCase(username)}</h2>
-            <p className="text-gray-500 text-xs">{toTitleCase(rolename)}</p>
+            <h2 className="text-xs font-semibold text-gray-700 mb-0">{username}</h2>
+            <p className="text-gray-500 text-xs">{rolename}</p>
       
           </div>
           
@@ -45,7 +71,7 @@ function toTitleCase(str) {
               </div>
               <div>
                 <p className="text-xs font-medium text-gray-500">Phone Number</p>
-                <p className="text-gray-800 text-xs">-</p>
+                <p className="text-gray-800 text-xs">{profileData && profileData.mobileNumber}</p>
               </div>
               <div>
                 <p className="text-xs font-medium text-gray-500">Employee ID</p>

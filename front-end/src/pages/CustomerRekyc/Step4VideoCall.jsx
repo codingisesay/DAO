@@ -1,5 +1,5 @@
 
-import VideoKYCInstructions from '../Enrollment/Step4A_VideoCallScreen';
+import VideoKYCInstructions from './Step4A_VideoCallScreen';
 import CommonButton from '../../components/CommonButton';
 import vcallimg from '../../assets/imgs/vcall_illustration.jpg';
 import { nav } from 'framer-motion/client';
@@ -13,21 +13,17 @@ const Step4VideoCall = ({
   // skipStep,
 }) => {
   const navigate = useNavigate();
-
+  const application_id =localStorage.getItem('application_id');
   const skipStep = () => {
     Swal.fire({
       title: 'Application Submitted without VideoKYC!',
-      text: 'You have chosen to skip VideoKYC.',
+      text: 'Application Number : '+ application_id,
       icon: 'info',
       confirmButtonText: 'OK'
     });
   };
   const handleCombinedSubmit = (e) => {
     e.preventDefault();
-    localStorage.removeItem('nominationFormData');
-    localStorage.removeItem('documentData');
-    localStorage.removeItem('application_id');
-
     // First show main submission message
     Swal.fire({
       title: 'Application Submitted!',
@@ -43,6 +39,11 @@ const Step4VideoCall = ({
         navigate('/agentDashboard');
       }
     });
+    
+    // localStorage.removeItem('nominationFormData');
+    // localStorage.removeItem('documentData');
+    // localStorage.removeItem('application_id');
+
   };
 
 
@@ -52,7 +53,7 @@ const Step4VideoCall = ({
 
       <VideoKYCInstructions />
 
-
+{/* 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4">
         <div className="img-container">
           <img
@@ -76,16 +77,14 @@ const Step4VideoCall = ({
           >
             Skip V-KYC & Next
           </CommonButton>
-          {/* <button type="button" onClick={skipStep} className="skip-button"> Skip        </button> */}
-
-
+        
           <CommonButton
             className="btn-login my-3 w-[200px]"
           >
             Assisted V-KYC
           </CommonButton>
         </div>
-      </div>
+      </div> */}
 
 
       <div className="next-back-btns z-10">
