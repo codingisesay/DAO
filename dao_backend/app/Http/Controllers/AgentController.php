@@ -278,7 +278,7 @@ public function saveLivePhoto(Request $request)
 public function saveAgentLivePhoto(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|exists:customer_application_details,id',
+        'application_id' => 'required',
         'longitude' => 'required|string|max:255',
         'latitude' => 'required|string|max:255',
         'address' => 'nullable',
@@ -544,10 +544,7 @@ public function saveAccountNominee(Request $request)
         'nominees.*.nom_mobile' => 'nullable|string|max:191',
     ]);
 
-    // 1. Delete all existing nominees for this application_id
-    \App\Models\AccountNominee::where('application_id', $validated['application_id'])->delete();
-
-    // 2. Insert new nominees
+    // Only insert new nominees, do not delete existing ones
     $savedNominees = [];
     foreach ($validated['nominees'] as $nomineeData) {
         $nomineeData['application_id'] = $validated['application_id'];

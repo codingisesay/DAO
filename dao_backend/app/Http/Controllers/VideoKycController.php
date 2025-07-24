@@ -152,5 +152,73 @@ public function upload(Request $request)
     ]);
 }
 
+public function scheduleVideoCall(Request $request)
+{
+    $validated = $request->validate([
+        'application_id' => 'required',
+        'agent_id' => 'required',
+        'link_status' => 'required',
+        'schedule_date' => 'required|date',
+        'schedule_start_time' => 'required',
+        'schedule_end_time' => 'required',
+    ]);
+
+    // Prevent same start and end time
+    if ($validated['schedule_start_time'] === $validated['schedule_end_time']) {
+        return response()->json([
+            'message' => 'Start time and end time cannot be the same.'
+        ], 422);
+    }
+
+    // Prevent duplicate schedule for same application, agent, and time
+    $exists = DB::table('video_call_schedule')
+        ->where('application_id', $validated['application_id'])
+        ->where('agent_id', $validated['agent_id'])
+        ->where('schedule_date', $validated['schedule_date'])
+        ->where('schedule_start_time', $validated['schedule_start_time'])
+        ->where('schedule_end_time', $validated['schedule_end_time'])
+        ->exists();
+
+    if ($exists) {
+        return response()->json([
+            'message' => 'A schedule with the same details already exists.'
+        ], 409);
+    }
+
+   // Prevent overlapping schedules for the same agent
+$overlap = DB::table('video_call_schedule')
+    ->where('agent_id', $validated['agent_id'])
+    ->where('schedule_date', $validated['schedule_date'])
+    ->where(function ($query) use ($validated) {
+        $query->where(function ($q) use ($validated) {
+            $q->where('schedule_start_time', '<', $validated['schedule_end_time'])
+              ->where('schedule_end_time', '>', $validated['schedule_start_time']);
+        });
+    })
+    ->exists();
+
+if ($overlap) {
+    return response()->json([
+        'message' => 'This agent already has a schedule that overlaps with the selected time.'
+    ], 409);
+}
+
+    // Insert the schedule
+    $schedule = DB::table('video_call_schedule')->insertGetId([
+        'application_id' => $validated['application_id'],
+        'agent_id' => $validated['agent_id'],
+        'link_status' => $validated['link_status'],
+        'schedule_date' => $validated['schedule_date'],
+        'schedule_start_time' => $validated['schedule_start_time'],
+        'schedule_end_time' => $validated['schedule_end_time'],
+    ]);
+
+    return response()->json([
+        'message' => 'Video call scheduled successfully.',
+        'id' => $schedule
+    ], 201);
+}
 
 }
+
+

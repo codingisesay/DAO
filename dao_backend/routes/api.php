@@ -189,12 +189,13 @@ Route::get('/agent-applications-yearly/{agentId}', [AgentController::class, 'get
 Route::get('/applications/age-groups', [AgentController::class, 'getApplicationsByAgeGroups']);
 // V-KYC Pending Status 
 Route::get('/kyc-applications/pending-by-agent', [AgentController::class, 'getKycPendingApplicationsByAgent']);
-//V-KYC Approved Status
+//V-KYC Approved/reject Status
 Route::post('/agent/video_kyc_status', [AgentController::class, 'videoKycStatus']);
-//kyc-video_call_status
+//kyc-video_call_status rekyc 
 Route::post('/agent/kyc_video_kyc_status', [AgentController::class, 'kycVideoKycStatus']);
 
-
+// video kyc sheduling route
+Route::post('/admin/video-call-schedule', [VideoKycController::class, 'scheduleVideoCall']);
 
 
 
