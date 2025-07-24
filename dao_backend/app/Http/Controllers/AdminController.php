@@ -300,6 +300,7 @@ public function getRejectedApplications($status)
         ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
         ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
         ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->leftjoin('video_kyc_status', 'customer_appliction_status.application_id', '=', 'video_kyc_status.application_id')
         ->select(
             'customer_application_details.*', 
             'customer_appliction_status.status as full_application_status', 
@@ -318,7 +319,9 @@ public function getRejectedApplications($status)
             'document_approved_status.status as document_approved_status_status',
             'document_approved_status.status_comment as document_approved_status_status_comment',
             'nominee_approved_status.status as nominee_approved_status_status',
-            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment',
+            'video_kyc_status.status as video_kyc_status',
+            'video_kyc_status.comments as video_kyc_status_comment'
         )
         ->where('customer_appliction_status.status', $status)
         ->get();
@@ -340,6 +343,7 @@ public function getResonApplications($status,$application_id)
         ->leftJoin('application_service_status', 'customer_appliction_status.application_id', '=', 'application_service_status.application_id')
         ->leftJoin('document_approved_status', 'customer_appliction_status.application_id', '=', 'document_approved_status.application_id')
         ->leftJoin('nominee_approved_status', 'customer_appliction_status.application_id', '=', 'nominee_approved_status.application_id')
+        ->leftJoin('video_kyc_status', 'customer_appliction_status.application_id', '=', 'video_kyc_status.application_id')
         ->select(
             'customer_application_details.*',
             'customer_appliction_status.status as full_application_status',
@@ -358,7 +362,9 @@ public function getResonApplications($status,$application_id)
             'document_approved_status.status as document_approved_status_status',
             'document_approved_status.status_comment as document_approved_status_status_comment',
             'nominee_approved_status.status as nominee_approved_status_status',
-            'nominee_approved_status.status_comment as nominee_approved_status_status_comment'
+            'nominee_approved_status.status_comment as nominee_approved_status_status_comment',
+            'video_kyc_status.status as video_kyc_status',
+            'video_kyc_status.comments as video_kyc_status_comment'
         )
         ->where('customer_appliction_status.status', $status)
         ->where('customer_application_details.id', $application_id)
@@ -1002,6 +1008,7 @@ public function getKycRejectedApplications($status)
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
         ->join('kyc_data_after_vs_cbs','kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->join('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
+        ->join('kyc_video_kyc_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_video_kyc_status.kyc_application_id')
         ->select(
             'kyc_application_status.kyc_application_id as kyc_application_id',
             'kyc_application_status.status as kyc_application_status',
@@ -1012,7 +1019,9 @@ public function getKycRejectedApplications($status)
             'kyc_data_after_vs_cbs.status as kyc_data_after_vs_cbs_status',
             'kyc_data_after_vs_cbs.status_comment as kyc_data_after_vs_cbs_status_comment',
             'kyc_document_approved_status.status as kyc_document_approved_status',
-            'kyc_document_approved_status.status_comment as kyc_document_approved_status_comment'
+            'kyc_document_approved_status.status_comment as kyc_document_approved_status_comment',
+            'kyc_video_kyc_status.status as kyc_video_kyc_status',
+            'kyc_video_kyc_status.comments as kyc_video_kyc_status_comment'
         )
         ->where('kyc_application_status.status', $status)
         ->get();
@@ -1141,6 +1150,7 @@ public function getAllKycDetails($id)
     $verifyCbs = DB::table('kyc_data_from_verify_cbs')->where('kyc_application_id', $id)->get();
     $verifySources = DB::table('kyc_data_from_verify_sources')->where('kyc_application_id', $id)->get();
     $approvedStatus = DB::table('kyc_document_approved_status')->where('kyc_application_id', $id)->get();
+    $video_kyc_status = DB::table('kyc_video_kyc_status')->where('kyc_application_id', $id)->get();
 
     // Encode any binary file paths in documents
     $documents->transform(function ($doc) {
@@ -1160,6 +1170,7 @@ public function getAllKycDetails($id)
             'verify_cbs' => $verifyCbs,
             'verify_sources' => $verifySources,
             'approved_status' => $approvedStatus,
+            'video_kyc_status' => $video_kyc_status
         ]
     ]);
 }
