@@ -40,6 +40,56 @@ class AdminController extends Controller
         ], 200);
     }
 
+// Fetch and update draft applications function 
+public function fetchAndUpdateDraftApplications()
+{
+    // 1. Fetch all draft applications (no entry in customer_appliction_status)
+    $drafts = DB::table('customer_application_details')
+        ->leftJoin('customer_appliction_status', 'customer_application_details.id', '=', 'customer_appliction_status.application_id')
+        ->whereNull('customer_appliction_status.application_id')
+        ->select('customer_application_details.*')
+        ->get();
+
+    // 2. List of related tables to update status to null
+    $relatedTables = [
+        'application_address_details',
+        'application_personal_details',
+        'account_personal_details',
+        'nominee_approved_status',
+        'applicant_live_photos',
+        'agent_live_photos',
+        'document_approved_status',
+        'application_service_status'
+        // Add more tables if needed
+    ];
+
+    $updated = [];
+
+    // 3. For each draft application, update status to null in related tables
+    foreach ($drafts as $draft) {
+        $application_id = $draft->id;
+        foreach ($relatedTables as $table) {
+            $count = DB::table($table)
+                ->where('application_id', $application_id)
+                ->update(['status' => null]);
+            if ($count > 0) {
+                $updated[] = [
+                    'application_id' => $application_id,
+                    'table' => $table,
+                    'rows_updated' => $count
+                ];
+            }
+        }
+    }
+
+    // 4. Return the draft applications and update info
+    return response()->json([
+        'draft_applications' => $drafts,
+        'status_updates' => $updated
+    ], 200);
+}
+
+
 
 public function getPendingApplications()
 {
@@ -788,7 +838,7 @@ public function updateAgentLivePhotos($application_id, Request $request)
         'message' => $updated ? 'Application details updated successfully.' : 'No changes made.',
     ], 200);
 }
-// full enrollment Update customer application status by admin 
+
 public function updateCustomerApplicationStatus(Request $request)
 {
     $validated = $request->validate([

@@ -48,7 +48,8 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 // Route::middleware(['jwt.auth'])->group(function () {
 
 // Route::middleware('role:admin')->group(function () {
-
+// // Fetch and update draft applications route 
+Route::post('/admin/fetch-update-drafts', [AdminController::class, 'fetchAndUpdateDraftApplications']);
 Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
 // only for status count 
 Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
@@ -121,8 +122,9 @@ Route::post('/admin/updateApplicationDocuments/{application_id}', [AdminControll
 Route::post('/admin/updateAccountPersonalDetails/{application_id}', [AdminController::class, 'updateAccountPersonalDetails']);
 Route::post('/admin/updateAccountNominees/{application_id}', [AdminController::class, 'updateAccountNominees']);
 Route::post('/admin/updateServiceToCustomer/{application_id}', [AdminController::class, 'updateServiceToCustomer']);
+Route::post('/admin/updateAgentLivePhotos/{application_id}', [AdminController::class, 'updateAgentLivePhotos']);
 // Update Final customer application table status based on application_id (status for the last final submit of application (submit button and reject button) by admin
-// This is for updating the customer application status by admin
+// This route is for updating the customer application status by admin
 Route::post('/admin/application-status/update', [AdminController::class, 'updateCustomerApplicationStatus']);
 // });
 
@@ -140,7 +142,7 @@ Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceT
 // This is for deleting the application document by agent 
 Route::delete('/agent/application-document-delete', [AgentController::class, 'deleteApplicationDocument']);
 // This route deletes a nominee based on application_id and nominee id
-Route::delete('/agent/account-nominee-delete', [AgentController::class, 'deleteAccountNominee']);
+Route::post('/agent/account-nominee-delete', [AgentController::class, 'deleteAccountNominee']);
 //rekyc
 Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
