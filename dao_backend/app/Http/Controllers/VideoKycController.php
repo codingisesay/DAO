@@ -185,7 +185,7 @@ public function scheduleVideoCall(Request $request)
         ], 409);
     }
 
-   // Prevent overlapping schedules for the same agent
+   // Prevent overlapping schedules for the same agent time 
 $overlap = DB::table('video_call_schedule')
     ->where('agent_id', $validated['agent_id'])
     ->where('schedule_date', $validated['schedule_date'])

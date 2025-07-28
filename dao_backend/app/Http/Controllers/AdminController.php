@@ -288,9 +288,9 @@ public function getReviewApplicationsDetailsAgentById($agentId)
 
 // Get all Rejected applications
 // can be use for all the cards table in the admin dashboard
-public function getRejectedApplications($status)
+public function getAllCardApplicationsByStatusAdmin($status)
 {
-    $rejectedApplications = DB::table('customer_appliction_status')
+    $applications = DB::table('customer_appliction_status')
         ->leftJoin('customer_application_details', 'customer_appliction_status.application_id', '=', 'customer_application_details.id')
         ->leftJoin('account_personal_details', 'customer_appliction_status.application_id', '=', 'account_personal_details.application_id')
         ->leftJoin('application_address_details', 'customer_appliction_status.application_id', '=', 'application_address_details.application_id')
@@ -327,7 +327,7 @@ public function getRejectedApplications($status)
         ->get();
 
     return response()->json([
-        'data' => $rejectedApplications
+        'data' => $applications
     ], 200);
 }
 // get the comments of the applications

@@ -67,7 +67,8 @@ Route::get('/admin/reviewApplication', [AdminController::class, 'getReviewApplic
 Route::get('/admin/reviewApplicationCount', [AdminController::class, 'getReviewApplicationsAgentCount']);
 Route::get('/admin/reviewApplicationDetails/{agentId}', [AdminController::class, 'getReviewApplicationsDetailsAgentById']);
 //This is for getting the applications by status(Approved,Review) changing name of the route and making it to universal for all status in admin dashboard 
-Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
+Route::get('/admin/applications/by-status/{status}', [AdminController::class, 'getAllCardApplicationsByStatusAdmin']);
+// Route::get('admin/applications/rejected/{status}', [AdminController::class, 'getRejectedApplications']);
     // API route for the table of Enrollment Applications / get the comments of the applications
 Route::get('admin/applications/reson/{status}/{application_id}', [AdminController::class, 'getResonApplications']);
 // get status and comments for the applications by application id for buttons 
