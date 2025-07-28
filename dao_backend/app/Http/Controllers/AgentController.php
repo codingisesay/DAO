@@ -242,7 +242,7 @@ public function saveLivePhoto(Request $request)
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
         'address' => 'nullable',
-        'status' => 'nullable|in:Pending,Approved,Reject,Review',
+        'status' => 'nullable',
         'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB
     ]);
@@ -282,7 +282,7 @@ public function saveAgentLivePhoto(Request $request)
         'longitude' => 'required|string|max:255',
         'latitude' => 'required|string|max:255',
         'address' => 'nullable',
-        'status' => 'nullable|in:Pending,Approved,Reject,Review',
+        'status' => 'nullable',
         'status_comment' => 'nullable|string|max:255',
         'photo' => 'required|image|max:5120', // max 5MB 
     ]);
@@ -591,8 +591,8 @@ public function saveServiceToCustomer(Request $request)
 {
     $validated = $request->validate([
         'application_id' => 'required|integer|exists:customer_application_details,id',
-        'banking_services_facilities_id' => 'required|array',
-        'banking_services_facilities_id.*' => 'required|integer|exists:banking_services_facilities,id',
+        'banking_services_facilities_id' => 'nullable',
+        'banking_services_facilities_id.*' => 'nullable',
     ]);
 
     // 1. Delete all existing records for this application_id
