@@ -380,7 +380,7 @@ public function saveAgentLivePhoto(Request $request)
 public function saveApplicationDocument(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
         'document_type_ids' => 'required|array|min:1',

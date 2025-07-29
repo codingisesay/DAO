@@ -192,12 +192,10 @@ public function kycSaveApplicationDocument(Request $request)
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
         'files' => 'required|array|min:1',
-        'files.*' => 'file|max:10240',
+        'files.*' => 'file|nullable|string',
     ]);
 
-    // Delete all existing documents for the given application ID
-    kycApplicationDocument::where('kyc_application_id', $validated['kyc_application_id'])->delete();
-
+    // Only insert new documents, do not delete existing ones
     $documents = [];
     foreach ($validated['files'] as $index => $file) {
         $documentType = $validated['document_types'][$index] ?? null;
@@ -239,6 +237,31 @@ public function kycSaveApplicationDocument(Request $request)
         'message' => 'Documents uploaded successfully.',
         'data' => $documents,
     ], 201);
+}
+
+// Delete KYC application document Function
+// This function deletes a KYC application document based on the provided kyc_application_id and id
+public function deleteKycCustomerDocument(Request $request)
+{
+    $validated = $request->validate([
+       'kyc_application_id' => 'required|integer',
+       'id' => 'required|integer',
+    ]);
+
+    $deleted = DB::table('kyc_customer_document')
+        ->where('kyc_application_id', $validated['kyc_application_id'])
+        ->where('id', $validated['id'])
+        ->delete();
+
+    if ($deleted) {
+        return response()->json([
+            'message' => 'KYC customer document deleted successfully.'
+        ]);
+    } else {
+        return response()->json([
+            'message' => 'Document not found or already deleted.'
+        ], 404);
+    }
 }
 
 
