@@ -189,23 +189,37 @@ public function kycSaveApplicationDocument(Request $request)
 {
     $validated = $request->validate([
         'kyc_application_id' => 'required',
+        'kyc_application_no' => 'nullable|string|max:191',
         'document_types' => 'required|array|min:1',
         'document_types.*' => 'required|string|max:191',
+        'document_type_ids' => 'required|array|min:1',
+        'document_type_ids.*' => 'required|integer',
         'files' => 'required|array|min:1',
         'files.*' => 'file|nullable|string',
+        'signatures' => 'nullable|array',
+        'signatures.*' => 'nullable|string',
+        'photos' => 'nullable|array',
+        'photos.*' => 'nullable|string',
     ]);
 
-    // Only insert new documents, do not delete existing ones
     $documents = [];
     foreach ($validated['files'] as $index => $file) {
         $documentType = $validated['document_types'][$index] ?? null;
+        $documentTypeId = $validated['document_type_ids'][$index] ?? null;
+        $signature = $validated['signatures'][$index] ?? null;
+        $photo = $validated['photos'][$index] ?? null;
+        $kycApplicationNo = $validated['kyc_application_no'] ?? null;
+
         $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
         $binaryContent = file_get_contents($file->getRealPath());
 
-        // Insert new document
         $doc = kycApplicationDocument::create([
             'kyc_application_id' => $validated['kyc_application_id'],
+            'kyc_application_no' => $kycApplicationNo,
             'kyc_document_type' => $documentType,
+            'kyc_documnet_type_id' => $documentTypeId,
+            'kyc_signature' => $signature,
+            'kyc_photo' => $photo,
             'kyc_file_name' => $filename,
             'kyc_file_path' => $binaryContent,
         ]);
