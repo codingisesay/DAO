@@ -151,7 +151,7 @@ Route::get('/agent/bankingServices', [AgentController::class, 'getBankingService
 //This is for starting the KYC process by agent
 Route::post('/agent/kyc/start', [kycAgentController::class, 'startKyc']);
 Route::post('/agent/save-all-kyc-data', [kycAgentController::class, 'saveAllKycData']);
-Route::post('/agent/kycDocumentUpload', [kycAgentController::class, 'kycSaveApplicationDocument']); 
+Route::post('/agent/kyc-save-application-document', [kycAgentController::class, 'kycSaveApplicationDocument']); 
 // This is for deleting the kyc application document by agent based on the provided kyc_application_id and id
 Route::delete('/agent/kyc-customer-document-delete', [kycAgentController::class, 'deleteKycCustomerDocument']);
 // kyc update for the application
