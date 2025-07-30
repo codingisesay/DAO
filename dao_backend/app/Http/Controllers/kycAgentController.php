@@ -334,7 +334,7 @@ public function updateKycApplicationStatus(Request $request)
 {
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
-        'status' => 'required|string|max:191',
+        'status' => 'required',
         // 'status_comment' => 'nullable|string|max:500',
     ]);
 
