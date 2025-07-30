@@ -153,7 +153,7 @@ public function getApplicationDetails(Request $request, $id)
 public function savePersonalDetails(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'salutation' => 'required',
         'religion' => 'required',
         'caste' => 'nullable|string|max:191',
@@ -196,7 +196,7 @@ public function saveAddressDetails(Request $request)
     // $request->merge(['application_id' => 1]); // Replace 4 with a valid ID
 
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'per_complex_name' => 'nullable',
         'per_flat_no' => 'nullable',
         'per_area' => 'nullable',
@@ -238,7 +238,7 @@ public function saveAddressDetails(Request $request)
 public function saveLivePhoto(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'longitude' => 'nullable|string|max:191',
         'latitude' => 'nullable|string|max:191',
         'address' => 'nullable',
@@ -469,7 +469,7 @@ public function saveAccountPersonalDetails(Request $request)
     // $request->merge(['application_id' => 1]);
 
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'maiden_prefix'=> 'nullable',
         'maiden_first_name'=>  'nullable',
         'maiden_middle_name'=>  'nullable',
@@ -522,7 +522,7 @@ public function saveAccountNominee(Request $request)
 {
     // Expecting 'nominees' to be an array of nominee data
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'nominees' => 'array|min:1',
         'nominees.*.salutation' => 'required',
         'nominees.*.first_name' => 'required|string|max:191',
@@ -590,7 +590,7 @@ public function deleteAccountNominee(Request $request)
 public function saveServiceToCustomer(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_application_details,id',
+        'application_id' => 'required',
         'banking_services_facilities_id' => 'nullable',
         'banking_services_facilities_id.*' => 'nullable',
     ]);
