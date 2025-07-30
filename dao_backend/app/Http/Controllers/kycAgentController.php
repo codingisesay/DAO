@@ -194,8 +194,8 @@ public function kycSaveApplicationDocument(Request $request)
         'document_types.*' => 'required|string|max:191',
         'document_type_ids' => 'required|array|min:1',
         'document_type_ids.*' => 'required|integer',
-        'files' => 'required|array|min:1',
-        'files.*' => 'file|nullable|string',
+        'files' => 'required|array',
+        'files.*' => 'nullable|string',
         'signatures' => 'nullable|array',
         'signatures.*' => 'nullable|string',
         'photos' => 'nullable|array',
@@ -204,28 +204,36 @@ public function kycSaveApplicationDocument(Request $request)
 
     $documents = [];
     foreach ($validated['files'] as $index => $file) {
-        $documentType = $validated['document_types'][$index] ?? null;
-        $documentTypeId = $validated['document_type_ids'][$index] ?? null;
-        $signature = $validated['signatures'][$index] ?? null;
-        $photo = $validated['photos'][$index] ?? null;
-        $kycApplicationNo = $validated['kyc_application_no'] ?? null;
+    $documentType = $validated['document_types'][$index] ?? null;
+    $documentTypeId = $validated['document_type_ids'][$index] ?? null;
+    $signature = $validated['signatures'][$index] ?? null;
+    $photo = $validated['photos'][$index] ?? null;
+    $kycApplicationNo = $validated['kyc_application_no'] ?? null;
 
-        $filename = uniqid('doc_') . '.' . $file->getClientOriginalExtension();
-        $binaryContent = file_get_contents($file->getRealPath());
-
-        $doc = kycApplicationDocument::create([
-            'kyc_application_id' => $validated['kyc_application_id'],
-            'kyc_application_no' => $kycApplicationNo,
-            'kyc_document_type' => $documentType,
-            'kyc_documnet_type_id' => $documentTypeId,
-            'kyc_signature' => $signature,
-            'kyc_photo' => $photo,
-            'kyc_file_name' => $filename,
-            'kyc_file_path' => $binaryContent,
-        ]);
-
-        $documents[] = $doc->makeHidden(['kyc_file_path']);
+    // Handle base64 file
+    if (preg_match('/^data:.*?\/(.*?);base64,/', $file, $match)) {
+        $extension = $match[1];
+        $file = preg_replace('/^data:.*?;base64,/', '', $file);
+    } else {
+        $extension = 'bin';
     }
+
+    $filename = uniqid('doc_') . '.' . $extension;
+    $binaryContent = base64_decode($file);
+
+    $doc = kycApplicationDocument::create([
+        'kyc_application_id' => $validated['kyc_application_id'],
+        'kyc_application_no' => $kycApplicationNo,
+        'kyc_document_type' => $documentType,
+        'kyc_document_type_id' => $documentTypeId,
+        'kyc_signature' => $signature,
+        'kyc_photo' => $photo,
+        'kyc_file_name' => $filename,
+        'kyc_file_path' => $binaryContent,
+    ]);
+
+    $documents[] = $doc->makeHidden(['kyc_file_path']);
+}
 
     // Delete + Insert in kyc_document_approved_status
     DB::table('kyc_document_approved_status')
