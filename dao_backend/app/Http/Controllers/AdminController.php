@@ -286,7 +286,7 @@ public function getReviewApplicationsDetailsAgentById($agentId)
     ], 200);
 }
 
-// Get all Rejected applications
+
 // can be use for all the cards table in the admin dashboard
 public function getAllCardApplicationsByStatusAdmin($status)
 {
@@ -842,7 +842,7 @@ public function updateAgentLivePhotos($application_id, Request $request)
 public function updateCustomerApplicationStatus(Request $request)
 {
     $validated = $request->validate([
-        'application_id' => 'required|integer|exists:customer_appliction_status.application_id',
+        'application_id' => 'required',
         'status' => 'required|string',
         'status_comment' => 'nullable|string'
     ]);
