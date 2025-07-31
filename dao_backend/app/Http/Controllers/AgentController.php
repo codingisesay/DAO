@@ -1201,14 +1201,14 @@ public function getKycPendingApplicationsByAgent(Request $request)
 
 public function videoKycStatus(Request $request)
 {
-      try {
+    try {
         $validated = $request->validate([
             'application_id' => 'required',
             'status' => 'required',
             'comments' => 'nullable|string|max:255',
         ]);
 
-        DB::table('video_kyc_status')->updateOrInsert(
+        $updated = DB::table('video_kyc_status')->updateOrInsert(
             ['application_id' => $validated['application_id']],
             [
                 'status' => $validated['status'],
@@ -1217,7 +1217,8 @@ public function videoKycStatus(Request $request)
         );
 
         return response()->json([
-            'message' => 'Document approved status updated successfully.',
+            'success' => true,
+            'message' => 'Video KYC status updated successfully.',
             'data' => [
                 'application_id' => $validated['application_id'],
                 'status' => $validated['status'],
@@ -1226,7 +1227,8 @@ public function videoKycStatus(Request $request)
         ], 200);
     } catch (\Exception $e) {
         return response()->json([
-            'message' => 'Error updating document approved status.',
+            'success' => false,
+            'message' => 'Error updating Video KYC status.',
             'error' => $e->getMessage(),
         ], 500);
     }

@@ -78,6 +78,10 @@ Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminContr
 // API route for the table of rejected Enrollment Applications
 Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
 Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
+// universal route for getting the kyc applications by agent and status
+Route::get('/admin/kyc-applications/{agentId}/{status}', [AdminController::class, 'getKycApplicationsByAgentAndStatus']);
+// universal route for getting the kyc applications by status
+Route::get('/admin/kyc-applications/by-status/{status}', [AdminController::class, 'getKycApplicationsByStatus']);
 //kyc review 
 Route::get('/admin/kycReviewApplication', [AdminController::class, 'getKycReviewApplications']);
 Route::get('/kyc/review/count-by-agent', [AdminController::class, 'getKycReviewApplicationsAgentCount']);

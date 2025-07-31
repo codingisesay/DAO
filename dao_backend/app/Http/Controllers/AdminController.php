@@ -826,12 +826,12 @@ public function updateAgentLivePhotos($application_id, Request $request)
         ]);
 
 
-        $updatedFinalStatus = DB::table('customer_appliction_status')
-        ->where('application_id', $application_id)
-        ->update([
-            'status' => $status,
+        // $updatedFinalStatus = DB::table('customer_appliction_status')
+        // ->where('application_id', $application_id)
+        // ->update([
+        //     'status' => $status,
             
-        ]);
+        // ]);
 
     return response()->json([
         'success' => (bool)$updated,
@@ -1028,6 +1028,33 @@ public function getKycRejectedApplications($status)
 
     return response()->json(['data' => $data], 200);
 }
+// universal kyc status API base on status 
+public function getKycApplicationsByStatus($status)
+{
+    $data = DB::table('kyc_application_status')
+        ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
+        ->leftJoin('kyc_data_after_vs_cbs', 'kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->leftJoin('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
+        ->leftJoin('kyc_video_kyc_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_video_kyc_status.kyc_application_id')
+        ->select(
+            'kyc_application_status.kyc_application_id as kyc_application_id',
+            'kyc_application_status.status as kyc_application_status',
+            'kyc_application.*',
+            'kyc_data_after_vs_cbs.kyc_vscbs_first_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_middle_name',
+            'kyc_data_after_vs_cbs.kyc_vscbs_last_name',
+            'kyc_data_after_vs_cbs.status as kyc_data_after_vs_cbs_status',
+            'kyc_data_after_vs_cbs.status_comment as kyc_data_after_vs_cbs_status_comment',
+            'kyc_document_approved_status.status as kyc_document_approved_status',
+            'kyc_document_approved_status.status_comment as kyc_document_approved_status_comment',
+            'kyc_video_kyc_status.status as kyc_video_kyc_status',
+            'kyc_video_kyc_status.comments as kyc_video_kyc_status_comment'
+        )
+        ->where('kyc_application_status.status', $status)
+        ->get();
+
+    return response()->json(['data' => $data], 200);
+}
 
 // Get Rejected  kycapplications count per agent
 public function getKycRejectedApplicationsAgentCount()
@@ -1044,14 +1071,12 @@ public function getKycRejectedApplicationsAgentCount()
 
     return response()->json(['data' => $data], 200);
 }
-// Get Rejected  kycapplications for a specific agent
-public function getKycRejectedApplicationsByAgentId($agentId,$status)
+// Get kycapplications for a specific agent and status
+public function getKycApplicationsByAgentAndStatus($agentId, $status)
 {
-
-    
     $data = DB::table('kyc_application_status')
         ->join('kyc_application', 'kyc_application_status.kyc_application_id', '=', 'kyc_application.id')
-        ->join('kyc_data_after_vs_cbs','kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
+        ->join('kyc_data_after_vs_cbs', 'kyc_application_status.kyc_application_id', '=', 'kyc_data_after_vs_cbs.kyc_application_id')
         ->join('kyc_document_approved_status', 'kyc_application_status.kyc_application_id', '=', 'kyc_document_approved_status.kyc_application_id')
         ->select(
             'kyc_application_status.kyc_application_id as kyc_application_id',
@@ -1071,7 +1096,7 @@ public function getKycRejectedApplicationsByAgentId($agentId,$status)
 
     return response()->json([
         'kyc_agent_id' => $agentId,
-        'rejected_applications' => $data
+        'applications' => $data
     ], 200);
 }
 // Get all Pending   applications
