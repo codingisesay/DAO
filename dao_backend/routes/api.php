@@ -8,9 +8,18 @@ use App\Http\Controllers\AgentController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\kycAgentController;
 use App\Http\Controllers\VideoKycController;
+use Illuminate\Support\Facades\Log;
 
 
+ 
+Route::get('/log-test', function () {
 
+    Log::info('✅ Laravel log test at: ' . now());
+
+    return response()->json(['status' => 'log written']);
+
+});
+ 
 /*
 |--------------------------------------------------------------------------
 | API Routes
