@@ -17,7 +17,7 @@ class kycAgentController extends Controller
         'verify_from' => 'required',
         'verify_details' => 'required',
         'kyc_agent_id' => 'required',
-        'kyc_admin_id' => 'required',
+        
     ]);
     //  $validatedData['kyc_agent_id'] = 1;
 
@@ -316,6 +316,7 @@ public function updateKycAfterVsCbsStatus(Request $request)
         'kyc_application_id' => 'required|integer',
         'status' => 'required|string|max:191',
         'status_comment' => 'nullable|string|max:500',
+        'kyc_admin_id' => 'required',
     ]);
 
     DB::table('kyc_data_after_vs_cbs')->updateOrInsert(
@@ -325,6 +326,11 @@ public function updateKycAfterVsCbsStatus(Request $request)
             'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
+
+        // Update kyc_admin_id in kyc_application table
+    DB::table('kyc_application')
+        ->where('id', $validated['kyc_application_id'])
+        ->update(['kyc_admin_id' => $validated['kyc_admin_id']]);
 
     return response()->json([
         'message' => 'KYC After VS CBS status updated successfully.',
