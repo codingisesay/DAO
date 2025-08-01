@@ -336,14 +336,14 @@ public function updateKycApplicationStatus(Request $request)
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
         'status' => 'required',
-        // 'status_comment' => 'nullable|string|max:500',
+        'status_comment' => 'nullable',
     ]);
 
     DB::table('kyc_application_status')->updateOrInsert(
         ['kyc_application_id' => $validated['kyc_application_id']],
         [
             'status' => $validated['status'],
-            // 'status_comment' => $validated['status_comment'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
 

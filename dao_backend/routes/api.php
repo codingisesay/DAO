@@ -170,7 +170,7 @@ Route::delete('/agent/kyc-customer-document-delete', [kycAgentController::class,
 // kyc update for the application
 Route::post('/agent/update-kyc-document-status', [kycAgentController::class, 'updateKycDocumentStatus']);
 Route::post('/agent/update-kyc-after-vs-cbs-status', [kycAgentController::class, 'updateKycAfterVsCbsStatus']);
-// final table status change 
+// final table status change Kyc 
 Route::post('admin/kyc-application-status/update', [kycAgentController::class, 'updateKycApplicationStatus']);
 //This is for getting the application status by agent id
 Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
