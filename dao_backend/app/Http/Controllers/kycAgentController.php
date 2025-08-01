@@ -16,9 +16,10 @@ class kycAgentController extends Controller
     $validatedData = $request->validate([
         'verify_from' => 'required',
         'verify_details' => 'required',
-       
+        'kyc_agent_id' => 'required',
+        'kyc_admin_id' => 'required',
     ]);
-     $validatedData['kyc_agent_id'] = 1;
+    //  $validatedData['kyc_agent_id'] = 1;
 
      // Try to find an existing application by auth_type + auth_code
     $existingApplication = kycApplication::where('verify_from', $validatedData['verify_from'] ?? null)
@@ -335,14 +336,14 @@ public function updateKycApplicationStatus(Request $request)
     $validated = $request->validate([
         'kyc_application_id' => 'required|integer',
         'status' => 'required',
-        // 'status_comment' => 'nullable|string|max:500',
+        'status_comment' => 'nullable',
     ]);
 
     DB::table('kyc_application_status')->updateOrInsert(
         ['kyc_application_id' => $validated['kyc_application_id']],
         [
             'status' => $validated['status'],
-            // 'status_comment' => $validated['status_comment'] ?? null,
+            'status_comment' => $validated['status_comment'] ?? null,
         ]
     );
 

@@ -88,7 +88,7 @@ Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminContr
 Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
 Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
 // universal route for getting the kyc applications by agent and status
-Route::get('/admin/kyc-applications/{agentId}/{status}', [AdminController::class, 'getKycApplicationsByAgentAndStatus']);
+Route::get('/admin/kyc-applications-agent/{agentId}/{status}', [AdminController::class, 'getKycApplicationsByAgentAndStatus']);
 // universal route for getting the kyc applications by status
 Route::get('/admin/kyc-applications/by-status/{status}', [AdminController::class, 'getKycApplicationsByStatus']);
 //kyc review 
@@ -170,7 +170,7 @@ Route::delete('/agent/kyc-customer-document-delete', [kycAgentController::class,
 // kyc update for the application
 Route::post('/agent/update-kyc-document-status', [kycAgentController::class, 'updateKycDocumentStatus']);
 Route::post('/agent/update-kyc-after-vs-cbs-status', [kycAgentController::class, 'updateKycAfterVsCbsStatus']);
-// final table status change 
+// final table status change Kyc 
 Route::post('admin/kyc-application-status/update', [kycAgentController::class, 'updateKycApplicationStatus']);
 //This is for getting the application status by agent id
 Route::get('/agent/dashboardApplicationStatus/{agent_id}', [AgentController::class, 'getApplicationStatusByAgents']);
