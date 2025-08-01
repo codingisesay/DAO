@@ -88,7 +88,7 @@ Route::get('/kyc/reason-applications/{status}/{kyc_application_id}', [AdminContr
 Route::get('admin/applications/rejected/count-by-agent', [AdminController::class, 'getRejectedApplicationsAgentCount']);
 Route::get('admin/applications/rejected/agent/{agentId}/{status}', [AdminController::class, 'getRejectedApplicationsDetailsAgentById']);
 // universal route for getting the kyc applications by agent and status
-Route::get('/admin/kyc-applications/{agentId}/{status}', [AdminController::class, 'getKycApplicationsByAgentAndStatus']);
+Route::get('/admin/kyc-applications-agent/{agentId}/{status}', [AdminController::class, 'getKycApplicationsByAgentAndStatus']);
 // universal route for getting the kyc applications by status
 Route::get('/admin/kyc-applications/by-status/{status}', [AdminController::class, 'getKycApplicationsByStatus']);
 //kyc review 

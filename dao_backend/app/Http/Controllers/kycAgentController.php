@@ -16,9 +16,10 @@ class kycAgentController extends Controller
     $validatedData = $request->validate([
         'verify_from' => 'required',
         'verify_details' => 'required',
-       
+        'kyc_agent_id' => 'required',
+        'kyc_admin_id' => 'required',
     ]);
-     $validatedData['kyc_agent_id'] = 1;
+    //  $validatedData['kyc_agent_id'] = 1;
 
      // Try to find an existing application by auth_type + auth_code
     $existingApplication = kycApplication::where('verify_from', $validatedData['verify_from'] ?? null)
