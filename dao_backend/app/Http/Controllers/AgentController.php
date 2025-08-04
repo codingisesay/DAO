@@ -1037,7 +1037,7 @@ public function getRejectedApplicationsByAgent($agentId)
         'data' => $applications
     ]);
 }
-// admin Application Status
+// admin Application Status 
 public function getKycApplicationTrends(Request $request)
 {
     $kycAgentId = $request->input('kyc_agent_id');
@@ -1145,30 +1145,32 @@ public function getApplicationsByAgeGroups(Request $request)
         return response()->json(['message' => 'agent_id is Required.'], 400);
     }
 
-    $ageGroups = DB::table('customer_application_details')
-        ->where('agent_id', $agentId)
+    $ageGroups = DB::table('customer_application_details as cad')
+        ->join('customer_appliction_status as cas', 'cad.id', '=', 'cas.application_id')
+        ->where('cad.agent_id', $agentId)
+        ->where('cas.status', 'approved')
         ->selectRaw("
             SUM(CASE 
-                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 18 AND 25 THEN 1 
+                WHEN TIMESTAMPDIFF(YEAR, cad.DOB, CURDATE()) BETWEEN 18 AND 25 THEN 1 
                 ELSE 0 
             END) as 18_25,
             SUM(CASE 
-                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 26 AND 35 THEN 1 
+                WHEN TIMESTAMPDIFF(YEAR, cad.DOB, CURDATE()) BETWEEN 26 AND 35 THEN 1 
                 ELSE 0 
             END) as 26_35,
             SUM(CASE 
-                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) BETWEEN 36 AND 50 THEN 1 
+                WHEN TIMESTAMPDIFF(YEAR, cad.DOB, CURDATE()) BETWEEN 36 AND 50 THEN 1 
                 ELSE 0 
             END) as 36_50,
             SUM(CASE 
-                WHEN TIMESTAMPDIFF(YEAR, DOB, CURDATE()) > 50 THEN 1 
+                WHEN TIMESTAMPDIFF(YEAR, cad.DOB, CURDATE()) > 50 THEN 1 
                 ELSE 0 
             END) as 50_plus
         ")
         ->first();
 
     return response()->json([
-        'message' => 'Applications by age group fetched successfully.',
+        'message' => 'Approved applications by age group fetched successfully.',
         'data' => $ageGroups
     ]);
 }
