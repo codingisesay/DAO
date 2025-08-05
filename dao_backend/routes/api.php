@@ -213,6 +213,9 @@ Route::post('/agent/kyc_video_kyc_status', [AgentController::class, 'kycVideoKyc
 
 // video kyc sheduling route
 Route::post('/admin/video-call-schedule', [VideoKycController::class, 'scheduleVideoCall']);
+// Fetch video call schedule times and date for a specific agent route
+Route::get('/agent/schedule/{agentId}', [VideoKycController::class, 'fetchScheduleVideoCall']);
+
 
 
 

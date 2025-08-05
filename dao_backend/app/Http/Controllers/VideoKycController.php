@@ -157,7 +157,7 @@ public function scheduleVideoCall(Request $request)
     $validated = $request->validate([
         'application_id' => 'required',
         'agent_id' => 'required',
-        'link_status' => 'required',
+        'link_status' => 'nullable',
         'schedule_date' => 'required|date',
         'schedule_start_time' => 'required',
         'schedule_end_time' => 'required',
@@ -171,7 +171,7 @@ public function scheduleVideoCall(Request $request)
     }
 
     // Prevent duplicate schedule for same application, agent, and time
-    $exists = DB::table('video_call_schedule')
+    $exists = DB::table(' ')
         ->where('application_id', $validated['application_id'])
         ->where('agent_id', $validated['agent_id'])
         ->where('schedule_date', $validated['schedule_date'])
@@ -217,6 +217,20 @@ if ($overlap) {
         'message' => 'Video call scheduled successfully.',
         'id' => $schedule
     ], 201);
+}
+
+// Fetch video call schedule times and date for a specific agent 
+public function fetchScheduleVideoCall($agentId)
+{
+    $scheduleVideoCalls = DB::table('video_call_schedule')
+        ->where('agent_id', $agentId)
+        ->get()
+        ->groupBy('date')
+        ->map(function ($dateGroup, $date) {
+            return $dateGroup->groupBy('time');
+        });
+
+    return $scheduleVideoCalls;
 }
 
 }
