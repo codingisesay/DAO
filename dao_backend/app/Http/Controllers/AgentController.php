@@ -123,6 +123,19 @@ if ($existingApplication) {
     $message = 'Customer application details saved successfully.';
 }
 
+
+ // Insert or update the status in customer_application_status table
+    $statusData = [
+        'application_id' => $applicationId,
+        'status' => 'indraft',  // Status is set to 'in draft' when the application is being saved or updated
+    ];
+
+    // Update or create a record in customer_application_status table
+    CustomerApplicationStatus::updateOrCreate(
+        ['application_id' => $applicationId], // If this application_id exists, update it
+        $statusData // Update the status to 'in draft'
+    );
+
     return response()->json([
         'message' => $message,
         'application_no' => $applicationNo,
@@ -158,7 +171,7 @@ public function savePersonalDetails(Request $request)
         'religion' => 'required',
         'caste' => 'nullable|string|max:191',
         'marital_status' => 'required',
-        'alt_mob_no' => 'nullable|string|max:191',
+        'alt_mob_no' => 'nullable',
         'email' => 'nullable|email|max:191',
         'adhar_card' => 'nullable|string|max:191',
         'pan_card' => 'nullable|string|max:191',
@@ -284,13 +297,14 @@ public function saveAgentLivePhoto(Request $request)
         'address' => 'nullable',
         'status' => 'nullable',
         'status_comment' => 'nullable|string|max:255',
-        'photo' => 'required|image|max:5120', // max 5MB 
+        'photo' => 'required|image|max:5120', // max 5MB
     ]);
 
     $file = $request->file('photo');
     $filename = uniqid('livephoto_') . '.' . $file->getClientOriginalExtension();
     $binaryContent = file_get_contents($file->getRealPath());
 
+    // Always allow saving the agent photo
     $photo = AgentLivePhoto::updateOrCreate(
         [
             'application_id' => $validated['application_id'],
@@ -307,21 +321,23 @@ public function saveAgentLivePhoto(Request $request)
         ]
     );
 
-   $customerStaus = CustomerApplicationStatus::updateOrCreate(
-    ['application_id' => $validated['application_id']],
-    ['status' => 'Pending']
-);
+    // Only update or create CustomerApplicationStatus if video_kyc_status status is 'completed'
+    $videoKycStatus = DB::table('video_kyc_status')
+        ->where('application_id', $validated['application_id'])
+        // ->where('status', 'completed')
+        ->first();
 
-    if ($customerStaus) {
-        return response()->json([
-            'message' => 'Agent Live photo uploaded successfully.',
-            'data' => $photo->makeHidden(['path']),
-        ], 201);
+    if ($videoKycStatus) {
+        CustomerApplicationStatus::updateOrCreate(
+            ['application_id' => $validated['application_id']],
+            ['status' => 'Pending']
+        );
     }
 
     return response()->json([
-        'message' => 'Error uploading agent live photo.',
-    ]);
+        'message' => 'Agent Live photo uploaded successfully.',
+        'data' => $photo->makeHidden(['path']),
+    ], 201);
 }
 
 
@@ -697,27 +713,27 @@ public function getFullApplicationDetails($applicationId)
     ]);
 }
 
-public function getApplicationByAadhaar(Request $request)
+public function getApplicationByAadhaarPan(Request $request)
 {
     $request->validate([
         'auth_code' => 'required|string'
     ]);
 
     $application = \DB::table('customer_application_details')
-        ->where('auth_type', 'Aadhaar Card')
+        ->whereIn('auth_type', ['Aadhaar Card', 'PAN Card'])
         ->where('auth_code', $request->auth_code)
         ->first();
 
     if (!$application) {
-        return response()->json(['message' => 'No application found for this Aadhaar number.'], 404);
+        return response()->json(['message' => 'No application found for this document.'], 404);
     }
 
-    // Optionally fetch related details as in getFullApplicationDetails
     return response()->json([
         'message' => 'Application found.',
         'data' => $application
     ]);
 }
+
 
 public function getBankingServices()
 {
@@ -775,54 +791,42 @@ public function getApplicationStatusByAgents($agent_id)
 
 public function getFullApplicationsByAgent($agent_id)
 {
-    // Fetch all applications for the agent
-    $applications = DB::table('customer_application_details')
-        ->where('agent_id', $agent_id)
+    // Fetch applications along with all related data in a single query using joins
+    $applications = DB::table('customer_application_details as cad')
+        ->join('application_personal_details as apd', 'cad.id', '=', 'apd.application_id')
+        ->join('account_personal_details as apd_acc', 'cad.id', '=', 'apd_acc.application_id')
+        ->join('account_nominees as an', 'cad.id', '=', 'an.application_id')
+        ->join('application_address_details as aad', 'cad.id', '=', 'aad.application_id')
+        ->join('applicant_live_photos as alp', 'cad.id', '=', 'alp.application_id')
+        ->join('application_documents as ad', 'cad.id', '=', 'ad.application_id')
+        ->where('cad.agent_id', $agent_id)
+        ->select(
+            'cad.*', 
+            'apd.*', 
+            'apd_acc.*', 
+            'an.*', 
+            'aad.*', 
+            'alp.*', 
+            'ad.*'
+        )
         ->get();
 
     if ($applications->isEmpty()) {
         return response()->json(['message' => 'No applications found for this agent.'], 404);
     }
 
-    $result = [];
-
-    foreach ($applications as $application) {
-        $applicationId = $application->id;
-
-        $personalDetails = DB::table('application_personal_details')
-            ->where('application_id', $applicationId)
-            ->first();
-
-        $accountPersonalDetails = DB::table('account_personal_details')
-            ->where('application_id', $applicationId)
-            ->first();
-
-        $accountNominees = DB::table('account_nominees')
-            ->where('application_id', $applicationId)
-            ->get();
-
-        $applicationAddresss = DB::table('application_address_details')
-            ->where('application_id', $applicationId)
-            ->get();
-
-        $custlivepic = DB::table('applicant_live_photos')
-            ->where('application_id', $applicationId)
-            ->get();
-
-        $custumerdoc = DB::table('application_documents')
-            ->where('application_id', $applicationId)
-            ->get();
-
-        $result[] = [
-            'application' => $application,
-            'personal_details' => $personalDetails,
-            'account_personal_details' => $accountPersonalDetails,
-            'account_nominees' => $accountNominees,
-            'application_address' => $applicationAddresss,
-            'customerpic' => $custlivepic,
-            'customerdoc' => $custumerdoc,
+    // Transform the results
+    $result = $applications->groupBy('id')->map(function ($items) {
+        return [
+            'application' => $items->first(),  // First item will hold the application details
+            'personal_details' => $items->where('apd.application_id', $items->first()->id)->first(),
+            'account_personal_details' => $items->where('apd_acc.application_id', $items->first()->id)->first(),
+            'account_nominees' => $items->where('an.application_id', $items->first()->id)->all(),
+            'application_address' => $items->where('aad.application_id', $items->first()->id)->all(),
+            'customerpic' => $items->where('alp.application_id', $items->first()->id)->all(),
+            'customerdoc' => $items->where('ad.application_id', $items->first()->id)->all(),
         ];
-    }
+    });
 
     return response()->json([
         'message' => 'Applications for agent fetched successfully.',
