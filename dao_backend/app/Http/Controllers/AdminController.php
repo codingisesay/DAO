@@ -50,7 +50,7 @@ public function fetchAndUpdateDraftApplications()
         ->select('customer_application_details.*')
         ->get();
 
-    // 2. List of related tables to update status to null
+    // 2. List of related tables (do not update status)
     $relatedTables = [
         'application_address_details',
         'application_personal_details',
@@ -59,33 +59,38 @@ public function fetchAndUpdateDraftApplications()
         'applicant_live_photos',
         'agent_live_photos',
         'document_approved_status',
-        'application_service_status'
+        'application_service_status',
+        'account_nominees',
+        'application_documents',
+        'application_service_status',
+        'video_call_schedule',
+        'video_kyc_status',
         // Add more tables if needed
     ];
 
-    $updated = [];
+    $foundEntries = [];
 
-    // 3. For each draft application, update status to null in related tables
+    // 3. For each draft application, just check for entries in related tables (do not update status)
     foreach ($drafts as $draft) {
         $application_id = $draft->id;
         foreach ($relatedTables as $table) {
-            $count = DB::table($table)
+            $exists = DB::table($table)
                 ->where('application_id', $application_id)
-                ->update(['status' => null]);
-            if ($count > 0) {
-                $updated[] = [
+                ->exists();
+            if ($exists) {
+                $foundEntries[] = [
                     'application_id' => $application_id,
-                    'table' => $table,
-                    'rows_updated' => $count
+                    'table' => $table
                 ];
             }
         }
     }
 
-    // 4. Return the draft applications and update info
+    // 4. Return the draft applications, found entries info, and the count
     return response()->json([
+        'draft_applications_count' => $drafts->count(),
         'draft_applications' => $drafts,
-        'status_updates' => $updated
+        'found_entries' => $foundEntries
     ], 200);
 }
 

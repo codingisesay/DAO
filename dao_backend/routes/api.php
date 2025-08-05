@@ -58,7 +58,7 @@ Route::post('/video-kyc/upload', [VideoKycController::class, 'upload']);
 
 // Route::middleware('role:admin')->group(function () {
 // // Fetch and update draft applications route 
-Route::post('/admin/fetch-update-drafts', [AdminController::class, 'fetchAndUpdateDraftApplications']);
+Route::get('/admin/fetch-update-drafts', [AdminController::class, 'fetchAndUpdateDraftApplications']);
 Route::get('/admin/accountSatus', [AdminController::class, 'getAccountStatus']);
 // only for status count 
 Route::get('/admin/kycaccountsStatus', [AdminController::class, 'getKYCAccountStatus']);
@@ -157,8 +157,9 @@ Route::post('/agent/service-to-customer', [AgentController::class, 'saveServiceT
 Route::delete('/agent/application-document-delete', [AgentController::class, 'deleteApplicationDocument']);
 // This route deletes a nominee based on application_id and nominee id
 Route::post('/agent/account-nominee-delete', [AgentController::class, 'deleteAccountNominee']);
-//rekyc
-Route::post('/application/by-aadhar', [AgentController::class, 'getApplicationByAadhaar']);
+//rekyc 
+// base on addhar card and pan card data will get fetch if avaliable in the database
+Route::post('/application/by-aadhar-pan', [AgentController::class, 'getApplicationByAadhaarPan']);
 Route::get('/agent/bankingServices', [AgentController::class, 'getBankingServices']);
 //Admin routes
 //This is for starting the KYC process by agent
