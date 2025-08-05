@@ -171,7 +171,7 @@ public function scheduleVideoCall(Request $request)
     }
 
     // Prevent duplicate schedule for same application, agent, and time
-    $exists = DB::table(' ')
+    $exists = DB::table('video_call_schedule')
         ->where('application_id', $validated['application_id'])
         ->where('agent_id', $validated['agent_id'])
         ->where('schedule_date', $validated['schedule_date'])
